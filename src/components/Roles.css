@@ -298,13 +298,14 @@ th.price {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  overflow: hidden;
 }
 
 .modal-roles-add form input{
   width: 100%;
   background: #fff;
   border: none;
-  padding: 9px 10px;
+  padding: 15px 10px;
 }
 
 .modal-roles-add form button{
@@ -379,6 +380,7 @@ th.price {
 .custom-dropdown {
   display: flex;
   flex-direction: column;
+  max-height: 210px;
 }
 .custom-option {
   display: flex;

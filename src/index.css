@@ -825,6 +825,7 @@ display: none;
 }
 .select-new{
   z-index: 9999;
+  width:100%;
 }
 .no-data{
   text-align: center;
@@ -1599,4 +1600,25 @@ margin-top: 0;
 .fc-header-toolbar .fc-button:hover {
   background-color: #004686; /* Change to your desired color */
   color: #fff; /* Change to your desired hover text color */
+}
+
+/*  */
+.form-send-message {
+  margin-left: auto;
+}
+.form-send-message button {
+  background: #004686;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 15px 0;
+  width: 150px;
+  color: #fff;
+  border: unset;
+  border-radius: 5px;
+}
+.pop-up-content-category.sms-list-form {
+  height: 360px !important;
+}
+.css-b62m3t-container .css-ao180k-control .css-p8a3hd-ValueContainer {
+  width: fit-content;
 }

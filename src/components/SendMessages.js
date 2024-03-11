@@ -43,8 +43,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
     <div
       className="custom-dropdown"
       style={{
-        maxHeight: "250px",
-        minHeight: "250px",
+        // maxHeight: "250px",
+        // minHeight: "250px",
         overflowY: "auto",
         background: "#fff",
         boxShadow: "none",
@@ -55,9 +55,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
         <div
           onClick={() => handleOptionClick(option)}
           key={option.value}
-          className={`custom-option ${
-            isOptionSelected(option) ? "selected" : ""
-          }`}
+          className={`custom-option ${isOptionSelected(option) ? "selected" : ""
+            }`}
           style={{
             backgroundColor: isOptionSelected(option)
               ? "rgb(0 70 134 / 8%)"
@@ -100,12 +99,18 @@ const SendMessage = ({ role }) => {
   const { auth, property, setProperty, setAuth } = useContext(AuthContext);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [message, setMessage] = useState("");
+  const [groupName, setGroupName] = useState('');
+  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [groupNames, setGroupNames] = useState([]);
+
 
   const handleContactChange = (selectedOptions) => {
     setSelectedContacts(selectedOptions);
   };
   const closeModal = () => {
-    setSelectedContacts(null);
+    setSelectedContacts([]);
+    setGroupName('');
+    setError('');
     setIsOpen(false);
   };
   const headers = {
@@ -116,10 +121,38 @@ const SendMessage = ({ role }) => {
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
   };
-  
+  const addGroup = async () => {
+    try {
+      const response = await axios.post(
+        `${url}api/group-message`,
+        {
+          selectedContacts: selectedContacts.map((option) => option.value),
+          groupName,
+          created_by: AuthContext.userId
+        },
+        {
+          headers,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Group Added Successfully", {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        console.log(response.data.group,'sdfsdfsdfsdfsdfsd');
+        setGroupNames([...groupNames,response.data.group])
+        setSelectedContacts();
+        closeModal();
+      }
+    } catch (error) {
+      toast.error("Failed to add group.");
+    }
+  };
+  console.log(groupNames,'fsdfdsfsdf');
   const handleSendMessage = async () => {
-    if (selectedContacts.length === 0) {
-      toast.error("Please select at least one contact.");
+    if (selectedGroups.length === 0) {
+      toast.error("Please select at least one group.");
       return;
     }
 
@@ -127,19 +160,15 @@ const SendMessage = ({ role }) => {
       toast.error("Please enter a message.");
       return;
     }
-
-    const phoneNumbers = selectedContacts.map((contact) => contact.phone);
-
     try {
-      const contacts = selectedContacts
+      const contacts = selectedGroups
         .map((contact) => contact.label)
         .join(", ");
 
       const response = await axios.post(
         `${url}api/send-message`,
         {
-          selectedContacts: selectedContacts, 
-          phoneNumbers: phoneNumbers,
+          groupId: selectedGroups,
           message: message,
         },
         { headers }
@@ -168,6 +197,26 @@ const SendMessage = ({ role }) => {
       }
     }
   }, [selectedContacts]);
+  const handleChange = (selectedOptions) => {
+    setSelectedGroups(selectedOptions);
+  };
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      overflow: "unset",
+      padding: "0px",
+      transform: "translate(-50%, -50%)",
+      background: "rgb(255 255 255)",
+    },
+    overlay: {
+      backgroundColor: "rgb(0 0 0 / 34%)",
+      zIndex: "9",
+    },
+  };
 
   const colourStyles = {
     valueContainer: (styles) => ({
@@ -245,7 +294,22 @@ const SendMessage = ({ role }) => {
       console.log(error);
     }
   };
+
+  const fetchGroupNames = async () => {
+    try {
+      const response = await fetch(`${url}api/group-names`, { headers });
+      if (!response.ok) {
+        throw new Error("Failed to fetch group names");
+      }
+      const data = await response.json();
+      setGroupNames(data);
+    } catch (error) {
+      setError("Failed to fetch group names");
+    }
+  };
+
   useEffect(() => {
+    fetchGroupNames();
     getContacts();
   }, []);
 
@@ -269,48 +333,105 @@ const SendMessage = ({ role }) => {
     <div className="form-user-add">
       <div className="property_header header-with-back-btn">
         <h3>{parentView ? `${parentName} Family ` : "Send SMS"}</h3>
- 
 
         <div className="top-bar-action-btns">
-                <button onClick={handleSendMessage}>
-                  Send SMS
-                </button>
+          <button onClick={() => setIsOpen(true)} >
+            Add Group
+          </button>
         </div>
       </div>
 
       <div className="form-user-add-wrapper">
         <div className="todo-section">
           <div className="todo-main-section todo-notes-section-new-left">
-            <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+            <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category sms-list-form">
               <img className="close-modal-share" src="/plus.svg" />
+              <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+              >
+                <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+                  <img
+                    className="close-modal-share"
+                    onClick={closeModal}
+                    src="/plus.svg"
+                  />
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      addGroup();
+                    }}
+                  >
+
+                    <h3 className="heading-category">Add Group </h3>
+                    {error && <p className="error-category">{error}</p>}
+                    <input
+                      type="text"
+                      value={groupName}
+                      onChange={(e) => setGroupName(e.target.value)}
+                      required
+                      placeholder="Group Name"
+                    />
+                    <Select
+                      placeholder={
+                        <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
+                      }
+                      ref={selectRef}
+                      value={selectedContacts}
+                      menuIsOpen={true}
+                      onChange={(selectedOptions) => {
+                        setSelectedContacts(selectedOptions);
+
+                      }}
+                      onInputChange={(input) => setSearchText(input)}
+                      options={contactOptions}
+                      components={{
+                        DropdownIndicator: () => null,
+                        IndicatorSeparator: () => null,
+                        Menu: (props) => (
+                          <CustomDropdown searchText={searchText} {...props} />
+                        ),
+                      }}
+                      styles={colourStyles}
+                      className="select-new"
+                      isMulti
+                    />
+                    <div className="modal-convert-btns">
+                      <button type="submit">Add Group</button>
+                    </div>
+                  </form>
+                </div>
+              </Modal>
               <form>
-                <h3 className="heading-category">Select Contact(s) </h3>
+                <h3 className="heading-category">Select Group(s) </h3>
                 <span className="share-contact-comment"></span>
                 {error && <p className="error-category">{error}</p>}
                 <Select
-                  placeholder={
-                    <PlaceholderWithIcon>
-                      Select Contacts...
-                    </PlaceholderWithIcon>
-                  }
-                  ref={selectRef}
-                  value={selectedContacts}
-                  menuIsOpen={true}
-                  onChange={(selectedOptions) => {
-                    setSelectedContacts(selectedOptions);
-                  }}
-                  onInputChange={(input) => setSearchText(input)}
-                  options={contactOptions}
+                  placeholder={<PlaceholderWithIcon>Select Group...</PlaceholderWithIcon>}
+                  options={groupNames?.map((groupName) => ({
+                    value: groupName.id,
+                    label: groupName.group_name,
+                  }))}
+                  isMulti
+                  value={selectedGroups}
+                  onChange={handleChange}
                   components={{
                     DropdownIndicator: () => null,
                     IndicatorSeparator: () => null,
                     Menu: (props) => (
-                      <CustomDropdown searchText={searchText} {...props} />
+                      <CustomDropdown
+                        searchText={searchText}
+                        options={groupNames}
+                        selectedOptions={selectedGroups}
+                        setSelectedOptions={setSelectedGroups}
+                        {...props}
+                      />
                     ),
                   }}
+                  menuIsOpen={true}
                   styles={colourStyles}
                   className="select-new"
-                  isMulti // This is what enables multiple selections
                 />
               </form>
             </div>
@@ -346,6 +467,11 @@ const SendMessage = ({ role }) => {
 
             </div>
           </div>
+        </div>
+        <div className="form-send-message">
+          <button onClick={handleSendMessage}>
+            Send SMS
+          </button>
         </div>
       </div>
     </div>
