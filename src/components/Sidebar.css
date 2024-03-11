@@ -1,0 +1,95 @@
+/* Sidebar.css */
+
+/* Basic styles for the sidebar */
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Initially hide the sidebar */
+    transition: left 0.3s ease-in-out;
+  }
+  
+  .administrator-drop{
+    display: flex;
+    padding: 8px 16px;
+    margin-left: 10px;
+    gap: 11px;
+    color: #fff;
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .administrator-drop:after{
+    content: "";
+    position: absolute;
+    top: 18px;
+    right: 15px;
+    border: none;
+    font-weight: 900;
+    transition: .5s;
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+  }
+
+  .administrator-drop.active:after{
+    transform: rotate(-180deg);
+  }
+
+  .subMenu-drp{
+    background: #00468640;
+    padding-left: 35px;
+  }
+
+  .sidebar.open {
+    left: 0; /* Show the sidebar when 'open' class is applied */
+  }
+  
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .menu {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  .menu li {
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  .menu li:hover {
+    background-color: #555;
+  }
+  
+  /* Styles for submenus */
+  .submenu {
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+  }
+  
+  .submenu.active {
+    display: block; /* Show the submenu when 'active' class is applied */
+  }
+  
+  .submenu li {
+    padding: 8px 0;
+  }
+  
+  .submenu li:hover {
+    background-color: #666;
+  }
+  

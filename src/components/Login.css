@@ -1,0 +1,86 @@
+/* Login.css */
+
+.login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 70px;
+  margin-bottom: 70px;
+}
+.login-form h2 {
+  text-align: center;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-form input[type="text"], .login-form input[type="password"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.login-form button[type="submit"] {
+  width: 100%;
+  background-color: #004889;
+  color: white;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid #004889;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.login-form button[type="submit"]:hover {
+  background-color: #fff;
+  color: #004889;
+  transition: all 0.3s;
+}
+
+@media (max-width:768px) {
+  .login-form {
+    margin-top: 20px;
+  }
+  nav {
+    position: relative;
+    padding-top: 20px;
+  }
+  .nav_footer .logo-desktop {
+    padding-left: 0;
+  }
+  .logo-desktop {
+    padding-left: 30px;
+  }
+  .footer-logo {
+    height: 96px;
+  }
+  .table-container {
+    overflow: auto;
+  }
+  .table-container table {
+    width: 600px;
+  }
+}
+
+@media (max-width:480px) {
+  .login-form{
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .user_list {
+    flex-wrap: wrap;
+    row-gap: 20px;
+  }
+}
+

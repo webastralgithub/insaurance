@@ -1,0 +1,216 @@
+.ck.ck-editor__editable_inline>:last-child {
+    margin-bottom: var(--ck-spacing-large);
+    height: 100px;
+}
+.template-grid {
+    display: flex;
+    row-gap: 30px;
+    justify-content: start;
+    column-gap: 30px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+.template-item button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 30px;
+    border-radius: 8px;
+    z-index: 99;
+    font-size: 22px;
+    background-color: #fff;
+    color: #004381;
+    font-weight: 600;
+    border: unset;
+}
+.template-item {
+    width: 31%;
+    position: relative;
+}
+
+.email-template-name {
+    text-transform: capitalize;
+    background-color: #b9cbdb;
+    color: #00356d;
+    border-radius: 4px;
+    font-size: 18px;
+    text-align: start;
+    padding: 15px 20px;
+    font-weight: 500;
+}
+
+.template-grid .template-item .email-template-box {
+    width: 100% !important;
+    height: 190px !important;
+    border: unset !important;
+    box-shadow: 0px 0px 6px 2px #a1a1a1;
+    padding: 0;
+    /* background-color: #b9cbdb; */
+    position: relative;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 1px;
+}   
+
+.template-grid .template-item .email-template-box::before {
+    content: "";
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #00417f99;
+    z-index: 9;
+}
+
+.template-item button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 30px;
+    border-radius: 4px;
+    z-index: 99;
+    font-size: 22px;
+    font-weight: 500;
+    visibility: hidden;
+}
+.template-item button:hover {
+    background-color: #00407dbf;
+    color: #fff;
+    border: 3px solid #fff;
+}
+
+.template-item:hover .email-template-box button {
+    visibility: visible;
+    transition: all 0.3s;
+}
+
+/* .ReactModalPortal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    background-color: #ffffff59;
+}
+.preview-modal-overlay {
+    width: -moz-fit-content;
+    width: fit-content;
+    margin: auto;
+    position: relative;
+    padding-top: 50px;
+    background-color: #004483;
+    top: 70px;
+}
+
+button.close-box {
+    position: absolute;
+    top: -3px;
+    right: 5px;
+    padding: 5px 10px;
+    font-size: 34px;
+    border-radius: 4px;
+    background-color: transparent;
+    border: unset;
+    color: #fff;
+}
+
+button.edit-box {
+    position: absolute;
+    top: 11px;
+    right: 42px;
+    background-color: unset;
+    border: unset;
+}
+
+button.edit-box img {
+    filter: brightness(0) saturate(100%) invert(78%) sepia(100%) saturate(0%) hue-rotate(89deg) brightness(107%) contrast(101%);
+}
+
+.preview-modal-overlay .preview-modal {
+    height: 500px;
+    overflow: scroll;
+} */
+
+
+
+.preview-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    background-color: #ffffff59;
+    height: 100%;
+}
+
+.preview-modal-overlay .ReactModal__Content{
+    width: -moz-fit-content;
+    width: fit-content;
+    margin: auto;
+    position: relative;
+    padding-top: 50px;
+    background-color: #004483;
+    top: 70px;
+}
+
+button.close-box {
+    position: absolute;
+    top: -3px;
+    right: 5px;
+    padding: 5px 10px;
+    font-size: 34px;
+    border-radius: 4px;
+    background-color: transparent;
+    border: unset;
+    color: #fff;
+}
+
+.preview-modal-overlay .save-btn {
+    top: 6px;
+}
+
+button.edit-box {
+    position: absolute;
+    top: 11px;
+    right: 52px;
+    background-color: unset;
+    border: unset;
+}
+
+.preview-modal-overlay .save-btn {
+    position: absolute;
+    top: 6px;
+    right: 52px;
+    background-color: unset;
+    border: unset;
+}
+
+
+button.edit-box img, .preview-modal-overlay .save-btn img {
+    filter: brightness(0) saturate(100%) invert(78%) sepia(100%) saturate(0%) hue-rotate(89deg) brightness(107%) contrast(101%);
+}
+
+.preview-modal-overlay .preview-modal {
+    height: 500px;
+    /* overflow: scroll; */
+    overflow-y: scroll;
+}
+
+.preview-modal-overlay .preview-modal::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #ddd;
+}
+
+.preview-modal-overlay .preview-modal::-webkit-scrollbar {
+    width: 10px;
+    background-color: #ddd;
+}
+
+.preview-modal-overlay .preview-modal::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #004483;
+}

@@ -1,0 +1,452 @@
+/* CSS for the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+thead {
+  background-color: #f2f2f2;
+}
+
+th, td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.table-container table thead tr th, .table-container table tbody tr td {
+  border: 1px solid #000;
+}
+
+.table-container table tbody tr td {
+  padding-bottom: 30px;
+  padding-top: 12px;
+}
+
+th {
+  color: white;
+}
+
+/* CSS for the buttons */
+.add_user_btn button {
+  background-color: #004686;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  cursor: pointer;
+  margin-right: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 30px;
+  border: 2px solid #004686;
+  border-radius: 4px;
+}
+
+.add_user_btn button:hover {
+  background-color: #000;
+  color: #ffffff;
+  border: 2px solid #000000;
+  transition: all 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Center the buttons horizontally in the table cell */
+td button {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+/* Add some margin to the table container */
+.table-container {
+  margin-top: 20px;
+}
+
+.add_user_btn {
+  margin: 20px 50px 50px 50px;
+}
+
+.menu .add_user_btn {
+  width: 100%;
+  text-align: center;
+  margin-top: 30px !important;
+  margin: 0;
+}
+
+.menu .bm-cross-button{
+  right: 18px !important;
+  top: 13px !important;
+}
+
+.menu .add_user_btn button{
+  padding: 8px 20px;
+  font-size: 16px;
+}
+
+.user_list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.search_bar label {
+  font-size: 14px;
+  padding-right: 10px;
+}
+.bm-menu nav a {
+  font-size: 20px;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.bm-menu nav button {
+  background-color: #004889;
+  margin: 0;
+  padding: 7px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border: 3px solid #004889;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.add_property_btn .table-container{
+  background: #004686;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 25px;
+  box-shadow: 0px 0px 23px 0px rgba(0, 0, 0, 0.12);
+}
+
+.add_property_btn .table-container table {
+  margin-top: 0;;
+}
+
+.add_property_btn .table-container table tr{
+  background: #004686;
+}
+.add_property_btn .table-container table tr th{
+
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 6px !important;
+  text-align: left !important;
+}
+
+.add_property_btn .table-container table tr td, .add_property_btn .table-container table tr th{
+  border: none;
+  padding: 0;
+}
+
+.listing{
+  width: auto;
+}
+
+.add_property_btn .table-container table tr td{
+  font-size: 13px;
+  font-weight: 500;
+  padding: 15px 6px !important;
+  color: #000;
+}
+
+.add_property_btn .table-container table tbody tr{
+  background: #fff;
+  border-bottom: 1px solid #00000014;
+}
+
+.add_property_btn .table-container table tbody tr:last-child{
+  border: none;
+}
+
+.add_property_btn .table-container table tr td:first-child, .add_property_btn .table-container table tr th:first-child{
+  padding-left: 15px !important;
+} 
+
+.add_property_btn .table-container table tr td:last-child, .add_property_btn .table-container table tr th:last-child{
+  padding-right: 15px !important;
+}
+/* 
+.listing {
+  text-align: center;
+} */
+
+.price {
+  width: 80px;
+}
+
+th.price {
+  text-align: center;
+}
+
+.add_property_btn .table-container table tbody tr .permission-tick-block-wraper{
+  display: flex;
+  gap: 20px;
+}
+
+.add_property_btn .table-container table tbody tr .permission-tick-block-wraper .permission-tick-block{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.add_property_btn .table-container table tbody tr  .table-action-btn{
+  display: flex;
+  justify-content: left;
+  gap: 10px;
+}
+
+.table-action-btn .edit-btn, .table-action-btn .delet-btn{
+  margin: 0;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+
+.table-action-btn .edit-btn{
+  background: #0a4f93;
+}
+
+.table-action-btn .delet-btn{
+  background: #af080c;
+}
+
+.modal-roles-add{
+
+}
+.modal-roles-add form{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #004686;
+}
+.modal-roles-add form input{
+  width: 100%;
+  background: #fff;
+  border: none;
+  padding: 9px 10px;
+}
+
+.pop-up-content-category{
+  background: #fff;   
+}
+
+.pop-up-content-category form .modal-convert-btns{
+  position: absolute;
+  bottom: 0;
+  padding: 20px 21px;
+  left: 0;
+  max-width: 100%;
+  width: -webkit-fill-available;
+  border-top: 1px solid #0000001f;
+  background: #00000014;
+  z-index: 99999;
+}
+
+.modal-roles-add form{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.modal-roles-add form input{
+  width: 100%;
+  background: #fff;
+  border: none;
+  padding: 9px 10px;
+}
+
+.modal-roles-add form button{
+  width: 49%;
+  background: #004686;
+  border: none;
+  color: #fff;
+  padding: 11px 0;
+  border-radius: 5px;
+}
+
+.modal-roles-add form button:last-child{
+  background: #004686;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+  .close-modal-share{
+    position: absolute;
+    right: 19px;
+    width: 20px;
+    /* filter: invert(1); */
+    transform: rotate(45deg);
+    top: 17px;
+  }
+
+
+
+
+/* ===================modal css=================== */
+.modal-roles-add{
+
+}
+
+.modal-roles-add form{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.modal-roles-add form input{
+  width: 100%;
+  background: #fff;
+  border: none;
+  padding: 9px 10px;
+}
+
+.modal-roles-add form button{
+  width: 49%;
+  background: #004686;
+  border: none;
+  color: #fff;
+  padding: 11px 0;
+}
+/* .modal-roles-add div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+} */
+.modal-roles-add div button{
+  width: 49%;
+  background: #004686;
+  border: none;
+  color: #fff;
+  padding: 11px 0;
+}
+.modal-roles-add div input{
+  width: 100%;
+  background: #fff;
+  border: none;
+  padding: 9px 10px;
+}
+.modal-roles-add form button:last-child{
+  background: #004686;
+}
+.download-file {
+    position: relative;
+    padding: 10px 25px !important;
+}
+.download-file button.close-btn {
+  position: absolute;
+  top: -14px;
+  right: -15px;
+  background-color: unset;
+  border: unset;
+  rotate: 45deg;
+}
+
+.file-upload {
+  border: 2px dotted #000000;
+  background-color: #fff;
+  position: static;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+  border-radius: 4px;
+}
+
+.camp-gap .share-ref-top-wrp button{
+  background: #004686;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.camp-gap .share-ref-top-wrp p{
+  width: 100% !important;
+  color: #fff;
+  text-align: center;
+}
+/* ===================modal css=================== */
+
+
+
+  
+
+.custom-dropdown {
+  display: flex;
+  flex-direction: column;
+}
+.custom-option {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0px;
+  cursor: default;
+  /* display: block; */
+  font-size: inherit;
+  width: 100%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  color: inherit;
+  padding: 12px 12px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #0000000d;
+}
+.circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #0000001c; /* Ensures the element is a perfect circle */
+ /* Change this to set the circle's color */
+}
+.custom-option.selected .circle{
+ 
+  background-color: rgb(0 70 134);
+  border-color: #52a5f1;
+}
+.custom-option label{
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.custom-option :hover {
+  background-color:#B2D4FF;
+}
+
+.custom-option input {
+  margin-right: 8px;
+  padding: unset !important;
+  width: unset !important;
+}
+
+/* .ReactModal__Overlay{
+  background-color: rgb(0 0 0 / 75%);
+}
+
+.ReactModal__Overlay .ReactModal__Content{
+  background: #000 !important;
+  border: 1px solid #fff;
+} */
+
+@media (max-width:1500px){
+
+  table tr td, table tr th{
+    font-size: 15px !important;
+  }
+
+  .add_property_btn .table-container table tr th, .add_property_btn .table-container table tr td{
+
+    font-size: 11px;
+  }
+  .main-dashbord-wrapper .main-sidenav-wrapper .side-menu .menu a {
+    font-size: 15px;
+  }
+}
+
