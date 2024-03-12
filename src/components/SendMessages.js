@@ -102,7 +102,8 @@ const SendMessage = ({ role }) => {
   const [groupName, setGroupName] = useState('');
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [groupNames, setGroupNames] = useState([]);
-
+  const [modalSearchText, setModalSearchText] = useState("");
+  const [selectSearchText, setSelectSearchText] = useState("");
 
   const handleContactChange = (selectedOptions) => {
     setSelectedContacts(selectedOptions);
@@ -121,7 +122,16 @@ const SendMessage = ({ role }) => {
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
   };
+  
   const addGroup = async () => {
+    if (selectedContacts.length === 0) {
+      toast.error("Please select at least one contact.");
+      return;
+    }
+    if (!groupName.trim()) {
+      toast.error("Please enter a group name.");
+      return;
+    }
     try {
       const response = await axios.post(
         `${url}api/group-message`,
@@ -140,16 +150,18 @@ const SendMessage = ({ role }) => {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         });
-        console.log(response.data.group,'sdfsdfsdfsdfsdfsd');
         setGroupNames([...groupNames,response.data.group])
         setSelectedContacts();
         closeModal();
       }
     } catch (error) {
-      toast.error("Failed to add group.");
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Failed to add group.");
+      }
     }
   };
-  console.log(groupNames,'fsdfdsfsdf');
   const handleSendMessage = async () => {
     if (selectedGroups.length === 0) {
       toast.error("Please select at least one group.");
@@ -160,6 +172,8 @@ const SendMessage = ({ role }) => {
       toast.error("Please enter a message.");
       return;
     }
+    const sanitizedMessage = message.replace(/<[^>]*>/g, '');
+
     try {
       const contacts = selectedGroups
         .map((contact) => contact.label)
@@ -169,11 +183,10 @@ const SendMessage = ({ role }) => {
         `${url}api/send-message`,
         {
           groupId: selectedGroups,
-          message: message,
+          message: sanitizedMessage,
         },
         { headers }
       );
-      console.log(response, "response");
       toast.success("Message sent successfully to: " + contacts);
     } catch (error) {
       toast.error("Failed to send message.");
@@ -291,7 +304,6 @@ const SendMessage = ({ role }) => {
       }));
       setContactoptions(realtorOptions);
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -370,7 +382,6 @@ const SendMessage = ({ role }) => {
                       type="text"
                       value={groupName}
                       onChange={(e) => setGroupName(e.target.value)}
-                      required
                       placeholder="Group Name"
                     />
                     <Select
@@ -384,13 +395,13 @@ const SendMessage = ({ role }) => {
                         setSelectedContacts(selectedOptions);
 
                       }}
-                      onInputChange={(input) => setSearchText(input)}
+                      onInputChange={(input) => setModalSearchText(input)}
                       options={contactOptions}
                       components={{
                         DropdownIndicator: () => null,
                         IndicatorSeparator: () => null,
                         Menu: (props) => (
-                          <CustomDropdown searchText={searchText} {...props} />
+                          <CustomDropdown searchText={modalSearchText} {...props} />
                         ),
                       }}
                       styles={colourStyles}
@@ -421,7 +432,7 @@ const SendMessage = ({ role }) => {
                     IndicatorSeparator: () => null,
                     Menu: (props) => (
                       <CustomDropdown
-                        searchText={searchText}
+                        searchText={selectSearchText}
                         options={groupNames}
                         selectedOptions={selectedGroups}
                         setSelectedOptions={setSelectedGroups}
@@ -432,6 +443,7 @@ const SendMessage = ({ role }) => {
                   menuIsOpen={true}
                   styles={colourStyles}
                   className="select-new"
+                  onInputChange={(input) => setSelectSearchText(input)}
                 />
               </form>
             </div>
