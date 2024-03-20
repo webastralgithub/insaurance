@@ -133,6 +133,7 @@ const EmailCampaign = () => {
   };
   
   const updateEmailTemplate = async (id, newData) => {
+    
     try {
       if (editedTempalteContent === previewContent) {
         toast.error("No changes detected. Please update the content first.");
@@ -141,7 +142,7 @@ const EmailCampaign = () => {
   
       const response = await axios.put(
         `${url}api/update/${previewContentId}`,
-        { text: editedTempalteContent },
+        { text: newData },
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,
@@ -163,15 +164,16 @@ const EmailCampaign = () => {
   };
   
   const updateUserEmailTemplate = async (id, newData) => {
+   
     try {
-      if (editedUserTempalteContent === previewUserContent) {
-        toast.error("No changes detected. Please update the content first.");
-        return;
-      }
+      // if (editedUserTempalteContent === previewUserContent) {
+      //   toast.error("No changes detected. Please update the content first.");
+      //   return;
+      // }
   
       const response = await axios.put(
         `${url}api/update/${previewUserContentId}`,
-        { text: editedUserTempalteContent },
+        { text: newData },
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,
@@ -226,13 +228,13 @@ const EmailCampaign = () => {
         toast.error("No changes detected. Please update the content first.");
         return;
       }
-    
       onSave(previewContentId, editedContent);
-      setEditedTempalteContent(editedContent);
+      // setEditedTempalteContent(editedContent);
       closeModal();
     };
 
     const handleContentChange = (event) => {
+      console.log(event);
       setEditedContent(event.target.innerHTML);
     };
 
@@ -309,10 +311,10 @@ const EmailCampaign = () => {
     };
     
     const handleUserSave = () => {
-      if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
-        toast.error("No changes detected. Please update the content first.");
-        return;
-      }
+      // if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
+      //   toast.error("No changes detected. Please update the content first.");
+      //   return;
+      // }
     
       onSave(previewUserContentId, userEditedContent);
       setUserEditedTempalteContent(userEditedContent);
@@ -493,7 +495,7 @@ const EmailCampaign = () => {
         `${url}api/contacts/email`,
         {
           selectedContacts: selectedContacts.map((option) => option.value),
-          emailContent: content.emailContent,
+          emailContent: userTemplates.pre_email_template_id,
           subject: subject,
         },
         {
