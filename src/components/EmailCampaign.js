@@ -152,6 +152,7 @@ const EmailCampaign = () => {
         toast.success(response.data.message);
         getEmailTemplates();
         getEmailTemplatesByUserId();
+        setEditedTempalteContent(editedTempalteContent);
       } else {
         toast.error("Failed to update email template");
       }
@@ -181,6 +182,7 @@ const EmailCampaign = () => {
         toast.success(response.data.message);
         getEmailTemplates();
         getEmailTemplatesByUserId();
+        setUserEditedTempalteContent(editedUserTempalteContent);
       } else {
         toast.error("Failed to update email template");
       }
@@ -217,6 +219,7 @@ const EmailCampaign = () => {
         console.error("Error fetching email template:", error);
       }
     };
+    setEditedTempalteContent(editedTempalteContent);
     
     const handleSave = () => {
       if (editedTempalteContent.trim() === previewContent.trim()) {
