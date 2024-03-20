@@ -112,6 +112,7 @@ const KlientaleContacts = ({ role }) => {
   const [width, setWidth] = useState(window.innerWidth);
 
   const { auth, email , property, setProperty, setAuth } = useContext(AuthContext);
+  console.log(email);
   const headers = {
     Authorization: auth.token,
   };
@@ -216,7 +217,7 @@ const KlientaleContacts = ({ role }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`https://admin.klientale.com/api/listing/${localStorage.getItem('email')}`);
       const data = response.data.user;  
       const options=response.data.category.map((realtor) => ({
         value: realtor.id,
@@ -253,10 +254,7 @@ const KlientaleContacts = ({ role }) => {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-    fetchCategotires();
-  }, []);
+
   const formatDate = (dateString) => {
     if (!dateString) {
       return ""; 
@@ -356,7 +354,14 @@ const KlientaleContacts = ({ role }) => {
       />
     </div>
   );
-
+  
+  //  useEffect(() => {
+    
+  // }, []);
+  useEffect(() => {
+    fetchUsers();
+    fetchCategotires();
+  }, []);
   
   return (
     <div className="add_property_btn">
