@@ -510,25 +510,25 @@ const SendMessage = ({ role }) => {
                     <h3 class="heading-category">Select Group(s)</h3>
                     <div className="searchbar-grd">
 
-  
+
                       <input type="text" placeholder="Search Group" value={selectSearchGroup} onChange={handleSearchInputChange} />
-                   
+
                       {selectedGroups.length > 0 || selectSearchGroup.length > 0 ? (
-        <button 
-          type="button" 
-          onClick={() => { 
-            setSelectedGroups([]); 
-            setSelectSearchGroup(''); 
-            fetchGroupNames(); 
-          }}
-        >
-          ×
-        </button>
-      ) : null}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedGroups([]);
+                            setSelectSearchGroup('');
+                            fetchGroupNames();
+                          }}
+                        >
+                          ×
+                        </button>
+                      ) : null}
                     </div>
 
                     {error && <p className="error-category">{error}</p>}
-                    <ul class="custom-dropdown" style={{ "overflowY": 'auto', "overflowX": 'hidden', "background": 'rgb(255, 255, 255)', "boxShadow": 'none'}}>
+                    <ul class="custom-dropdown" style={{ "overflowY": 'auto', "overflowX": 'hidden', "background": 'rgb(255, 255, 255)', "boxShadow": 'none' }}>
                       {groupNames.map((group, index) => (
                         <li key={index}>
                           <label onClick={() => getGroupContacts(group.id)}>
@@ -583,7 +583,7 @@ const SendMessage = ({ role }) => {
                     onInputChange={(input) => setSelectSearchText(input)}
                   />
                 </form> */}
-                
+
                   {/* model contacts */}
                   <form>
                     <h3 className="heading-category">Select Contact(s) </h3>
