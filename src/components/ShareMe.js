@@ -372,6 +372,8 @@ localStorage.setItem("parent",name)
   };
   // Rest of your component remains the same..
   
+
+  
   return (
    <div>
     {isLoading && <Spinner/>}
@@ -410,8 +412,8 @@ localStorage.setItem("parent",name)
          <button className={!active ? 'active' : ''} onClick={() =>setActive(0)}>
          Personal Contacts</button>
 
-         {/* <button className={active ? 'active' : ''} onClick={() =>setActive(1)}>
-         Klientale Contacts</button> */}
+         <button className={active ? 'active' : ''} onClick={() =>setActive(1)}>
+         Klientale Contacts edit</button>
        
         
 

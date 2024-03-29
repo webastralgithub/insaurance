@@ -310,11 +310,12 @@ overflow:"unset"
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`https://admin.klientale.com/api/listing`);
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-      const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
+      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const contactsWithoutParentId = response.data.user.filter((contact) => contact.parentId === null);
+      // const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       // Set the filtered contacts in the state
-      setContacts(response.data);
+      console.log(response.data.user,);
+      setContacts(response.data.user);
       const contact = response.data.find((p) => p.id == id);
       setContactName(contact);
     

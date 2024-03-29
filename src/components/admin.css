@@ -438,6 +438,11 @@ z-index: unset;
     gap: 0;
 }
 
+.todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div form:first-child .heading-category{
+    margin-bottom: 18px !important;
+}
+
+
 .todo-sectionnew .todo-notes-section-new-right{
     width: 40% !important;
 }
@@ -447,9 +452,54 @@ z-index: unset;
     padding-left: 0;
 }
 
-.todo-sectionnew .searchbar-grd{
+.todo-sectionnew .searchbar-grd,
+.todo-sectionnew .css-b62m3t-container .css-13cymwt-control{
     background: linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%);
-    padding: 19px 5px;
+    padding: 15px 6px 18px;
+    border: none;
+    margin-top: 12px;
+}
+
+.todo-sectionnew .css-b62m3t-container .css-13cymwt-control .css-1fdsijx-ValueContainer{
+     padding: 0;
+}
+
+.todo-sectionnew .css-b62m3t-container .css-13cymwt-control .css-1fdsijx-ValueContainer .css-1jqq78o-placeholder{
+     color: #fff;
+}
+
+.todo-sectionnew .css-b62m3t-container .css-yqrvhi-menu{
+    background: #ffffff;
+    display: block;
+    position: unset;
+    margin-top: 0;
+    border-radius: 0;
+}
+
+.todo-sectionnew .css-b62m3t-container .css-yqrvhi-menu .css-9mue6r-MenuList{
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-sectionnew .css-b62m3t-container .css-yqrvhi-menu .css-9mue6r-MenuList .css-10wo9uf-option,
+.todo-sectionnew .css-b62m3t-container .css-yqrvhi-menu .css-9mue6r-MenuList .css-d7l1ni-option{
+    border-bottom: 1px solid #0000000d;
+    padding: 12px 12px !important;
+}
+
+.todo-sectionnew .custom-dropdown{
+    max-height: 243px;
+}
+
+.select-check-line{
+    width: 100%;
+    justify-content: space-between;
+}
+
+.select-check-line span{
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .todo-sectionnew .searchbar-grd button{
@@ -463,11 +513,24 @@ z-index: unset;
     background: no-repeat;
     font-size: 17px;
     font-family: 'Barlow', sans-serif;
+    width: 90%;
+    color: #fff;
+    padding: 3px 0 2px;
+}
+
+.todo-sectionnew .searchbar-grd button{
+    font-size: 20px !important;
+    text-align: left;
 }
 
 .todo-sectionnew .searchbar-grd input::placeholder{
     opacity: 1 !important;
     color: #fff !important;
+}
+
+.todo-sectionnew .searchbar-grd input:focus-visible{
+    border: none;
+    stroke: 0;
 }
 
 .todo-sectionnew ul.custom-dropdown li{
@@ -484,6 +547,22 @@ z-index: unset;
 
 .todo-sectionnew ul.custom-dropdown li input{
     width: 5%;
+}
+
+.custom-form-copy .heading-category{
+    margin: 14px 12px 16px;
+}
+
+.todo-sectionnew .searchbar-grd{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.todo-sectionnew .searchbar-grd img{
+    position: absolute;
+    right: 8px;
+    top: 19px;
 }
 
 @media (max-width:1000px){
@@ -578,3 +657,74 @@ z-index: unset;
         margin-bottom: 70px;
     }
 }
+
+
+  .container-chk{
+    display: block;
+    position: relative;
+    padding-left: 17px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .container-chk input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .container-chk .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #0000001c;
+    background-color: transparent;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .container-chk:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .container-chk input:checked ~ .checkmark {
+    background-color: rgb(0 70 134);
+    border-color: #52a5f1;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .container-chk:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .container-chk input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .container-chk .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }

@@ -194,16 +194,7 @@ const Sidebar = (props) => {
 
               </div>
             </Link>}
-
-               {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages2" className={location.pathname === "/send-messages2" ? "active" : ""}>
-               <div className="order-detail">
-
-                <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Send SMS2</div>
-
-              </div>
-            </Link>}
-                 
+      
             {IsOpenSub && sub == "camp" && props.role == 1 && 
             // <Link to="/social-media" className={location.pathname === "/social-media" ? "active" : ""}>
             //   <div className="order-list">
