@@ -750,7 +750,10 @@ background:rgb(0 0 0 / 58%) !important;
   margin-bottom: 20px;
   background: #ebebeb;
 }
-
+.my-prefrence-btn p{
+  width: 100%;
+  text-align: center;
+}
 .parent .table-container{
   margin-top: 5px !important;
   border-radius: 0 0 5px 5px !important;

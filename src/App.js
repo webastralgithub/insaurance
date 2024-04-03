@@ -60,6 +60,7 @@ import Post from "./components/Post";
 import AddPost from "./components/AddPost";
 import EmailCampaign from "./components/EmailCampaign";
 import Unsubscribe from "./components/Unsubscribe";
+import Groups from "./components/ManageGroup";
 
 
 
@@ -278,9 +279,100 @@ const App = () => {
                   <Category role={role} />
                 </PrivateRoute>
               }
+              />
+            <Route
+            path="/profile" exact
+            element={
+              <PrivateRoute>
+                <Profile nameofuser={nameofuser} />
+              </PrivateRoute>
+            }
+          />
+             <Route
+            path="/listing/add" exact
+            element={
+              <PrivateRoute>
+                <AddProperty/>
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/unsubscribe" exact
+            element={
+              <PrivateRoute>
+                <Unsubscribe/>
+              </PrivateRoute>
+            }
+          />
+            { role==1&& <Route
+            path="/owners/:id" exact
+            element={
+              <PrivateRoute>
+                <RealtorProfile/>
+              </PrivateRoute>
+            }
+          />}
+               { role==1&& <Route
+            path="/owners/add" exact
+            element={
+              <PrivateRoute>
+                <AddUserForm/>
+              </PrivateRoute>
+            }
+          />}
+             <Route
+            path="/analytics" exact
+            element={
+              <PrivateRoute>
+                <Ip role={role}/>
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/listing/edit/:id" exact
+            element={
+              <PrivateRoute>
+                <EditPropertyForm role={role}/>
+              </PrivateRoute>
+            }
+          />
+          {role==1&&<Route
+          path="/users" exact
+          element={
+            <PrivateRoute>
+              <Realtor/>
+            </PrivateRoute>
+          }
+        />}
 
+          <Route
+            path="/klientale-contacts" exact
+            element={
+              <PrivateRoute>
+                <KlientaleContacts />
+              </PrivateRoute>
+            }
+          />
 
-            />
+            <Route
+            path="/groups" exact
+            element={
+              <PrivateRoute>
+                <Groups />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/send-messages"
+            element={
+              <PrivateRoute>
+                <SendMessages />
+              </PrivateRoute>
+            }
+          />
+
+            
             <Route
               path="/categories/add" exact
               element={

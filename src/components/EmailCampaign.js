@@ -7,10 +7,11 @@ import axios from "axios";
 import "./EmailCamp.css";
 import { toast } from "react-toastify";
 import { AuthContext } from "./context/AuthContext";
+import { type } from "@testing-library/user-event/dist/type";
 
 const CustomDropdown = ({ children, searchText, ...props }) => {
   const selectedOptions = props.getValue();
-
+ 
   const handleOptionClick = (option) => {
     const isSelected = selectedOptions.some(
       (selected) => selected.value === option.value
@@ -89,7 +90,8 @@ const EmailCampaign = () => {
   const [subject, setSubject] = useState("");
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [contactOptions, setContactoptions] = useState([]);
-  
+  const [templateSendEmailContent, setTemplateContent] = useState("template");
+  const ref =useRef()
   useEffect(() => {
     getContacts();
     getEmailTemplates();
@@ -112,6 +114,10 @@ const EmailCampaign = () => {
       console.error("Error fetching email templates:", error);
     }
   };
+
+      const handleChange=(e)=>{
+           setTemplateContent(e.target.value)
+      }
 
   const getEmailTemplatesByUserId = async () => {
     try {
@@ -490,13 +496,23 @@ const EmailCampaign = () => {
     },
   };
   const sendRefferal = async () => {
+    console.log(selectedContacts);
+    if(selectedContacts == '' || selectedContacts == undefined){
+      toast.error("Please select at least one contact", {
+            autoClose: 3000,
+            position: toast.POSITION.TOP_RIGHT,
+          });
+   return
+}
     try {
       const response = await axios.post(
         `${url}api/contacts/email`,
         {
           selectedContacts: selectedContacts.map((option) => option.value),
-          emailContent: userTemplates.pre_email_template_id,
+          emailContent:content.emailContent,
           subject: subject,
+          selectedemailTemplate:ref.current?ref.current.value:'',
+          type:templateSendEmailContent
         },
         {
           headers,
@@ -577,12 +593,47 @@ const EmailCampaign = () => {
       />
 
       <h3>User Email Templates </h3>
-
-      <div className="template-grid">
+      <div className="radio-input-wrappers" >
+        <div >
+        <input type="radio" value="template" defaultChecked={templateSendEmailContent=="template"?true:""} className="radio" onChange={handleChange} name="template"/>
+      <label>
+        Email Template
+      </label>
+        </div>
+        <div>
+      <input type="radio" value="custom" defaultChecked={templateSendEmailContent=="custom"?true:""} className="radio" onChange={handleChange} name="template"/>
+<label>
+Custom Text
+</label>
+        </div>
+      </div>
+     
+      <div className="camp-gap">
+        <input
+          type="text"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          placeholder="Subject"
+        />
+        </div>
+      {templateSendEmailContent == "template" &&
+   
+    <div className="template-grid">
         {/* Display email templates in a grid */}
-        {userTemplates.map((userTemplate) => (
+        
+              
+
+<div className="list-select-img">
+   
+      
+<ul>    
+    {userTemplates.map((userTemplate) => (
+       
+        <li><input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
+            <label for={userTemplate.id}>
           <div key={userTemplate.id} className="template-item">
             {/* Add div for preview */}
+            
             <div
               className="email-template-box"
               style={{
@@ -595,12 +646,27 @@ const EmailCampaign = () => {
               <div dangerouslySetInnerHTML={{ __html: userTemplate.text }} />
               <button onClick={() => openUserPreviewModal(userTemplate.id, userTemplate.text)}>
                 Preview
+              
               </button>
             </div>
-            <div className="email-template-name">{userTemplate.name}</div>
+            <div className="email-template-name"> {userTemplate.name} 
+         
+            </div>
           </div>
-        ))}
+          </label>
+         </li>
+      
+      ))}
+ </ul>  
+
+      
+
+</div>
+
       </div>
+  
+      }
+    
       <PreviewUserModal
         className="preview-modal"
         isOpen={isUserPreviewModalOpen}
@@ -609,12 +675,8 @@ const EmailCampaign = () => {
         onSave={updateUserEmailTemplate}
       />
       <div className="camp-gap">
-        <input
-          type="text"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          placeholder="Subject"
-        />
+    
+     {templateSendEmailContent == "custom" &&
         <CKEditor
           editor={ClassicEditor}
           data={content.emailContent}
@@ -640,7 +702,7 @@ const EmailCampaign = () => {
           className="custom-ckeditor"
           style={{ width: "100%" }}
         />
-
+        }
         <div className="icon-dashboard share-ref-top-wrp">
           <button onClick={() => setIsOpen(true)}>
             <p>Share</p>

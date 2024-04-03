@@ -10,10 +10,11 @@ import { AuthContext } from "./context/AuthContext";
 import { toast } from "react-toastify";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useNavigate, useRouter } from "react-router-dom";
+import Groups from "./ManageGroup";
 
 
 
-const CustomDropdown = ({ children, isGroupFormActive, searchText, getGroupContacts, contact, ...props }) => {
+const CustomDropdown = ({ children, isGroupFormActive, searchText, contact, ...props }) => {
 
   const selectedOptions = props.getValue();
 
@@ -45,10 +46,7 @@ const CustomDropdown = ({ children, isGroupFormActive, searchText, getGroupConta
   const handleClose = () => setShowModal(false);
   const handleShow = () => (true)
 
-  const handlegetGroupContacts = (id) => {
-    getGroupContacts(id);
-    handleShow();
-  };
+ 
 
   useEffect(() => {
     setDisplayContact(contact);
@@ -154,7 +152,9 @@ const SendMessage = ({ role }) => {
   const [showGroupContacts, setShowGroupContacts] = useState(false);
   const [selectedGroupContact, setSelectedGroupContact] = useState([])
   const [showModal, setShowModal] = useState(false);
-
+  const [view,setView]=useState(false);
+  const [groupId,setGroupId]=useState();
+  const [edit,setEdit]=useState(false);
   const toggleModal = () => {
     setShowModal(prevState => !prevState);
     setSelectedGroupContact([])
@@ -183,6 +183,7 @@ const SendMessage = ({ role }) => {
       toast.error("Please enter a group name.");
       return;
     }
+      
     try {
       const response = await axios.post(
         `${url}api/group-message`,
@@ -214,7 +215,48 @@ const SendMessage = ({ role }) => {
       }
     }
   };
+  const updateGroup = async () => {
+    if (selectedContacts.length === 0) {
+      toast.error("Please select at least one contact.");
+      return;
+    }
+    if (!groupName.trim()) {
+      toast.error("Please enter a group name.");
+      return;
+    }
+      
+    try {
+      const response = await axios.put(
+        `${url}api/group-update/${groupId}`,
+        {
+          selectedContacts: selectedContacts.map((option) => option.value),
+          groupName,
+          created_by: AuthContext.userId
+        },
+        {
+          headers,
+        }
+      );
 
+      if (response.status === 200) {
+        toast.success("Group Updated Successfully", {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        // setGroupNames([...groupNames, response.data.group])
+        setGroupNames(prevGroupNames => prevGroupNames.map(group => group.id === response.data.group.id ? response.data.group : group));
+
+        setSelectedContacts();
+        closeModal();
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Failed to add group.");
+      }
+    }
+  };
   const handleSendMessage = async () => {
     if (selectedGroups.length === 0) {
       toast.error("Please select at least one group.");
@@ -399,6 +441,11 @@ const SendMessage = ({ role }) => {
       setError("Failed to fetch group names");
     }
   };
+  const groupDelete=(postid)=>{
+    console.log(postid);
+    console.log(groupName);
+    setGroupNames(groupNames.filter((p) => p.id !== postid));
+  }
   const getGroupContacts = async (id) => {
     try {
       const response = await axios.get(`${url}api/group-contacts/${id}`, { headers });
@@ -442,16 +489,40 @@ const SendMessage = ({ role }) => {
     <>
       <div className="form-user-add">
         <div className="property_header header-with-back-btn">
-          <h3>{parentView ? `${parentName} Family ` : "Send SMS"}</h3>
+          {!view? <h3>{parentView ? `${parentName} Family ` :"Send SMS"}</h3>:<h3>  {<button className="back-only-btn" 
+      onClick={()=>{
+       
+          setView(false); // Change the view state to "contacts"
+        
+      }}
+      > <img src="/back.svg" /></button>} {parentView ?`${parentName} Family `:"Groups"}</h3>}
+         
 
-          <div className="top-bar-action-btns">
-            <button onClick={() => setIsOpen(true)} >
+         {!view&& <div className="top-bar-action-btns">
+            <button onClick={() => {
+  setView(true);
+}}>
+              Manage Group
+            </button>
+          </div>}
+          {view&& <div className="top-bar-action-btns">
+            <button onClick={() => {
+  setIsOpen(true);
+}}>
               Add Group
             </button>
-          </div>
+          </div>}
         </div>
+      {view &&
+      <>
+      <Groups setGroupId={setGroupId} setGroupName={setGroupName} setIsOpen={setIsOpen} setSelectedContacts={setSelectedContacts} groupNames={groupNames} groupDelete={groupDelete} setEdit={setEdit}/>
+      </>
+      
+      }
 
-        <div className="form-user-add-wrapper">
+
+
+ <div className="form-user-add-wrapper">
           <div className="todo-section todo-sectionnew">
             <div className="todo-main-section todo-notes-section-new-left">
               <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category sms-list-form">
@@ -470,11 +541,11 @@ const SendMessage = ({ role }) => {
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
-                        addGroup();
+                        edit?updateGroup():addGroup();
                       }}
                     >
 
-                      <h3 className="heading-category">Add Group </h3>
+                      <h3 className="heading-category">{edit?"Update Group":"Add Group"} </h3>
                       {error && <p className="error-category">{error}</p>}
                       <input
                         type="text"
@@ -499,7 +570,7 @@ const SendMessage = ({ role }) => {
                           DropdownIndicator: () => null,
                           IndicatorSeparator: () => null,
                           Menu: (props) => (
-                            <CustomDropdown searchText={modalSearchText} contact={getGroupContacts}  {...props} />
+                            <CustomDropdown searchText={modalSearchText}   {...props} />
                           ),
                         }}
                         styles={colourStyles}
@@ -507,13 +578,13 @@ const SendMessage = ({ role }) => {
                         isMulti
                       />
                       <div className="modal-convert-btns">
-                        <button type="submit">Add Group</button>
+                        <button type="submit">{edit?"Update Group":"Add Group"}</button>
                       </div>
                     </form>
                   </div>
                 </Modal>
 
-                <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                {!view && <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                   {/* custom group form modification */}
                   <form>
                     <h3 className="heading-category">Select Group(s) </h3>
@@ -582,11 +653,11 @@ const SendMessage = ({ role }) => {
                       onInputChange={(input) => setSelectSearchText(input)}
                     />
                   </form>
-                </div>
+                </div>}
               </div>
             </div>
 
-            <div className="todo-notes-section todo-notes-section-new-right">
+            {!view && <div className="todo-notes-section todo-notes-section-new-right">
               <div className="camp-gap">
                 <CKEditor
                   editor={ClassicEditor}
@@ -614,16 +685,16 @@ const SendMessage = ({ role }) => {
                   }}
                 />
               </div>
-            </div>
+            </div>}
           </div>
-          <div className="form-send-message">
+          {!view &&<div className="form-send-message">
             <button onClick={handleSendMessage}>
               Send SMS
             </button>
-          </div>
+          </div>}
         </div>
       </div>
-      <div>
+      {!view && <div>
         {/* Modal */}
 
         <div>
@@ -698,7 +769,8 @@ const SendMessage = ({ role }) => {
 
           </Modal.Footer>
         </Modal> */}
-      </div >
+      </div >}
+
     </>
   );
 };
