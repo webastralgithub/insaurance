@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Select, { components } from 'react-select';
 import "./admin.css"
-
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
@@ -14,6 +13,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useNavigate, useParams, useRouter } from "react-router-dom";
 
 const ContactReferral = ({ role }) => {
+
   const { id } = useParams()
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
@@ -37,9 +37,10 @@ const ContactReferral = ({ role }) => {
   const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
+  const [isLoading, setIsLoading] = useState(false);
 
 
-
+ 
   const { auth, email, property, setProperty, setAuth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
@@ -68,7 +69,6 @@ const ContactReferral = ({ role }) => {
       }
     }
   }, [selectedContacts]);
-
 
 
   const sendRefferal = async (contact) => {
@@ -147,6 +147,7 @@ const ContactReferral = ({ role }) => {
   };
 
   const handleShareKlintaleClick = async (contact) => {
+    setIsLoading(true)
     const { email, phone, name, category_name } = contact;
     const combinedObject = {
       name,
@@ -166,11 +167,29 @@ const ContactReferral = ({ role }) => {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
+      setIsLoading(false)
     } catch (error) {
       console.log("error on sharing klintale contact", error)
     }
 
   }
+
+  const handleDeleteKlintaleClick = (propertyId) => {
+    confirmAlert({
+      title: 'Confirm Send',
+      message: 'Are you sure you want to send this contact?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleShareKlintaleClick(propertyId),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
 
   const openModal = (mode, role) => {
     setModalMode(mode);
@@ -277,6 +296,7 @@ const ContactReferral = ({ role }) => {
       console.error("User creation failed:", error);
     }
   };
+  
 
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
@@ -293,15 +313,16 @@ const ContactReferral = ({ role }) => {
     fetchUsers();
   }, []);
 
+
   const getUsers = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
       setUsers(res.data);
-
     } catch (error) {
-
+      console.log("error in getting users", error)
     }
   };
+
 
   const fetchUsers = async () => {
     try {
@@ -319,10 +340,6 @@ const ContactReferral = ({ role }) => {
     if (!dateString) {
       return ""; // Handle cases where the date string is empty or undefined
     }
-
-
-
-
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -371,6 +388,7 @@ const ContactReferral = ({ role }) => {
     }
 
   };
+
   const contactsPerPage = 10; // Adjust the number of contacts per page as needed
 
   const contactsToDisplay = filteredContacts.slice(
@@ -382,6 +400,7 @@ const ContactReferral = ({ role }) => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
   const changeView = async (id, name) => {
 
     localStorage.setItem("parent", name)
@@ -445,18 +464,13 @@ const ContactReferral = ({ role }) => {
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
 
         <div className="add_user_btn">
-
           <button className={!active ? 'active' : ''} onClick={() => setActive(0)}>
             Personal Contacts</button>
 
-          <button className={active ? 'active' : ''} onClick={() =>setActive(1)}>
-          Klientale Contacts</button>
-
-
-
+          <button className={active ? 'active' : ''} onClick={() => setActive(1)}>
+            Klientale Contacts</button>
         </div>
       </div>
-
 
       {/* Rest of your component remains the same... */}
 
@@ -482,26 +496,26 @@ const ContactReferral = ({ role }) => {
             </tr>
           </thead>
           {active == "0" && <>
-          {contacts.length > 0 && !active &&
-            contactsToDisplay.map((contact) => (contact.id != id && <tbody>
+            {contacts.length > 0 &&
+              contactsToDisplay.map((contact) => (contact.id != id && <tbody>
 
-              <tr key={contact.id}>
-                {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                <td>  <button className="permissions share-ref-button-tb"
-                  onClick={() => {
-                    handleDeleteClick(contact.id)
-                  }}       >Send</button>       </td>
-                <td>{contact.firstname}</td>
+                <tr key={contact.id}>
+                  {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
+                  <td>  <button className="permissions share-ref-button-tb"
+                    onClick={() => {
+                      handleDeleteClick(contact.id)
+                    }}       >Send</button>       </td>
+                  <td>{contact.firstname}</td>
 
-                <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                <td>{contact.email}</td>
+                  <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                  <td>{contact.email}</td>
 
-                {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
+                  {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
 
-                <td>{contact.category?.name}</td>
+                  <td>{contact.category?.name}</td>
 
 
-                {/* <td> 
+                  {/* <td> 
                     
                   <button className="permissions"
                     onClick={() => {changeView(Number(contact.id),contact.firstname)
@@ -510,38 +524,31 @@ const ContactReferral = ({ role }) => {
                      
           
           </td> */}
+                </tr>
+              </tbody>))}
+          </>
+          }
 
-
-
-
-
-              </tr>
-            </tbody>))}
-            </>
-              }
-
-               {/* {  klintale contacts} */}
-               {active == "1" &&<>
-            {KlientaleContacts.length > 0  ?
-             KlientaleContacts.map((contact) => (contact.id != id && <tbody>
+          {/* {  klintale contacts} */}
+          {active == "1" && <>
+            {KlientaleContacts.length > 0 &&
+              KlientaleContacts.map((contact) => (contact.id != id && <tbody>
 
                 <tr key={contact.id}>
                   {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                   <td>  <button className="permissions share-ref-button-tb"
-                onClick={() => {
-                  handleShareKlintaleClick(contact)
-                }} >Send</button>       </td>
+                    onClick={() => {
+                      handleDeleteKlintaleClick(contact)
+                    }} >Send</button>       </td>
                   <td>{contact.name}</td>
                   <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                   <td>{contact.email}</td>
                   <td>{contact.category_name}</td>
                 </tr>
-
-                
               </tbody>))
-              : <p className="no-data">No data Found</p>}
-</>
-                  }
+            }
+          </>
+          }
         </table>
         {totalPages > 1 && !active && (
           <div className="pagination">
@@ -558,6 +565,8 @@ const ContactReferral = ({ role }) => {
         )}
 
       </div>
+      {active == "1" && KlientaleContacts.length == 0 ? <p className="no-data">No Data Found</p> : ""}
+      {active == "0" && contactsToDisplay.length == 0 ? <p className="no-data">No Data Found</p> : ""}
       {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}
     </div>
   );

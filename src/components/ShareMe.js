@@ -13,8 +13,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useNavigate, useParams, useRouter } from "react-router-dom";
 import Spinner from "./Spinner";
 
-
 const ShareMe = ({ role }) => {
+
   const { id } = useParams()
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
@@ -23,12 +23,11 @@ const ShareMe = ({ role }) => {
   const [active, setActive] = useState(0);
   const [parentid, setParentId] = useState()
   const navigate = useNavigate();
-  const [parentView, setParentView] = useState(false)
-  const [parentName, setParentName] = useState([])
-
-  const [contactOptions, setContactoptions] = useState(false)
+  const [parentView, setParentView] = useState(false);
+  const [parentName, setParentName] = useState([]);
+  const [contactOptions, setContactoptions] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [selectedContacts, setSelectedContacts] = useState(false)
+  const [selectedContacts, setSelectedContacts] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([])
   const [error, setError] = useState("")
@@ -492,7 +491,7 @@ const ShareMe = ({ role }) => {
             </thead>
 
             {active == "0" && <>
-              {contacts.length > 0 && !active &&
+              {contacts.length > 0 && 
                 contactsToDisplay.map((contact) => (contact.id != id && <tbody>
 
                   <tr key={contact.id}>
@@ -527,7 +526,7 @@ const ShareMe = ({ role }) => {
 
             {/* {  klintale contacts} */}
             {active == "1" && <>
-              {KlientaleContacts.length > 0 ?
+              {KlientaleContacts.length > 0 &&
                 KlientaleContacts.map((contact) => (contact.id != id && <tbody>
 
                   <tr key={contact.id}>
@@ -544,12 +543,12 @@ const ShareMe = ({ role }) => {
 
 
                 </tbody>))
-                : <p className="no-data">No data Found</p>}
+                }
             </>
             }
 
           </table>
-
+      
           {totalPages > 1 && !active && (
             <div className="pagination">
               {Array.from({ length: totalPages }, (_, index) => (
@@ -563,10 +562,12 @@ const ShareMe = ({ role }) => {
               ))}
             </div>
           )}
-
+      
         </div>
         {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}
       </div>
+      {active == "1" && KlientaleContacts.length == 0 ? <p className="no-data">No Data Found</p>:""}
+      {active == "0" && contactsToDisplay.length == 0 ? <p className="no-data">No Data Found</p>:""}
     </div>
 
   );
