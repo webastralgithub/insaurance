@@ -145,6 +145,7 @@ overflow:"unset"
     },
   
   }; 
+  
   const colourStyles = {
     valueContainer:styles=>({...styles,overflowX:"auto",flex:"unset",flexWrap:"no-wrap",width:selectedContacts.length>0?"354px":"100%",padding:"2px 0",
     '&::-webkit-scrollbar-track': {

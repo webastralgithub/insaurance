@@ -16,7 +16,8 @@ table tr td, table tr th{
 .add_property_btn{
    top: 100px;
 }
-.form-user-add .form-user-add-wrapper{
+
+/* .form-user-add .form-user-add-wrapper{
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
@@ -28,7 +29,7 @@ table tr td, table tr th{
     position: relative;
     border-radius: 20px;
     border: solid 1px transparent;
-}
+} */
  .form-user-add .form-user-add-wrapper.birthday-section{
 z-index: unset;
 }
@@ -419,11 +420,12 @@ z-index: unset;
 }
 
 .todo-sectionnew .todo-notes-section-new-left{
-    width: 60% !important;
+    width: 30% !important;
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content{
     width: 100%;
+    height: 382px !important;
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div{
@@ -431,7 +433,7 @@ z-index: unset;
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div form{
-    width: 50%;
+    width: 100%;
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div form:first-child{
@@ -444,7 +446,11 @@ z-index: unset;
 
 
 .todo-sectionnew .todo-notes-section-new-right{
-    width: 40% !important;
+    width: 70% !important;
+}
+
+.todo-sectionnew .todo-notes-section-new-right .ck-content{
+    height: 338px;
 }
 
 .todo-sectionnew  ul.custom-dropdown{
