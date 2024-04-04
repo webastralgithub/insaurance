@@ -1170,7 +1170,7 @@ margin-top: 0;
 }
 
 .todo-notes-section.todo-notes-section-new-right .ck-content {
-  height: 313px;
+  height: 338px;
 }
 
 @media (max-width:991px){
@@ -1521,6 +1521,31 @@ margin-top: 0;
    .icon-dashboard{
     margin-left: 12px;
    }
+
+   .manage-group-css{
+    width: 100% !important;
+   }
+
+   .manage-group-css tr td,
+   .manage-group-css tr th{
+     width: 50%;
+   }
+
+   .select-check-line-group-contacts{
+    width: 100% !important;
+   }
+
+   .todo-sectionnew .todo-notes-section-new-left {
+    width: 100% !important;
+   }
+
+   .todo-sectionnew .todo-notes-section-new-right {
+    width: 100% !important;
+   }
+
+   .form-send-message{
+    text-align: left;
+   }
 }
 
 @media (max-width:480px){
@@ -1608,6 +1633,7 @@ margin-top: 0;
 /*  */
 .form-send-message {
   margin-left: auto;
+  text-align: right;
 }
 .form-send-message button {
   background: #004686;

@@ -145,7 +145,7 @@ overflow:"unset"
     },
   
   }; 
-  
+
   const colourStyles = {
     valueContainer:styles=>({...styles,overflowX:"auto",flex:"unset",flexWrap:"no-wrap",width:selectedContacts.length>0?"354px":"100%",padding:"2px 0",
     '&::-webkit-scrollbar-track': {
@@ -173,7 +173,7 @@ overflow:"unset"
  
   
     }),
-    menuList:styles=>({...styles,overflowY:"none",display:"none"}),
+    menuList:styles=>({...styles,overflowY:"none"}),
     multiValue:styles=>({...styles,minWidth:"unset"}),
     input: styles =>({...styles,color:"#fff"}),
     placeholder: styles =>({...styles,color:"#fff"}),

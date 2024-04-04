@@ -41,11 +41,6 @@ const CustomDropdown = ({ children, isGroupFormActive, searchText, contact, ...p
   );
 
   const [displayContact, setDisplayContact] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => (true)
-
-
 
   useEffect(() => {
     setDisplayContact(contact);
@@ -116,11 +111,10 @@ const CustomOption = ({ data, isSelected, selectOption, getGroupContacts, handle
       </div>
     </>
   );
-};;
-
+};
 
 const SendMessage = ({ role }) => {
-  const [active, setActive] = useState(0);
+
   const selectRef = useRef(null);
   const [parentid, setParentId] = useState();
   const navigate = useNavigate();
@@ -154,10 +148,10 @@ const SendMessage = ({ role }) => {
   const [view, setView] = useState(false);
   const [groupId, setGroupId] = useState();
   const [edit, setEdit] = useState(false);
- const [mapmergeContact, setMapmergeContact] = useState([])
- const [allContacts, setAllContacts] = useState([])
+  const [mapmergeContact, setMapmergeContact] = useState([])
 
-  
+
+
 
 
 
@@ -280,7 +274,7 @@ const SendMessage = ({ role }) => {
         .map((contact) => contact.label)
         .join(", ");
 
-        const id = selectedGroups?.map((e)=>e.value)
+      const id = selectedGroups?.map((e) => e.value)
       const response = await axios.post(
         `${url}api/send-message`,
         {
@@ -369,7 +363,7 @@ const SendMessage = ({ role }) => {
       overflowY: "auto",
       boxShadow: "none",
     }),
-    menuList: (styles) => ({ ...styles, overflowY: "none", display: "none" }),
+    menuList: (styles) => ({ ...styles, overflowY: "none" }),
     multiValue: (styles) => ({ ...styles, minWidth: "unset" }),
     input: (styles) => ({ ...styles, color: "#fff" }),
     placeholder: (styles) => ({ ...styles, color: "#fff" }),
@@ -431,7 +425,6 @@ const SendMessage = ({ role }) => {
     </div>
   );
 
-
   const fetchGroupNames = async () => {
     try {
       const response = await fetch(`${url}api/group-names`, { headers });
@@ -464,8 +457,8 @@ const SendMessage = ({ role }) => {
     fetchGroupNames();
     getContacts();
   }, []);
- 
-  
+
+
   useLayoutEffect(() => {
     const mergedContacts = [
       ...(contactOptions?.map((user) => ({
@@ -477,11 +470,9 @@ const SendMessage = ({ role }) => {
         name: group.group_name,
       })) || [])
     ];
-    
-    setMapmergeContact(mergedContacts)
-  },[contactOptions, groupNames])
 
-  console.log("merge data" , mapmergeContact)
+    setMapmergeContact(mergedContacts)
+  }, [contactOptions, groupNames])
 
 
   const handleChange = async (selectedOptions) => {
@@ -509,7 +500,7 @@ const SendMessage = ({ role }) => {
 
   const handleOpenModal = () => {
     setContactModalIsOpen(true);
-    console.log("hello")
+
   };
 
   const handleCloseModal = () => {
@@ -560,73 +551,71 @@ const SendMessage = ({ role }) => {
           </>
 
         }
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customStyles}
+        >
+          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+            <img
+              className="close-modal-share"
+              onClick={closeModal}
+              src="/plus.svg"
+            />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                edit ? updateGroup() : addGroup();
+              }}
+            >
 
+              <h3 className="heading-category">{edit ? "Update Group" : "Add Group"} </h3>
+              {error && <p className="error-category">{error}</p>}
+              <input
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                placeholder="Group Name"
+              />
+              <Select
+                placeholder={
+                  <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
+                }
+                ref={selectRef}
+                value={selectedContacts}
+                menuIsOpen={true}
+                onChange={(selectedOptions) => {
+                  setSelectedContacts(selectedOptions);
 
+                }}
+                onInputChange={(input) => setModalSearchText(input)}
+                options={contactOptions}
+                components={{
+                  DropdownIndicator: () => null,
+                  IndicatorSeparator: () => null,
+                  Menu: (props) => (
+                    <CustomDropdown searchText={modalSearchText}   {...props} />
+                  ),
+                }}
+                styles={colourStyles}
+                className="select-new"
+                isMulti
+              />
+              <div className="modal-convert-btns">
+                <button type="submit">{edit ? "Update Group" : "Add Group"}</button>
+              </div>
+            </form>
+          </div>
+        </Modal>
 
-        <div className="form-user-add-wrapper">
+        {!view && <div className="form-user-add-wrapper">
           <div className="todo-section todo-sectionnew">
             <div className="todo-main-section todo-notes-section-new-left">
               <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category sms-list-form">
                 <img className="close-modal-share" src="/plus.svg" />
-                <Modal
-                  isOpen={modalIsOpen}
-                  onRequestClose={closeModal}
-                  style={customStyles}
-                >
-                  <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
-                    <img
-                      className="close-modal-share"
-                      onClick={closeModal}
-                      src="/plus.svg"
-                    />
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        edit ? updateGroup() : addGroup();
-                      }}
-                    >
-
-                      <h3 className="heading-category">{edit ? "Update Group" : "Add Group"} </h3>
-                      {error && <p className="error-category">{error}</p>}
-                      <input
-                        type="text"
-                        value={groupName}
-                        onChange={(e) => setGroupName(e.target.value)}
-                        placeholder="Group Name"
-                      />
-                      <Select
-                        placeholder={
-                          <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
-                        }
-                        ref={selectRef}
-                        value={selectedContacts}
-                        menuIsOpen={true}
-                        onChange={(selectedOptions) => {
-                          setSelectedContacts(selectedOptions);
-
-                        }}
-                        onInputChange={(input) => setModalSearchText(input)}
-                        options={contactOptions}
-                        components={{
-                          DropdownIndicator: () => null,
-                          IndicatorSeparator: () => null,
-                          Menu: (props) => (
-                            <CustomDropdown searchText={modalSearchText}   {...props} />
-                          ),
-                        }}
-                        styles={colourStyles}
-                        className="select-new"
-                        isMulti
-                      />
-                      <div className="modal-convert-btns">
-                        <button type="submit">{edit ? "Update Group" : "Add Group"}</button>
-                      </div>
-                    </form>
-                  </div>
-                </Modal>
 
                 {!view && <div style={{ display: 'flex', justifyContent: 'space-evenly', }}>
-                <form>
+                  <form>
                     <h3 className="heading-category">Select Group(s) or Contact (s) </h3>
                     <span className="share-contact-comment"></span>
                     {error && <p className="error-category">{error}</p>}
@@ -636,7 +625,6 @@ const SendMessage = ({ role }) => {
                       options={mapmergeContact?.map((groupName, index) => ({
                         value: groupName.value,
                         label: groupName.name,
-
                       }))}
                       isMulti={true}
                       value={selectedGroups}
@@ -653,10 +641,7 @@ const SendMessage = ({ role }) => {
                   </form>
 
                   {/* all contacts and groups */}
-               
-
                   {/* custom group form modification */}
-
                   {/* <form>
                     <h3 className="heading-category">Select Group(s) </h3>
                     <span className="share-contact-comment"></span>
@@ -689,11 +674,7 @@ const SendMessage = ({ role }) => {
                         ),
                       }}
                     />
-                  </form> */}
-
-
-                  {/* model contacts */}
-
+                  </form> */}     {/* model contacts */}
                   {/* <form>
                     <h3 className="heading-category">Select Contact(s) </h3>
                     <span className="share-contact-comment"></span>
@@ -727,8 +708,6 @@ const SendMessage = ({ role }) => {
                       onInputChange={(input) => setSelectSearchText(input)}
                     />
                   </form> */}
-
-
                 </div>}
               </div>
             </div>
@@ -754,7 +733,7 @@ const SendMessage = ({ role }) => {
                     placeholder: "Enter your message here...",
                   }}
                   className="custom-ckeditor"
-                  style={{ width: "100%" }}
+       
                   onChange={(event, editor) => {
                     const data = editor.getData();
                     setMessage(data);
@@ -764,13 +743,13 @@ const SendMessage = ({ role }) => {
             </div>}
           </div>
           {!view && <div className="form-send-message">
-            <button onClick={handleSendMessage}>
+            <button style={{ marginLeft : "900px"}} onClick={handleSendMessage}>
               Send SMS
             </button>
           </div>}
-        </div>
+        </div>}
       </div>
-      {!view && <div>
+      <div>
         {/* Modal */}
 
         <div>
@@ -808,7 +787,7 @@ const SendMessage = ({ role }) => {
           </Modal>
         </div >
       </div >
-      }
+
 
     </>
   );

@@ -140,7 +140,7 @@ const ShareMe = ({ role }) => {
     try {
       const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share-me`, combinedObject, { headers }
       );
-      console.log("response", response)
+     
       if (response.status === 200) {
         toast.success("Contact Shared successfully", {
           autoClose: 3000,
@@ -261,7 +261,7 @@ const ShareMe = ({ role }) => {
 
 
     }),
-    menuList: styles => ({ ...styles, overflowY: "none", display: "none" }),
+    menuList: styles => ({ ...styles, overflowY: "none"}),
     multiValue: styles => ({ ...styles, minWidth: "unset" }),
     input: styles => ({ ...styles, color: "#fff" }),
     placeholder: styles => ({ ...styles, color: "#fff" }),
@@ -308,7 +308,7 @@ const ShareMe = ({ role }) => {
 
       const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
       const data = response.data.user;
-      console.log("klintale contacts", data)
+  
       setKlintaleContacts(data);
     } catch (error) {
       console.error("Error fetching users:", error);

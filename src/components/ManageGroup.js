@@ -15,7 +15,7 @@ import GroupContacts from "./GroupContacts";
 
 
 const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, groupNames, groupDelete, setEdit }) => {
- 
+
   const selectRef = useRef(null);
   const [groupContacts, setGroupContacts] = useState();
   const [contacts, setContacts] = useState([]);
@@ -75,7 +75,6 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
     });
   };
 
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleView = async (postid) => {
     await axios.delete(`${url}api/group-delete/${postid}`, { headers });
@@ -98,15 +97,13 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
     setGroupId(postid)
   }
 
-
   const getGroupContacts = async (id) => {
     try {
       const response = await axios.get(`${url}api/group-contacts/${id}`, { headers });
       const res = await response.data;
       setGroupContacts(res);
       handleOpenModal();
-      // setIsPopupOpen(true);
-      // setGroupView(true)
+      // setGroupView(true);
     } catch (error) {
       console.log("id data fetching error", error);
     }
@@ -129,13 +126,8 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
     }
   };
 
-  // const handlePopUp = (id)=>{
-  //   getGroupContacts(id)
-  // }
-
   const openModal = (mode, role) => {
     setModalMode(mode);
-
     setIsOpen(true);
   };
 
@@ -272,13 +264,12 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
   };
 
   // Rest of your component remains the same...
-console.log("groupContacts" , groupContacts);
   return (
     <>
       {!groupView && <div className="add_property_btn" style={{ "padding": "0" }}>
 
         <div className="table-container">
-          <table>
+          <table className="manage-group-css">
             <thead>
               <tr>
                 <th>Name</th>
@@ -298,7 +289,6 @@ console.log("groupContacts" , groupContacts);
                     <img className="delete-btn-ico" style={{ "height": "23px", "padding-left": "6px" }} src="/eye.svg"
                       onClick={() => getGroupContacts(contact.id)}></img>
                   </td>
-
                 </tr>
               </tbody>))}
           </table>
@@ -315,30 +305,35 @@ console.log("groupContacts" , groupContacts);
               ))}
             </div>
           )}
-
         </div>
         {groupNames.length == 0 && <p className="no-data">No data Found</p>}
       </div>}
 
-      <div className = "form-user-add">
-        {/* <button onClick={handleOpenModal}>Open Modal</button> */}
+
+      {/* <button onClick={handleOpenModal}>Open Modal</button> */}
+      <div className='group-div'>
         <Modal
           isOpen={contactModalIsOpen}
           style={customStyles}
           onRequestClose={handleCloseModal}
         >
-          <form className="select-check-line">
-            <h3 className="heading-category">Group Contacts </h3>
-            {error && <p className="error-category">{error}</p>}
-          
+
+          <form className="select-check-line-group-contacts" style={{width: "380px"}}>
+            <h3 className="heading-category-group-contacts">Group Contacts
+              <img
+                className="close-modal-share"
+                onClick={handleCloseModal}
+                src="/plus.svg"
+              /></h3>      <div style={{ height: "300px", overflow: 'scroll' }}>
+              {error && <p className="error-category">{error}</p>}
+
               {groupContacts?.map((user, index) => (
-                <div key = {index}>
-           <p>{user.firstname}</p>
-                </div>
+                <p key={index} className="listing" >{user.firstname}</p>
               ))}
+            </div>
           </form>
         </Modal>
-      </div >
+      </div>
       {groupView && <GroupContacts groupContacts={groupContacts} />}
     </>
   );
