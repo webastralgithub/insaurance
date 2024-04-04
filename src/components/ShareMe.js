@@ -134,11 +134,11 @@ const ShareMe = ({ role }) => {
       email,
       phone,
       category_name,
-      selectedContacts: [id],
+      sendTo: contact.id, selectedContacts: [id],
     };
 
     try {
-      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share`, combinedObject, { headers }
+      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share-me`, combinedObject, { headers }
       );
       console.log("response", response)
       if (response.status === 200) {
@@ -148,11 +148,30 @@ const ShareMe = ({ role }) => {
         });
       }
     } catch (error) {
+      toast.error("error on sharing klintale contact", {
+        autoClose: 3000,
+        position: toast.POSITION.TOP_RIGHT,
+      });
       console.log("error on sharing klintale contact", error)
     }
 
   }
-
+  const handleDeleteKlintaleClick = (propertyId) => {
+    confirmAlert({
+      title: 'Confirm Send',
+      message: 'Are you sure you want to send this contact?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleShareKlintaleClick(propertyId),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
   const customStyles = {
     content: {
       top: "50%",
@@ -498,7 +517,7 @@ const ShareMe = ({ role }) => {
                     {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        handleDeleteClick(contact.id)
+                        handleDeleteKlintaleClick(contact)
                       }} >Share</button>       </td>
                     <td>{contact.firstname}</td>
                     <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
@@ -533,7 +552,7 @@ const ShareMe = ({ role }) => {
                     {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        handleShareKlintaleClick(contact)
+                        handleDeleteKlintaleClick(contact)
                       }} >Share</button>       </td>
                     <td>{contact.name}</td>
                     <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>

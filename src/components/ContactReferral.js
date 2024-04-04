@@ -147,18 +147,17 @@ const ContactReferral = ({ role }) => {
   };
 
   const handleShareKlintaleClick = async (contact) => {
-    setIsLoading(true)
     const { email, phone, name, category_name } = contact;
     const combinedObject = {
       name,
       email,
       phone,
       category_name,
-      selectedContacts: [id],
+      sendTo: id, selectedContacts: [contact.id], 
     };
 
     try {
-      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share`, combinedObject, { headers }
+      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-send-me`, combinedObject, { headers }
       );
       console.log("response", response)
       if (response.status === 200) {
@@ -167,8 +166,11 @@ const ContactReferral = ({ role }) => {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
-      setIsLoading(false)
     } catch (error) {
+      toast.error("Error on sharing klintale contact", {
+        autoClose: 3000,
+        position: toast.POSITION.TOP_RIGHT,
+      });
       console.log("error on sharing klintale contact", error)
     }
 
