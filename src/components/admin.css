@@ -616,6 +616,10 @@ z-index: unset;
         width: 45%;
         justify-content: space-between;
     }
+    .todo-sectionnew .todo-notes-section-new-left {
+        width: 100% !important;
+        z-index: 1;
+    }
   
 }
 
@@ -642,6 +646,15 @@ z-index: unset;
 
     .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap label:last-child{
        margin-right: 0;
+    }
+
+    .todo-sectionnew .todo-notes-section-new-left {
+        width: 100% !important;
+        z-index: 1;
+    }
+
+    .todo-sectionnew .todo-notes-section-new-right {
+        width: 100% !important;
     }
 }
 
@@ -689,6 +702,7 @@ z-index: unset;
         width: 100%;
         padding: 0px !important;
     }
+
 }
 
 @media (max-width:480px){

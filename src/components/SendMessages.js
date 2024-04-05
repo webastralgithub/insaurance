@@ -743,7 +743,7 @@ const SendMessage = ({ role }) => {
             </div>}
           </div>
           {!view && <div className="form-send-message">
-            <button style={{ marginLeft : "900px"}} onClick={handleSendMessage}>
+            <button onClick={handleSendMessage}>
               Send SMS
             </button>
           </div>}
