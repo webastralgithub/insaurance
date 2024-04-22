@@ -418,6 +418,74 @@ z-index: unset;
     fill: #004686;
 }
 
+.todo-sectionnew .todo-notes-section-new-left{
+    width: 60% !important;
+}
+
+.todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content{
+    width: 100%;
+}
+
+.todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div{
+    gap: 10px;
+}
+
+.todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div form{
+    width: 50%;
+}
+
+.todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div form:first-child{
+    gap: 0;
+}
+
+.todo-sectionnew .todo-notes-section-new-right{
+    width: 40% !important;
+}
+
+.todo-sectionnew  ul.custom-dropdown{
+    margin: 0;
+    padding-left: 0;
+}
+
+.todo-sectionnew .searchbar-grd{
+    background: linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%);
+    padding: 19px 5px;
+}
+
+.todo-sectionnew .searchbar-grd button{
+    background: none !important;
+    padding: 0;
+    width: auto !important;
+}
+
+.todo-sectionnew .searchbar-grd input{
+    padding: 0;
+    background: no-repeat;
+    font-size: 17px;
+    font-family: 'Barlow', sans-serif;
+}
+
+.todo-sectionnew .searchbar-grd input::placeholder{
+    opacity: 1 !important;
+    color: #fff !important;
+}
+
+.todo-sectionnew ul.custom-dropdown li{
+    padding: 12px 12px;
+    border-bottom: 1px solid #0000000d;
+    display: flex;
+    justify-content: space-between;
+}
+
+.todo-sectionnew ul.custom-dropdown li label{
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.todo-sectionnew ul.custom-dropdown li input{
+    width: 5%;
+}
+
 @media (max-width:1000px){
     .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap {
         width: 45%;

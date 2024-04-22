@@ -18,6 +18,7 @@ import AddProperty from "./components/AddProperty";
 import EditPropertyForm from "./components/EditProperty";
 import KlientaleContacts from "./components/KlientaleContacts";
 import SendMessages from "./components/SendMessages";
+import SendMessages2 from "./components/SendMessages2";
 import Permission from "./components/Permission";
 import Profile from "./components/Profile";
 import RealtorProperty from "./components/Realtorproperty";
@@ -102,7 +103,8 @@ if(role==4){
 
 }
 },[auth])
-console.log(role,"Afdsff")
+
+//console.log(role,"Afdsff")
 
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_SECRET_API_KEY}  libraries={["places"]}>
@@ -535,6 +537,15 @@ console.log(role,"Afdsff")
             element={
               <PrivateRoute>
                 <SendMessages />
+              </PrivateRoute>
+            }
+          />
+
+<Route
+            path="/send-messages2"
+            element={
+              <PrivateRoute>
+                <SendMessages2 />
               </PrivateRoute>
             }
           />

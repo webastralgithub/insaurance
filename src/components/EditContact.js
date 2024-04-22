@@ -475,7 +475,7 @@ console.log(rawPhoneNumber.slice(0,10),"fsffsf")
                </div>
         </div>
 
-          <div className="form-user-add-inner-wrap">
+          {/* <div className="form-user-add-inner-wrap">
           <label>User</label>
 
           {editingField === "all" && !selectedRealtor? (
@@ -498,7 +498,7 @@ console.log(rawPhoneNumber.slice(0,10),"fsffsf")
             
             </div>
           )}
-        </div>
+        </div> */}
         <div className="form-user-add-inner-wrap">
           <label>Active Agent</label>
           {editingField === "agentId" || editingField === "all" ? (

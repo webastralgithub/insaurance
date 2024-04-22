@@ -53,7 +53,7 @@ const Sidebar = (props) => {
       window.removeEventListener('resize', handleWindowSizeChange);
     };
   }, []);
-  console.log(window.innerWidth, window.innerHeight)
+  //console.log(window.innerWidth, window.innerHeight)
   const handleLogout = () => {
     localStorage.removeItem('token');
     setAuth(null);
@@ -184,14 +184,22 @@ const Sidebar = (props) => {
 
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />
                 <div className="daily-events">Email Campaigns</div>
-
-              </div>
-            </Link>}
+               </div>
+              </Link>}
             {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
               <div className="order-detail">
 
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />
                 <div className="daily-events">Send SMS</div>
+
+              </div>
+            </Link>}
+
+               {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages2" className={location.pathname === "/send-messages2" ? "active" : ""}>
+               <div className="order-detail">
+
+                <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                <div className="daily-events">Send SMS2</div>
 
               </div>
             </Link>}

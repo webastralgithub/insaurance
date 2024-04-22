@@ -113,6 +113,10 @@ const EmailCampaign = () => {
     }
   };
 
+      const handleChange=(e)=>{
+           console.log(e.target.name);
+      }
+
   const getEmailTemplatesByUserId = async () => {
     try {
       const response = await axios.get(
@@ -153,6 +157,7 @@ const EmailCampaign = () => {
         toast.success(response.data.message);
         getEmailTemplates();
         getEmailTemplatesByUserId();
+        setEditedTempalteContent(editedTempalteContent);
       } else {
         toast.error("Failed to update email template");
       }
@@ -183,6 +188,7 @@ const EmailCampaign = () => {
         toast.success(response.data.message);
         getEmailTemplates();
         getEmailTemplatesByUserId();
+        setUserEditedTempalteContent(editedUserTempalteContent);
       } else {
         toast.error("Failed to update email template");
       }
@@ -219,6 +225,7 @@ const EmailCampaign = () => {
         console.error("Error fetching email template:", error);
       }
     };
+    setEditedTempalteContent(editedTempalteContent);
     
     const handleSave = () => {
       if (editedTempalteContent.trim() === previewContent.trim()) {
@@ -574,7 +581,14 @@ const EmailCampaign = () => {
       />
 
       <h3>User Email Templates </h3>
-
+<label>
+  Email Template
+</label>
+      <input type="radio"  className="radio" onChange={handleChange} name="emailTemplate"/>
+      <label>
+  Custom Text
+</label>
+      <input type="radio"  className="radio" onChange={handleChange} name="template"/>
       <div className="template-grid">
         {/* Display email templates in a grid */}
         {userTemplates.map((userTemplate) => (
@@ -612,6 +626,7 @@ const EmailCampaign = () => {
           onChange={(e) => setSubject(e.target.value)}
           placeholder="Subject"
         />
+    
         <CKEditor
           editor={ClassicEditor}
           data={content.emailContent}
