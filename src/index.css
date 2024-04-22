@@ -750,7 +750,10 @@ background:rgb(0 0 0 / 58%) !important;
   margin-bottom: 20px;
   background: #ebebeb;
 }
-
+.my-prefrence-btn p{
+  width: 100%;
+  text-align: center;
+}
 .parent .table-container{
   margin-top: 5px !important;
   border-radius: 0 0 5px 5px !important;
@@ -1167,7 +1170,7 @@ margin-top: 0;
 }
 
 .todo-notes-section.todo-notes-section-new-right .ck-content {
-  height: 313px;
+  height: 338px;
 }
 
 @media (max-width:991px){
@@ -1518,6 +1521,31 @@ margin-top: 0;
    .icon-dashboard{
     margin-left: 12px;
    }
+
+   .manage-group-css{
+    width: 100% !important;
+   }
+
+   .manage-group-css tr td,
+   .manage-group-css tr th{
+     width: 50%;
+   }
+
+   .select-check-line-group-contacts{
+    width: 100% !important;
+   }
+
+   .todo-sectionnew .todo-notes-section-new-left {
+    width: 100% !important;
+   }
+
+   .todo-sectionnew .todo-notes-section-new-right {
+    width: 100% !important;
+   }
+
+   .form-send-message{
+    text-align: left;
+   }
 }
 
 @media (max-width:480px){
@@ -1605,6 +1633,7 @@ margin-top: 0;
 /*  */
 .form-send-message {
   margin-left: auto;
+  text-align: right;
 }
 .form-send-message button {
   background: #004686;

@@ -18,7 +18,6 @@ import AddProperty from "./components/AddProperty";
 import EditPropertyForm from "./components/EditProperty";
 import KlientaleContacts from "./components/KlientaleContacts";
 import SendMessages from "./components/SendMessages";
-import SendMessages2 from "./components/SendMessages2";
 import Permission from "./components/Permission";
 import Profile from "./components/Profile";
 import RealtorProperty from "./components/Realtorproperty";
@@ -61,404 +60,226 @@ import Post from "./components/Post";
 import AddPost from "./components/AddPost";
 import EmailCampaign from "./components/EmailCampaign";
 import Unsubscribe from "./components/Unsubscribe";
+import Groups from "./components/ManageGroup";
 
 
 
 const App = () => {
 
-  const[toggle,setToggle]=useState(false)
-  const {auth} =useContext(AuthContext)
-const[role,setRole]=useState(0)
-const[id,setId]=useState(0)
-const[nameofuser,setnameofUser]=useState("")
+  const [toggle, setToggle] = useState(false)
+  const { auth } = useContext(AuthContext)
+  const [role, setRole] = useState(0)
+  const [id, setId] = useState(0)
+  const [nameofuser, setnameofUser] = useState("")
 
-function parseJwt (token) {
-  if(!token){
-    return 0
+  function parseJwt(token) {
+    if (!token) {
+      return 0
+    }
+    const name = localStorage.getItem("name")
+    const roleId = localStorage.getItem("roleId")
+    const id = localStorage.getItem("id")
+
+    return {
+      name: name,
+      roleId: roleId,
+      userId: id,
+    };
   }
-const name=localStorage.getItem("name")
-const roleId=localStorage.getItem("roleId")
-const id=localStorage.getItem("id")
-
-  return {
-    name:name,
-    roleId:roleId,
-    userId:id,
-  };
-}
 
 
-useEffect(()=>{
-  const role=parseJwt(auth?.token)
- setnameofUser(role?.name)
- if(id==0){
-  setId(0)
- }
-setId(role?.userId)
-  if(role==0){
-    setRole(0)
-  }
-setRole(role?.roleId)
-if(role==4){
+  useEffect(() => {
+    const role = parseJwt(auth?.token)
+    setnameofUser(role?.name)
+    if (id == 0) {
+      setId(0)
+    }
+    setId(role?.userId)
+    if (role == 0) {
+      setRole(0)
+    }
+    setRole(role?.roleId)
+    if (role == 4) {
 
-}
-},[auth])
+    }
+  }, [auth])
 
-//console.log(role,"Afdsff")
+  //console.log(role,"Afdsff")
 
   return (
-    <LoadScript googleMapsApiKey={process.env.REACT_APP_SECRET_API_KEY}  libraries={["places"]}>
-    <div className="main-dashbord-wrapper">
-      <div style={{position:"absolute"}}>
-  <ToastContainer />
-  </div>
- 
-{auth&& <>
+    <LoadScript googleMapsApiKey={process.env.REACT_APP_SECRET_API_KEY} libraries={["places"]}>
+      <div className="main-dashbord-wrapper">
+        <div style={{ position: "absolute" }}>
+          <ToastContainer />
+        </div>
+
+        {auth && <>
 
 
-{!toggle&&<div className="main-sidenav-wrapper">
-      <Sidebar role={role}/>
-      </div>}
-      </>}
+          {!toggle && <div className="main-sidenav-wrapper">
+            <Sidebar role={role} />
+          </div>}
+        </>}
 
-      <div className={auth ? `main-sidecontent-wrapper${toggle ? " side-new" : ""}` : "login-main-page"}>
-      {auth&&<img onClick={
-  ()=>{setToggle(!toggle)}
- }
+        <div className={auth ? `main-sidecontent-wrapper${toggle ? " side-new" : ""}` : "login-main-page"}>
+          {auth && <img onClick={
+            () => { setToggle(!toggle) }
+          }
 
- className="toggle-new" src="/toggle.svg"/> }
-       {auth&&<NavbarContainer nameofuser={nameofuser}/>}
+            className="toggle-new" src="/toggle.svg" />}
+          {auth && <NavbarContainer nameofuser={nameofuser} />}
 
-        <Routes>
-        {!auth? <Route path="/" element={<Login />} />:  <Route
-            path="/" exact
-            element={
-              <PrivateRoute>
-                <MyCalendar />
-              </PrivateRoute>
+          <Routes>
+            {!auth ? <Route path="/" element={<Login />} /> : <Route
+              path="/" exact
+              element={
+                <PrivateRoute>
+                  <MyCalendar />
+                </PrivateRoute>
+              }
+            />}
+            {
+              auth && <Route path="/" element={<MyCalendar />} />
             }
-          />}
-      {
-        auth && <Route path="/" element={<MyCalendar />} />
-      }
-          <Route
-            path="/contacts" exact
-            element={
-              <PrivateRoute>
-                <Contact role={role} />
-              </PrivateRoute>
-            }
-          />
             <Route
-            path="/referral" exact
-            element={
-              <PrivateRoute>
-                <Referral role={role} />
-              </PrivateRoute>
-            }
-          />
+              path="/contacts" exact
+              element={
+                <PrivateRoute>
+                  <Contact role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/referral" exact
+              element={
+                <PrivateRoute>
+                  <Referral role={role} />
+                </PrivateRoute>
+              }
+            />
 
-<Route
-            path="/contacts/send/:id" exact
-            element={
-              <PrivateRoute>
-                <ContactReferral role={role} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/contacts/send/:id" exact
-            element={
-              <PrivateRoute>
-                <ContactReferral role={role} />
-              </PrivateRoute>
-            }
-          />
-          
-          <Route
-            path="/klientale-contacts/contacts/send/:id" exact
-            element={
-              <PrivateRoute>
-                <KlientaleContactReferral role={role} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/klientale-contacts/share/:id" exact
-            element={
-              <PrivateRoute>
-                <KlientaleShareMe role={role} />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="contacts/share/:id" exact
-            element={
-              <PrivateRoute>
-                <ShareMe role={role} />
-              </PrivateRoute>
-            }
-          />
             <Route
-            path="/content" exact
-            element={
-              <PrivateRoute>
-           <Content />
-              </PrivateRoute>
-            }
-          />
-                <Route
-            path="/social-media" exact
-            element={
-              <PrivateRoute>
-           <SocialMedia />
-              </PrivateRoute>
-            }
-          />
-              <Route
-            path="/social/:id" exact
-            element={
-              <PrivateRoute>
-           <SocialMediaLogin />
-              </PrivateRoute>
-            }
-          />
+              path="/contacts/send/:id" exact
+              element={
+                <PrivateRoute>
+                  <ContactReferral role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/send/:id" exact
+              element={
+                <PrivateRoute>
+                  <ContactReferral role={role} />
+                </PrivateRoute>
+              }
+            />
 
-              <Route
-            path="/add-post" exact
-            element={
-              <PrivateRoute>
-           <AddPost/>
-              </PrivateRoute>
-            }
-          />
             <Route
-            path="/posts" exact
-            element={
-              <PrivateRoute>
-           <Post/>
-              </PrivateRoute>
-            }
-          />
+              path="/klientale-contacts/contacts/send/:id" exact
+              element={
+                <PrivateRoute>
+                  <KlientaleContactReferral role={role} />
+                </PrivateRoute>
+              }
+            />
             <Route
-            path="/leads" exact
-            element={
-              <PrivateRoute>
-                <Lead role={role}/>
-              </PrivateRoute>
-            }
-          />
-             <Route
-            path="/email-campaign" exact
-            element={
-              <PrivateRoute>
-                <EmailCampaign role={role}/>
-              </PrivateRoute>
-            }
-          />
-           <Route
-            path="/leads/add" exact
-            element={
-              <PrivateRoute>
-            <AddLead user={id}/>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/leads/edit/:id" exact
-            element={
-              <PrivateRoute>
-            <EditLeads />
-              </PrivateRoute>
-            }
-          />
-             <Route
-            path="/categories" exact
-            element={
-              <PrivateRoute>
-                <Category role={role} />
-              </PrivateRoute>
-            }
-            
-            
-          />
-           <Route
-            path="/categories/add" exact
-            element={
-              <PrivateRoute>
-            <AddCategory />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/categories/:id" exact
-            element={
-              <PrivateRoute>
-            <EditCategory />
-              </PrivateRoute>
-            }
-          />
+              path="/klientale-contacts/share/:id" exact
+              element={
+                <PrivateRoute>
+                  <KlientaleShareMe role={role} />
+                </PrivateRoute>
+              }
+            />
             <Route
-            path="/suppliers" exact
-            element={
-              <PrivateRoute>
-                <Vendor role={role} />
-              </PrivateRoute>
-            }
-          />
-           <Route
-            path="/vendors/add" exact
-            element={
-              <PrivateRoute>
-            <AddVendor />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/vendors/edit/:id" exact
-            element={
-              <PrivateRoute>
-            <EditVendor />
-              </PrivateRoute>
-            }
-          />
-             <Route
-            path="/todo-list" exact
-            element={
-              <PrivateRoute>
-                <TodoList  role={role}/>
-              </PrivateRoute>
-            }
-          />
+              path="contacts/share/:id" exact
+              element={
+                <PrivateRoute>
+                  <ShareMe role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/content" exact
+              element={
+                <PrivateRoute>
+                  <Content />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/social-media" exact
+              element={
+                <PrivateRoute>
+                  <SocialMedia />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/social/:id" exact
+              element={
+                <PrivateRoute>
+                  <SocialMediaLogin />
+                </PrivateRoute>
+              }
+            />
 
-<Route
-            path="/todo-list/add" exact
-            element={
-              <PrivateRoute>
-                <AddTodo />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/todo-list/add/new/:date" exact
-            element={
-              <PrivateRoute>
-                <AddTodo />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/todo-list/add/:id" exact
-            element={
-              <PrivateRoute>
-                <AddTaskContact />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/todo-list/edit/:id" exact
-            element={
-              <PrivateRoute>
-                <EditTodo />
-              </PrivateRoute>
-            }
-          />
             <Route
-            path="/todo-list/followup/:id" exact
-            element={
-              <PrivateRoute>
-                <Followup/>
-              </PrivateRoute>
-            }
-          />
-           <Route
-            path="/contacts/:id" exact
-            element={
-              <PrivateRoute>
-                <ChildContact />
-              </PrivateRoute>
-            }
-          />
+              path="/add-post" exact
+              element={
+                <PrivateRoute>
+                  <AddPost />
+                </PrivateRoute>
+              }
+            />
             <Route
-            path="/contacts/:id/:id" exact
-            element={
-              <PrivateRoute>
-                <ChildContactChild />
-              </PrivateRoute>
-            }
-          />
+              path="/posts" exact
+              element={
+                <PrivateRoute>
+                  <Post />
+                </PrivateRoute>
+              }
+            />
             <Route
-            path="/contacts/add" exact
-            element={
-              <PrivateRoute>
-                <AddContact user={id}/>
-              </PrivateRoute>
-            }
-          />
-             <Route
-            path="/website-visitors" exact
-            element={
-              <PrivateRoute>
-                <Ip role={role}/>
-              </PrivateRoute>
-            }
-          />
+              path="/leads" exact
+              element={
+                <PrivateRoute>
+                  <Lead role={role} />
+                </PrivateRoute>
+              }
+            />
             <Route
-            path="/contacts/add/:id" exact
-            element={
-              <PrivateRoute>
-                <AddContactNew/>
-              </PrivateRoute>
-            }
-          />
-                 <Route
-            path="/contacts/property/:id" exact
-            element={
-              <PrivateRoute>
-                <ContactProperty/>
-              </PrivateRoute>
-            }
-          />
-                 <Route
-            path="/contacts/property/add/:id" exact
-            element={
-              <PrivateRoute>
-                <AddPropertyContact/>
-              </PrivateRoute>
-            }
-          />
-              <Route
-            path="/contacts/property/edit/:id" exact
-            element={
-              <PrivateRoute>
-                <EditPropertyContactForm/>
-              </PrivateRoute>
-            }
-          />
-             <Route
-            path="/contact/edit/:id" exact
-            element={
-              <PrivateRoute>
-                <EditContact nameofuser={nameofuser}/>
-              </PrivateRoute>
-            }
-          />
-             <Route
-            path="/mortgage" exact
-            element={
-              <PrivateRoute>
-                <AddProperty/>
-              </PrivateRoute>
-            }
-          />
+              path="/email-campaign" exact
+              element={
+                <PrivateRoute>
+                  <EmailCampaign role={role} />
+                </PrivateRoute>
+              }
+            />
             <Route
-            path="/listing/:id" exact
-            element={
-              <PrivateRoute>
-                <RealtorProperty role={role}/>
-              </PrivateRoute>
-            }
-          />
+              path="/leads/add" exact
+              element={
+                <PrivateRoute>
+                  <AddLead user={id} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/leads/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditLeads />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/categories" exact
+              element={
+                <PrivateRoute>
+                  <Category role={role} />
+                </PrivateRoute>
+              }
+              />
             <Route
             path="/profile" exact
             element={
@@ -523,11 +344,21 @@ if(role==4){
             </PrivateRoute>
           }
         />}
+
           <Route
             path="/klientale-contacts" exact
             element={
               <PrivateRoute>
                 <KlientaleContacts />
+              </PrivateRoute>
+            }
+          />
+
+            <Route
+            path="/groups" exact
+            element={
+              <PrivateRoute>
+                <Groups />
               </PrivateRoute>
             }
           />
@@ -541,16 +372,267 @@ if(role==4){
             }
           />
 
-<Route
-            path="/send-messages2"
-            element={
-              <PrivateRoute>
-                <SendMessages2 />
-              </PrivateRoute>
-            }
-          />
-  
-        {/* <Route
+            
+            <Route
+              path="/categories/add" exact
+              element={
+                <PrivateRoute>
+                  <AddCategory />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/categories/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditCategory />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/suppliers" exact
+              element={
+                <PrivateRoute>
+                  <Vendor role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/vendors/add" exact
+              element={
+                <PrivateRoute>
+                  <AddVendor />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/vendors/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditVendor />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/todo-list" exact
+              element={
+                <PrivateRoute>
+                  <TodoList role={role} />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/todo-list/add" exact
+              element={
+                <PrivateRoute>
+                  <AddTodo />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/todo-list/add/new/:date" exact
+              element={
+                <PrivateRoute>
+                  <AddTodo />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/todo-list/add/:id" exact
+              element={
+                <PrivateRoute>
+                  <AddTaskContact />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/todo-list/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditTodo />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/todo-list/followup/:id" exact
+              element={
+                <PrivateRoute>
+                  <Followup />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/:id" exact
+              element={
+                <PrivateRoute>
+                  <ChildContact />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/:id/:id" exact
+              element={
+                <PrivateRoute>
+                  <ChildContactChild />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/add" exact
+              element={
+                <PrivateRoute>
+                  <AddContact user={id} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/website-visitors" exact
+              element={
+                <PrivateRoute>
+                  <Ip role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/add/:id" exact
+              element={
+                <PrivateRoute>
+                  <AddContactNew />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/property/:id" exact
+              element={
+                <PrivateRoute>
+                  <ContactProperty />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/property/add/:id" exact
+              element={
+                <PrivateRoute>
+                  <AddPropertyContact />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contacts/property/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditPropertyContactForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/contact/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditContact nameofuser={nameofuser} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/mortgage" exact
+              element={
+                <PrivateRoute>
+                  <AddProperty />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/listing/:id" exact
+              element={
+                <PrivateRoute>
+                  <RealtorProperty role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile" exact
+              element={
+                <PrivateRoute>
+                  <Profile nameofuser={nameofuser} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/listing/add" exact
+              element={
+                <PrivateRoute>
+                  <AddProperty />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/unsubscribe" exact
+              element={
+                <PrivateRoute>
+                  <Unsubscribe />
+                </PrivateRoute>
+              }
+            />
+            {role == 1 && <Route
+              path="/owners/:id" exact
+              element={
+                <PrivateRoute>
+                  <RealtorProfile />
+                </PrivateRoute>
+              }
+            />}
+            {role == 1 && <Route
+              path="/owners/add" exact
+              element={
+                <PrivateRoute>
+                  <AddUserForm />
+                </PrivateRoute>
+              }
+            />}
+            <Route
+              path="/analytics" exact
+              element={
+                <PrivateRoute>
+                  <Ip role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/listing/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditPropertyForm role={role} />
+                </PrivateRoute>
+              }
+            />
+            {role == 1 && <Route
+              path="/users" exact
+              element={
+                <PrivateRoute>
+                  <Realtor />
+                </PrivateRoute>
+              }
+            />}
+            <Route
+              path="/klientale-contacts" exact
+              element={
+                <PrivateRoute>
+                  <KlientaleContacts />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/send-messages"
+              element={
+                <PrivateRoute>
+                  <SendMessages />
+                </PrivateRoute>
+              }
+            />
+
+            {/* <Route
             path="/permission"
             element={
               <PrivateRoute>
@@ -558,17 +640,17 @@ if(role==4){
               </PrivateRoute>
             }
           /> */}
-     <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-    
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+
+        </div>
+
+
+        {/* {auth&& <Footer />} */}
+
       </div>
+    </LoadScript>
 
-
-     {/* {auth&& <Footer />} */}
-
-     </div>
-     </LoadScript>
- 
   );
 };
 

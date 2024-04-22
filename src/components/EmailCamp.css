@@ -214,3 +214,157 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: #004483;
 }
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default radio button */
+  .container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  /* Create a custom radio button */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .container:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the radio button is checked, add a blue background */
+  .container input:checked ~ .checkmark {
+    background-color: #2196F3;
+  }
+  
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the indicator (dot/circle) when checked */
+  .container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the indicator (dot/circle) */
+  .container .checkmark:after {
+       top: 9px;
+      left: 9px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+  }
+  .radio-input-wrappers{
+
+        display: flex;
+        gap: 14px;
+   
+  }
+  .radio-input-wrappers div{
+    
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+
+
+
+
+.list-select-img{
+    width: 100%;
+}
+
+  .list-select-img ul {
+    list-style-type: none;
+    display: flex;
+    padding-left: 0;
+  }
+  
+  .list-select-img ul  li {
+    display: inline-block;
+    width: 33%;
+  }
+  
+  .list-select-img input[type="radio"] {
+    display: none;
+  }
+  
+  .list-select-img label {
+    border: 1px solid #fff;
+    padding: 0px;
+    display: block;
+    position: relative;
+    margin: 10px;
+    cursor: pointer;
+  }
+
+  .list-select-img label .template-item{
+    width: 100%;
+  }
+  
+  .list-select-img label:before {
+    background-color: white;
+    color: white;
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    border: 2px solid #004686;
+    position: absolute;
+    top: -12px;
+    left: -10px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 28px;
+    transition-duration: 0.4s;
+    transform: scale(0);
+  }
+  
+  .list-select-img label img {
+    height: 100px;
+    width: 100px;
+    transition-duration: 0.2s;
+    transform-origin: 50% 50%;
+  }
+  
+  .list-select-img :checked + label {
+    border-color: #ddd;
+  }
+  
+  .list-select-img :checked + label:before {
+    content: "✓";
+    background-color: #ffffff;
+    transform: scale(1);
+    z-index: 9999999;
+    color: #004686;
+  }
+  
+  .list-select-img :checked + label img {
+    transform: scale(0.9);
+    box-shadow: 0 0 5px #333;
+    z-index: -1;
+  }

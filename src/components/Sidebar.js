@@ -186,6 +186,7 @@ const Sidebar = (props) => {
                 <div className="daily-events">Email Campaigns</div>
                </div>
               </Link>}
+
             {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
               <div className="order-detail">
 
@@ -194,16 +195,7 @@ const Sidebar = (props) => {
 
               </div>
             </Link>}
-
-               {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages2" className={location.pathname === "/send-messages2" ? "active" : ""}>
-               <div className="order-detail">
-
-                <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Send SMS2</div>
-
-              </div>
-            </Link>}
-                 
+      
             {IsOpenSub && sub == "camp" && props.role == 1 && 
             // <Link to="/social-media" className={location.pathname === "/social-media" ? "active" : ""}>
             //   <div className="order-list">
@@ -439,6 +431,8 @@ to multiply the revenue. </h6>
 
 
             // </Link>
+
+
             <Link to="/posts" className={location.pathname === "/posts" ? "active" : ""}>
             <div className="order-detail">
 
@@ -456,6 +450,14 @@ to multiply the revenue. </h6>
 
               </div>
             </Link>}
+            {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
+            <div className="order-detail">
+
+              <img className="order-detail-child" alt="" src="/group-30036.svg" />
+              <div className="daily-events">Send SMS</div>
+
+            </div>
+          </Link>}
             </div>
             
               {/* {props.role==1&&<Link to="/permission" className={location.pathname === "/permission" ? "active" : ""} >

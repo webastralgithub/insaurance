@@ -277,8 +277,6 @@ overflow:"unset"
     }
 
 
-  
-
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -304,12 +302,12 @@ overflow:"unset"
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`https://admin.klientale.com/api/listing`);
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
+      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const contactsWithoutParentId = response.data.user.filter((contact) => contact.parentId === null);
       const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false );
       // Set the filtered contacts in the state
-      setContacts(response.data);
+      setContacts(response.data.user);
       const contact = response.data.find((p) => p.id == id);
       setContactName(contact);
       const realtorOptions =contactsWithoutParentIdandlead.map((realtor) => ({

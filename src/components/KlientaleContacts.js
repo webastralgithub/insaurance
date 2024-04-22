@@ -84,6 +84,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
     </div>
   );
 };
+
 const KlientaleContacts = ({ role }) => {
   const { id } = useParams();
   const selectRef = useRef(null);
@@ -240,6 +241,7 @@ const KlientaleContacts = ({ role }) => {
       console.error("Error fetching users:", error);
     }
   };
+  
   const fetchCategotires = async () => {
     try {
       const response = await axios.get('https://admin.klientale.com/api/categories');
@@ -254,7 +256,11 @@ const KlientaleContacts = ({ role }) => {
     }
   };
 
-
+  useEffect(() => {
+    fetchUsers();
+    fetchCategotires();
+  }, []);
+  
   const formatDate = (dateString) => {
     if (!dateString) {
       return ""; 
