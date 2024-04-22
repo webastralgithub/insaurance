@@ -256,10 +256,8 @@ const KlientaleContacts = ({ role }) => {
   };
 
   useEffect(() => {
-    fetchCategotires();
-  }, []);
-  useEffect(() => {
     fetchUsers();
+    fetchCategotires();
   }, []);
   
   const formatDate = (dateString) => {
@@ -457,7 +455,6 @@ const KlientaleContacts = ({ role }) => {
               <th>Phone</th>
               <th>Category</th>
               <th>User Type</th>
-              <th>Membership</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -469,7 +466,6 @@ const KlientaleContacts = ({ role }) => {
               <td>{user.phone}</td>
               <td>{user.category_name}</td>
               <td>{user.user_role}</td>
-              <td>{user.membership_name}</td>
               <td>  
             <button className="permissions share-ref-button-tb"
           onClick={()=>{
