@@ -116,11 +116,7 @@ const EmailCampaign = () => {
   };
 
       const handleChange=(e)=>{
-<<<<<<< HEAD
-           console.log(e.target.name);
-=======
            setTemplateContent(e.target.value)
->>>>>>> f42e3951686a3eb3909555c714548fc6824b7bf4
       }
 
   const getEmailTemplatesByUserId = async () => {
@@ -414,6 +410,8 @@ const EmailCampaign = () => {
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
         (contact) => contact.isLead === false
       );
+
+      
       // Set the filtered contacts in the state
 
       const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
@@ -456,7 +454,7 @@ const EmailCampaign = () => {
       overflowY: "auto",
       boxShadow: "none",
     }),
-    menuList: (styles) => ({ ...styles, overflowY: "none", display: "none" }),
+    menuList: (styles) => ({ ...styles, overflowY: "none" }),
     multiValue: (styles) => ({ ...styles, minWidth: "unset" }),
     input: (styles) => ({ ...styles, color: "#fff" }),
     placeholder: (styles) => ({ ...styles, color: "#fff" }),
@@ -597,17 +595,6 @@ const EmailCampaign = () => {
       />
 
       <h3>User Email Templates </h3>
-<<<<<<< HEAD
-<label>
-  Email Template
-</label>
-      <input type="radio"  className="radio" onChange={handleChange} name="emailTemplate"/>
-      <label>
-  Custom Text
-</label>
-      <input type="radio"  className="radio" onChange={handleChange} name="template"/>
-      <div className="template-grid">
-=======
       <div className="radio-input-wrappers" >
         <div >
         <input type="radio" value="template" defaultChecked={templateSendEmailContent=="template"?true:""} className="radio" onChange={handleChange} name="template"/>
@@ -634,7 +621,6 @@ Custom Text
       {templateSendEmailContent == "template" &&
    
     <div className="template-grid">
->>>>>>> f42e3951686a3eb3909555c714548fc6824b7bf4
         {/* Display email templates in a grid */}
         
               
@@ -691,18 +677,8 @@ Custom Text
         onSave={updateUserEmailTemplate}
       />
       <div className="camp-gap">
-<<<<<<< HEAD
-        <input
-          type="text"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          placeholder="Subject"
-        />
-    
-=======
     
      {templateSendEmailContent == "custom" &&
->>>>>>> f42e3951686a3eb3909555c714548fc6824b7bf4
         <CKEditor
           editor={ClassicEditor}
           data={content.emailContent}

@@ -113,7 +113,6 @@ const KlientaleContacts = ({ role }) => {
   const [width, setWidth] = useState(window.innerWidth);
 
   const { auth, email , property, setProperty, setAuth } = useContext(AuthContext);
-  console.log(email);
   const headers = {
     Authorization: auth.token,
   };
@@ -122,7 +121,8 @@ const KlientaleContacts = ({ role }) => {
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
   };
-  
+
+
   useEffect(() => {
     
     window.addEventListener("resize", handleWindowSizeChange);
@@ -361,11 +361,12 @@ const KlientaleContacts = ({ role }) => {
     </div>
   );
   
-  //  useEffect(() => {
-    
-  // }, []);
-  useEffect(() => {
+    useEffect(() => {
     fetchUsers();
+  }, []);
+
+  useEffect(() => {
+ 
     fetchCategotires();
   }, []);
   
@@ -463,6 +464,7 @@ const KlientaleContacts = ({ role }) => {
               <th>Phone</th>
               <th>Category</th>
               <th>User Type</th>
+              <th>Membership</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -473,6 +475,8 @@ const KlientaleContacts = ({ role }) => {
               <td>{user.email}</td>
               <td>{user.phone}</td>
               <td>{user.category_name}</td>
+              <td>{user.user_role}</td>
+              <td>{user.membership_name}</td>
               <td>{user.user_role}</td>
               <td>  
             <button className="permissions share-ref-button-tb"

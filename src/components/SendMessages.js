@@ -459,7 +459,7 @@ const SendMessage = ({ role }) => {
   }, []);
 
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const mergedContacts = [
       ...(contactOptions?.map((user) => ({
         value: user.value,
@@ -640,74 +640,6 @@ const SendMessage = ({ role }) => {
                     />
                   </form>
 
-                  {/* all contacts and groups */}
-                  {/* custom group form modification */}
-                  {/* <form>
-                    <h3 className="heading-category">Select Group(s) </h3>
-                    <span className="share-contact-comment"></span>
-                    {error && <p className="error-category">{error}</p>}
-
-                    <Select
-                      placeholder={<PlaceholderWithIcon>Select Groups...</PlaceholderWithIcon>}
-                      options={groupNames?.map((groupName) => ({
-                        value: groupName.id,
-                        label: groupName.group_name,
-
-                      }))}
-                      isMulti
-                      onChange={handleChange}
-                      closeMenuOnSelect={false}
-                      menuIsOpen={true}
-                      hideSelectedOptions={false}
-                      value={selectedGroups}
-                      styles={colourStyles}
-                      className="select-new"
-                      components={{
-                        DropdownIndicator: () => null,
-                        IndicatorSeparator: () => null,
-                        Option: (props) => (
-                          <CustomOption {...props}
-                            getGroupContacts={getGroupContacts}
-                            handleOpenModal={handleOpenModal}
-                            selectOption={props.selectOption}
-                          />
-                        ),
-                      }}
-                    />
-                  </form> */}     {/* model contacts */}
-                  {/* <form>
-                    <h3 className="heading-category">Select Contact(s) </h3>
-                    <span className="share-contact-comment"></span>
-                    {error && <p className="error-category">{error}</p>}
-                    <Select
-                      placeholder={<PlaceholderWithIcon>Select Contact...</PlaceholderWithIcon>}
-                      options={contactOptions?.map((user) => ({
-                        value: user.value,
-                        label: user.label,
-                      }))}
-                      isMulti
-                      value={selectedContacts}
-                      onChange={handleContactsChange}
-                      components={{
-                        DropdownIndicator: () => null,
-                        IndicatorSeparator: () => null,
-
-                        Menu: (props) => (
-                          <CustomDropdown
-                            searchText={selectSearchText}
-                            options={contactOptions}
-                            selectedOptions={selectedContacts}
-                            setSelectedOptions={setSelectedContacts}
-                            {...props}
-                          />
-                        ),
-                      }}
-                      menuIsOpen={true}
-                      styles={colourStyles}
-                      className="select-new"
-                      onInputChange={(input) => setSelectSearchText(input)}
-                    />
-                  </form> */}
                 </div>}
               </div>
             </div>
@@ -753,7 +685,6 @@ const SendMessage = ({ role }) => {
         {/* Modal */}
 
         <div>
-          {/* <button onClick={handleOpenModal}>Open Modal</button> */}
           <Modal
             isOpen={contactModalIsOpen}
             style={customStyles}
