@@ -392,6 +392,7 @@ z-index: unset;
 
 .add_user_btn{
     width: 100%;
+    box-sizing: border-box;
 }
 
 .share-text{

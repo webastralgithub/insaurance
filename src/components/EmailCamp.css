@@ -368,3 +368,191 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
     box-shadow: 0 0 5px #333;
     z-index: -1;
   }
+
+  /* 22/April/2024 */
+
+  .image-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .image-list li {
+    position: relative; /* Position relative for absolute positioning of edit button */
+    display: flex; /* Use flexbox */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 10px; /* Adjust spacing between items */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+    border-radius: 8px; /* Add border radius for rounded corners */
+    overflow: hidden; /* Ensure shadow doesn't overflow */
+  }
+  
+  .image-list li img {
+    max-width: 100%; /* Ensure image doesn't exceed container width */
+    height: auto;
+    margin-right: 20px; /* Adjust spacing between image and text */
+  }
+  
+  .image-list li .info {
+    font-size: 14px;
+    color: #333;
+    flex: 1; /* Allow text to take up remaining space */
+  }
+  
+  .edit-button {
+    position: absolute;
+    right: 10px; /* Adjust left position */
+    top: 50%; /* Align vertically */
+    transform: translateY(-50%); /* Center vertically */
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-button:hover {
+    background-color: #0056b3;
+  }
+
+.new-email-tem-set{
+  width: 100%;
+}
+
+.new-email-tem-set .image-list li{
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
+}
+
+.new-email-tem-set .image-list li input{
+  width: 5%;
+  display: none;
+}
+
+.new-email-tem-set .image-list li label{
+  display: flex;
+  align-items: center;
+  width: 95%;
+}
+
+.new-email-tem-set .image-list li label .template-item{
+  display: flex;
+  align-items: center;
+  width: 90%;
+}
+
+.new-email-tem-set .image-list li label .template-item .email-template-box{
+  height: 110px !important;
+  width: 170px !important;
+}
+
+.new-email-tem-set .image-list li label .template-item .email-template-name{
+ background: none;
+}
+
+.new-email-tem-set .image-list li label button{
+  width: 10%;
+  background: #00468640;
+  color: #004685;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 12px 10px;
+  border-radius: 10px;
+}
+
+.inner-pages-top-flex-direction{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn{
+  display: flex;
+  border-bottom: 3px solid #e3e3e3;
+  width: 100% !important;
+}
+
+.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn button{
+  margin-left: 0;
+  border-radius: 5px 5px 0 0 !important;
+  color: #000;
+  background-color: #0046860d;
+  border: 2px solid #00468600;
+}
+
+.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn button.active{
+  background-color: #004686;
+  color: white;
+  border-color: #004686;
+}
+
+.custom-text-tab-sec{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.custom-text-tab-sec input{
+  padding: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  border: 1px solid #c9c2c2;
+  border-radius: 3px;
+}
+
+  
+
+@media only screen and (max-width: 900px) {
+  .template-item {
+    width: 47%;
+  }
+
+  .camp-gap-button-wrapper-nxt{
+    width: 100%;
+  }
+}
+
+  @media only screen and (max-width: 600px) {
+    .image-list li {
+      flex-direction: column; /* Stack items vertically on small screens */
+    }
+    .edit-button {
+      position: static; /* Remove absolute positioning on small screens */
+      margin-top: 10px; /* Add margin to separate button from image */
+    }
+
+    .template-item {
+      width: 100%;
+    }
+
+    .new-email-tem-set .image-list li label{
+      width: 100%;
+      flex-direction: column;
+    }
+
+    .new-email-tem-set .image-list li label button {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .new-email-tem-set .image-list li label .template-item {
+      width: 100%;
+    }
+
+    .new-email-tem-set .image-list li {
+      padding: 10px;
+    }
+
+    .new-email-tem-set .image-list li label .template-item .email-template-box {
+      height: 110px !important;
+      width: 100px !important;
+    }
+
+    .camp-gap-button-wrapper-nxtt,
+    .camp-gap-button-wrapper-nxt .icon-dashboard{
+      margin-left: 0;
+    }
+  }

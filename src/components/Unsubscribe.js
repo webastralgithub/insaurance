@@ -104,8 +104,6 @@ const [searchText, setSearchText] = useState('');
       backgroundColor: "rgb(0 0 0 / 34%)",
     }
   };
-
-
   const openModal = (mode, role) => {
     setModalMode(mode);
  
@@ -195,6 +193,7 @@ overflow:"unset"
     },
   
   }; 
+  
   const getCategories = async () => {
     try {
      const res= await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
@@ -265,7 +264,6 @@ overflow:"unset"
     }
 
   };
-  console.log(contacts,'sfsdfsd');
   const contactsPerPage = 10; // Adjust the number of contacts per page as needed
 
   const contactsToDisplay = filteredContacts.slice(
@@ -277,8 +275,6 @@ overflow:"unset"
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
- 
-console.log(contacts,'sdfsfsd');
  
   // Rest of your component remains the same...
 
