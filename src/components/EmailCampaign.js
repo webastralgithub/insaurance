@@ -1,14 +1,16 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, createContext } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Select from "react-select";
 import Modal from "react-modal";
+//import { Modal, Button } from 'react-bootstrap';
 import axios from "axios";
 import "./EmailCamp.css";
 import { toast } from "react-toastify";
 import { AuthContext } from "./context/AuthContext";
 import { type } from "@testing-library/user-event/dist/type";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 
 const CustomDropdown = ({ children, searchText, ...props }) => {
@@ -93,7 +95,7 @@ const EmailCampaign = () => {
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [contactOptions, setContactoptions] = useState([]);
   const [templateSendEmailContent, setTemplateContent] = useState("template");
-  const [active, setActive] = useState(1)
+  const [active, setActive] = useState(2)
   const ref = useRef()
 
   useEffect(() => {
@@ -118,10 +120,6 @@ const EmailCampaign = () => {
       console.error("Error fetching email templates:", error);
     }
   };
-
-  const handleChange = (e) => {
-    setTemplateContent(e.target.value)
-  }
 
   const getEmailTemplatesByUserId = async () => {
     try {
@@ -231,6 +229,7 @@ const EmailCampaign = () => {
         console.error("Error fetching email template:", error);
       }
     };
+
     setEditedTempalteContent(editedTempalteContent);
 
     const handleSave = () => {
@@ -238,45 +237,57 @@ const EmailCampaign = () => {
         toast.error("No changes detected. Please update the content first.");
         return;
       }
+      setEditedTempalteContent(editedContent);
+
       onSave(previewContentId, editedContent);
-      // setEditedTempalteContent(editedContent);
+
       closeModal();
+      setIsOpen(true)
     };
 
     const handleContentChange = (event) => {
-      console.log(event);
       setEditedContent(event.target.innerHTML);
     };
 
+    const handleInputChange = (e) => {
+      setSubject(e.target.value)
+    }
+
+    const rootElement = document.getElementById('root');
+    Modal.setAppElement(rootElement);
+
     return (
-      <Modal
-        isOpen={isOpen}
-        onRequestClose={closeModal}
-        className="preview-modal"
-        overlayClassName="preview-modal-overlay"
-      >
-        <div
-          className="preview-content"
-          contentEditable={isEditMode}
-          dangerouslySetInnerHTML={{ __html: templateContent }}
-          onInput={handleContentChange}
-        // previewDataId="1"
-        ></div>
-        {isEditMode && (
-          <button className="save-btn" onClick={handleSave}>
-            <img alt="" src="/save_icon.svg" />
-          </button>
-        )}
-        {!isEditMode && (
-          <button className="edit-box" onClick={handleEdit}>
-            {" "}
-            <img alt="" src="/edit-icon.svg" />
-          </button>
-        )}
-        <button className="close-box" onClick={closeModal}>
-          x
-        </button>
-      </Modal>
+      <div>
+        <div>
+          <Modal
+            isOpen={isOpen}
+            onRequestClose={closeModal}
+            className="preview-modal"
+            overlayClassName="preview-modal-overlay"
+          >
+            <div
+              className="preview-content"
+              contentEditable={isEditMode}
+              dangerouslySetInnerHTML={{ __html: templateContent }}
+              onInput={handleContentChange}
+            ></div>
+            {isEditMode && (
+              <button className="save-btn" onClick={handleSave}>
+                <img alt="" src="/save_icon.svg" />
+              </button>
+            )}
+            {!isEditMode && (
+              <button className="edit-box" onClick={handleEdit}>
+                {" "}
+                <img alt="" src="/edit-icon.svg" />
+              </button>
+            )}
+            <button className="close-box" onClick={closeModal}>
+              x
+            </button>
+          </Modal>
+        </div>
+      </div>
     );
   };
 
@@ -292,6 +303,7 @@ const EmailCampaign = () => {
     setPreviewContentId(null);
   };
 
+
   const PreviewUserModal = ({
     isOpen,
     closeModal,
@@ -303,36 +315,34 @@ const EmailCampaign = () => {
 
     const handleUserEdit = async (templateUserId) => {
       setUserIsEditMode(true);
-      try {
-        const response = await axios.get(`${url}api/get/email/${templateUserId}`, {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        });
-        if (response.data && response.data.text) {
-          setUserPreviewContent(response.data.text);
-          setUserIsPreviewModalOpen(true);
-        } else {
-          console.error("Invalid email template format:", response);
-        }
-      } catch (error) {
-        console.error("Error fetching email template:", error);
-      }
+      // try {
+      //   const response = await axios.get(`${url}api/get/email/${templateUserId}`, {
+      //     headers: {
+      //       Authorization: `Bearer ${auth.token}`,
+      //     },
+      //   });
+      //   if (response.data && response.data.text) {
+      //     setUserPreviewContent(response.data.text);
+      //     setUserIsPreviewModalOpen(true);
+      //   } else {
+      //     console.error("Invalid email template format:", response);
+      //   }
+      // } catch (error) {
+      //   console.error("Error fetching email template:", error);
+      // }
     };
 
     const handleUserSave = () => {
-      // if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
-      //   toast.error("No changes detected. Please update the content first.");
-      //   return;
-      // }
-
+      if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
+        toast.error("No changes detected. Please update the content first.");
+        return;
+      }
       onSave(previewUserContentId, userEditedContent);
       setUserEditedTempalteContent(userEditedContent);
       closeModal();
     };
 
     const handleUserContentChange = (event) => {
-      // console.log("handleContentChange",event.target.innerHTML);
       setUserEditedContent(event.target.innerHTML);
       // setIsEditMode(true);
     };
@@ -349,7 +359,6 @@ const EmailCampaign = () => {
           contentEditable={isUserEditMode}
           dangerouslySetInnerHTML={{ __html: templateUserContent }}
           onInput={handleUserContentChange}
-        // previewDataId="1"
         ></div>
         {isUserEditMode && (
           <button className="save-btn" onClick={handleUserSave}>
@@ -370,11 +379,9 @@ const EmailCampaign = () => {
   };
 
   const openUserPreviewModal = (templateUserId, templateUserContent) => {
-    // console.log("template user id" , templateUserId)
-    // console.log("template user content" , templateUserContent)
+    setUserIsPreviewModalOpen(true);
     setUserPreviewContent(templateUserContent);
     setUserPreviewContentId(templateUserId);
-    setUserIsPreviewModalOpen(true);
   };
 
   const closeUserPreviewModal = () => {
@@ -506,7 +513,11 @@ const EmailCampaign = () => {
   };
 
   const sendRefferal = async () => {
-    console.log(selectedContacts);
+    if (!subject) {
+      toast.error("subject must not be empty")
+      return
+    }
+
     if (selectedContacts == '' || selectedContacts == undefined) {
       toast.error("Please select at least one contact", {
         autoClose: 3000,
@@ -516,7 +527,8 @@ const EmailCampaign = () => {
     }
     try {
       const response = await axios.post(
-        `${url}api/contacts/email`,
+        `https://insuranceadmin.nvinfobase.com/api/contacts/email`,
+
         {
           selectedContacts: selectedContacts.map((option) => option.value),
           emailContent: content.emailContent,
@@ -535,6 +547,7 @@ const EmailCampaign = () => {
           position: toast.POSITION.TOP_RIGHT,
         });
         setSelectedContacts();
+        setSubject("")
         closeModal();
       }
     } catch (err) {
@@ -549,13 +562,30 @@ const EmailCampaign = () => {
   const closeModal = () => {
     setIsOpen(false);
   };
-  const [content, setContent] = useState({
-    emailContent: "",
-    // children: [],
-  });
+
+  const [content, setContent] = useState({ emailContent: "", });
+  const navigate = useNavigate();
+
+  const openTemplate = (id, text) => {
+    const selected = { id, text }
+    setSelectedTemplate(selected);
+    navigate('/templates', { state: { selectedTemplate: selected } })
+  }
+
+  const handleSaveCustomContent = () => {
+    setTemplateContent("custom")
+    setIsOpen(true)
+  }
 
   return (
     <div className="add_property_btn">
+      <PreviewUserModal
+        className="preview-modal"
+        isOpen={isUserPreviewModalOpen}
+        closeModal={closeUserPreviewModal}
+        templateUserContent={previewUserContent}
+        onSave={updateUserEmailTemplate}
+      />
 
       <div className="inner-pages-top inner-pages-top-flex-direction">
         {chooseTemplate && <h3> <button className="back-only-btn"
@@ -565,11 +595,11 @@ const EmailCampaign = () => {
         > <img src="/back.svg" /></button> </h3>
         }
         {chooseTemplate == true ? <div className="add_user_btn buttons-with-returb-btn">
-             <button className={active == "2" ? 'active' : ''} onClick={() => setActive(2)}>
+          <button className={active == "2" ? 'active' : ''} onClick={() => setActive(2)}>
             Custom Text</button>
-          <button className={active=="1" ? 'active' : ''} onClick={() => setActive(1)}>
+          <button className={active == "1" ? 'active' : ''} onClick={() => setActive(1)}>
             Email Template</button>
-       
+
         </div> : ""}
       </div>
 
@@ -673,7 +703,9 @@ const EmailCampaign = () => {
       <>
         {chooseTemplate &&
           <div className="template-grid">
-            {active == "1" &&
+            <div className="custom-text-tab-sec">
+              {/* <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} /> */}
+            </div>  {active == "1" &&
               <>
                 <PreviewModal
                   className="preview-modal"
@@ -682,10 +714,13 @@ const EmailCampaign = () => {
                   templateContent={previewContent}
                   onSave={updateEmailTemplate}
                 />
+
                 {templates.map((template) => (
 
                   <div key={template.id} className="template-item">
                     {/* Add div for preview */}
+                    {/* <input type="radio" name="test" ref={ref} value={template.id} id={template.id} /> */}
+                    <label for={template.id}></label>
                     <div
                       className="email-template-box"
                       style={{
@@ -695,57 +730,56 @@ const EmailCampaign = () => {
                         overflow: "hidden",
                       }}
                     >
-                      <input type="radio" name="test" value={template.id} id={template.id} />
-                        <label for={template.id}></label>
+
                       <div dangerouslySetInnerHTML={{ __html: template.text }} />
-                      <button onClick={() => openPreviewModal(template.id, template.text)}>
-                        Select Template
-                      </button>
+                      <button onClick={() => openTemplate(template.id, template.text)}>choose template</button>
+                      {/* <button onClick={() => openPreviewModal(template.id, template.text)}>choose template</button> */}
                     </div>
-                    <div className="email-template-name">{template.name}</div>
+                    <div className="email-template-name" >{template.name}</div>
                   </div>
                 ))}
-              </> } 
 
-              {active =="2" &&<><div className="custom-text-tab-sec">
-                <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={content.emailContent}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setContent({ ...content, emailContent: data });
-                  }}
-                  config={{
-                    toolbar: [
-                      "heading",
-                      "|",
-                      "bold",
-                      "italic",
-                      "link",
-                      "|",
-                      "bulletedList",
-                      "numberedList",
-                      "|",
-                      "undo",
-                      "redo",
-                    ],
-                  }}
-                  className="custom-ckeditor"
-                  style={{ width: "100%" }}
-                />
-                <div className="camp-gap camp-gap-button-wrapper-nxt">
-            <div className="icon-dashboard share-ref-top-wrp">
+              </>}
 
-              <button onClick={() => setIsOpen(true)}>
-                <p>Share</p>
-              </button>
-            </div>
-            </div>
+            {active == "2" && <><div className="custom-text-tab-sec">
+              <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
+              <CKEditor
+                editor={ClassicEditor}
+                data={content.emailContent}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setContent({ ...content, emailContent: data });
+                }}
+                config={{
+                  toolbar: [
+                    "heading",
+                    "|",
+                    "bold",
+                    "italic",
+                    "link",
+                    "|",
+                    "bulletedList",
+                    "numberedList",
+                    "|",
+                    "undo",
+                    "redo",
+                  ],
+                }}
+                className="custom-ckeditor"
+                style={{ width: "100%" }}
+              />
+              <div className="camp-gap camp-gap-button-wrapper-nxt">
+                <div className="icon-dashboard share-ref-top-wrp">
+
+                  <button onClick={handleSaveCustomContent}>
+                    <p>Share</p>
+                  </button>
+                </div>
               </div>
-              </>
+            </div>
+            </>
             }
-            
+
           </div>
         }
       </>
@@ -793,14 +827,13 @@ const EmailCampaign = () => {
               isMulti // This is what enables multiple selections
             />
 
-             {/* main share button */}
+            {/* main share button */}
             <div className="modal-convert-btns">
               <button type="submit">Share</button>
             </div>
           </form>
         </div>
       </Modal>
-
     </div>
   );
 };

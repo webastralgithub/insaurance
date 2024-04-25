@@ -139,21 +139,13 @@ const SendMessage = ({ role }) => {
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [groupNames, setGroupNames] = useState([]);
   const [modalSearchText, setModalSearchText] = useState("");
-  const [selectSearchText, setSelectSearchText] = useState("");
-  const [selectSearchGroup, setSelectSearchGroup] = useState('');
   const [groupContacts, setGroupContact] = useState([])
-  const [showGroupContacts, setShowGroupContacts] = useState(false);
   const [selectedGroupContact, setSelectedGroupContact] = useState([])
   const [showModal, setShowModal] = useState(false);
   const [view, setView] = useState(false);
   const [groupId, setGroupId] = useState();
   const [edit, setEdit] = useState(false);
   const [mapmergeContact, setMapmergeContact] = useState([])
-
-
-
-
-
 
   const toggleModal = () => {
     setShowModal(prevState => !prevState);
@@ -308,12 +300,6 @@ const SendMessage = ({ role }) => {
       }
     }
   }, [selectedContacts]);
-
-
-
-  const handleContactsChange = (selectedContacts) => {
-    setSelectedContacts(selectedContacts)
-  }
 
   const customStyles = {
     content: {
@@ -475,18 +461,6 @@ const SendMessage = ({ role }) => {
   }, [contactOptions, groupNames])
 
 
-  const handleChange = async (selectedOptions) => {
-    setSelectedGroups(selectedOptions);
-    const selectedIds = selectedOptions.map(option => option.value);
-
-    for (const id of selectedIds) {
-      await getGroupContacts(id);
-    }
-  }
-
-
-
-
   const handleAllChange = (selectedOptions) => {
     setSelectedGroups(selectedOptions);
   }
@@ -497,11 +471,6 @@ const SendMessage = ({ role }) => {
   };
 
   const [contactModalIsOpen, setContactModalIsOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setContactModalIsOpen(true);
-
-  };
 
   const handleCloseModal = () => {
     setSelectedGroupContact([]);
@@ -640,6 +609,74 @@ const SendMessage = ({ role }) => {
                     />
                   </form>
 
+                  {/* all contacts and groups */}
+                  {/* custom group form modification */}
+                  {/* <form>
+                    <h3 className="heading-category">Select Group(s) </h3>
+                    <span className="share-contact-comment"></span>
+                    {error && <p className="error-category">{error}</p>}
+
+                    <Select
+                      placeholder={<PlaceholderWithIcon>Select Groups...</PlaceholderWithIcon>}
+                      options={groupNames?.map((groupName) => ({
+                        value: groupName.id,
+                        label: groupName.group_name,
+
+                      }))}
+                      isMulti
+                      onChange={handleChange}
+                      closeMenuOnSelect={false}
+                      menuIsOpen={true}
+                      hideSelectedOptions={false}
+                      value={selectedGroups}
+                      styles={colourStyles}
+                      className="select-new"
+                      components={{
+                        DropdownIndicator: () => null,
+                        IndicatorSeparator: () => null,
+                        Option: (props) => (
+                          <CustomOption {...props}
+                            getGroupContacts={getGroupContacts}
+                            handleOpenModal={handleOpenModal}
+                            selectOption={props.selectOption}
+                          />
+                        ),
+                      }}
+                    />
+                  </form> */}     {/* model contacts */}
+                  {/* <form>
+                    <h3 className="heading-category">Select Contact(s) </h3>
+                    <span className="share-contact-comment"></span>
+                    {error && <p className="error-category">{error}</p>}
+                    <Select
+                      placeholder={<PlaceholderWithIcon>Select Contact...</PlaceholderWithIcon>}
+                      options={contactOptions?.map((user) => ({
+                        value: user.value,
+                        label: user.label,
+                      }))}
+                      isMulti
+                      value={selectedContacts}
+                      onChange={handleContactsChange}
+                      components={{
+                        DropdownIndicator: () => null,
+                        IndicatorSeparator: () => null,
+
+                        Menu: (props) => (
+                          <CustomDropdown
+                            searchText={selectSearchText}
+                            options={contactOptions}
+                            selectedOptions={selectedContacts}
+                            setSelectedOptions={setSelectedContacts}
+                            {...props}
+                          />
+                        ),
+                      }}
+                      menuIsOpen={true}
+                      styles={colourStyles}
+                      className="select-new"
+                      onInputChange={(input) => setSelectSearchText(input)}
+                    />
+                  </form> */}
                 </div>}
               </div>
             </div>
@@ -685,6 +722,7 @@ const SendMessage = ({ role }) => {
         {/* Modal */}
 
         <div>
+          {/* <button onClick={handleOpenModal}>Open Modal</button> */}
           <Modal
             isOpen={contactModalIsOpen}
             style={customStyles}

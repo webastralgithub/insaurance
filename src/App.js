@@ -61,7 +61,7 @@ import AddPost from "./components/AddPost";
 import EmailCampaign from "./components/EmailCampaign";
 import Unsubscribe from "./components/Unsubscribe";
 import Groups from "./components/ManageGroup";
-
+import Templates from "./components/Template";
 
 
 const App = () => {
@@ -628,6 +628,14 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <SendMessages />
+                </PrivateRoute>
+              }
+            />
+             <Route
+              path="/templates"
+              element={
+                <PrivateRoute>
+                  <Templates />
                 </PrivateRoute>
               }
             />

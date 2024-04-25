@@ -503,7 +503,7 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
   border-radius: 3px;
 }
 
-  
+
 
 @media only screen and (max-width: 900px) {
   .template-item {
@@ -556,3 +556,27 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
       margin-left: 0;
     }
   }
+
+  .input-buttton{
+    display: inline-flex;
+    margin: 10px;
+    background-color: blue;
+    padding: 2px;
+    border: 2px;
+  }
+
+  .main-sidecontent-wrapper .main-div .preview-modal {
+    position: relative;
+    max-width: 680px;
+    margin: auto;
+    background-color: #004483;
+    padding-top: 50px;
+}
+
+.main-sidecontent-wrapper .main-div .preview-modal .input-buttton {
+  position: absolute;
+  right: 7px;
+  z-index: 99;
+  margin: 0;
+  top: 7px;
+}
