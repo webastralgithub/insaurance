@@ -489,7 +489,7 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
 }
 
 .custom-text-tab-sec{
-  width: 100%;
+  width: 94%;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -560,23 +560,57 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
   .input-buttton{
     display: inline-flex;
     margin: 10px;
-    background-color: blue;
     padding: 2px;
     border: 2px;
   }
 
-  .main-sidecontent-wrapper .main-div .preview-modal {
-    position: relative;
-    max-width: 680px;
-    margin: auto;
-    background-color: #004483;
-    padding-top: 50px;
+  .preview-content-parent .preview-modal.custom-div {
+  display: flex;
+  max-width: 680px;
+  column-gap: 10px;
+  position: relative;
+  padding-top: 50px;
+  background: #003a75;
 }
 
-.main-sidecontent-wrapper .main-div .preview-modal .input-buttton {
-  position: absolute;
-  right: 7px;
-  z-index: 99;
+.preview-content-parent .input-buttton {
   margin: 0;
-  top: 7px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 11px;
+  width: 40%;
+}
+
+.preview-content-parent .input-buttton input {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.preview-content-parent .input-buttton button {
+  background: #003a75;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 4px;
+  width: 120px;
+  margin: 0 0 0 auto;
+}
+
+.preview-content-parent {
+  display: flex;
+  margin: auto;
+  column-gap: 30px;
+  margin-top: 40px;
+}
+
+@media (max-width:600px){
+  .preview-content-parent {
+    flex-direction: column-reverse;
+    row-gap: 20px;
+}
+.preview-content-parent .input-buttton {
+  width: 100%;
+}
+.preview-content-parent button.edit-box {
+  right: 10px;
+}
 }

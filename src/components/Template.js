@@ -73,14 +73,14 @@ const Templates = () => {
     const url = process.env.REACT_APP_API_URL
     const location = useLocation();
     const template = location.state.selectedTemplate;
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const goBackToPrevious = () => {
         navigate(-1);
     };
 
-    const [save, setSave] = useState(false)
+    const [save, setSave] = useState(false);
     const [templateContent, setTemplateContent] = useState(template.text);
-    const [templateId, setTemplateId] = useState(template.id)
+    const [templateName, setTemplateName] = useState(template.name);
     const selectRef = useRef(null);
     const [searchText, setSearchText] = useState("");
     const [subject, setSubject] = useState("")
@@ -92,7 +92,6 @@ const Templates = () => {
     const [templateSendEmailContent, setTemplateSendEmailContent] = useState("template");
     const [contactOptions, setContactoptions] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [savedtTemplateContent, setSavedTemplateContent] = useState("")
     const headers = {
         Authorization: auth.token,
     };
@@ -206,8 +205,7 @@ const Templates = () => {
     }, [])
 
     const sendRefferal = async () => {
-        if (save == false) {
-            setIsEditMode(false);
+        if (save == "false") {
             toast.error("save template first")
             return
         }
@@ -220,20 +218,20 @@ const Templates = () => {
         if (selectedContacts == '' || selectedContacts == undefined) {
 
             toast.error("Please select at least one contact", {
-                autoClose: 3000,
+                autoClose: 2000,
                 position: toast.POSITION.TOP_RIGHT,
             });
             return
         }
         try {
             const response = await axios.post(
-                `https://insuranceadmin.nvinfobase.com/api/contacts/email`,
+                `${url}api/contacts/email`,
 
                 {
                     selectedContacts: selectedContacts.map((option) => option.value),
-                    emailContent: savedtTemplateContent,
+                    emailContent: editedTempalteContent,
                     subject: subject,
-                    selectedemailTemplate: templateId,
+                    templateName: templateName,
                     type: templateSendEmailContent
                 },
                 {
@@ -243,10 +241,10 @@ const Templates = () => {
 
             if (response.status === 200) {
                 toast.success("Email Sent successfully", {
-                    autoClose: 3000,
+                    autoClose: 2000,
                     position: toast.POSITION.TOP_RIGHT,
                 });
-                setSelectedContacts();
+                setSelectedContacts([]);
                 setSubject("")
                 closeModal();
             }
@@ -254,7 +252,7 @@ const Templates = () => {
             goBackToPrevious()
         } catch (err) {
             toast.error("Email server is bussy try after sometime", {
-                autoClose: 3000,
+                autoClose: 2000,
                 position: toast.POSITION.TOP_RIGHT,
             });
             setSelectedContacts([]);
@@ -263,19 +261,10 @@ const Templates = () => {
         }
     };
 
-
-
     const handleSave = () => {
-        if (editedTempalteContent.trim() === templateContent.trim()) {
-            setIsEditMode(false);
-            toast.error("No changes detected. Please update the content first.");
-            return;
-        } else {
-            toast.success("changes are completed.");
-        }
-        setSavedTemplateContent(editedTempalteContent)
         setIsEditMode(false)
         setSave(true)
+        toast.success("changes are completed.");
     };
 
     const handleTemplateContentChange = (event) => {
@@ -291,99 +280,99 @@ const Templates = () => {
     }
 
     return (
-        <div className='main-div'>
-            <button className="back-only-btn" >
-                <img src="/back.svg" onClick={goBackToPrevious} />
-            </button>
-
-
-            <div className='input-buttton'>
-                <input
-                    type="text"
-                    value={subject}
-                    onChange={handleSubjectInputChange}
-                    placeholder="Subject..."
-                />
+        <>
+            <div className="inner-pages-top" style={{ justifyContent: 'flex-start' }}>
+                <button className="back-only-btn" >
+                    <img src="/back.svg" onClick={goBackToPrevious} />
+                </button>
+                <h3> Email Campaigns</h3>
             </div>
+            <div className='main-div'>
+                <div className='preview-content-parent'>
 
-            <div>
-                {isEditMode && (
-                    <button className="save-btn" onClick={handleSave}>
-                        <img alt="" src="/save_icon.svg" />
-                    </button>
-                )}
-                {!isEditMode && (
-                    <button className="edi" onClick={handleEdit}>
-                        {" "}
-                        <img alt="" src="/edit-icon.svg" />
-                    </button>
-                )}
-                {/* {savedtTemplateContent ? <button onClick={() => setModalIsOpen(true)}>Share</button> : ""} */}
-                <button onClick={() => setModalIsOpen(true)}>Share</button>
-            </div>
-
-            <div className="preview-modal custom-div">
-                <div
-                    className="preview-content"
-                    contentEditable={isEditMode}
-                    dangerouslySetInnerHTML={{ __html: templateContent }}
-                    // value={editedTempalteContent}
-                    onInput={handleTemplateContentChange}
-                >
-                </div>
-            </div>
-
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-            >
-                <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
-                    <img
-                        className="close-modal-share"
-                        onClick={() => setModalIsOpen(false)}
-                        src="/plus.svg"
-                    />
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            sendRefferal();
-                        }}
-                    >
-                        <h3 className="heading-category">Select Contact(s) </h3>
-                        <Select
-                            placeholder="Select contacts"
-                            ref={selectRef}
-                            value={selectedContacts}
-                            menuIsOpen={true}
-                            onChange={(selectedOptions) => {
-                                setSelectedContacts(selectedOptions);
-                            }}
-                            styles={colourStyles}
-                            className="select-new"
-                            hideSelectedOptions={false}
-                            isMulti={true}
-                            onInputChange={(input) => setSearchText(input)}
-                            options={contactOptions}
-                            components={{
-                                DropdownIndicator: () => null,
-                                IndicatorSeparator: () => null,
-                                Menu: (props) => (
-                                    <CustomDropdown searchText={searchText} selectedContacts={selectedContacts} {...props} />
-                                ),
-                            }}
-
-                        />
-
-                        {/* main share button */}
-                        <div className="modal-convert-btns">
-                            <button type="submit">Share</button>
+                    <div className="preview-modal custom-div">
+                        <div
+                            className="preview-content"
+                            contentEditable={isEditMode}
+                            dangerouslySetInnerHTML={{ __html: templateContent }}
+                            onInput={handleTemplateContentChange}
+                        >
                         </div>
-                    </form>
+                        {isEditMode && (
+                            <button className="edit-box" onClick={handleSave}>
+                                <img alt="" src="/save_icon.svg" />
+                            </button>
+                        )}
+                        {!isEditMode && (
+                            <button className="edit-box" onClick={handleEdit}>
+                                {" "}
+                                <img alt="" src="/edit-icon.svg" />
+                            </button>
+                        )}
+                    </div>
+                    <div className='input-buttton'>
+                        <input
+                            type="text"
+                            value={subject}
+                            onChange={handleSubjectInputChange}
+                            placeholder="Subject..."
+                        />
+                        {subject ? <button onClick={() => setModalIsOpen(true)}>Share</button> : ""}
+                        {/* <button onClick={() => setModalIsOpen(true)}>Share</button> */}
+                    </div>
                 </div>
-            </Modal>
-        </div>
 
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                >
+                    <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+                        <img
+                            className="close-modal-share"
+                            onClick={() => setModalIsOpen(false)}
+                            src="/plus.svg"
+                        />
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                sendRefferal();
+                            }}
+                        >
+                            <h3 className="heading-category">Select Contact(s) </h3>
+                            <Select
+                                placeholder="Select contacts"
+                                ref={selectRef}
+                                value={selectedContacts}
+                                menuIsOpen={true}
+                                onChange={(selectedOptions) => {
+                                    setSelectedContacts(selectedOptions);
+                                }}
+                                styles={colourStyles}
+                                className="select-new"
+                                hideSelectedOptions={false}
+                                isMulti={true}
+                                onInputChange={(input) => setSearchText(input)}
+                                options={contactOptions}
+                                components={{
+                                    DropdownIndicator: () => null,
+                                    IndicatorSeparator: () => null,
+                                    Menu: (props) => (
+                                        <CustomDropdown searchText={searchText} selectedContacts={selectedContacts} {...props} />
+                                    ),
+                                }}
+
+                            />
+
+                            {/* main share button */}
+                            <div className="modal-convert-btns">
+                                <button type="submit">Share</button>
+                            </div>
+                        </form>
+                    </div>
+                </Modal>
+            </div>
+        </>
     )
 }
 

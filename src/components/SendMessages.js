@@ -87,12 +87,11 @@ const CustomDropdown = ({ children, isGroupFormActive, searchText, contact, ...p
   );
 };
 
-const CustomOption = ({ data, isSelected, selectOption, getGroupContacts, handleOpenModal, ...props }) => {
+const CustomOption = ({ data, isSelected, selectOption, mapmergeContact, ...props }) => {
 
   const handleButtonClick = async (event) => {
     event.stopPropagation();
-    getGroupContacts(data.value);
-    handleOpenModal()
+
   };
 
   return (
@@ -140,6 +139,7 @@ const SendMessage = ({ role }) => {
   const [groupNames, setGroupNames] = useState([]);
   const [modalSearchText, setModalSearchText] = useState("");
   const [groupContacts, setGroupContact] = useState([])
+  const [showGroupContacts, setShowGroupContacts] = useState(false);
   const [selectedGroupContact, setSelectedGroupContact] = useState([])
   const [showModal, setShowModal] = useState(false);
   const [view, setView] = useState(false);
@@ -605,6 +605,13 @@ const SendMessage = ({ role }) => {
                       className="select-new"
                       components={{
                         DropdownIndicator: () => null,
+                        // IndicatorSeparator: () => null,
+                        // Option: (props) => (
+                        //   <CustomOption {...props}
+                        //     mapmergeContact={mapmergeContact}
+                        //     selectOption={props.selectOption}
+                        //   />
+                        // )
                       }}
                     />
                   </form>
@@ -702,7 +709,7 @@ const SendMessage = ({ role }) => {
                     placeholder: "Enter your message here...",
                   }}
                   className="custom-ckeditor"
-       
+
                   onChange={(event, editor) => {
                     const data = editor.getData();
                     setMessage(data);
