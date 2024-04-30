@@ -147,6 +147,7 @@ const SendMessage = ({ role }) => {
   const [edit, setEdit] = useState(false);
   const [mapmergeContact, setMapmergeContact] = useState([])
 
+  console.log("selectedGroups" , selectedGroups)
   const toggleModal = () => {
     setShowModal(prevState => !prevState);
     setSelectedGroupContact([])
@@ -605,13 +606,13 @@ const SendMessage = ({ role }) => {
                       className="select-new"
                       components={{
                         DropdownIndicator: () => null,
-                        // IndicatorSeparator: () => null,
-                        // Option: (props) => (
-                        //   <CustomOption {...props}
-                        //     mapmergeContact={mapmergeContact}
-                        //     selectOption={props.selectOption}
-                        //   />
-                        // )
+                        IndicatorSeparator: () => null,
+                        Option: (props) => (
+                          <CustomOption {...props}
+                            mapmergeContact={mapmergeContact}
+                            selectOption={props.selectOption}
+                          />
+                        )
                       }}
                     />
                   </form>

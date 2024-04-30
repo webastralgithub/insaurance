@@ -16,6 +16,8 @@ import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "./ToolTip.css";
 
+
+
 const CustomDropdown = ({ children, searchText, ...props }) => {
   const selectedOptions = props.getValue();
 
@@ -57,9 +59,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
         <div
           onClick={() => handleOptionClick(option)}
           key={option.value}
-          className={`custom-option ${
-            isOptionSelected(option) ? "selected" : ""
-          }`}
+          className={`custom-option ${isOptionSelected(option) ? "selected" : ""
+            }`}
           style={{
             backgroundColor: isOptionSelected(option)
               ? "rgb(0 70 134 / 8%)"
@@ -88,6 +89,9 @@ const NavbarContainer = (props) => {
   const { pathname } = useLocation();
   const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [subscribed, setSubscribed] = useState(false);
+
   const [showMenu, setShowMenu] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -320,8 +324,10 @@ const NavbarContainer = (props) => {
       });
       setTasklength(birthdayTodos.length);
       console.log(birthdayTodos.length);
-    } catch (error) {}
+    } catch (error) { }
   };
+
+
   return (
     <div className="top-navbar">
       <Modal
@@ -382,6 +388,11 @@ const NavbarContainer = (props) => {
        <input type="text" placeholder="Search here"/>
        <img src="/search.svg" />
       </div> */}
+      <div className="subscription-btnn  ">
+      
+       <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>
+       {/* <button onClick={() => navigate("/upgrade-plan")}>Unsubscribe</button> */}
+      </div>
 
       <div className="icon-dashboard setting-nav">
         <div className="icon-dashboard-child" />
@@ -440,6 +451,7 @@ const NavbarContainer = (props) => {
               <div onClick={() => setShowMenu(false)} className="profile-menu">
                 <Link to="/profile">My Profile</Link>
                 <Link onClick={handleLogout}>Logout</Link>
+                <Link to="/profile">Manage Subscription</Link>
               </div>
             )}
           </div>

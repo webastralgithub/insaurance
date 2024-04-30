@@ -1,0 +1,185 @@
+
+.upgrade-plan-heading {
+    padding-bottom: 20px;
+}
+
+.upgrade-plan h1 {
+    text-align: center;
+}
+
+.upgrade-plan input {
+    padding: 1em;
+    margin: 0.5em 0;
+    display: block;
+}
+
+.upgrade-plan main {
+    border: 5px solid lighten(#b90a0a, 40%);
+    font-weight: 700;
+    margin: 2em auto;
+    padding: 1em;
+    width: 600px;
+}
+
+.upgrade-plan .input-group {
+    width: 100%;
+    display: inline-block;
+    position: relative;
+}
+
+.upgrade-plan form .multi-input .input-group input {
+    width: 90%;
+}
+
+
+.upgrade-plan input {
+    width: 100%;
+    border-radius: 0;
+    border: 1px solid #80808000;
+    border-bottom: 1px solid #808080;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px 0;
+}
+
+.upgrade-plan input:focus-visible{
+    outline: unset;
+}
+
+    .upgrade-plan .input-group label {
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    .upgrade-plan  svg {
+        position: absolute;
+        right: 10px;
+        bottom: 30%;
+    }
+
+
+    .upgrade-plan  .multi-input {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.upgrade-plan form .multi-input .input-group {
+    width: 45%;
+}
+
+.upgrade-plan  small {
+    color: red;
+    font-size: 12px;
+    display: block;
+}
+
+.upgrade-plan form button {
+    border-radius: 8px;
+    padding: 14px 40px;
+    margin-top: 20px;
+    background: #004686;
+    color: #fff;
+    width: 100%;
+}
+
+.add_property_btn.upgrade-plan .upgradre-plan-description h4 {
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.add_property_btn.upgrade-plan .upgradre-plan-description {
+    width: 100%;
+    text-align: start;
+    margin: 10px 0 30px 0;
+    font-size: 14px;
+    line-height: 28px;
+    line-break: anywhere;
+    border-radius: 6px;
+}
+
+.plan-deatls-n-form {
+    display: flex;
+    justify-content: space-between;
+}
+.plan-deatls-n-form .plan-details {
+    width: 50%;
+}
+
+.plan-deatls-n-form form {
+    width: 35%;
+    border: 1px solid #747373;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.plan-deatls-n-form form h2, .plan-details h3 {
+    color: #242424;
+    font-size: 26px;
+}
+
+.plan-deatls-n-form form h2 {
+    margin-top: 0;
+}
+
+.payment-amount span {
+    font-size: 36px;
+    font-weight: 600;
+    color: #646363;
+}
+
+.payment-amount p {
+    margin: 0;
+}
+
+.payment-amount {
+    margin-bottom: 30px;
+}
+
+.add_property_btn.upgrade-plan .upgradre-plan-description ul {
+    padding: 0;
+    list-style: none;
+}   
+
+.add_property_btn.upgrade-plan .upgradre-plan-description svg {
+    position: static;
+    width: 15px;
+    height: 15px;
+}
+
+.product-list {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+
+.add_property_btn.upgrade-plan .upgradre-plan-description svg {
+    position: static;
+    width: 15px;
+    height: 15px;
+}
+
+.product-list li {
+    list-style: none;
+}
+
+@media (max-width:600px){
+    .upgrade-plan .upgrade-plan-heading h3 {
+        font-size: 32px;
+        margin: 0;
+    }
+    .plan-deatls-n-form {
+        flex-wrap: wrap;
+    }
+    .plan-deatls-n-form .plan-details {
+        width: 100%;
+    }
+    .plan-deatls-n-form form {
+        width: 100%;
+    }
+}
