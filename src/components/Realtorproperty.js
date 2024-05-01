@@ -73,9 +73,7 @@ const RealtorProperty = () => {
   const getProperties = async () => {
     try {
     const response = await axios.get(`${url}api/property`, { headers });
-    console.log(response.data)
     const filteredData = response.data.filter((item) => item.realtorId == id); 
-    console.log(filteredData)
     setProperties(filteredData);
  
     
@@ -705,8 +703,6 @@ const EditPropertyForm = ({ property, onSave, onCancel, users }) => {
     }
     setEditedProperty({ ...editedProperty, [name]: value });
   };
-  console.log(editedProperty.subjectRemovalDate)
-
   return (
     <>
     <div className="modal-header">

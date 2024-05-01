@@ -46,7 +46,7 @@ const disconnectAccount=()=>{
   // Function to check currently connected accounts
   const checkConnectedAccounts = async () => {
     // API call to fetch user's connected accounts from the backend
-    const connected = await fetchConnectedAccounts(); // Replace with your API function
+    const connected =  fetchConnectedAccounts(); // Replace with your API function
 
     if (connected) {
       setConnectedAccounts({

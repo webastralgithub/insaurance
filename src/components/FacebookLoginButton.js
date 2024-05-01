@@ -6,7 +6,6 @@ const FacebookLoginButton = (props) => {
   const title = props.editedContact.name;
   const imageUrl = props.editedContact.images; // URL of the image to be shared
   const description = props.editedContact.images?.replace(/(<([^>]+)>)/gi, '').slice(0, 100).replace(/(?<=\s)\S*$/i, '');
-  console.log(title);
   return (
     <>
       <Helmet>

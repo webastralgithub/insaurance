@@ -117,7 +117,7 @@ const AddContact = ({ user }) => {
     // Extract the raw phone number from the input
     setPhoneError("")
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-    console.log(rawPhoneNumber, "DAagdggdgd")
+    
     // Update the phone number state with the raw input
     setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
   }
@@ -154,7 +154,6 @@ const AddContact = ({ user }) => {
         label: realtor.name,
       }));
       setCategories(options)
-      console.log("User created successfully!", res);
     } catch (error) {
       console.error("User creation failed:", error);
     }

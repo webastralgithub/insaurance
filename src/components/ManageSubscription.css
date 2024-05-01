@@ -1,0 +1,4 @@
+img.subscription {
+    background: transparent;
+    filter: brightness(0) saturate(100%) invert(44%) sepia(95%) saturate(7091%) hue-rotate(352deg) brightness(91%) contrast(129%);
+}

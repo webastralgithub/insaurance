@@ -58,7 +58,6 @@ const url=process.env.REACT_APP_API_URL
 
 
   const addRole = async (role) => {
-    console.log(headers)
     const response = await axios.post(`${url}api/role/create`, role,{headers});
     getRoles()
     closeModal();

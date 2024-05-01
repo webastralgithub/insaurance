@@ -38,7 +38,7 @@ const Lead = () => {
 const[categories,setCategories]=useState([])
   const [activeCategory, setActiveCategory] = useState(null);
 
- console.log(activeCategory);
+
 
 
   const { auth, property, setProperty, setAuth } = useContext(AuthContext);
@@ -77,7 +77,6 @@ const[categories,setCategories]=useState([])
 
     //  setActiveCategory(res.data[0].id);
     setActiveCategory(-1);
-      console.log("User created successfully!",res);
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -270,7 +269,7 @@ setTodayContacts(contactsCreatedToday)
     
 
     } catch (error) {
-      console.log(error)
+    console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -296,7 +295,7 @@ localStorage.setItem("parent",name)
   // setParentId(id)
   //   setParentView(true)
    navigate(`${id}`)
-    console.log(id)
+
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

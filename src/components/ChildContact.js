@@ -102,7 +102,7 @@ const ChildContact = (props) => {
     return emailPattern.test(email);
   };
   const saveContactChanges = async (contact) => {
-    console.log("here")
+   
     if(!contact.firstname){
       setNotesErr(
        "Name is Required"
@@ -113,7 +113,7 @@ const ChildContact = (props) => {
     }
     if(contact.phone){
       if(contact.phone.length!=10){
-        console.log(contact.phone)
+      
         setErrCont(contact.id)
         setPhoneErr("Invalid phone number")
         return
@@ -125,12 +125,12 @@ const ChildContact = (props) => {
       setEmailError("Invalid email")
         return
       }
-      console.log(contact.phone)
+      
     
           }
     try {
       if(notesErr.length || phoneerr.length || emailError.length){
-      console.log("herrr",notesErr,phoneerr,emailError)
+ 
         return
       }
       if (contact.id) {
@@ -149,10 +149,10 @@ const ChildContact = (props) => {
       toast.error('Error saving contact');
     }
   };
-console.log(useGoogleAddress,"fsffdfdadffd")
+
   const handleAddFamilyMember = () => {
     // Add an empty family member to the contacts list
-    console.log(id)
+   
     const updatedContacts = [...contacts];
     updatedContacts.push({
       firstname: "",
@@ -173,9 +173,7 @@ console.log(useGoogleAddress,"fsffdfdadffd")
   };
   const removefamily=(index)=>{
     const newContacts=[...contacts]
-    console.log(contacts)
-    newContacts.splice(index, 1);
-    console.log(contacts.length,newContacts)
+   newContacts.splice(index, 1);
     setContacts(newContacts)
     }
 

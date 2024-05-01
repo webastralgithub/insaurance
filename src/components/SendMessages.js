@@ -147,7 +147,6 @@ const SendMessage = ({ role }) => {
   const [edit, setEdit] = useState(false);
   const [mapmergeContact, setMapmergeContact] = useState([])
 
-  console.log("selectedGroups" , selectedGroups)
   const toggleModal = () => {
     setShowModal(prevState => !prevState);
     setSelectedGroupContact([])
@@ -425,8 +424,6 @@ const SendMessage = ({ role }) => {
     }
   };
   const groupDelete = (postid) => {
-    console.log(postid);
-    console.log(groupName);
     setGroupNames(groupNames.filter((p) => p.id !== postid));
   }
   const getGroupContacts = async (id) => {

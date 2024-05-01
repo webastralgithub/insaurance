@@ -201,7 +201,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
+  
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -255,9 +255,9 @@ overflow:"unset"
       // Set the filtered contacts in the state
      
       setContacts(response.data);
-      console.log(response.data);
+  
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');

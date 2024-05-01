@@ -94,12 +94,6 @@ const ChildContactChild = () => {
   const getContacts = async () => {
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
-console.log(response.data)
-  
-        // Set the filtered contacts in the state
-
-     
-   
 
       // Set the filtered contacts in the state
       setContacts(response.data);
@@ -124,7 +118,6 @@ console.log(response.data)
     setCurrentPage(newPage);
   };
   const changeView=async(id,name)=>{
-console.log(name)
 
 localStorage.setItem("parent",name)
 

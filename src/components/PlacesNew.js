@@ -9,14 +9,12 @@ const PlacesNew = ({ value, onChange,newField,newClass,useGoogleAddresss}) => {
 
   const handlePlaceChanged = () => {
  
-    console.log("sdddddddd");
+ 
     const [place] = inputRef.current.getPlaces();
     if (place) {
       const object = {};
       object['address'] = place.formatted_address;
       onChange(place.formatted_address);
-      console.log(place);
-      console.log(place.formatted_address);
     } 
   }
   useEffect(() => {

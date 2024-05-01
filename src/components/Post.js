@@ -235,7 +235,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -290,14 +290,14 @@ overflow:"unset"
      
       setContacts(response.data);
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
     }
 
   };
-  console.log(contacts,'sfsdfsd');
+
   const contactsPerPage = 10; // Adjust the number of contacts per page as needed
 
   const contactsToDisplay = filteredContacts.slice(
@@ -309,8 +309,7 @@ overflow:"unset"
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
- 
-console.log(contacts,'sdfsfsd');
+
  
   // Rest of your component remains the same...
 

@@ -22,7 +22,7 @@ const Ip = ({ role }) => {
   const navigate = useNavigate();
   const { auth, setAuth, todo, setTodo, tasklength, setTasklength } =
     useContext(AuthContext);
-  console.log(auth);
+
 
   const headers = {
     Authorization: auth.token,
@@ -49,7 +49,7 @@ const Ip = ({ role }) => {
       setTasks(response.data.userIps);
       setLengthOfIp(response.data.userIps.length);
     } catch (error) {
-      console.log(error);
+      
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -87,7 +87,6 @@ const Ip = ({ role }) => {
 
   // Rest of your code...
   // Adjust the number of contacts per page as needed
-  console.log(filteredContacts, "Dsdd");
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage

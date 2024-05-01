@@ -22,6 +22,8 @@ const UpgradePlan = () => {
         expiryDate: '',
         cvc: '',
     });
+    
+    const isAnyFieldEmpty = Object.values(formData).some(value => value === '');
 
     function expDateValidate(month, year) {
         if (Number(year) > 2035) {
@@ -40,6 +42,9 @@ const UpgradePlan = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if(name =="name" && value != ''){
+            setErrors('');
+        }
         setFormData({
             ...formData,
             [name]: value
@@ -50,8 +55,12 @@ const UpgradePlan = () => {
         e.preventDefault()
         let isValid = true;
         const newErrors = {};
+        
+        if (formData.name.trim() === '' || formData.number.trim() === '' || formData.expiryDate.trim() === '' || formData.cvc.trim() === '') {
+            isValid = false;
+        }
     
-        if (formData.name.trim() === '') {
+        if (formData.name.trim() === '' ) {
             newErrors['name'] = 'Name is required';
             isValid = false;
         } else if (!/^[A-Za-z ]+$/.test(formData.name)) {
@@ -76,21 +85,15 @@ const UpgradePlan = () => {
             exp_month: month,
             cvc: formData.cvc,
         }
-        console.log("card data", cardData);
+  
         try {
             const response = await axios.post(`${url}api/subscribe`, cardData, { headers });
             if (response.status === 200) {
-                toast.success(response.data.message);
-                
+                toast.success(response.data.message); 
+            }else{
+                console.error("error while doing payment")
             }
-            // setFormData({
-            //     name: '',
-            //     number: '',
-            //     expiryDate: '',
-            //     cvc: '',
-            // })
-            console.log("form data" , formData);
-
+        
         } catch (error) {
             toast.error("error in payment")
         }
@@ -134,10 +137,6 @@ const UpgradePlan = () => {
                                 <li>Unlimited Referrals</li>
                             </div>
                         </div>
-
-
-
-
                     </div>
 
                     <form onSubmit={handleSubmit} >
@@ -186,7 +185,10 @@ const UpgradePlan = () => {
                             </div>
 
                         </div>
-                        <button type="submit">Pay</button>
+                        
+
+                         {errors.name || erroredInputs.cvc || erroredInputs.expiryDate || erroredInputs.cardNumber? <button disabled type="button">Pay</button>:<button  type="submit">Pay</button>}
+                       
                     </form>
                 </div>
             </div>

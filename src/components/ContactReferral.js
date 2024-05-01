@@ -62,7 +62,6 @@ const ContactReferral = ({ role }) => {
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
 
-      console.log(selectRef.current.controlRef.firstChild)
 
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
@@ -159,7 +158,7 @@ const ContactReferral = ({ role }) => {
     try {
       const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-send-me`, combinedObject, { headers }
       );
-      console.log("response", response)
+    
       if (response.status === 200) {
         toast.success("Contact Shared successfully", {
           autoClose: 3000,
@@ -171,7 +170,7 @@ const ContactReferral = ({ role }) => {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.log("error on sharing klintale contact", error)
+      console.error("error on sharing klintale contact", error)
     }
 
   }
@@ -293,7 +292,7 @@ const ContactReferral = ({ role }) => {
         label: realtor.name,
       }));
       setCategories(options)
-      console.log("User created successfully!", res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -321,7 +320,7 @@ const ContactReferral = ({ role }) => {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
       setUsers(res.data);
     } catch (error) {
-      console.log("error in getting users", error)
+      console.error("error in getting users", error)
     }
   };
 
@@ -331,7 +330,6 @@ const ContactReferral = ({ role }) => {
 
       const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
       const data = response.data.user;
-      console.log("klintale contacts", data)
       setKlintaleContacts(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -411,7 +409,6 @@ const ContactReferral = ({ role }) => {
     // setParentId(id)
     //   setParentView(true)
     navigate(`${id}`)
-    console.log(id)
     try {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

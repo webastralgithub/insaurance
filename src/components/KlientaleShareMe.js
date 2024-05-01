@@ -248,7 +248,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -314,7 +314,7 @@ overflow:"unset"
       const contactsWithoutParentId = response.data.user.filter((contact) => contact.parentId === null);
       // const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       // Set the filtered contacts in the state
-      console.log(response.data.user,);
+    
       setContacts(response.data.user);
       const contact = response.data.find((p) => p.id == id);
       setContactName(contact);
@@ -326,7 +326,7 @@ overflow:"unset"
       // setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -352,7 +352,7 @@ localStorage.setItem("parent",name)
   // setParentId(id)
   //   setParentView(true)
    navigate(`${id}`)
-    console.log(id)
+  
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

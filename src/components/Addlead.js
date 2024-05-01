@@ -170,7 +170,6 @@ getCategories()
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
     } catch (error) {
       console.error("User creation failed:", error);
     }

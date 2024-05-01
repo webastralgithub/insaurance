@@ -90,12 +90,10 @@ const NavbarContainer = (props) => {
   const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const [subscribed, setSubscribed] = useState(false);
-
+  let plan = localStorage.getItem('plan');
   const [showMenu, setShowMenu] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
-
   const [contactOptions, setContactoptions] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedContacts, setSelectedContacts] = useState(false);
@@ -256,9 +254,9 @@ const NavbarContainer = (props) => {
     if (!dateTimeString) {
       return ""; // Handle cases where the date-time string is empty or undefined
     }
-    console.log(dateTimeString);
+
     const dateTime = new Date(dateTimeString);
-    console.log(dateTime);
+   
     const year = dateTime.getFullYear();
     const month = String(dateTime.getMonth() + 1).padStart(2, "0");
     const day = String(dateTime.getDate()).padStart(2, "0");
@@ -289,7 +287,7 @@ const NavbarContainer = (props) => {
       }));
       setContactoptions(realtorOptions);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -314,16 +312,14 @@ const NavbarContainer = (props) => {
 
       const birthdayTodos = response.data.filter((todo) => {
         if (todo.isBirthday || todo.isAnniversary) {
-          console.log(todo.FollowupDate, "Dvdffd");
           // Extract the month and day part of the FollowupDate
           const todoMonthDay = formatDateNew(todo?.FollowupDate);
-          console.log(todoMonthDay, "dfadaffdf", todayMonthDay);
           return todoMonthDay === todayMonthDay;
         }
         return todo;
       });
       setTasklength(birthdayTodos.length);
-      console.log(birthdayTodos.length);
+   
     } catch (error) { }
   };
 
@@ -389,9 +385,7 @@ const NavbarContainer = (props) => {
        <img src="/search.svg" />
       </div> */}
       <div className="subscription-btnn  ">
-      
-       <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>
-       {/* <button onClick={() => navigate("/upgrade-plan")}>Unsubscribe</button> */}
+        {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>}
       </div>
 
       <div className="icon-dashboard setting-nav">
@@ -451,7 +445,7 @@ const NavbarContainer = (props) => {
               <div onClick={() => setShowMenu(false)} className="profile-menu">
                 <Link to="/profile">My Profile</Link>
                 <Link onClick={handleLogout}>Logout</Link>
-                <Link to="/profile">Manage Subscription</Link>
+                <Link to="/manage-subscription">Manage Subscription</Link>
               </div>
             )}
           </div>

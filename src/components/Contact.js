@@ -117,8 +117,6 @@ const [searchText, setSearchText] = useState('');
   useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
-
-    console.log(selectRef.current.controlRef.firstChild)
  
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
@@ -188,7 +186,7 @@ const [searchText, setSearchText] = useState('');
   }
   const handleUpload = async () => {
     if (!selectedFile) {
-      console.log("hereeeeee")
+
       toast.push(
         <Message type="error" closable duration={5000}>
          Please select a file
@@ -345,7 +343,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
+    
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -444,7 +442,7 @@ overflow:"unset"
 localStorage.setItem("parent",name)
   setParentName(name)
    navigate(`${id}`)
-    console.log(id)
+   
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

@@ -63,6 +63,7 @@ import Unsubscribe from "./components/Unsubscribe";
 import Groups from "./components/ManageGroup";
 import Templates from "./components/Template";
 import UpgradePlan from "./components/UpgradePlan";
+import ManageSubscription from "./components/ManageSubscription";
 
 const App = () => {
 
@@ -490,7 +491,15 @@ const App = () => {
               path="/upgrade-plan" exact
               element={
                 <PrivateRoute>
-                  <UpgradePlan user={id} />
+                  <UpgradePlan />
+                </PrivateRoute>
+              }
+            />
+                   <Route
+              path="/manage-subscription" exact
+              element={
+                <PrivateRoute>
+                  <ManageSubscription/>
                 </PrivateRoute>
               }
             />

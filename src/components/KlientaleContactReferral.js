@@ -65,9 +65,6 @@ const [searchText, setSearchText] = useState('');
   useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
-
-    console.log(selectRef.current.controlRef.firstChild)
- 
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
       }
@@ -242,7 +239,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -317,7 +314,7 @@ overflow:"unset"
       setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -343,7 +340,7 @@ localStorage.setItem("parent",name)
   // setParentId(id)
   //   setParentView(true)
    navigate(`${id}`)
-    console.log(id)
+  
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

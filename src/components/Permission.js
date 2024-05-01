@@ -56,7 +56,6 @@ const url=process.env.REACT_APP_API_URL
         [permission]: !prevState[roleId]?.[permission],
       },
     }));
-    console.log(switchStates);
     sendDataToApi(roleId, permission,'Property');
   };
 

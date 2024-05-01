@@ -39,7 +39,6 @@ const MyCalendar = () => {
   } 
   
   const eventClick = (selected) => {
-    console.log(selected.event,"FAEfddf")
    const newtask= tasks.find((option) => option.id === selected.event.id)
     setTodo(newtask)
     navigate(`/todo-list/edit/${selected.event.id}`)
@@ -62,7 +61,6 @@ const MyCalendar = () => {
 
       // Set the filtered tasks in the state
       setTasks(response.data);
-      console.log(response.data);
 
       const eventsdata = response.data.map((item) => ({
         id:item.id,

@@ -86,7 +86,6 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
     setGroupName(name);
     const response = await axios.get(`${url}api/group-contacts/${postid}`, { headers });
     const res = await response.data;
-    console.log(res);
     const options = res.map((realtor) => ({
       value: realtor.id,
       label: realtor.firstname,
@@ -105,7 +104,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
       handleOpenModal();
       // setGroupView(true);
     } catch (error) {
-      console.log("id data fetching error", error);
+      console.error("id data fetching error", error);
     }
   }
 
@@ -177,7 +176,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
         label: realtor.name,
       }));
       setCategories(options)
-      console.log("User created successfully!", res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -231,9 +230,9 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
       // Set the filtered contacts in the state
 
       setContacts(response.data);
-      console.log(response.data);
+
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -255,7 +254,6 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
 
   const handleOpenModal = () => {
     setContactModalIsOpen(true);
-    console.log("hello")
   };
 
   const [contactModalIsOpen, setContactModalIsOpen] = useState(false);

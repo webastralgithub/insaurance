@@ -152,7 +152,7 @@ const ShareMe = ({ role }) => {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.log("error on sharing klintale contact", error)
+      console.error("error on sharing klintale contact", error)
     }
 
   }
@@ -290,7 +290,7 @@ const ShareMe = ({ role }) => {
         label: realtor.name,
       }));
       setCategories(options)
-      console.log("User created successfully!", res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -384,7 +384,7 @@ const ShareMe = ({ role }) => {
       setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -410,7 +410,7 @@ const ShareMe = ({ role }) => {
     // setParentId(id)
     //   setParentView(true)
     navigate(`${id}`)
-    console.log(id)
+
     try {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

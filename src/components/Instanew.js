@@ -3,7 +3,7 @@ import { InstagramLogin } from '@amraneze/react-instagram-login';
 
 const YourComponent = () => {
 const responseInstagram = (response) => {
-  console.log(response);
+
 };
 
 const redirectUrl="http://localhost:3000/social-media"
