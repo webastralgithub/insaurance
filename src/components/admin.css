@@ -783,8 +783,8 @@ z-index: unset;
     top: 5px;
     width: 5px;
     height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
+    /* border: solid white;
+    border-width: 0 3px 3px 0; */
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
@@ -793,3 +793,19 @@ z-index: unset;
   .listing{
     margin-left: 17px;
   }
+
+  .become-klintale {
+    height: auto !important;
+    display: flex;
+    width: auto !important;
+    gap: 15px;
+}
+
+.become-klintale button {
+    padding: 0;
+}
+
+.become-klintale button p {
+    width: 100% !important;
+    padding: 0 30px;
+}

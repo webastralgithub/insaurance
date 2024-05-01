@@ -18,60 +18,89 @@ const ManageSubscription = () => {
     getSubscription();
   }, []);
 
+  const [premium, setPremium] = useState("") // parameters (canceled,  active)
+
   const getSubscription = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/get-subscription`, { headers });
 
       setSubscrition(res.data.all);
       setActiveSubscription(res.data.active)
+      setPremium(res.data.active.status)
     } catch (error) {
 
     }
   }
+  console.log("premium data", premium)
 
   const handleView = async () => {
+    let status;
+    if (premium == "active") {
+      status = "canceled"
+    } else {
+      status = 'active'
+    }
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}`, { headers });
-      setSubscrition([...subscriptions, activeSubscription]);
-      setActiveSubscription();
-      toast.success("Subscription Canceled Successfully")
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}/${status}`, { headers });
+      toast.success(res.data.message)
+      getSubscription()
     } catch (error) {
       toast.error("error");
     }
   }
 
+  const handleBasic = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}/canceled`, { headers });
+      toast.success(res.data.message)
+      getSubscription()
+    } catch (error) {
+      toast.error("error");
+    }
+  }
   return (
     <div>
       <div className="add_property_btn">
         <div className="inner-pages-top">
-
-
           <h3>  {"Manage Subscription"}</h3>
         </div>
         <div className="table-container">
           <table>
             <thead>
               <tr>
-                <th>Stipe Subscription Id</th>
+                <th>Plan Type</th>
                 <th>Plan Amount</th>
                 <th>Currency</th>
                 <th>Subscription Start</th>
                 <th>Subscription End</th>
-                <th>Cancel Subscription</th>
+                <th>Actions</th>
               </tr>
             </thead>
             {activeSubscription &&
               <tbody>
-
-                <tr key={activeSubscription.id}>
-                  <td>{activeSubscription.subscription_id}</td>
+                <tr key={activeSubscription?.id}>
+                  <td>Premium</td>
                   <td >{activeSubscription?.plan_amount}</td>
                   <td >{activeSubscription?.currency}</td>
                   <td >{activeSubscription?.subscription_start}</td>
                   <td >{activeSubscription?.subscription_end}</td>
                   <td>
-                    <img className="subscription delete-btn-ico" src="/subscription.svg"
-                      onClick={() => handleView(activeSubscription.id)}></img>
+                    {premium == "active" ? <button className="subscription delete-btn-ico"
+                      onClick={() => handleView(activeSubscription.id)}>Cancel</button> : <button className="subscription delete-btn-ico"
+                        onClick={() => handleView(activeSubscription.id)}>Reactive</button>}
+
+                  </td>
+                </tr>
+                <tr key={activeSubscription?.id}>
+                  <td>Basic</td>
+                  <td >0</td>
+                  <td >-</td>
+                  <td >Unlimited</td>
+                  <td >Unlimited</td>
+                  <td>
+                    {premium == "active" ? <button className="subscription delete-btn-ico"
+                      onClick={() => handleBasic(activeSubscription.id)}>Active</button> : <button disabled={true}>Actived</button>}
+
                   </td>
                 </tr>
               </tbody>}
@@ -80,7 +109,8 @@ const ManageSubscription = () => {
           </table>
 
         </div>
-        <h3>Subscriptions History</h3>
+
+        {/* <h3>Subscriptions History</h3>
         <div className="table-container">
           <table>
             <thead>
@@ -106,12 +136,7 @@ const ManageSubscription = () => {
                 </tbody>
               )) : <p className="no-data">No data Found</p>}
           </table>
-          <div className="pagination">
-
-          </div>
-
-
-        </div>
+        </div> */}
       </div>
     </div>
   )

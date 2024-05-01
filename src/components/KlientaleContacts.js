@@ -436,7 +436,7 @@ const KlientaleContacts = ({ role }) => {
       options={categories}
     /> */}
 
-        <div className="icon-dashboard share-ref-top-wrp" style={{ width: "145px", justifyContent: "space-between", display: "flex" }}>
+        <div className="icon-dashboard share-ref-top-wrp become-klintale">
           <button onClick={redirecctToWebsite}>
             <p>become Klientale</p>
           </button>

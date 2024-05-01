@@ -128,7 +128,7 @@ const NavbarContainer = (props) => {
     },
     overlay: {
       backgroundColor: "rgb(0 0 0 / 34%)",
-      zIndex: "9",
+      zIndex: "9999",
     },
   };
 
@@ -326,10 +326,13 @@ const NavbarContainer = (props) => {
 
   return (
     <div className="top-navbar">
+      <div className="test-class-popup" style={{backgroundColor :'red'}}>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
+
+       
       >
         <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
           <img
@@ -379,7 +382,7 @@ const NavbarContainer = (props) => {
           </form>
         </div>
       </Modal>
-
+      </div>
       {/* <div className="search-group">
        <input type="text" placeholder="Search here"/>
        <img src="/search.svg" />

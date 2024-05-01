@@ -105,8 +105,6 @@ const App = () => {
     }
   }, [auth])
 
-  //console.log(role,"Afdsff")
-
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_SECRET_API_KEY} libraries={["places"]}>
       <div className="main-dashbord-wrapper">
