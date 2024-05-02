@@ -216,7 +216,7 @@ const KlientaleContacts = ({ role }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`https://admin.klientale.com/api/listing/${localStorage.getItem('email')}`);
+      const response = await axios.get(`https://klientale.com/api/listing/${localStorage.getItem('email')}`);
       const data = response.data.user;
       const options = response.data.category.map((realtor) => ({
         value: realtor.id,
@@ -242,7 +242,7 @@ const KlientaleContacts = ({ role }) => {
 
   const fetchCategotires = async () => {
     try {
-      const response = await axios.get('https://admin.klientale.com/api/categories');
+      const response = await axios.get('https://klientale.com/api/categories');
       const data = response.data;
       const options = data.map((realtor) => ({
         value: realtor.id,
@@ -314,7 +314,7 @@ const KlientaleContacts = ({ role }) => {
       category: seletedCategory
     }
     try {
-      const response = await axios.post(`https://admin.klientale.com/api/create-preference-category`, obj);
+      const response = await axios.post(`https://klientale.com/api/create-preference-category`, obj);
 
       if (response.status === 200) {
         toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
@@ -370,7 +370,7 @@ const KlientaleContacts = ({ role }) => {
 
   const redirecctToWebsite = () => {
     // window.location.href ='https://admin.klientale.com/';
-    window.open('https://admin.klientale.com/');
+    window.open('https://klientale.com/');
   };
 
   return (
@@ -437,8 +437,8 @@ const KlientaleContacts = ({ role }) => {
     /> */}
 
         <div className="icon-dashboard share-ref-top-wrp become-klintale">
-          <button onClick={redirecctToWebsite}>
-            <p>become Klientale</p>
+          <button onClick={()=>navigate("/become-klintale")}>
+            <p>SignUp To Klientale</p>
           </button>
           <button onClick={() => setIsOpen(true)}>
 

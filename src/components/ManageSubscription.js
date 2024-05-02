@@ -3,12 +3,14 @@ import "./ManageSubscription.css"
 import axios from 'axios';
 import { AuthContext } from './context/AuthContext';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const ManageSubscription = () => {
 
   const [subscriptions, setSubscrition] = useState([]);
   const [activeSubscription, setActiveSubscription] = useState();
-  const { auth } = useContext(AuthContext);
+  const { auth, plan, setPlan } = useContext(AuthContext);
+  const navigate = useNavigate()
   const headers = {
     Authorization: auth.token,
   };
@@ -31,7 +33,7 @@ const ManageSubscription = () => {
 
     }
   }
-  console.log("premium data", premium)
+
 
   const handleView = async () => {
     let status;
@@ -44,6 +46,12 @@ const ManageSubscription = () => {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}/${status}`, { headers });
       toast.success(res.data.message)
       getSubscription()
+      console.log("premium", premium)
+      if (premium == "active") {
+       setPlan(1)
+      } else {
+        setPlan(2)
+      }
     } catch (error) {
       toast.error("error");
     }
@@ -54,6 +62,7 @@ const ManageSubscription = () => {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}/canceled`, { headers });
       toast.success(res.data.message)
       getSubscription()
+      setPlan(1)
     } catch (error) {
       toast.error("error");
     }
@@ -76,8 +85,9 @@ const ManageSubscription = () => {
                 <th>Actions</th>
               </tr>
             </thead>
-            {activeSubscription &&
+           
               <tbody>
+              {activeSubscription &&
                 <tr key={activeSubscription?.id}>
                   <td>Premium</td>
                   <td >{activeSubscription?.plan_amount}</td>
@@ -85,12 +95,12 @@ const ManageSubscription = () => {
                   <td >{activeSubscription?.subscription_start}</td>
                   <td >{activeSubscription?.subscription_end}</td>
                   <td>
-                    {premium == "active" ? <button className="subscription delete-btn-ico"
-                      onClick={() => handleView(activeSubscription.id)}>Cancel</button> : <button className="subscription delete-btn-ico"
-                        onClick={() => handleView(activeSubscription.id)}>Reactive</button>}
+                    {premium == "active" ? <button style={{background:"#ff0000c2", borderColor:"#ff0000c2"}} className="subscription delete-btn-ico manage-active-buttons "
+                      onClick={() => handleView(activeSubscription.id)}>Cancel Plan</button> : <button className="manage-active-buttons subscription delete-btn-ico"
+                        onClick={() =>navigate("/upgrade-plan")}>Upgrade Plan</button>}
 
                   </td>
-                </tr>
+                </tr>}
                 <tr key={activeSubscription?.id}>
                   <td>Basic</td>
                   <td >0</td>
@@ -98,18 +108,18 @@ const ManageSubscription = () => {
                   <td >Unlimited</td>
                   <td >Unlimited</td>
                   <td>
-                    {premium == "active" ? <button className="subscription delete-btn-ico"
-                      onClick={() => handleBasic(activeSubscription.id)}>Active</button> : <button disabled={true}>Actived</button>}
+                    {premium == "active" ? <button className="subscription delete-btn-ico manage-active-buttons"
+                      onClick={() => handleBasic(activeSubscription.id)}>Basic</button> : <button disabled={true}>Actived</button>}
 
                   </td>
                 </tr>
-              </tbody>}
+              </tbody>
 
-            {!activeSubscription && <tbody> <p className="no-data">No data Found</p>  </tbody>}
+           
           </table>
-
+        
         </div>
-
+        {/* {!activeSubscription && <p className="no-data-found" style={{width:"100%", textAlign:"center", fontWeight:"600"}}>No data Found</p>} */}
         {/* <h3>Subscriptions History</h3>
         <div className="table-container">
           <table>

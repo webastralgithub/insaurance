@@ -87,10 +87,9 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const NavbarContainer = (props) => {
   const { pathname } = useLocation();
-  const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
+  const { auth, setAuth, tasklength, setTasklength, plan } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  let plan = localStorage.getItem('plan');
   const [showMenu, setShowMenu] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -388,7 +387,7 @@ const NavbarContainer = (props) => {
        <img src="/search.svg" />
       </div> */}
       <div className="subscription-btnn  ">
-        {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>}
+        {plan === 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>}
       </div>
 
       <div className="icon-dashboard setting-nav">

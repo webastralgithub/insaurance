@@ -809,3 +809,34 @@ z-index: unset;
     width: 100% !important;
     padding: 0 30px;
 }
+
+form.add-task-setion-form .form-user-add-wrapper .todo-section .todo-main-section .form-user-add-inner-wrap input, form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wrap input, .add-cnt-form-desc .form-user-add-wrapper .form-user-add-inner-wrap input {
+    color: #000000e8;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0;
+}
+
+form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wrap {
+    width: 100%;
+    margin: auto;
+}
+
+.add-cnt-form-desc .form-user-add-wrapper .form-user-add-inner-wrap {
+    width: 100%;
+}
+
+.add-cnt-form-desc {
+    display: flex;
+    column-gap: 30px;
+    align-items: end;
+}
+
+.add-cnt-form-desc .form-user-add-wrapper, .add-cnt-form-desc .add-contact-user-custom-right {
+    width: 50%;
+}
+
+.add-cnt-form-desc .form-user-add-wrapper .add-contact-user-custom-wrapper .add-contact-user-custom-left {
+    width: 100%;
+    padding: 0;
+}

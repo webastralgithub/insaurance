@@ -36,6 +36,7 @@
     "react-facebook-login": "^4.1.1",
     "react-helmet": "^6.1.0",
     "react-input-mask": "^2.0.4",
+    "react-loader-spinner": "^6.1.6",
     "react-menu": "0.0.10",
     "react-modal": "^3.16.1",
     "react-moment": "^1.1.3",

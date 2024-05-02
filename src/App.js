@@ -64,6 +64,7 @@ import Groups from "./components/ManageGroup";
 import Templates from "./components/Template";
 import UpgradePlan from "./components/UpgradePlan";
 import ManageSubscription from "./components/ManageSubscription";
+import BecomeKlintale from "./components/BecomeKlintale";
 
 const App = () => {
 
@@ -498,6 +499,14 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <ManageSubscription/>
+                </PrivateRoute>
+              }
+            />
+                     <Route
+              path="/become-klintale" exact
+              element={
+                <PrivateRoute>
+                  <BecomeKlintale/>
                 </PrivateRoute>
               }
             />

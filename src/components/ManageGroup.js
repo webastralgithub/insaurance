@@ -261,6 +261,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
     setContactModalIsOpen(false);
   };
 
+
   // Rest of your component remains the same...
   return (
     <>
@@ -274,14 +275,14 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
                 <th>Actions</th>
               </tr>
             </thead>
-            {groupNames.length > 0 &&
-              groupNames.map((contact) => (<tbody>
+            {groupNames?.length > 0 &&
+              groupNames?.map((contact) => (<tbody>
 
                 <tr key={contact.id}>
                   <td>{contact.group_name}</td>
                   <td>
                     <img className="delete-btn-ico" src="/edit.svg"
-                      onClick={() => handleEdit(contact.id, contact.group_name)}></img>
+                      onClick={() => handleEdit(contact?.id, contact.group_name)}></img>
                     <img className="delete-btn-ico" style={{ "height": "23px", "padding-left": "6px" }} src="/delete.svg"
                       onClick={() => handleView(contact.id)}></img>
                     <img className="delete-btn-ico" style={{ "height": "23px", "padding-left": "6px" }} src="/eye.svg"

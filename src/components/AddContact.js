@@ -117,7 +117,7 @@ const AddContact = ({ user }) => {
     // Extract the raw phone number from the input
     setPhoneError("")
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-    
+
     // Update the phone number state with the raw input
     setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
   }
@@ -133,7 +133,11 @@ const AddContact = ({ user }) => {
       return {
         ...styles,
 
-
+        backGround:"#fff",
+        color:"#000",
+        position:"relative",
+        zIndex:"99",
+        fontSize:"14px"
       };
     },
 
@@ -197,7 +201,7 @@ const AddContact = ({ user }) => {
         const response = await axios.post(`${url}api/contacts/create`, contact, {
           headers,
         });
-  
+
         if (response.status === 201) {
           // Contact added successfully
           navigate("/contacts");
@@ -247,13 +251,14 @@ const AddContact = ({ user }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-user-add add-contact-from-adst">
+    <>    <form onSubmit={handleSubmit} className="form-user-add add-contact-from-adst add-contact-form">
       <div className="property_header header-with-back-btn">
 
         <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Contact</h3>
-        <div className="top-bar-action-btns"><button type="submit" style={{ background: "#004686" }} >Save</button>
-        </div>
+
       </div>
+
+      <div className="add-cnt-form-desc">
       <div className="form-user-add-wrapper">
 
         <div className="form-user-add-inner-wrap">
@@ -425,9 +430,13 @@ const AddContact = ({ user }) => {
               />
 
             </div>
-          </div>
+          </div>        
 
-          <div className="add-contact-user-custom-right">
+        </div>        
+      </div>
+
+
+      <div className="add-contact-user-custom-right">
             <div className="form-user-add-inner-wrap">
               <label>Description</label>
               <CKEditor
@@ -445,15 +454,12 @@ const AddContact = ({ user }) => {
               />
             </div>
           </div>
-
-        </div>
-
-      </div>
+          </div>
       <div className="form-user-add-inner-btm-btn-wrap">
-
         <button type="submit" >Save</button>
       </div>
     </form>
+    </>
 
   );
 };

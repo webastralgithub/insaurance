@@ -4,17 +4,17 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import './Upgradeplan.css'
 import { useCreditCardValidator, images } from 'react-creditcard-validator';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import Modal from "react-modal";
+import { Circles } from 'react-loader-spinner'
+
 
 const UpgradePlan = () => {
     const url = process.env.REACT_APP_API_URL;
-    const { auth } = useContext(AuthContext);
+    const { auth, setPlan } = useContext(AuthContext);
     const headers = {
         Authorization: auth.token,
     };
-
+    const [isLoader, setIsLoader] = useState(false)
     const [errors, setErrors] = useState('')
     const [selectMonth, setSelectMonth] = useState()
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -42,7 +42,7 @@ const UpgradePlan = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (name == "name" && value != '') {
+        if (name === "name" && value !== '') {
             setErrors('');
         }
         setFormData({
@@ -51,6 +51,7 @@ const UpgradePlan = () => {
         });
 
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         let isValid = true;
@@ -82,22 +83,31 @@ const UpgradePlan = () => {
             cvc: formData.cvc,
             plan_month: selectMonth
         }
-
+        setIsLoader(true)
         try {
+
             const response = await axios.post(`${url}api/subscribe`, cardData, { headers });
+
             if (response.status === 200) {
                 toast.success(response.data.message);
+                setPlan(2)
+                setIsLoader(false)
+                setIsOpen(false)
             } else {
                 console.error("error while doing payment")
+                setIsLoader(false)
             }
 
         } catch (error) {
+            setIsLoader(false)
             toast.error("error in payment")
         }
     }
 
     return (
         <>
+
+
             <div className="add_property_btn upgrade-plan">
                 <div className="inner-pages-top upgrade-plan-heading">
                     <h3>Upgrade Plan</h3>
@@ -112,7 +122,7 @@ const UpgradePlan = () => {
                                         <table className="table" style={{ textAlign: 'center', paddingLeft: '200px', paddingRight: '200px' }}>
                                             <thead>
                                                 <tr className="active">
-                                                    <th className="td-width-wide" style={{ color: "rgb(0 63 125)" }}>CRM</th>
+                                                    <th className="td-width-wide" style={{ color: "rgb(0 63 125)" }}>Features</th>
                                                     <th style={{ background: "#67b733" }}>
                                                         <center>
                                                             <h3>Basic</h3>
@@ -139,19 +149,19 @@ const UpgradePlan = () => {
                                                             accessible place
                                                         </span>
                                                     </td>
-                                                    <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                                    <td>10
+                                                        {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                                             className="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                                             <path
                                                                 d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
+                                                        </svg> */}
                                                     </td>
-                                                    <td className="border-botheside">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                                    <td className="border-botheside">Unlimited
+                                                        {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                                             className="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                                             <path
                                                                 d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
+                                                        </svg> */}
                                                     </td>
                                                     {/* <td>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -164,7 +174,7 @@ const UpgradePlan = () => {
 
                                                 <tr>
                                                     <td className="tble-td-left">
-                                                        Contact management
+                                                        Lead management
                                                         <span>
                                                             House all your client activity, data, and communications in one easily
                                                             accessible place
@@ -294,9 +304,10 @@ const UpgradePlan = () => {
                                                         </svg>
                                                     </td> */}
                                                 </tr>
-                                                <button onClick={() => setIsOpen(true)}>Choose Plan</button>
+
                                             </tbody>
                                         </table>
+                                        <button onClick={() => setIsOpen(true)}>Choose Plan</button>
                                     </div>
                                 </div>
                             </div>
@@ -314,62 +325,84 @@ const UpgradePlan = () => {
                         </section>
                     </div>
 
-                    <div className="add_property_btn upgrade-plan">
+                    <div className="add_property_btn upgrade-plan ">
                         <Modal
                             isOpen={modalIsOpen}
                             onRequestClose={() => setIsOpen(false)}
+                            className='credit-card-model'
+
                         >
-                            <form onSubmit={handleSubmit} >
-                                <h2>Card Details</h2>
-                                <div className="input-group">
-                                    <label>Card Holder Name</label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        placeholder="Name"
-                                    /> {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
-                                </div>
-                                <div className="input-group">
+                        
+                                <Circles
 
-                                    <svg {...getCardImageProps({ images })} />
-                                    <label>Card Number</label>
+                                    height="100"
+                                    width="100%"
+                                    color="#004382"
+                                    ariaLabel="circles-loading"
+                                    wrapperStyle={{   height: "100%",
+                                    width: "100%", 
+                                    position: "absolute", 
+                                    justifyContent: "center",
+                                    alignItems: "center", 
+                                    zIndex: 9, 
+                                    background: "#00000082" }}
+                                    wrapperClass=""
+                                    visible={isLoader}
+                                />
+                            
+                            <div className="add_property_btn upgrade-plan">
 
-                                    <input {...getCardNumberProps({ onChange: handleChange })} name="number" />
-                                    <small>{erroredInputs.cardNumber && erroredInputs.cardNumber}</small>
-                                </div>
-                                <div className="multi-input">
-                                    <div className="input-group">
-                                        <label>Name on Card</label>
-                                        <input type='text' name="nameOnCard" />
-                                        <small>{erroredInputs.nameOnCard && erroredInputs.nameOnCard}</small>
-                                    </div>
+                                <form onSubmit={handleSubmit} >
+                                    <h2>Card Details
+                                        <span onClick={() => setIsOpen(false)}>X</span>
+                                    </h2>
 
                                     <div className="input-group">
-                                        <label>Valid Till</label>
-                                        <input {...getExpiryDateProps({ onChange: handleChange })} name="expiryDate" />
-                                        <small>{erroredInputs.expiryDate && erroredInputs.expiryDate}</small>
+                                        <label>Card Holder Name</label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            placeholder="Name"
+                                        /> {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
                                     </div>
-
                                     <div className="input-group">
-                                        <label>CVC</label>
-                                        <input {...getCVCProps({ onChange: handleChange })} name="cvc" />
-                                        <small>{erroredInputs.cvc && erroredInputs.cvc}</small>
-                                    </div>
-                                    <div className="input-group">
-                                        <select value={selectMonth} onChange={(e) => setSelectMonth(e.target.value)}>
-                                            <option value="">Billing Period</option>
-                                            <option value="1">1 Month</option>
-                                            <option value="3">3 Month</option>
-                                            <option value="6">6 Month</option>
-                                            <option value="9">9 Month</option>
-                                        </select>
-                                    </div>
 
-                                </div>
-                                {selectMonth == "" || errors.name || erroredInputs.cvc || erroredInputs.expiryDate || erroredInputs.cardNumber ? <button disabled type="button">Pay</button> : <button type="submit">Pay</button>}
-                            </form>
+                                        <svg {...getCardImageProps({ images })} />
+                                        <label>Card Number</label>
+
+                                        <input {...getCardNumberProps({ onChange: handleChange })} name="number" />
+                                        <small>{erroredInputs.cardNumber && erroredInputs.cardNumber}</small>
+                                    </div>
+                                    <div className="multi-input">
+
+                                        <div className="input-group">
+                                            <label>Valid Till</label>
+                                            <input {...getExpiryDateProps({ onChange: handleChange })} name="expiryDate" />
+                                            <small>{erroredInputs.expiryDate && erroredInputs.expiryDate}</small>
+                                        </div>
+
+                                        <div className="input-group">
+                                            <label>CVC</label>
+                                            <input {...getCVCProps({ onChange: handleChange })} name="cvc" />
+                                            <small>{erroredInputs.cvc && erroredInputs.cvc}</small>
+                                        </div>
+                                        <div className="input-group input-plan-tenure">
+                                            <select value={selectMonth} onChange={(e) => setSelectMonth(e.target.value)}>
+                                                <option value="">Billing Period</option>
+                                                <option value="1">1 Month</option>
+                                                <option value="3">3 Month</option>
+                                                <option value="6">6 Month</option>
+                                                <option value="9">9 Month</option>
+                                                <option value="12">1 year</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    {selectMonth == "" || errors.name || erroredInputs.cvc || erroredInputs.expiryDate || erroredInputs.cardNumber ? <button disabled type="button">Pay</button> : <button type="submit">Pay</button>}
+                                </form>
+                            </div>
                         </Modal>
                     </div>
                 </div>

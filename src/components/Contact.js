@@ -94,7 +94,7 @@ const [searchText, setSearchText] = useState('');
 
 
 
-  const { auth, property, setProperty, setAuth } = useContext(AuthContext);
+  const { auth,plan ,  property, setProperty, setAuth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -610,7 +610,8 @@ sendRefferal()
        placeholder="Search here"/>
        <img src="/search.svg" />
       </div>
-      <div className="add_user_btn" style={{display:"flex"}}>
+      {plan ===2 ? <div className="add_user_btn" style={{display:"flex"}}>
+         
               <button style={{marginLeft:"30px"}} onClick={(e) => 
               {
                 e.preventDefault()
@@ -628,6 +629,7 @@ sendRefferal()
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload Bulk</button> */}
       </div>
+      : ""}
       </div>
 
       {/* Rest of your component remains the same... */}

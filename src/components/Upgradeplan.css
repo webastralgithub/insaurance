@@ -68,7 +68,7 @@
 }
 
 .upgrade-plan form .multi-input .input-group {
-    width: 45%;
+    width: 33%;
 }
 
 .upgrade-plan  small {
@@ -1888,6 +1888,7 @@
     font-size: 13px;
     font-weight: 600;
   }
+  
   .tab-menu ul li a.active-a{
       background-color: #0d60ab;
       color: #ffffff;
@@ -2163,3 +2164,162 @@
     margin-left: -12px;
     margin-right: 8px;
   }
+
+  .pricing-plan-sec .pricing-table-pnts button {
+    display: block;
+    width: 100%;
+    max-width: 250px;
+    margin-inline: auto;
+    margin-top: 30px;
+    padding: 1rem 1rem;
+    font-weight: 600;
+    background-color: transparent;
+    color: #0c579a;
+    border: 1px solid #0c579a;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    border-radius: 50px;
+}
+
+.pricing-plan-sec .pricing-table-pnts button:hover{
+  background-color: #0c579a;
+    color: #fff;
+}
+
+.credit-card-model {
+  height: fit-content;
+  max-width: 480px;
+  width: 100%;
+  margin: auto;
+  top: 50%;
+  position: relative;
+  transform: translateY(-50%);
+  overflow: hidden;
+  box-shadow: 0px 0px 10px 5px #ddd;
+}
+
+.credit-card-model .upgrade-plan {
+  background: #fff;
+  padding: 70px 25px 25px 25px;
+}
+
+
+
+.credit-card-model .upgrade-plan form h2 {
+  position: absolute;
+  top: 0;
+  width: 92%;
+  left: 0;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  background: #004686;
+  color: #fff;
+}
+
+.upgrade-plan form .multi-input .input-plan-tenure {
+  display: flex;
+  align-items: end;
+}
+
+.upgrade-plan form .multi-input .input-plan-tenure select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  background: #fff;
+  margin-bottom: 8px;
+  border: 1px solid #898888;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 5px;
+  color: #3d3c3c;
+}
+
+.credit-card-model .upgrade-plan form h2 span {
+  cursor: pointer;
+}
+
+/*  */
+.plan-subscriber-section {
+  padding-top: 40px;
+}
+
+.tab-container.plan-subscriber-div {
+  margin: 0 !important;
+}
+
+.tab-container.plan-subscriber-div .tab-menu {
+  padding: 20px 20px 0 20px;
+  position: static;
+}
+.tab-container.plan-subscriber-div .tab-menu ul a {
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.tab-container.plan-subscriber-div .tab .price-tab-intb {
+  border: unset;
+  padding: 0;
+}
+
+.tab-container.plan-subscriber-div .tab .price-tab-intb .price-blck-right {
+  width: 100%;
+}
+
+.tab-container.plan-subscriber-div div.child-div-popup {
+  width: 100%;
+}
+
+.tab-container.plan-subscriber-div  div.child-div-popup .subscription-fee {
+  list-style: none;
+  border: 2px solid #1263ac;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.subscription-fee .subscription-fee-text h3 {
+  margin: 0;
+}
+
+.subscription-fee .subscription-fee-text p {
+  margin: 0;
+  padding: 5px 0 2px 0;
+  font-size: 14px;
+  color: #000000d1;
+}
+
+.subscription-fee .subscription-price-subs {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.subscription-fee .subscription-price-subs span.subscription-fee-price {
+  color: #1160a8;
+  font-weight: 700;
+  font-size: 26px;
+}
+
+@media (max-width:600px){
+  .credit-card-model .upgrade-plan div.child-div-popup {
+    margin-top: 20px;
+  }
+  .credit-card-model {
+    width: 95%;
+}
+
+.tab-container.plan-subscriber-div div.child-div-popup .subscription-fee {
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.subscription-fee .subscription-price-subs {
+  justify-content: space-between;
+  width: 100%;
+}
+}
