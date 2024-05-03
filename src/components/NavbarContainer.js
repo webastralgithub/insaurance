@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import "./NavbarContainer.css";
 import Select, { components } from "react-select";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +16,7 @@ import { AuthContext } from "./context/AuthContext";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "./ToolTip.css";
+
 
 
 
@@ -388,7 +390,8 @@ const NavbarContainer = (props) => {
        <img src="/search.svg" />
       </div> */}
       <div className="subscription-btnn  ">
-        {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>}
+        {/* {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>} */}
+        <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button>
       </div>
 
       <div className="icon-dashboard setting-nav">

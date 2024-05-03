@@ -826,17 +826,17 @@ form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wra
     width: 100%;
 }
 
-.add-cnt-form-desc {
-    display: flex;
-    column-gap: 30px;
-    align-items: end;
-}
-
-.add-cnt-form-desc .form-user-add-wrapper, .add-cnt-form-desc .add-contact-user-custom-right {
-    width: 50%;
-}
-
 .add-cnt-form-desc .form-user-add-wrapper .add-contact-user-custom-wrapper .add-contact-user-custom-left {
     width: 100%;
     padding: 0;
+}
+
+.add-cnt-form-desc .add-contact-user-custom-right {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.add-cnt-form-desc .add-contact-user-custom-right .add-contact-user-custom-left {
+    width: 100%;
 }

@@ -1690,10 +1690,15 @@
     position: relative;
   }
 
+  .pricing-table-pnts table tr td.tble-td-left {
+      text-align: start;
+  }
+
   .pricing-table-pnts table tr td {
-    font-size: 20px !important;
-    color: #000;
-}
+      font-size: 20px !important;
+      color: #000;
+      text-align: center;
+  }
   
   .pricing-table-pnts table tr td span{
     display: block;
@@ -2226,14 +2231,19 @@
 .upgrade-plan form .multi-input .input-plan-tenure select {
   width: 100%;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 0;
   background: #fff;
   margin-bottom: 8px;
-  border: 1px solid #898888;
+  border: 0px solid #89888826;
   font-size: 14px;
   font-weight: 600;
   padding: 10px 5px;
   color: #3d3c3c;
+  border-bottom: 1px solid;
+}
+
+.upgrade-plan form .multi-input .input-plan-tenure select:focus-visible{
+ outline: unset;
 }
 
 .credit-card-model .upgrade-plan form h2 span {
@@ -2243,6 +2253,7 @@
 /*  */
 .plan-subscriber-section {
   padding-top: 40px;
+  padding-bottom: 0;
 }
 
 .tab-container.plan-subscriber-div {
@@ -2309,6 +2320,12 @@
    font-Size : 32px !important
 }
 
+.data-not-found p {
+  text-align: center;
+  color: #000;
+  font-weight: 600;
+}
+
 @media (max-width:600px){
   .credit-card-model .upgrade-plan div.child-div-popup {
     margin-top: 20px;
@@ -2325,5 +2342,12 @@
 .subscription-fee .subscription-price-subs {
   justify-content: space-between;
   width: 100%;
+}
+
+.pricing-table-pnts {
+  overflow: auto;
+}
+.pricing-table-pnts table.table {
+  width: 700px;
 }
 }

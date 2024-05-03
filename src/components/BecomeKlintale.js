@@ -84,7 +84,7 @@ const BecomeKlintale = () => {
             setLifeInsurance(responseData?.['Life Insurance'] || []);
             setTravelInsurance(responseData?.['Travel Insurance'] || []);
 
-      
+
 
         } catch (error) {
             console.error("error", error)
@@ -325,17 +325,7 @@ const BecomeKlintale = () => {
                                             </div>
                                         )
                                         }
-                                        <div className="data-not-found">
 
-                                            {activeTab === 'tab1' && criticalIllnessInsurance.length === 0 && <p>Data Not Found</p>}
-                                            {activeTab === 'tab2' && disabilityInsurance.length === 0 && <p>Data Not Found</p>}
-                                            {activeTab === 'tab3' && travelInsurance.length === 0 && <p>Data Not Found</p>}
-                                            {activeTab === 'tab4' && businessInsurance.length === 0 && <p>Data Not Found</p>}
-                                            {activeTab === 'tab5' && healthInsurance.length === 0 && <p>Data Not Found</p>}
-                                            {activeTab === 'tab6' && lifeInsurance.length === 0 && <p>Data Not Found</p>}
-                                            {activeTab === 'tab7' && homeInsurance.length === 0 && <p>Data Not Found</p>}
-                                            {activeTab === 'tab8' && autoInsurance.length === 0 && <p>Data Not Found</p>}
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -350,6 +340,17 @@ const BecomeKlintale = () => {
                     </div>
                 </section>
             </main>
+            <div className="data-not-found">
+
+                {activeTab === 'tab1' && criticalIllnessInsurance.length === 0 && <p>Data Not Found</p>}
+                {activeTab === 'tab2' && disabilityInsurance.length === 0 && <p>Data Not Found</p>}
+                {activeTab === 'tab3' && travelInsurance.length === 0 && <p>Data Not Found</p>}
+                {activeTab === 'tab4' && businessInsurance.length === 0 && <p>Data Not Found</p>}
+                {activeTab === 'tab5' && healthInsurance.length === 0 && <p>Data Not Found</p>}
+                {activeTab === 'tab6' && lifeInsurance.length === 0 && <p>Data Not Found</p>}
+                {activeTab === 'tab7' && homeInsurance.length === 0 && <p>Data Not Found</p>}
+                {activeTab === 'tab8' && autoInsurance.length === 0 && <p>Data Not Found</p>}
+            </div>
 
             <div className="add_property_btn upgrade-plan ">
                 <Modal

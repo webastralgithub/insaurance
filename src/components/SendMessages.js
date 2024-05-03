@@ -10,8 +10,8 @@ import { toast } from "react-toastify";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useNavigate, useRouter } from "react-router-dom";
 import Groups from "./ManageGroup";
-
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
 const CustomDropdown = ({ children, isGroupFormActive, searchText, contact, ...props }) => {
 
@@ -493,8 +493,8 @@ const SendMessage = ({ role }) => {
             <button onClick={() => {
               setView(true);
             }}>
-              Manage Group
-            </button>
+             <FontAwesomeIcon icon={faUserGroup} /> Manage Group
+         </button>
           </div>}
           {view && <div className="top-bar-action-btns">
             <button onClick={() => {

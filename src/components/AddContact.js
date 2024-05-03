@@ -330,8 +330,7 @@ const AddContact = ({ user }) => {
           />
         </div> */}
 
-        <div className="add-contact-user-custom-wrapper">
-          <div className="add-contact-user-custom-left">
+
             <div className="form-user-add-inner-wrap">
               <label>Phone</label>
               <InputMask
@@ -345,6 +344,8 @@ const AddContact = ({ user }) => {
               />
               <span className="error-message">{phoneError}</span>
             </div>
+
+
             <div className="form-user-add-inner-wrap">
               <label>Company Name</label>
               <div className="edit-new-input">
@@ -356,6 +357,19 @@ const AddContact = ({ user }) => {
                 />
               </div>
             </div>
+
+        {/* ------------------- */}
+
+                
+      </div>
+
+
+      <div className="add-contact-user-custom-right">
+
+      <div className="add-contact-user-custom-wrapper">
+          <div className="add-contact-user-custom-left">
+           
+            
             {/* <div className="form-user-add-inner-wrap">
           <label>User</label>
           <img src="/icons-form/Group30055.svg"/>
@@ -432,11 +446,9 @@ const AddContact = ({ user }) => {
             </div>
           </div>        
 
-        </div>        
-      </div>
+        </div>
 
-
-      <div className="add-contact-user-custom-right">
+        
             <div className="form-user-add-inner-wrap">
               <label>Description</label>
               <CKEditor

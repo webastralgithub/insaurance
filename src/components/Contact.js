@@ -237,8 +237,9 @@ const [searchText, setSearchText] = useState('');
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
-      background: "#000",
+      background: "#fff",
       border:"1px solid #fff",
+      padding:"0px"
     },
     overlay:{
       backgroundColor: "rgb(0 0 0 / 75%)",

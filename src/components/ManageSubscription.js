@@ -5,6 +5,7 @@ import { AuthContext } from './context/AuthContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
+
 const ManageSubscription = () => {
 
   const [subscriptions, setSubscrition] = useState([]);
@@ -103,7 +104,7 @@ const ManageSubscription = () => {
                   <td>
                     {premium == "active" ? <button style={{background:"#ff0000c2", borderColor:"#ff0000c2"}} className="subscription delete-btn-ico manage-active-buttons "
                       onClick={() => handleView(activeSubscription.id)}>Cancel Plan</button> : <button className="manage-active-buttons subscription delete-btn-ico"
-                        onClick={() =>navigate("/upgrade-plan")}>Upgrade Plan</button> }
+                        onClick={() =>navigate("/upgrade-plan")}>  Upgrade Plan</button> }
 
                   </td>
                 </tr> :   <tr >
