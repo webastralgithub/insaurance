@@ -39,11 +39,12 @@ const Lead = () => {
 
 
 
-  const { auth} = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -62,17 +63,18 @@ const Lead = () => {
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/categories/get`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
       }));
-      setCategoriesOptions(options)
+      setCategoriesOptions(options);
+
       setCategories([{ id: -1, name: "Today's Leads" }, ...res.data, {
         id: 0, name: "Others"
       }])
 
-console.log("categories" , categoriesoptions)
+
 
       //  setActiveCategory(res.data[0].id);
       setActiveCategory(-1);
@@ -80,6 +82,10 @@ console.log("categories" , categoriesoptions)
       console.error("User creation failed:", error);
     }
   };
+
+  console.log("categories", categories);
+  console.log("categories opetions", categoriesoptions);
+
   const handleDeleteClick = (propertyId) => {
     confirmAlert({
       title: 'Confirm Delete',
@@ -110,7 +116,7 @@ console.log("categories" , categoriesoptions)
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
 
     } catch (error) {
@@ -199,7 +205,7 @@ console.log("categories" , categoriesoptions)
     }
 
 
-    
+
 
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -303,7 +309,7 @@ console.log("categories" , categoriesoptions)
 
 
     } catch (error) {
-      console.error("error" , error)
+      console.error("error", error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -360,15 +366,12 @@ console.log("categories" , categoriesoptions)
           }}
         > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Leads"}</h3>
         <div className="add_user_btn">
-
-
           <button onClick={() => navigate("/leads/add")}>
             <img src="/plus.svg" />
             Add Lead</button>
-
         </div>
-        <div className="search-group">
 
+        <div className="search-group">
           <input type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

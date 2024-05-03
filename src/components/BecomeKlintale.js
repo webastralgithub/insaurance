@@ -9,6 +9,8 @@ import { Circles } from 'react-loader-spinner'
 
 const BecomeKlintale = () => {
     const url = process.env.REACT_APP_API_URL;
+    const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
+
     const [categories, setCategories] = useState([])
 
     const [criticalIllnessInsurance, setCriticalIllnessInsurance] = useState([])
@@ -22,7 +24,7 @@ const BecomeKlintale = () => {
 
     const [activeTab, setActiveTab] = useState('tab1');
     const { auth, plan, setPlan } = useContext(AuthContext);
-    const [planData, setPlandata] = useState()
+    const [planData, setPlanData] = useState()
     const [isLoader, setIsLoader] = useState(false)
 
     const headers = {
@@ -71,10 +73,9 @@ const BecomeKlintale = () => {
 
     const getCategories = async () => {
         try {
-            const response = await axios.get('https://klientale.com/api/newMembership')
+            const response = await axios.get(`${klintaleUrl}newMembership`)
             const responseData = response?.data?.memberships
-            console.log("response data", responseData)
-
+            setCategories(responseData)
             setCriticalIllnessInsurance(responseData?.['Critical Illness Insurance'] || []);
             setAutoInsurance(responseData?.['Auto_Insurance'] || []);
             setBusinessInsurance(responseData?.['Business Insurance'] || []);
@@ -83,8 +84,6 @@ const BecomeKlintale = () => {
             setHomeInsurance(responseData?.['Home Insurance'] || []);
             setLifeInsurance(responseData?.['Life Insurance'] || []);
             setTravelInsurance(responseData?.['Travel Insurance'] || []);
-
-      
 
         } catch (error) {
             console.error("error", error)
@@ -95,7 +94,7 @@ const BecomeKlintale = () => {
 
     const handleSubscribe = (id) => {
         setIsOpen(true)
-        setPlan(id)
+        setPlanData(id)
     }
     useEffect(() => {
         getCategories()

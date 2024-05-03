@@ -170,7 +170,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/categories/get`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -198,7 +198,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
 
     } catch (error) {

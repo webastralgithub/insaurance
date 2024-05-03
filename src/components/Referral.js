@@ -188,7 +188,7 @@ const Referral = ({ role }) => {
   const getCategories = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}api/categories/get`,
+        `${url}api/categories/get`,
         { headers }
       );
       const options = res.data.map((realtor) => ({

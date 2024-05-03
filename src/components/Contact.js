@@ -248,7 +248,6 @@ const [searchText, setSearchText] = useState('');
 
   const openModal = (mode, role) => {
     setModalMode(mode);
- 
     setIsOpen(true);
   };
 
@@ -676,6 +675,7 @@ sendRefferal()
           onClick={()=>{
           navigate(`/contacts/send/${contact.id}`)
           }}       >Send me Referrals</button>       </td>
+
            <td> 
             
              <button className="permissions"
@@ -688,9 +688,7 @@ sendRefferal()
               })
             }
             openModal("add")
-          
-          
-          } }      > Convert to Lead</button>  
+              }}> Convert to Lead</button>  
           </td>    
           <td>
 <button className="permissions"

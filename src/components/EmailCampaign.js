@@ -421,6 +421,8 @@ const EmailCampaign = () => {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  
+
   const PlaceholderWithIcon = (props) => (
     <div
       style={{
@@ -554,8 +556,7 @@ const EmailCampaign = () => {
       return
     }
     try {
-      const response = await axios.post(
-        `https://insuranceadmin.nvinfobase.com/api/contacts/email`,
+      const response = await axios.post(`${url}api/contacts/email`,
 
         {
           selectedContacts: selectedContacts.map((option) => option.value),
