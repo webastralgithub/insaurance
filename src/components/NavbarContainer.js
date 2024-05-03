@@ -292,6 +292,7 @@ const NavbarContainer = (props) => {
       // navigate('/');
     }
   };
+
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo/get`, { headers });
@@ -387,7 +388,7 @@ const NavbarContainer = (props) => {
        <img src="/search.svg" />
       </div> */}
       <div className="subscription-btnn  ">
-        {plan === 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>}
+        {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>}
       </div>
 
       <div className="icon-dashboard setting-nav">

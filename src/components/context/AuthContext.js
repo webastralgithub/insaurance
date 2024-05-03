@@ -13,7 +13,10 @@ const [auth, setAuth] = useState(
   const [email, setEmail] = useState(
     localStorage.getItem('email') ? { email: localStorage.getItem('email') } : null
   );
-  const [plan, setPlan]= useState(localStorage.getItem('plan'))
+
+  const [plan, setPlan]= useState(
+    localStorage.getItem('plan')? localStorage.getItem('plan') : null
+  )
 
   const [property, setProperty] = useState([ ]); 
   const [todo, setTodo] = useState({}); 

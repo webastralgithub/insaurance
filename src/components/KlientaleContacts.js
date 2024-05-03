@@ -132,9 +132,6 @@ const KlientaleContacts = ({ role }) => {
     // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
-
-      console.log(selectRef.current.controlRef.firstChild);
-
       if (valueContainer) {
         valueContainer.scrollTo({
           left: valueContainer.scrollWidth,

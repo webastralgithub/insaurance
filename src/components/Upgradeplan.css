@@ -2305,6 +2305,10 @@
   font-size: 26px;
 }
 
+.feature-heading {
+   font-Size : 32px !important
+}
+
 @media (max-width:600px){
   .credit-card-model .upgrade-plan div.child-div-popup {
     margin-top: 20px;

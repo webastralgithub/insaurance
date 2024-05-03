@@ -10,6 +10,7 @@ import { Circles } from 'react-loader-spinner'
 const BecomeKlintale = () => {
     const url = process.env.REACT_APP_API_URL;
     const [categories, setCategories] = useState([])
+
     const [criticalIllnessInsurance, setCriticalIllnessInsurance] = useState([])
     const [disabilityInsurance, setDisabilityInsurance] = useState([])
     const [travelInsurance, setTravelInsurance] = useState([])
@@ -18,6 +19,7 @@ const BecomeKlintale = () => {
     const [lifeInsurance, setLifeInsurance] = useState([])
     const [homeInsurance, setHomeInsurance] = useState([])
     const [autoInsurance, setAutoInsurance] = useState([])
+
     const [activeTab, setActiveTab] = useState('tab1');
     const { auth, plan, setPlan } = useContext(AuthContext);
     const [planData, setPlandata] = useState()
@@ -69,14 +71,27 @@ const BecomeKlintale = () => {
 
     const getCategories = async () => {
         try {
-            const response = await axios.get('https://klientale.com/api/membership')
-            setCategories(response?.data?.memberships)
+            const response = await axios.get('https://klientale.com/api/newMembership')
+            const responseData = response?.data?.memberships
+            console.log("response data", responseData)
+
+            setCriticalIllnessInsurance(responseData?.['Critical Illness Insurance'] || []);
+            setAutoInsurance(responseData?.['Auto_Insurance'] || []);
+            setBusinessInsurance(responseData?.['Business Insurance'] || []);
+            setDisabilityInsurance(responseData?.['Disability Insurance'] || []);
+            setHealthInsurance(responseData?.['Health Insurance'] || []);
+            setHomeInsurance(responseData?.['Home Insurance'] || []);
+            setLifeInsurance(responseData?.['Life Insurance'] || []);
+            setTravelInsurance(responseData?.['Travel Insurance'] || []);
+
+      
+
         } catch (error) {
             console.error("error", error)
         }
     }
 
-    console.log("categories", categories);
+
 
     const handleSubscribe = (id) => {
         setIsOpen(true)
@@ -144,15 +159,8 @@ const BecomeKlintale = () => {
         <div>
             <main id="main">
                 <section id="" className="features pricing-plan-sec membership-header-sec plan-subscriber-section">
-                    {/* <header className="section-header">
-                        <div id="error-alert"></div>
-                        <div id="success-alert"></div>
-                        <h2>Membership</h2>
-                        <p className="parah-cum-p">Klientale Memberships</p>
-                        <p className="parah-btm"><b>Save upto 50%</b> on Premium Plans! Valid for limited Periods!</p>
-                    </header> */}
+
                     <div className="tab-container plan-subscriber-div">
-                        {/* <h6>Choose your plan by selecting the category</h6> */}
                         <div className="tab-menu">
                             <ul>
                                 <li><a className={`tab-a ${activeTab === 'tab1' ? 'active-a' : ''}`} onClick={() => handleTabClick('tab1')} data-id="tab1">Critical Illness Insurance</a></li>
@@ -175,143 +183,159 @@ const BecomeKlintale = () => {
                                 <div className="price-blck-right">
                                     <div className="child-div-popup">
 
-                                        {activeTab === 'tab1' && categories?.length > 0 && categories?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>{e?.name}</h3>
-                                                <p>{e?.description}</p>
+                                        {activeTab === 'tab1' && criticalIllnessInsurance?.length > 0 && criticalIllnessInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e?.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
+                                        )
+                                        }
+
+                                        {activeTab === 'tab2' && disabilityInsurance?.length > 0 && disabilityInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
-
-                                        </div>)}
-
-
-                                        {activeTab === 'tab2' && disabilityInsurance?.length > 0 && disabilityInsurance?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>Name</h3>
-                                                <p>description</p>
+                                        )
+                                        }
+                                        {activeTab === 'tab3' && travelInsurance?.length > 0 && travelInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
+                                        )
+                                        }
+                                        {activeTab === 'tab4' && businessInsurance?.length > 0 && businessInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
-
-                                        </div>)}
-                                        {activeTab === 'tab3' && travelInsurance?.length > 0 && travelInsurance?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>Name</h3>
-                                                <p>description</p>
+                                        )
+                                        }
+                                        {activeTab === 'tab5' && healthInsurance?.length > 0 && healthInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
+                                        )
+                                        }
+
+
+
+                                        {activeTab === 'tab6' && lifeInsurance?.length > 0 && lifeInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
+                                        )
+                                        }
 
-                                        </div>)}
-
-                                        {activeTab === 'tab4' && healthInsurance?.length > 0 && healthInsurance?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>Name</h3>
-                                                <p>description</p>
+                                        {activeTab === 'tab7' && homeInsurance?.length > 0 && homeInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
+                                        )
+                                        }
+
+                                        {activeTab === 'tab8' && autoInsurance?.length > 0 && autoInsurance?.map((e, index) =>
+                                            <div className="subscription-fee" key={e.id}>
+                                                <div className="subscription-fee-text">
+                                                    <h3>{e.name}</h3>
+                                                    <p>{e.description}</p>
+                                                </div>
+                                                <div className="subscription-price-subs">
+                                                    <span className="subscription-fee-price">
+                                                        {`$ ${e.price}`}
+                                                    </span>
+                                                    <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
+                                                        Subscribe
+                                                    </button>
+                                                </div>
                                             </div>
+                                        )
+                                        }
+                                        <div className="data-not-found">
 
-                                        </div>)}
-
-                                        {activeTab === 'tab5' && businessInsurance?.length > 0 && businessInsurance?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>Name</h3>
-                                                <p>description</p>
-                                            </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
-                                            </div>
-
-                                        </div>)}
-
-                                        {activeTab === 'tab6' && lifeInsurance?.length > 0 && lifeInsurance?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>Name</h3>
-                                                <p>description</p>
-                                            </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
-                                            </div>
-
-                                        </div>)}
-
-                                        {activeTab === 'tab7' && homeInsurance?.length > 0 && homeInsurance?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>Name</h3>
-                                                <p>description</p>
-                                            </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
-                                            </div>
-
-                                        </div>)}
-
-                                        {activeTab === 'tab8' && autoInsurance?.length > 0 && autoInsurance?.map((e, index) => <div className="subscription-fee" key={e.id}>
-                                            <div className="subscription-fee-text">
-                                                <h3>Name</h3>
-                                                <p>description</p>
-                                            </div>
-                                            <div className="subscription-price-subs">
-                                                <span className="subscription-fee-price">
-                                                    {`$ ${e.price}`}
-                                                </span>
-                                                <button className="subscription-fee-button" onClick={() => handleSubscribe(e.id)}>
-                                                    Subscribe
-                                                </button>
-                                            </div>
-
-                                        </div>)}
-                                        {activeTab === 'tab1' && categories.length === 0 && <p>Data Not Found</p>}
-                                        {/* {activeTab === 'tab1' && criticalIllnessInsurance.length < 0 && <p>Data Not Found</p>} */}
-                                        {activeTab === 'tab2' && disabilityInsurance.length === 0 && <p>Data Not Found</p>}
-                                        {activeTab === 'tab3' && travelInsurance.length === 0 && <p>Data Not Found</p>}
-                                        {activeTab === 'tab4' && healthInsurance.length === 0 && <p>Data Not Found</p>}
-                                        {activeTab === 'tab5' && businessInsurance.length === 0 && <p>Data Not Found</p>}
-                                        {activeTab === 'tab6' && lifeInsurance.length === 0 && <p>Data Not Found</p>}
-                                        {activeTab === 'tab7' && homeInsurance.length === 0 && <p>Data Not Found</p>}
-                                        {activeTab === 'tab8' && autoInsurance.length === 0 && <p>Data Not Found</p>}
-
+                                            {activeTab === 'tab1' && criticalIllnessInsurance.length === 0 && <p>Data Not Found</p>}
+                                            {activeTab === 'tab2' && disabilityInsurance.length === 0 && <p>Data Not Found</p>}
+                                            {activeTab === 'tab3' && travelInsurance.length === 0 && <p>Data Not Found</p>}
+                                            {activeTab === 'tab4' && businessInsurance.length === 0 && <p>Data Not Found</p>}
+                                            {activeTab === 'tab5' && healthInsurance.length === 0 && <p>Data Not Found</p>}
+                                            {activeTab === 'tab6' && lifeInsurance.length === 0 && <p>Data Not Found</p>}
+                                            {activeTab === 'tab7' && homeInsurance.length === 0 && <p>Data Not Found</p>}
+                                            {activeTab === 'tab8' && autoInsurance.length === 0 && <p>Data Not Found</p>}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

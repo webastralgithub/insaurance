@@ -328,7 +328,7 @@ const ContactReferral = ({ role }) => {
   const fetchUsers = async () => {
     try {
 
-      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`https://klientale.com/api/listing/${email.email}`);
       const data = response.data.user;
       setKlintaleContacts(data);
     } catch (error) {

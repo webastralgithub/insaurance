@@ -10,7 +10,7 @@ import { Circles } from 'react-loader-spinner'
 
 const UpgradePlan = () => {
     const url = process.env.REACT_APP_API_URL;
-    const { auth, setPlan } = useContext(AuthContext);
+    const { auth, setPlan, plan } = useContext(AuthContext);
     const headers = {
         Authorization: auth.token,
     };
@@ -122,7 +122,11 @@ const UpgradePlan = () => {
                                         <table className="table" style={{ textAlign: 'center', paddingLeft: '200px', paddingRight: '200px' }}>
                                             <thead>
                                                 <tr className="active">
-                                                    <th className="td-width-wide" style={{ color: "rgb(0 63 125)" }}>Features</th>
+
+                                                    <th  style={{ color: "black" , fontSize : '52px' }} className="td-width-wide feature-heading">
+                                                        Features
+                                                        </th>
+
                                                     <th style={{ background: "#67b733" }}>
                                                         <center>
                                                             <h3>Basic</h3>
@@ -145,88 +149,33 @@ const UpgradePlan = () => {
                                                     <td className="tble-td-left">
                                                         Contact management
                                                         <span>
-                                                            House all your client activity, data, and communications in one easily
-                                                            accessible place
+                                                        Contacts is your all database collected from YOUR different resources/inputs such as Phone Contacts, Website, Social Medias, Manual Input, Referrals, etc.e
                                                         </span>
                                                     </td>
-                                                    <td>10
-                                                        {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg> */}
-                                                    </td>
-                                                    <td className="border-botheside">Unlimited
-                                                        {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg> */}
-                                                    </td>
-                                                    {/* <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td> */}
+                                                    <td>10 </td>
+                                                    <td className="border-botheside">Unlimited </td>
                                                 </tr>
 
                                                 <tr>
                                                     <td className="tble-td-left">
-                                                        Lead management
+                                                    Leads & Vendors management
                                                         <span>
-                                                            House all your client activity, data, and communications in one easily
-                                                            accessible place
+                                                        Leads will be managed according to categories.Vendors will be your suppliers or companies, which you dealing on frequent basis.
                                                         </span>
                                                     </td>
-                                                    <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td>
-                                                    <td className="border-botheside">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td>
-                                                    {/* <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td> */}
+                                                    <td>10</td>
+                                                    <td className="border-botheside">Unlimited  </td>
                                                 </tr>
 
                                                 <tr>
                                                     <td className="tble-td-left">
-                                                        Contact segmentation (tags)
+                                                    Categories & Owners
                                                         <span>
-                                                            Use tags to prioritize your hottest leads and close more deals
+                                                        Your own Business categories. You can add or delete Categories also.This will help in giving access to your different employees or agents on restrictive basis.
                                                         </span>
                                                     </td>
-                                                    <td>
-
-                                                    </td>
-                                                    <td className="border-botheside">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td>
-                                                    {/* <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td> */}
+                                                    <td>10</td>
+                                                    <td className="border-botheside">Unlimited</td>
                                                 </tr>
 
                                                 <tr>
@@ -237,27 +186,8 @@ const UpgradePlan = () => {
                                                             the right messages to the right contacts.
                                                         </span>
                                                     </td>
-                                                    <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td>
-                                                    <td className="border-botheside">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td>
-                                                    {/* <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td> */}
+                                                    <td>10</td>
+                                                    <td className="border-botheside">Unlimited</td>
                                                 </tr>
 
                                                 <tr>
@@ -268,14 +198,12 @@ const UpgradePlan = () => {
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <span className="td-value">100</span>
+                                                        10
                                                     </td>
                                                     <td className="border-botheside">
-                                                        <span className="td-value">150</span>
+                                                        Unlimited
                                                     </td>
-                                                    {/* <td>
-                                                        <span className="td-value">150</span>
-                                                    </td> */}
+
                                                 </tr>
 
                                                 <tr>
@@ -286,28 +214,15 @@ const UpgradePlan = () => {
                                                             your most valuable clients
                                                         </span>
                                                     </td>
-                                                    <td>
-
+                                                    <td>10</td>
+                                                    <td className="border-botheside">Unlimited
                                                     </td>
-                                                    <td className="border-botheside">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td>
-                                                    {/* <td>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                            className="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                                            <path
-                                                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                                        </svg>
-                                                    </td> */}
                                                 </tr>
 
                                             </tbody>
                                         </table>
-                                        <button onClick={() => setIsOpen(true)}>Choose Plan</button>
+                                        {plan ===2 ? "" : <button onClick={() => setIsOpen(true)}>Choose Plan</button>}
+                                   
                                     </div>
                                 </div>
                             </div>
@@ -332,24 +247,26 @@ const UpgradePlan = () => {
                             className='credit-card-model'
 
                         >
-                        
-                                <Circles
 
-                                    height="100"
-                                    width="100%"
-                                    color="#004382"
-                                    ariaLabel="circles-loading"
-                                    wrapperStyle={{   height: "100%",
-                                    width: "100%", 
-                                    position: "absolute", 
+                            <Circles
+
+                                height="100"
+                                width="100%"
+                                color="#004382"
+                                ariaLabel="circles-loading"
+                                wrapperStyle={{
+                                    height: "100%",
+                                    width: "100%",
+                                    position: "absolute",
                                     justifyContent: "center",
-                                    alignItems: "center", 
-                                    zIndex: 9, 
-                                    background: "#00000082" }}
-                                    wrapperClass=""
-                                    visible={isLoader}
-                                />
-                            
+                                    alignItems: "center",
+                                    zIndex: 9,
+                                    background: "#00000082"
+                                }}
+                                wrapperClass=""
+                                visible={isLoader}
+                            />
+
                             <div className="add_property_btn upgrade-plan">
 
                                 <form onSubmit={handleSubmit} >

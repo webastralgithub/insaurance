@@ -15,6 +15,11 @@ const ManageSubscription = () => {
     Authorization: auth.token,
   };
 
+  function formatDate(dateString) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', options);
+  }
 
   useEffect(() => {
     getSubscription();
@@ -45,12 +50,12 @@ const ManageSubscription = () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}/${status}`, { headers });
       toast.success(res.data.message)
-      getSubscription()
-      console.log("premium", premium)
       if (premium == "active") {
        setPlan(1)
+       getSubscription()
       } else {
         setPlan(2)
+        getSubscription()
       }
     } catch (error) {
       toast.error("error");
@@ -65,6 +70,7 @@ const ManageSubscription = () => {
       setPlan(1)
     } catch (error) {
       toast.error("error");
+      getSubscription()
     }
   }
   return (
@@ -87,26 +93,38 @@ const ManageSubscription = () => {
             </thead>
            
               <tbody>
-              {activeSubscription &&
+              {activeSubscription ?
                 <tr key={activeSubscription?.id}>
                   <td>Premium</td>
                   <td >{activeSubscription?.plan_amount}</td>
                   <td >{activeSubscription?.currency}</td>
-                  <td >{activeSubscription?.subscription_start}</td>
-                  <td >{activeSubscription?.subscription_end}</td>
+                  <td>{activeSubscription ? formatDate(activeSubscription.subscription_start) : ''}</td>
+                  <td >{activeSubscription?formatDate(activeSubscription.subscription_end) : ''}</td>
                   <td>
                     {premium == "active" ? <button style={{background:"#ff0000c2", borderColor:"#ff0000c2"}} className="subscription delete-btn-ico manage-active-buttons "
                       onClick={() => handleView(activeSubscription.id)}>Cancel Plan</button> : <button className="manage-active-buttons subscription delete-btn-ico"
-                        onClick={() =>navigate("/upgrade-plan")}>Upgrade Plan</button>}
+                        onClick={() =>navigate("/upgrade-plan")}>Upgrade Plan</button> }
+
+                  </td>
+                </tr> :   <tr >
+                  <td>Premium</td>
+                  <td >10</td>
+                  <td >Cad</td>
+                  <td >-</td>
+                  <td >-</td>
+                  <td>
+                 <button className="manage-active-buttons subscription delete-btn-ico"
+                        onClick={() =>navigate("/upgrade-plan")}>Upgrade Plan</button> 
 
                   </td>
                 </tr>}
-                <tr key={activeSubscription?.id}>
+
+                <tr>
                   <td>Basic</td>
                   <td >0</td>
                   <td >-</td>
-                  <td >Unlimited</td>
-                  <td >Unlimited</td>
+                  <td >{plan ==2 ? "-" : "Unlimited"}</td>
+                  <td >{plan ==2 ? "-" : "Unlimited"}</td>
                   <td>
                     {premium == "active" ? <button className="subscription delete-btn-ico manage-active-buttons"
                       onClick={() => handleBasic(activeSubscription.id)}>Basic</button> : <button disabled={true}>Actived</button>}
@@ -114,39 +132,9 @@ const ManageSubscription = () => {
                   </td>
                 </tr>
               </tbody>
-
-           
           </table>
         
         </div>
-        {/* {!activeSubscription && <p className="no-data-found" style={{width:"100%", textAlign:"center", fontWeight:"600"}}>No data Found</p>} */}
-        {/* <h3>Subscriptions History</h3>
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Stipe Subscription Id</th>
-                <th>Plan Amount</th>
-                <th>Currency</th>
-                <th>Subscription Start</th>
-                <th>Subscription End</th>
-              </tr>
-            </thead>
-            {subscriptions.length > 0 ?
-              subscriptions.map((subscription) => (
-                <tbody>
-                  <tr key={subscription.id}>
-                    <td>{subscription.subscription_id}</td>
-                    <td >{subscription?.plan_amount}</td>
-                    <td >{subscription?.currency}</td>
-                    <td >{subscription?.subscription_start}</td>
-                    <td >{subscription?.subscription_end}</td>
-                  </tr>
-
-                </tbody>
-              )) : <p className="no-data">No data Found</p>}
-          </table>
-        </div> */}
       </div>
     </div>
   )
