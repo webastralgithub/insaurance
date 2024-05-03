@@ -298,7 +298,7 @@ th.price {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  overflow: hidden;
+  
 }
 
 .modal-roles-add form input{

@@ -34,7 +34,7 @@ const Sidebar = (props) => {
   }
 
 
-  const { auth, setAuth, tasklength } = useContext(AuthContext);
+  const { auth, setAuth, tasklength ,contactlength,setConatctlength,leadlength,setLeadlength } = useContext(AuthContext);
   const [toggle, setToggle] = useState(false)
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
@@ -77,7 +77,8 @@ const Sidebar = (props) => {
           axios.get(`${url}api/admin/get-current-user`, { headers })
         let userData = user.data.user
         setCount(userData)
-
+        setConatctlength(userData.contact_count)
+        setLeadlength(userData.leads_count);
       } catch (error) {
         handleLogout()
       }
@@ -112,7 +113,7 @@ const Sidebar = (props) => {
             <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
               <div className="order-detail">
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Leads ({count?.leads_count})</div>
+                <div className="daily-events">Leads ({leadlength})</div>
 
               </div>
             </Link>
@@ -120,7 +121,7 @@ const Sidebar = (props) => {
               <div className="order-detail">
 
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Contacts ({count?.contact_count})</div>
+                <div className="daily-events">Contacts ({contactlength})</div>
 
               </div>
             </Link>

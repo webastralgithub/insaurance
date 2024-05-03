@@ -65,7 +65,7 @@ import Templates from "./components/Template";
 import UpgradePlan from "./components/UpgradePlan";
 import ManageSubscription from "./components/ManageSubscription";
 import BecomeKlintale from "./components/BecomeKlintale";
-
+import ManageConfigure from "./components/ManageConfigure";
 const App = () => {
 
   const [toggle, setToggle] = useState(false)
@@ -499,6 +499,14 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <ManageSubscription/>
+                </PrivateRoute>
+              }
+            />
+                  <Route
+              path="/manage-configure" exact
+              element={
+                <PrivateRoute>
+                  <ManageConfigure/>
                 </PrivateRoute>
               }
             />

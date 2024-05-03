@@ -22,7 +22,7 @@ const BecomeKlintale = () => {
     const [homeInsurance, setHomeInsurance] = useState([])
     const [autoInsurance, setAutoInsurance] = useState([])
 
-    const [activeTab, setActiveTab] = useState('tab1');
+    const [activeTab, setActiveTab] = useState('tab5');
     const { auth, plan, setPlan } = useContext(AuthContext);
     const [planData, setPlanData] = useState()
     const [isLoader, setIsLoader] = useState(false)
@@ -32,7 +32,7 @@ const BecomeKlintale = () => {
     };
 
     const [errors, setErrors] = useState('')
-    const [selectMonth, setSelectMonth] = useState()
+    const [selectMonth, setSelectMonth] = useState(1)
     const [modalIsOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -415,13 +415,13 @@ const BecomeKlintale = () => {
                                     <small>{erroredInputs.cvc && erroredInputs.cvc}</small>
                                 </div>
                                 <div className="input-group input-plan-tenure">
-                                    <select value={selectMonth} onChange={(e) => setSelectMonth(e.target.value)}>
-                                        <option value="">Billing Period</option>
+                                    <select value={selectMonth}>
+                                        {/* <option value="">Billing Period</option> */}
                                         <option value="1">1 Month</option>
-                                        <option value="3">3 Month</option>
+                                        {/* <option value="3">3 Month</option>
                                         <option value="6">6 Month</option>
                                         <option value="9">9 Month</option>
-                                        <option value="12">1 Year</option>
+                                        <option value="12">1 Year</option> */}
                                     </select>
                                 </div>
 

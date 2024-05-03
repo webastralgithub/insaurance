@@ -39,7 +39,7 @@ const Lead = () => {
 
 
 
-  const { auth } = useContext(AuthContext);
+  const { auth ,contactlength,setConatctlength,leadlength,setLeadlength} = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -195,6 +195,8 @@ const Lead = () => {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
+      setConatctlength(contactlength+1);
+      setLeadlength(leadlength-1);
       setSelectedCategory()
       closeModal()
     }

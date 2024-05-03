@@ -94,7 +94,7 @@ const [searchText, setSearchText] = useState('');
 
 
 
-  const { auth,plan ,  property, setProperty, setAuth } = useContext(AuthContext);
+  const { auth, property, setProperty, setAuth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -117,6 +117,8 @@ const [searchText, setSearchText] = useState('');
   useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
+
+    console.log(selectRef.current.controlRef.firstChild)
  
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
@@ -186,7 +188,7 @@ const [searchText, setSearchText] = useState('');
   }
   const handleUpload = async () => {
     if (!selectedFile) {
-
+      console.log("hereeeeee")
       toast.push(
         <Message type="error" closable duration={5000}>
          Please select a file
@@ -237,9 +239,8 @@ const [searchText, setSearchText] = useState('');
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
-      background: "#fff",
+      background: "#000",
       border:"1px solid #fff",
-      padding:"0px"
     },
     overlay:{
       backgroundColor: "rgb(0 0 0 / 75%)",
@@ -249,6 +250,7 @@ const [searchText, setSearchText] = useState('');
 
   const openModal = (mode, role) => {
     setModalMode(mode);
+ 
     setIsOpen(true);
   };
 
@@ -343,7 +345,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-    
+      console.log("User created successfully!",res);
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -442,7 +444,7 @@ overflow:"unset"
 localStorage.setItem("parent",name)
   setParentName(name)
    navigate(`${id}`)
-   
+    console.log(id)
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
@@ -610,8 +612,7 @@ sendRefferal()
        placeholder="Search here"/>
        <img src="/search.svg" />
       </div>
-      {plan ===2 ? <div className="add_user_btn" style={{display:"flex"}}>
-         
+      <div className="add_user_btn" style={{display:"flex"}}>
               <button style={{marginLeft:"30px"}} onClick={(e) => 
               {
                 e.preventDefault()
@@ -629,7 +630,6 @@ sendRefferal()
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleUpload}>Upload Bulk</button> */}
       </div>
-      : ""}
       </div>
 
       {/* Rest of your component remains the same... */}
@@ -676,7 +676,6 @@ sendRefferal()
           onClick={()=>{
           navigate(`/contacts/send/${contact.id}`)
           }}       >Send me Referrals</button>       </td>
-
            <td> 
             
              <button className="permissions"
@@ -689,7 +688,9 @@ sendRefferal()
               })
             }
             openModal("add")
-              }}> Convert to Lead</button>  
+          
+          
+          } }      > Convert to Lead</button>  
           </td>    
           <td>
 <button className="permissions"

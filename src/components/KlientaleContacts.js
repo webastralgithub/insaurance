@@ -239,7 +239,7 @@ const KlientaleContacts = ({ role }) => {
 
   const fetchCategotires = async () => {
     try {
-      const response = await axios.get(`${klintaleUrl}api/categories`);
+      const response = await axios.get(`${klintaleUrl}categories`);
       const data = response.data;
       const options = data.map((realtor) => ({
         value: realtor.id,

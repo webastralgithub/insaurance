@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from "./context/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,7 +16,7 @@ const UpgradePlan = () => {
     };
     const [isLoader, setIsLoader] = useState(false)
     const [errors, setErrors] = useState('')
-    const [selectMonth, setSelectMonth] = useState()
+    const [selectMonth, setSelectMonth] = useState(1)
     const [modalIsOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -24,6 +24,7 @@ const UpgradePlan = () => {
         expiryDate: '',
         cvc: '',
     });
+    const [configData, setconfigData] = useState([])
 
     function expDateValidate(month, year) {
         if (Number(year) > 2035) {
@@ -103,6 +104,19 @@ const UpgradePlan = () => {
             toast.error("error in payment")
         }
     }
+    const getData = async () => {
+        try {
+          const response = await axios.get(`${url}api/list-limits`, { headers });
+          const responseData = response.data.limits
+          setconfigData(responseData);
+          console.log("data", responseData);
+        } catch (error) {
+          console.error("error", error)
+        }
+      }
+      useEffect(() => {
+        getData()
+      }, [])
 
     return (
         <>
@@ -145,18 +159,20 @@ const UpgradePlan = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                            {configData.length>0 &&
+                                               configData.map((data) => ( 
                                                 <tr>
                                                     <td className="tble-td-left">
-                                                        Contact management
+                                                        {data.name}
                                                         <span>
-                                                        Contacts is your all database collected from YOUR different resources/inputs such as Phone Contacts, Website, Social Medias, Manual Input, Referrals, etc.e
+                                                        {data.short_description}
                                                         </span>
                                                     </td>
-                                                    <td>10 </td>
+                                                    <td>{data.set_limit} </td>
                                                     <td className="border-botheside">Unlimited </td>
-                                                </tr>
+                                                </tr> ))}
 
-                                                <tr>
+                                                {/* <tr>
                                                     <td className="tble-td-left">
                                                     Leads & Vendors management
                                                         <span>
@@ -217,7 +233,7 @@ const UpgradePlan = () => {
                                                     <td>10</td>
                                                     <td className="border-botheside">Unlimited
                                                     </td>
-                                                </tr>
+                                                </tr> */}
 
                                             </tbody>
                                         </table>
@@ -307,12 +323,12 @@ const UpgradePlan = () => {
                                         </div>
                                         <div className="input-group input-plan-tenure">
                                             <select value={selectMonth} onChange={(e) => setSelectMonth(e.target.value)}>
-                                                <option value="">Billing Period</option>
+                                                {/* <option value="">Billing Period</option> */}
                                                 <option value="1">1 Month</option>
-                                                <option value="3">3 Month</option>
+                                                {/* <option value="3">3 Month</option>
                                                 <option value="6">6 Month</option>
                                                 <option value="9">9 Month</option>
-                                                <option value="12">1 year</option>
+                                                <option value="12">1 year</option> */}
                                             </select>
                                         </div>
 

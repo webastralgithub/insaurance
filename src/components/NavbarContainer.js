@@ -89,7 +89,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const NavbarContainer = (props) => {
   const { pathname } = useLocation();
-  const { auth, setAuth, tasklength, setTasklength, plan } = useContext(AuthContext);
+  const { auth, setAuth, tasklength, setTasklength, plan,roleId } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -324,8 +324,7 @@ const NavbarContainer = (props) => {
    
     } catch (error) { }
   };
-
-
+  
   return (
     <div className="top-navbar">
       <div className="test-class-popup" style={{backgroundColor :'red'}}>
@@ -390,8 +389,8 @@ const NavbarContainer = (props) => {
        <img src="/search.svg" />
       </div> */}
       <div className="subscription-btnn  ">
-        {/* {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>} */}
-        <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button>
+        {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button>}
+        {/* <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button> */}
       </div>
 
       <div className="icon-dashboard setting-nav">
@@ -451,7 +450,8 @@ const NavbarContainer = (props) => {
               <div onClick={() => setShowMenu(false)} className="profile-menu">
                 <Link to="/profile">My Profile</Link>
                 <Link onClick={handleLogout}>Logout</Link>
-                <Link to="/manage-subscription">Manage Subscription</Link>
+                 <Link to="/manage-subscription">Manage Subscription</Link>
+                {roleId == 1 &&<Link to='/manage-configure'>Manage Configure</Link>}
               </div>
             )}
           </div>
