@@ -46,6 +46,7 @@ const ContactReferral = ({ role }) => {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -156,7 +157,7 @@ const ContactReferral = ({ role }) => {
     };
 
     try {
-      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-send-me`, combinedObject, { headers }
+      const response = await axios.post(`${url}klientale-contact-send-me`, combinedObject, { headers }
       );
     
       if (response.status === 200) {
@@ -286,7 +287,7 @@ const ContactReferral = ({ role }) => {
   };
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/categories/get`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -317,7 +318,7 @@ const ContactReferral = ({ role }) => {
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
     } catch (error) {
       console.error("error in getting users", error)
@@ -328,7 +329,7 @@ const ContactReferral = ({ role }) => {
   const fetchUsers = async () => {
     try {
 
-      const response = await axios.get(`https://klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const data = response.data.user;
       setKlintaleContacts(data);
     } catch (error) {

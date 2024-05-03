@@ -50,6 +50,7 @@ const [searchText, setSearchText] = useState('');
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -70,8 +71,11 @@ const [searchText, setSearchText] = useState('');
       }
     }
   }, [selectedContacts]);
+
+
+
   const sendRefferal=async(contact)=>{
-    const response =axios.post(`https://admin.klientale.com/api/share`,
+    const response =axios.post(`${klintaleUrl}share`,
      {sendTo:id,selectedContacts:[contact],type:2,email:email.email});
     if (response.status === 200) {
       toast.success("Contact Sent successfully", {
@@ -233,7 +237,7 @@ overflow:"unset"
   }; 
   const getCategories = async () => {
     try {
-     const res= await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+     const res= await axios.get(`${url}api/categories/get`, { headers });
      const options=res.data.map((realtor) => ({
       value: realtor.id,
       label: realtor.name,
@@ -261,7 +265,7 @@ overflow:"unset"
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
 
     } catch (error) {
@@ -299,7 +303,7 @@ overflow:"unset"
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const contactsWithoutParentId = response.data.user.filter((contact) => contact.parentId === null);
       const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false );

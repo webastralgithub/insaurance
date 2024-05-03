@@ -9,51 +9,46 @@ import { useNavigate } from 'react-router-dom';
 const ManageSubscription = () => {
 
   const [subscriptions, setSubscrition] = useState([]);
-  const [activeSubscription, setActiveSubscription] = useState();
+  const [activeSubscriptionStatus, setActiveSubscriptionStatus] = useState([]);
   const { auth, plan, setPlan } = useContext(AuthContext);
   const navigate = useNavigate()
   const headers = {
     Authorization: auth.token,
   };
-
-  function formatDate(dateString) {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', options);
-  }
+  const url = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     getSubscription();
   }, []);
 
-  const [premium, setPremium] = useState("") // parameters (canceled,  active)
-
   const getSubscription = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/get-subscription`, { headers });
+      const response = await axios.get(`${url}api/get-subscription`, { headers });
+      const responseData = response?.data?.active
+      setSubscrition(responseData);
+      setActiveSubscriptionStatus(responseData?.status)
 
-      setSubscrition(res.data.all);
-      setActiveSubscription(res.data.active)
-      setPremium(res.data.active.status)
     } catch (error) {
-
+      console.error("error", error)
     }
   }
 
+  const handleView = async (id) => {
 
-  const handleView = async () => {
     let status;
-    if (premium == "active") {
+    if (activeSubscriptionStatus == "active") {
       status = "canceled"
     } else {
       status = 'active'
     }
+    console.log("id", id)
+    console.log("status", status);
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}/${status}`, { headers });
+      const res = await axios.get(`${url}api/cancel-subscription/${id}/${status}`, { headers });
       toast.success(res.data.message)
-      if (premium == "active") {
-       setPlan(1)
-       getSubscription()
+      if (activeSubscriptionStatus == "active") {
+        setPlan(1)
+        getSubscription()
       } else {
         setPlan(2)
         getSubscription()
@@ -63,17 +58,6 @@ const ManageSubscription = () => {
     }
   }
 
-  const handleBasic = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/cancel-subscription/${activeSubscription.id}/canceled`, { headers });
-      toast.success(res.data.message)
-      getSubscription()
-      setPlan(1)
-    } catch (error) {
-      toast.error("error");
-      getSubscription()
-    }
-  }
   return (
     <div>
       <div className="add_property_btn">
@@ -92,49 +76,53 @@ const ManageSubscription = () => {
                 <th>Actions</th>
               </tr>
             </thead>
-           
-              <tbody>
-              {activeSubscription ?
-                <tr key={activeSubscription?.id}>
-                  <td>Premium</td>
-                  <td >{activeSubscription?.plan_amount}</td>
-                  <td >{activeSubscription?.currency}</td>
-                  <td>{activeSubscription ? formatDate(activeSubscription.subscription_start) : ''}</td>
-                  <td >{activeSubscription?formatDate(activeSubscription.subscription_end) : ''}</td>
-                  <td>
-                    {premium == "active" ? <button style={{background:"#ff0000c2", borderColor:"#ff0000c2"}} className="subscription delete-btn-ico manage-active-buttons "
-                      onClick={() => handleView(activeSubscription.id)}>Cancel Plan</button> : <button className="manage-active-buttons subscription delete-btn-ico"
-                        onClick={() =>navigate("/upgrade-plan")}>  Upgrade Plan</button> }
 
-                  </td>
-                </tr> :   <tr >
+            <tbody>
+
+
+              {subscriptions &&
+                <tr key={subscriptions?.id}>
                   <td>Premium</td>
-                  <td >10</td>
-                  <td >Cad</td>
-                  <td >-</td>
-                  <td >-</td>
+                  <td >{subscriptions?.plan_amount}</td>
+                  <td >{subscriptions?.currency}</td>
+                  <td >{subscriptions?.subscription_start}</td>
+                  <td >{subscriptions?.subscription_end}</td>
                   <td>
-                 <button className="manage-active-buttons subscription delete-btn-ico"
-                        onClick={() =>navigate("/upgrade-plan")}>Upgrade Plan</button> 
+                    {activeSubscriptionStatus == "active" ? <button style={{ background: "#ff0000c2", borderColor: "#ff0000c2" }} className="subscription delete-btn-ico manage-active-buttons "
+                      onClick={() => handleView(subscriptions.id)}>Cancel Plan</button> : <button className="manage-active-buttons subscription delete-btn-ico"
+                        onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>}
 
                   </td>
                 </tr>}
 
-                <tr>
-                  <td>Basic</td>
-                  <td >0</td>
-                  <td >-</td>
-                  <td >{plan ==2 ? "-" : "Unlimited"}</td>
-                  <td >{plan ==2 ? "-" : "Unlimited"}</td>
-                  <td>
-                    {premium == "active" ? <button className="subscription delete-btn-ico manage-active-buttons"
-                      onClick={() => handleBasic(activeSubscription.id)}>Basic</button> : <button disabled={true}>Actived</button>}
+              {subscriptions == null && <tr >
+                <td>Premium</td>
+                <td >10</td>
+                <td >Cad</td>
+                <td >-</td>
+                <td >-</td>
+                <td>
+                  <button className="manage-active-buttons subscription delete-btn-ico"
+                    onClick={() => navigate("/upgrade-plan")}>Upgrade Plan</button>
 
-                  </td>
-                </tr>
-              </tbody>
-          </table>
-        
+                </td>
+              </tr>}
+
+
+              <tr>
+                <td>Basic</td>
+                <td >0</td>
+                <td >-</td>
+                <td >{subscriptions ? "-" : 'Unlimited'}</td>
+                <td >{subscriptions ? "-" : 'Unlimited'}</td>
+                <td>
+                  {activeSubscriptionStatus == "active" ? '' : 'Activated'}
+
+                </td>
+              </tr>
+            </tbody>
+ </table>
+
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import "./admin.css";
-
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
@@ -115,6 +114,7 @@ const KlientaleContacts = ({ role }) => {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -213,7 +213,7 @@ const KlientaleContacts = ({ role }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`https://klientale.com/api/listing/${localStorage.getItem('email')}`);
+      const response = await axios.get(`${klintaleUrl}listing/${localStorage.getItem('email')}`);
       const data = response.data.user;
       const options = response.data.category.map((realtor) => ({
         value: realtor.id,
@@ -239,7 +239,7 @@ const KlientaleContacts = ({ role }) => {
 
   const fetchCategotires = async () => {
     try {
-      const response = await axios.get('https://klientale.com/api/categories');
+      const response = await axios.get(`${klintaleUrl}api/categories`);
       const data = response.data;
       const options = data.map((realtor) => ({
         value: realtor.id,
@@ -311,7 +311,7 @@ const KlientaleContacts = ({ role }) => {
       category: seletedCategory
     }
     try {
-      const response = await axios.post(`https://klientale.com/api/create-preference-category`, obj);
+      const response = await axios.post(`${klintaleUrl}create-preference-category`, obj);
 
       if (response.status === 200) {
         toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });

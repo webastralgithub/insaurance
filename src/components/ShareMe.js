@@ -48,6 +48,7 @@ const ShareMe = ({ role }) => {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -123,11 +124,26 @@ const ShareMe = ({ role }) => {
   }
 
   const handleDeleteClick = (propertyId) => {
-    sendRefferal(propertyId);
+    ;
+    confirmAlert({
+      title: 'Confirm Send',
+      message: 'Are you sure you want to send this contact?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => sendRefferal(propertyId),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
 
   };
 
   const handleShareKlintaleClick = async (contact) => {
+    console.log("klick");
     const { email, phone, name, category_name } = contact;
     const combinedObject = {
       name,
@@ -156,6 +172,7 @@ const ShareMe = ({ role }) => {
     }
 
   }
+
   const handleDeleteKlintaleClick = (propertyId) => {
     confirmAlert({
       title: 'Confirm Send',
@@ -284,7 +301,7 @@ const ShareMe = ({ role }) => {
   };
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/categories/get`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -296,6 +313,8 @@ const ShareMe = ({ role }) => {
     }
   };
 
+
+  
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
 
@@ -306,7 +325,7 @@ const ShareMe = ({ role }) => {
   const fetchUsers = async () => {
     try {
 
-      const response = await axios.get(`https://klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const data = response.data.user;
   
       setKlintaleContacts(data);
@@ -328,7 +347,7 @@ const ShareMe = ({ role }) => {
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
 
     } catch (error) {
@@ -517,7 +536,7 @@ const ShareMe = ({ role }) => {
                     {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        handleDeleteKlintaleClick(contact)
+                        handleDeleteClick(contact)
                       }} >Share</button>       </td>
                     <td>{contact.firstname}</td>
                     <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>

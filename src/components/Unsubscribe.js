@@ -196,7 +196,7 @@ overflow:"unset"
   
   const getCategories = async () => {
     try {
-     const res= await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+     const res= await axios.get(`${url}api/categories/get`, { headers });
      const options=res.data.map((realtor) => ({
       value: realtor.id,
       label: realtor.name,
