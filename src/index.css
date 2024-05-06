@@ -1651,3 +1651,36 @@ margin-top: 0;
 .css-b62m3t-container .css-ao180k-control .css-p8a3hd-ValueContainer {
   width: fit-content;
 }
+
+form.add-configr-form {
+  margin: 0;
+}
+
+.manage-configr-table span {
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.manage-cross-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.manage-configr-table form.add-configr-form .form-user-add-wrapper select {
+  width: 100%;
+  color: #000;
+}
+
+form.add-configr-form .form-user-add-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 20px;
+}
+
+form.add-configr-form .form-user-add-wrapper .form-user-add-inner-wrap {
+  width: 46% !important;
+}

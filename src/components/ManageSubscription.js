@@ -45,14 +45,15 @@ const ManageSubscription = () => {
     console.log("status", status);
     try {
       const res = await axios.get(`${url}api/cancel-subscription/${id}/${status}`, { headers });
-      toast.success(res.data.message)
-      if (activeSubscriptionStatus == "active") {
-        setPlan(1)
-        getSubscription()
-      } else {
-        setPlan(2)
-        getSubscription()
-      }
+      getSubscription()
+      toast.success(res.data.message);
+      // if (activeSubscriptionStatus == "active") {
+      //   setPlan(1)
+      //   getSubscription()
+      // } else {
+      //   setPlan(2)
+      //   getSubscription()
+      // }
     } catch (error) {
       toast.error("error");
     }

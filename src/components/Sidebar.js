@@ -125,7 +125,7 @@ const Sidebar = (props) => {
 
               </div>
             </Link>
-            <Link to="/referral" className={location.pathname === "/refrals" ? "active" : ""}>
+            <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
               <div className="order-detail">
 
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />

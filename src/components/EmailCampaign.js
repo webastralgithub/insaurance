@@ -202,6 +202,7 @@ const EmailCampaign = () => {
     }
   };
 
+
   const PreviewModal = ({
     isOpen,
     closeModal,

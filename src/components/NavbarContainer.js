@@ -49,8 +49,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
     <div
       className="custom-dropdown"
       style={{
-        maxHeight: "250px",
-        minHeight: "250px",
+        maxHeight: "240px",
+        minHeight: "240px",
         overflowY: "auto",
         background: "#fff",
         boxShadow: "none",
@@ -89,7 +89,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const NavbarContainer = (props) => {
   const { pathname } = useLocation();
-  const { auth, setAuth, tasklength, setTasklength, plan,roleId } = useContext(AuthContext);
+  const { auth, setAuth, tasklength, setTasklength, plan, roleId, subscriptionStatus } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -195,7 +195,8 @@ const NavbarContainer = (props) => {
           headers,
         });
         let userData = user.data.user;
-
+        localStorage.setItem('subscription_status' , userData.subscription_status)
+        
         setPreviewImage(
           userData.profileImg ? userData.profileImg : "/placeholder@2x.png"
         );
@@ -257,7 +258,7 @@ const NavbarContainer = (props) => {
     }
 
     const dateTime = new Date(dateTimeString);
-   
+
     const year = dateTime.getFullYear();
     const month = String(dateTime.getMonth() + 1).padStart(2, "0");
     const day = String(dateTime.getDate()).padStart(2, "0");
@@ -295,6 +296,7 @@ const NavbarContainer = (props) => {
     }
   };
 
+
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo/get`, { headers });
@@ -321,75 +323,76 @@ const NavbarContainer = (props) => {
         return todo;
       });
       setTasklength(birthdayTodos.length);
-   
+
     } catch (error) { }
   };
-  
+
   return (
     <div className="top-navbar">
-      <div className="test-class-popup" style={{backgroundColor :'red'}}>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
 
-       
-      >
-        <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
-          <img
-            className="close-modal-share"
-            onClick={closeModal}
-            src="/plus.svg"
-          />
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              sendRefferal();
-            }}
-          >
-            <h3 className="heading-category">Select Contact(s) </h3>
-            <span className="share-contact-comment">
-              Grow your network - Bigger Network - More Leads{" "}
-            </span>
-            {error && <p className="error-category">{error}</p>}
-            <Select
-              placeholder={
-                <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
-              }
-              ref={selectRef}
-              value={selectedContacts}
-              menuIsOpen={true}
-              onChange={(selectedOptions) => {
-                setSelectedContacts(selectedOptions);
+      <div className="test-class-popup" style={{ backgroundColor: 'red' }}>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customStyles}
 
-                // You can also extract the values into an array if needed
-              }}
-              onInputChange={(input) => setSearchText(input)}
-              options={contactOptions}
-              components={{
-                DropdownIndicator: () => null,
-                IndicatorSeparator: () => null,
-                Menu: (props) => (
-                  <CustomDropdown searchText={searchText} {...props} />
-                ),
-              }}
-              styles={colourStyles}
-              className="select-new"
-              isMulti // This is what enables multiple selections
+
+        >
+          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+            <img
+              className="close-modal-share"
+              onClick={closeModal}
+              src="/plus.svg"
             />
-            <div className="modal-convert-btns">
-              <button type="submit">Share</button>
-            </div>
-          </form>
-        </div>
-      </Modal>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendRefferal();
+              }}
+            >
+              <h3 className="heading-category">Select Contact(s) </h3>
+              <span className="share-contact-comment">
+                Grow your network - Bigger Network - More Leads{" "}
+              </span>
+              {error && <p className="error-category">{error}</p>}
+              <Select
+                placeholder={
+                  <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
+                }
+                ref={selectRef}
+                value={selectedContacts}
+                menuIsOpen={true}
+                onChange={(selectedOptions) => {
+                  setSelectedContacts(selectedOptions);
+
+                  // You can also extract the values into an array if needed
+                }}
+                onInputChange={(input) => setSearchText(input)}
+                options={contactOptions}
+                components={{
+                  DropdownIndicator: () => null,
+                  IndicatorSeparator: () => null,
+                  Menu: (props) => (
+                    <CustomDropdown searchText={searchText} {...props} />
+                  ),
+                }}
+                styles={colourStyles}
+                className="select-new"
+                isMulti // This is what enables multiple selections
+              />
+              <div className="modal-convert-btns">
+                <button type="submit">Share</button>
+              </div>
+            </form>
+          </div>
+        </Modal>
       </div>
       {/* <div className="search-group">
        <input type="text" placeholder="Search here"/>
        <img src="/search.svg" />
       </div> */}
       <div className="subscription-btnn  ">
-        {plan == 2 || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button>}
+        {subscriptionStatus === "active" || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button>}
         {/* <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button> */}
       </div>
 
@@ -450,8 +453,8 @@ const NavbarContainer = (props) => {
               <div onClick={() => setShowMenu(false)} className="profile-menu">
                 <Link to="/profile">My Profile</Link>
                 <Link onClick={handleLogout}>Logout</Link>
-                 <Link to="/manage-subscription">Manage Subscription</Link>
-                {roleId == 1 &&<Link to='/manage-configure'>Manage Configure</Link>}
+                <Link to="/manage-subscription">Manage Subscription</Link>
+                {roleId == 1 && <Link to='/manage-configure'>Manage Configure</Link>}
               </div>
             )}
           </div>

@@ -109,7 +109,6 @@ const UpgradePlan = () => {
           const response = await axios.get(`${url}api/list-limits`, { headers });
           const responseData = response.data.limits
           setconfigData(responseData);
-          console.log("data", responseData);
         } catch (error) {
           console.error("error", error)
         }
@@ -120,8 +119,6 @@ const UpgradePlan = () => {
 
     return (
         <>
-
-
             <div className="add_property_btn upgrade-plan">
                 <div className="inner-pages-top upgrade-plan-heading">
                     <h3>Upgrade Plan</h3>

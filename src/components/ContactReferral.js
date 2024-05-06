@@ -40,7 +40,7 @@ const ContactReferral = ({ role }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
- 
+
   const { auth, email, property, setProperty, setAuth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
@@ -72,20 +72,25 @@ const ContactReferral = ({ role }) => {
 
 
   const sendRefferal = async (contact) => {
-    const response = await axios.post(`${url}api/contacts/share`,
-      { sendTo: id, selectedContacts: [contact], type: 2 }, {
-      headers,
-    });
-    if (response.status === 200) {
-      toast.success("Contact Sent successfully", {
-        autoClose: 3000,
-        position: toast.POSITION.TOP_RIGHT,
+    try {
+      const response = await axios.post(`${url}api/contacts/share`,
+        { sendTo: id, selectedContacts: [contact], type: 2 }, {
+        headers,
       });
-      setSelectedContacts()
-      closeModal()
-
+      if (response.status === 200) {
+        toast.success("Contact Sent successfully", {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setSelectedContacts()
+        closeModal()
+      }
+    } catch (error) {
+      toast.error("error in sending refferal")
+      console.error("error", error)
     }
   }
+
   const convert = async (e) => {
     e.preventDefault()
     if (!seletedCategory?.value) {
@@ -153,13 +158,13 @@ const ContactReferral = ({ role }) => {
       email,
       phone,
       category_name,
-      sendTo: id, selectedContacts: [contact.id], 
+      sendTo: id, selectedContacts: [contact.id],
     };
 
     try {
-      const response = await axios.post(`${url}klientale-contact-send-me`, combinedObject, { headers }
+      const response = await axios.post(`${url}api/klientale-contact-send-me`, combinedObject, { headers }
       );
-    
+
       if (response.status === 200) {
         toast.success("Contact Shared successfully", {
           autoClose: 3000,
@@ -298,7 +303,7 @@ const ContactReferral = ({ role }) => {
       console.error("User creation failed:", error);
     }
   };
-  
+
 
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });

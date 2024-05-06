@@ -18,6 +18,7 @@ const [auth, setAuth] = useState(
   const [plan, setPlan]= useState(
     localStorage.getItem('plan')? localStorage.getItem('plan') : null
   )
+  const[subscriptionStatus , setSubscriptionStatus]= useState(localStorage.getItem("subscription_status"))
   const [property, setProperty] = useState([ ]); 
   const [todo, setTodo] = useState({}); 
   const [tasklength,setTasklength]=useState(0)
@@ -25,7 +26,7 @@ const [auth, setAuth] = useState(
   const [contactlength,setConatctlength]=useState(0)
 
   return (
-    <AuthContext.Provider value={{ email, setEmail ,auth, setAuth,property,setProperty,todo,setTodo,tasklength,setTasklength, plan, setPlan,leadlength,setLeadlength,contactlength,setConatctlength ,roleId}}>
+    <AuthContext.Provider value={{ subscriptionStatus,setSubscriptionStatus,email, setEmail ,auth, setAuth,property,setProperty,todo,setTodo,tasklength,setTasklength, plan, setPlan,leadlength,setLeadlength,contactlength,setConatctlength ,roleId}}>
       {children} 
     </AuthContext.Provider>
   );

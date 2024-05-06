@@ -29,7 +29,8 @@ const Login = () => {
 
       // Extract the token from the response data
       const token = response.data.token;
-
+      const responseData = await response.data.details
+      console.log("response data" , responseData)
       // Store the token in local storage or context for authentication
       setAuth({ token: `Bearer ${token}` });
       localStorage.setItem('token', `Bearer ${token}`);
@@ -37,7 +38,8 @@ const Login = () => {
       localStorage.setItem("email", response.data.details.email)
       localStorage.setItem("name", response.data.details.name)
       localStorage.setItem("roleId", response.data.details.roleId)
-      let plan = localStorage.setItem("plan", response.data.details.plan);
+      localStorage.setItem("plan", response.data.details.plan);
+     // localStorage.setItem("subscription_status" ,response.data.subscription_status)
       // Show a success message to the user using react-toastify
       // toast.success('Login was successful', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
 

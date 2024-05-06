@@ -438,6 +438,7 @@ else{
                 </>
               )
                 }
+
               {active == 3 &&(
                 <>
                    <th>IP Address</th>
@@ -447,6 +448,7 @@ else{
               }
             </tr>
           </thead>
+          
           {contacts.length > 0 &&
             contacts.map((contact) => (
               <tbody>

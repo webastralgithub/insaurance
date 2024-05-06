@@ -49,7 +49,7 @@ const AddLead = ({user}) => {
 
   const navigate = useNavigate();
 
-  const { auth } = useContext(AuthContext);
+  const { auth,leadlength,setLeadlength } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -221,6 +221,7 @@ getCategories()
 
       if (response.status === 201) {
         // Contact added successfully
+        setLeadlength(leadlength+1)
         navigate("/leads"); // Redirect to the contacts list page
       } else {
         console.error("Failed to add contact");

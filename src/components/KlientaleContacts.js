@@ -56,7 +56,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
       {filteredOptions.map((option) => (
         <div
           onClick={() => handleOptionClick(option)}
-          key={option.value}
+          key={option?.value}
           className={`custom-option ${isOptionSelected(option) ? "selected" : ""
             }`}
           style={{
@@ -65,7 +65,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
               : "",
           }}
         >
-          <label htmlFor={option.value}>{option.label}</label>
+          <label htmlFor={option?.value}>{option?.label}</label>
           <div className="circle"></div>
           {/* <input
             type="radio"
@@ -100,13 +100,13 @@ const KlientaleContacts = ({ role }) => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
   const [seletedCategory, setSelectedCategory] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const [filtered, setfilteredUsers] = useState(null);
   const [modalMode, setModalMode] = useState("");
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewState, setViewState] = useState("contacts");
-  const [currentPage, setCurrentPage] = useState(1);
+
   const [width, setWidth] = useState(window.innerWidth);
 
   const { auth, email, property, setProperty, setAuth } = useContext(AuthContext);
@@ -128,6 +128,7 @@ const KlientaleContacts = ({ role }) => {
       window.removeEventListener("resize", handleWindowSizeChange);
     };
   }, []);
+
   useEffect(() => {
     // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
@@ -140,6 +141,7 @@ const KlientaleContacts = ({ role }) => {
       }
     }
   }, [selectedContacts]);
+
   const colourStyles = {
     valueContainer: (styles) => ({
       ...styles,
@@ -253,6 +255,9 @@ const KlientaleContacts = ({ role }) => {
 
   useEffect(() => {
     fetchUsers();
+  }, [])
+  useEffect(() => {
+
     fetchCategotires();
   }, []);
 
@@ -297,6 +302,7 @@ const KlientaleContacts = ({ role }) => {
   }
   const handleSelectChange = async (event) => {
     event.preventDefault();
+    setCurrentPage(1)
     const filteredUsers = users.filter(user => {
       return seletedCategory.some(option => option.label === user.category_name);
     });
@@ -328,17 +334,19 @@ const KlientaleContacts = ({ role }) => {
     setSelectedContacts(null);
     setIsOpen(false);
   };
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
 
-  const contactsToDisplay = filteredContacts.slice(
+
+  const contactsPerPage = 10;
+  const contactsToDisplay = filtered?.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   );
   // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
+  const totalPages = Math.ceil(filtered?.length / contactsPerPage);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
   const PlaceholderWithIcon = (props) => (
     <div
       style={{
@@ -361,7 +369,6 @@ const KlientaleContacts = ({ role }) => {
   }, []);
 
   useEffect(() => {
-
     fetchCategotires();
   }, []);
 
@@ -434,15 +441,11 @@ const KlientaleContacts = ({ role }) => {
     /> */}
 
         <div className="icon-dashboard share-ref-top-wrp become-klintale">
-          <button onClick={()=>navigate("/become-klintale")}>
+          <button onClick={() => navigate("/become-klintale")}>
             <p>SignUp To Klientale</p>
           </button>
           <button onClick={() => setIsOpen(true)}>
-
             <p>My Prefrences</p>
-
-            {/* <div className="icon-dashboard-item" /> */}
-
           </button>
         </div>
         <div className="search-group">
@@ -472,7 +475,7 @@ const KlientaleContacts = ({ role }) => {
             </tr>
           </thead>
           <tbody>
-            {filtered && filtered.map((user) => (
+            {contactsToDisplay && contactsToDisplay.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
@@ -497,7 +500,7 @@ const KlientaleContacts = ({ role }) => {
           </tbody>
         </table>
 
-        {totalPages > 1 && !active && (
+        {totalPages > 1 &&  (
           <div className="pagination">
             {Array.from({ length: totalPages }, (_, index) => (
               <button

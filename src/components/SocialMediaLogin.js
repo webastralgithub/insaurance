@@ -133,9 +133,9 @@ const getPostById= async()=>{
       <div className="new-social" style={{display:"flex"}} >
 
 <FacebookLoginButton editedContact={editedContact}  connectedAccounts={connectedAccounts} setConnectedAccounts={setConnectedAccounts} />
-      <LinkedIn title={title}/>
+      <LinkedIn editedContact={editedContact}/>
       <button onClick={shareOnInstagram}> Instagram</button>
-       <Instagram />
+       <Instagram  editedContact={editedContact} />
       </div>
 
       </div>
