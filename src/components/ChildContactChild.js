@@ -129,7 +129,7 @@ localStorage.setItem("parent",name)
   setParentId(id)
     setParentView(true)
    
-    console.log(id)
+  
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

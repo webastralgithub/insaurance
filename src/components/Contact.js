@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Select,{ components } from 'react-select';
 import "./admin.css"
-
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
@@ -164,7 +163,6 @@ const [searchText, setSearchText] = useState('');
     window.URL.revokeObjectURL(url);
     closeModal()
   };
-
   const convert = async (e) => {
     e.preventDefault()
    if(!seletedCategory?.value){
@@ -189,7 +187,7 @@ const [searchText, setSearchText] = useState('');
   }
   const handleUpload = async () => {
     if (!selectedFile) {
-      
+      console.log("hereeeeee")
       toast.push(
         <Message type="error" closable duration={5000}>
          Please select a file
@@ -240,9 +238,8 @@ const [searchText, setSearchText] = useState('');
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
-      background: "#fff",
+      background: "#000",
       border:"1px solid #fff",
-      padding:"0"
     },
     overlay:{
       backgroundColor: "rgb(0 0 0 / 75%)",
@@ -263,7 +260,6 @@ const [searchText, setSearchText] = useState('');
     setSelectedContacts([])
     setIsOpen(false);
   };
-
   const colourStylesCAt = {
     menu:(styles)=>({
       ...styles,
@@ -348,7 +344,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-  
+      console.log("User created successfully!",res);
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -424,7 +420,7 @@ overflow:"unset"
       setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.error(error)
+      console.log(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -447,7 +443,7 @@ overflow:"unset"
 localStorage.setItem("parent",name)
   setParentName(name)
    navigate(`${id}`)
-  
+    console.log(id)
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
@@ -595,7 +591,7 @@ sendRefferal()
       > <img src="/back.svg" /></button>} {parentView ?`${parentName} Family `:"Contacts"}</h3>
        <span class="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px" , "position":"absolute", "top":"200px"}}>
         
-       Your contacts are fully encrypted and cannot be seen or accessed by anybody.</span>
+       Your contacts are in your computer only and not on our server and shared by anyone.</span>
       <div className="add_user_btn">
 
      {parentView ? <button onClick={() =>navigate(`/contacts/add/${parentid}`)}>
@@ -691,10 +687,11 @@ sendRefferal()
               })
             }
             openModal("add")
+          
+          
           } }      > Convert to Lead</button>  
           </td>    
           <td>
-
 <button className="permissions"
           onClick={()=>{
          localStorage.setItem("parent",contact.firstname)
@@ -710,7 +707,6 @@ sendRefferal()
               </tr>
           </tbody> ))}
         </table>
-
         {totalPages > 1 && (
   <div className="pagination">
     {Array.from({ length: totalPages }, (_, index) => (

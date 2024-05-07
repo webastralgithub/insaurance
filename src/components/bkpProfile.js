@@ -104,7 +104,7 @@ export default function Profile(props) {
         }
           );
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     })();
   }, []);
@@ -290,7 +290,7 @@ if(user.email){
         position: toast.POSITION.TOP_RIGHT,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   return (

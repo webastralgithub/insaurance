@@ -3,7 +3,7 @@ import { FacebookShareButton } from 'react-share';
 import { Helmet } from 'react-helmet';
 
 const FacebookLoginButton = (props) => {
-  console.log(props);
+
   const shareUrl = `${process.env.REACT_APP_API_URL}/share/${props.editedContact.id}`;
 
   return (

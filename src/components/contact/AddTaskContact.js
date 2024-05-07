@@ -12,7 +12,7 @@ const AddTaskContact = () => {
     const{id}=useParams()
     const parent=localStorage.getItem("parent")
     const phonenum=localStorage.getItem("phone")
-    console.log(phonenum,"fdffddfsfdfd")
+  
   const [contact, setContact] = useState(
     {
         Followup:`Call ${parent}` ,
@@ -138,7 +138,7 @@ const sourceOptions = [
   const getContacts = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
-      console.log(response.data)
+    
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
         value: realtor.id,
         label: realtor.firstname,

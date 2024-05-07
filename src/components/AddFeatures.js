@@ -53,7 +53,7 @@ const AddFeatures = () => {
             return
         }
         try {
-            console.log("formData", formData)
+       
             const response = await axios.post(`${url}api/limit`, formData, { headers });
             const responseData = response.data;
             setFormdata({

@@ -10,7 +10,7 @@ import { Circles } from 'react-loader-spinner'
 
 const UpgradePlan = () => {
     const url = process.env.REACT_APP_API_URL;
-    const { auth, setPlan, plan } = useContext(AuthContext);
+    const { auth, setPlan, plan,subscriptionStatus,setSubscriptionStatus } = useContext(AuthContext);
     const headers = {
         Authorization: auth.token,
     };
@@ -91,6 +91,7 @@ const UpgradePlan = () => {
 
             if (response.status === 200) {
                 toast.success(response.data.message);
+                setSubscriptionStatus("active")
                 setPlan(2)
                 setIsLoader(false)
                 setIsOpen(false)

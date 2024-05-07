@@ -104,6 +104,13 @@ const EmailCampaign = () => {
     getEmailTemplatesByUserId();
   }, []);
 
+  const [dataUrlTemplate, setdataUrlTemplate] = useState([])
+  const convertToDataUrl = (htmlContent) => {
+    const encodedHtml = btoa(htmlContent);
+    return `data:text/html;base64,${encodedHtml}`;
+  };
+
+
   const getEmailTemplates = async () => {
     try {
       const response = await axios.get(`${url}api/get/email`, {
@@ -113,6 +120,12 @@ const EmailCampaign = () => {
       });
       if (response.data && Array.isArray(response.data)) {
         setTemplates(response.data);
+        const dataUrls = response?.data?.map(template => ({
+          id: template.id,
+          name: template.name,
+          dataUrl: convertToDataUrl(template.text)
+        }));
+        setdataUrlTemplate(dataUrls)
       } else {
         console.error("Invalid response format:", response);
       }
@@ -120,7 +133,7 @@ const EmailCampaign = () => {
       console.error("Error fetching email templates:", error);
     }
   };
-
+  console.log("dataUrlTemplate", dataUrlTemplate)
   const getEmailTemplatesByUserId = async () => {
     try {
       const response = await axios.get(
@@ -317,22 +330,6 @@ const EmailCampaign = () => {
 
     const handleUserEdit = async (templateUserId) => {
       setUserIsEditMode(true);
-
-      // try {
-      //   const response = await axios.get(`${url}api/get/email/${templateUserId}`, {
-      //     headers: {
-      //       Authorization: `Bearer ${auth.token}`,
-      //     },
-      //   });
-      //   if (response.data && response.data.text) {
-      //     setUserPreviewContent(response.data.text);
-      //     setUserIsPreviewModalOpen(true);
-      //   } else {
-      //     console.error("Invalid email template format:", response);
-      //   }
-      // } catch (error) {
-      //   console.error("Error fetching email template:", error);
-      // }
     };
 
     const handleUserSave = async () => {
@@ -361,6 +358,7 @@ const EmailCampaign = () => {
 
         getEmailTemplatesByUserId()
       } catch (error) {
+        toast.error("Template server is busy")
         console.error("Error fetching email template:", error);
       }
 
@@ -422,7 +420,7 @@ const EmailCampaign = () => {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
-  
+
 
   const PlaceholderWithIcon = (props) => (
     <div
@@ -587,10 +585,12 @@ const EmailCampaign = () => {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-     // setSelectedContacts([]);
+      // setSelectedContacts([]);
       closeModal();
     }
   };
+
+
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -647,7 +647,7 @@ const EmailCampaign = () => {
         {!chooseTemplate && <>
           <div className="inner-pages-top">
             <h3> Email Campaigns</h3>
-            <div class="add_user_btn">
+            <div className="add_user_btn">
               <button onClick={() => setChooseTemplate(true)}> Send New Email </button>
             </div>
             <div className="search-group">
@@ -663,15 +663,15 @@ const EmailCampaign = () => {
           </div>
 
 
-          <div className="add_property_btn">
+          <div className="add_property_btn" >
             <div className="template-grid">
               <div className="new-email-tem-set">
-                <ul class="image-list">
-                  {userTemplates.map((userTemplate) => (
+                <ul className="image-list">
+                  {userTemplates.map((userTemplate, index) => (
                     <>
-                      <li>
+                      <li key={index}>
                         <input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
-                        <label for={userTemplate.id}>
+                        <label htmlFor={userTemplate.id}>
                           <div key={userTemplate.id} className="template-item">
                             {/* Add div for preview */}
 
@@ -699,45 +699,6 @@ const EmailCampaign = () => {
                 </ul>
               </div>
             </div>
-
-            {/* <div className="camp-gap">
-              {templateSendEmailContent == "custom" &&
-                <>
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={content.emailContent}
-                    onChange={(event, editor) => {
-                      const data = editor.getData();
-                      setContent({ ...content, emailContent: data });
-                    }}
-                    config={{
-                      toolbar: [
-                        "heading",
-                        "|",
-                        "bold",
-                        "italic",
-                        "link",
-                        "|",
-                        "bulletedList",
-                        "numberedList",
-                        "|",
-                        "undo",
-                        "redo",
-                      ],
-                    }}
-                    className="custom-ckeditor"
-                    style={{ width: "100%" }}
-                  />
-
-                  <div className="icon-dashboard share-ref-top-wrp camp-gap-button-wrapper-nxtt">
-                    <button onClick={() => setIsOpen(true)}>
-                      <p>Share</p>
-                    </button>
-                  </div>
-                </>
-              }
-
-            </div> */}
           </div>
         </>}
       </>
@@ -756,10 +717,9 @@ const EmailCampaign = () => {
                   templateContent={previewContent}
                   onSave={updateEmailTemplate}
                 />
-
-                {templates.map((template) => (
+                 {templates.map((template) => (
                   <div key={template.id} className="template-item">
-                    <label for={template.id}></label>
+                    <label htmlFor={template.id}></label>
                     <div
                       className="email-template-box"
                       style={{
@@ -771,11 +731,32 @@ const EmailCampaign = () => {
                     >
                       <div dangerouslySetInnerHTML={{ __html: template.text }} />
                       <button onClick={() => openTemplate(template.id, template.text, template.name)}>Choose template</button>
-                      {/* <button onClick={() => openPreviewModal(template.id, template.text)}>choose template</button> */}
-                    </div>
+                       <button onClick={() => openPreviewModal(template.id, template.text)}>choose template</button> 
+                     </div>
                     <div className="email-template-name" >{template.name}</div>
                   </div>
-                ))}
+                ))} 
+{/* <div>  {dataUrlTemplate && dataUrlTemplate?.map((template) => (
+                  <div key={template.id} className="template-item">
+                    <label htmlFor={template.id}></label>
+                    <div
+                      className="email-template-box"
+                      style={{
+                        width: "100%",
+                        height: "100px",
+                        border: "1px solid #ccc",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <img src={template.dataUrl} alt="Template Preview" />
+                      {/* <div dangerouslySetInnerHTML={{ __html: template.text }} /> */}
+                      {/* <button onClick={() => openTemplate(template.id, template.dataUrl, template.name)}>Choose template</button> */}
+                    
+                    {/* </div>
+                    <div className="email-template-name" >{template.name}</div>
+                  </div>
+                ))}</div> */} */
+              
               </>}
 
             {active == "2" && <><div className="custom-text-tab-sec">
@@ -860,7 +841,7 @@ const EmailCampaign = () => {
               }}
               styles={colourStyles}
               className="select-new"
-              isMulti 
+              isMulti
             />
 
             {/* main share button */}

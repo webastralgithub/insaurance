@@ -195,8 +195,15 @@ const NavbarContainer = (props) => {
           headers,
         });
         let userData = user.data.user;
-        localStorage.setItem('subscription_status' , userData.subscription_status)
-        
+        let userDataLead = user.data
+
+        localStorage.setItem('subscription_status', userData.subscription_status)
+        localStorage.getItem('category_id', userData.category_id)
+        localStorage.setItem("totalReffralEarnedMoney", userDataLead.totalReffralEarnedMoney)
+        localStorage.setItem("totalAvailableJobs", userDataLead.totalAvailableJobs)
+        localStorage.setItem("totalReffrals", userDataLead.totalReffrals)
+        localStorage.setItem("totalReffralsReceived", userDataLead.totalReffralsReceived)
+
         setPreviewImage(
           userData.profileImg ? userData.profileImg : "/placeholder@2x.png"
         );
@@ -412,9 +419,9 @@ const NavbarContainer = (props) => {
 
       <div className="icon-dashboard share-ref-top-wrp">
         <button onClick={() => setIsOpen(true)}>
-          <div class="tooltip">
+          <div className="tooltip">
             <p>Share Us</p>
-            <span class="tooltiptext">
+            <span className="tooltiptext">
               Grow your network -<br></br> Bigger Network - More Leads
             </span>
           </div>

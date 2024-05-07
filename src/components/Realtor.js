@@ -139,7 +139,7 @@ const Realtor = () => {
     try {
       //  const res= await axios.get(`${process.env.REACT_APP_API_URL}api/role`);
       //  setRoles(res.data.roles)
-      // console.log("User created successfully!",res);
+   
     } catch (error) {
       console.error("User creation failed:", error);
     }

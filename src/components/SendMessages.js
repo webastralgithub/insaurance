@@ -432,7 +432,7 @@ const SendMessage = ({ role }) => {
       const res = await response.data;
       setGroupContact(res);
     } catch (error) {
-      console.log("id data fetching error", error);
+      console.error("id data fetching error", error);
     }
   }
 

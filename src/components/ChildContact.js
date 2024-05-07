@@ -276,7 +276,7 @@ const ChildContact = (props) => {
                       onChange={(e) => handlePhoneNumberChange(e, index)}
                       placeholder="+1 (___) ___-____"
                     />
-                    {console.log(errCont==contact.id,phoneerr)}
+                    
                    {errCont==contact.id && phoneerr  && <span className="error-message">{phoneerr}</span>}
                      {errCont==0 &&! phoneerr  &&contact.id && <span className="error-message">{phoneerr}</span>}
                   </td>

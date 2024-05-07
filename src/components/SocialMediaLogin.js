@@ -8,6 +8,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import { AuthContext } from './context/AuthContext';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
  // Functions for connecting/disconnecting accounts
 
 const SocialMediaLogin = () => {
@@ -20,22 +21,22 @@ const SocialMediaLogin = () => {
 
   const [editedContact,setEditedContact] =useState({});
 const fetchConnectedAccounts=()=>{
-  console.log()
+
 }
   const shareUrl = 'http://insurancecrm.nvinfobase.com/categories/6';
   const title = 'Critical Illness Insurance';
   const imageUrl = 'https://insauranceadmin.nvinfobase.com/storage/uploads/jL8ADup73NCwUx6h6xpiE6xNTVCz7nOB8lNAmAFA.webp'; // URL of the image to be shared
 const connectAccount=(platform)=>{
-  console.log(platform)
+
 }
 const disconnectAccount=()=>{
-  console.log()
+
 }
 const { auth,setAuth,tasklength,setTasklength  } = useContext(AuthContext);
 const headers = {
   Authorization: auth.token,
 };
-console.log(connectedAccounts)
+
   // Function to check currently connected accounts
   const checkConnectedAccounts = async () => {
     // API call to fetch user's connected accounts from the backend
@@ -72,9 +73,11 @@ console.log(connectedAccounts)
       });
   
       if (response.ok) {
-        console.log('Posted to Facebook successfully!');
+        toast.success('Posted to Facebook successfully!')
+        
         // Handle success
       } else {
+        toast.error('Failed to post to Facebook:', response)
         console.error('Failed to post to Facebook:', response);
         // Handle error
       }

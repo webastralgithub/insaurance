@@ -319,7 +319,7 @@ overflow:"unset"
 
      
 <h3>  {parentView ?`${parentName} Family `:"Posts"}</h3>
-<div class="add_user_btn">
+<div className="add_user_btn">
          <button onClick={() =>navigate("/add-post")}>
     <img src="/plus.svg" />
     Add Post</button>

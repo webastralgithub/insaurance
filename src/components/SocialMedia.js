@@ -31,7 +31,7 @@ phoneNumber=phoneNumber.slice(0,10)
 }
 const navigate=useNavigate()
   const {auth}=useContext(AuthContext)
-  console.log(auth)
+
   const headers={
     Authorization:auth.token
   }
@@ -41,7 +41,7 @@ const navigate=useNavigate()
   };
   const handleFacebookLogin = (response) => {
     // Handle the response from Facebook login
-    console.log(response);
+   
   };
   useEffect(() => {
     window.addEventListener('resize', handleWindowSizeChange);
@@ -135,7 +135,7 @@ const filteredUsers = filteredUsersNew?.slice(startIndex, endIndex);
     try {
     //  const res= await axios.get(`${process.env.REACT_APP_API_URL}api/role`);
     //  setRoles(res.data.roles)
-      // console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -143,9 +143,9 @@ const filteredUsers = filteredUsersNew?.slice(startIndex, endIndex);
   const getUsers = async () => {
     try {
      const res= await axios.get(`${process.env.REACT_APP_API_URL}api/social/get`, { headers });
-     console.log(res.data,"dgdgdgg")
+
      setUsers(res.data)
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -168,7 +168,7 @@ getUsers()
         position: toast.POSITION.TOP_RIGHT,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

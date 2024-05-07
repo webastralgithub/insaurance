@@ -10,7 +10,7 @@ const ManageSubscription = () => {
 
   const [subscriptions, setSubscrition] = useState([]);
   const [activeSubscriptionStatus, setActiveSubscriptionStatus] = useState([]);
-  const { auth, plan, setPlan } = useContext(AuthContext);
+  const { auth, plan, setPlan,subscriptionStatus,setSubscriptionStatus } = useContext(AuthContext);
   const navigate = useNavigate()
   const headers = {
     Authorization: auth.token,
@@ -41,11 +41,11 @@ const ManageSubscription = () => {
     } else {
       status = 'active'
     }
-    console.log("id", id)
-    console.log("status", status);
+  
     try {
       const res = await axios.get(`${url}api/cancel-subscription/${id}/${status}`, { headers });
       getSubscription()
+      setSubscriptionStatus("canceled")
       toast.success(res.data.message);
       // if (activeSubscriptionStatus == "active") {
       //   setPlan(1)

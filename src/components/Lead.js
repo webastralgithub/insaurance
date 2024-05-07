@@ -83,9 +83,6 @@ const Lead = () => {
     }
   };
 
-  console.log("categories", categories);
-  console.log("categories opetions", categoriesoptions);
-
   const handleDeleteClick = (propertyId) => {
     confirmAlert({
       title: 'Confirm Delete',
@@ -367,7 +364,7 @@ const Lead = () => {
             }
           }}
         > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Leads"}</h3>
-             <span class="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px" , "position":"absolute", "top":"200px"}}>
+             <span className="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px" , "position":"absolute", "top":"200px"}}>
         
         Your contacts are fully encrypted and cannot be seen or accessed by anybody.</span>
         <div className="add_user_btn">

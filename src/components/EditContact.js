@@ -68,7 +68,7 @@ const childref=useRef()
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6,10)}`;
   };
   const handleAddressChange = (newAddress) => {
-    console.log("Dfdffdfdfd",newAddress)
+
     setEditedContact({ ...editedContact, address1: newAddress });
   };
   const serviceOptions = [
@@ -125,14 +125,14 @@ getCategories()
     }));
    
      setCategories( [noSelectionOption,...options])
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
   const validateForm = () => {
     let isValid = true;
-console.log(editedContact.firstname,"fdfddf")
+
     if (!editedContact.firstname ) {
       if(editedContact.firstname==undefined){
       
@@ -162,7 +162,7 @@ if(editedContact.phone){
       return isValid;
   };
   const getContactDetails = async () => {
-    console.log("heree")
+   
     try {
       if(editedContact.firstname){
         return
@@ -320,7 +320,7 @@ if(editedContact.phone){
   }
   };
   const formatDate = (dateString) => {
-    console.log(dateString,"GDgggg",new Date())
+    
     if (!dateString) {
       return ""; // Handle cases where the date string is empty or undefined
     }
@@ -336,7 +336,7 @@ if(editedContact.phone){
     setPhoneError("")
     // Extract the raw phone number from the input
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-console.log(rawPhoneNumber.slice(0,10),"fsffsf")
+
     // Update the phone number state with the raw input
     setEditedContact({ ...editedContact,phone: rawPhoneNumber.slice(1,11) });
   };
@@ -483,7 +483,7 @@ console.log(rawPhoneNumber.slice(0,10),"fsffsf")
               placeholder="Select User..."
               value={selectedRealtor}
               onChange={(selectedOption) => {
-                console.log(selectedOption)
+                
                 setEditedContact({ ...editedContact, realtorId: selectedOption.value });
                 setSelectedRealtor(selectedOption);
               }}
@@ -604,7 +604,7 @@ console.log(rawPhoneNumber.slice(0,10),"fsffsf")
       <div className="form-user-add-inner-wrap">
       <label> Birthday</label>
       <div className="edit-new-input">
-        {console.log(editedContact.birthday,"dddadd")}
+     
       <input
           name="birthday"
           type="date"

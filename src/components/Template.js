@@ -195,7 +195,7 @@ const Templates = () => {
             }));
             setContactoptions(realtorOptions);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             // Handle error
         }
     };

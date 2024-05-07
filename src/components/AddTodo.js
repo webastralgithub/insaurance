@@ -19,7 +19,7 @@ const getCurrentTime = (date) => {
 }
 const AddTodo = () => {
   const{date}=useParams()
-  // console.log(date)
+
   const [contact, setContact] = useState(
     {
         Followup:"" ,

@@ -31,16 +31,16 @@ const AddPost = () => {
   });
   
 const fetchConnectedAccounts=()=>{
-  console.log()
+
 }
   const shareUrl = 'http://insurancecrm.nvinfobase.com/categories/6';
   const title = 'Critical Illness Insurance';
   const imageUrl = 'https://insauranceadmin.nvinfobase.com/storage/uploads/jL8ADup73NCwUx6h6xpiE6xNTVCz7nOB8lNAmAFA.webp'; // URL of the image to be shared
 const connectAccount=(platform)=>{
-  console.log(platform)
+
 }
 const disconnectAccount=()=>{
-  console.log()
+
 }
 
   // Function to check currently connected accounts

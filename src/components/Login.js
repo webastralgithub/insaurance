@@ -26,12 +26,9 @@ const Login = () => {
     try {
       // Make a POST request to the login API endpoint
       const response = await axios.post(`${process.env.REACT_APP_API_URL}api/auth/login`, formData);
-
+      const responseData = await response.data.details
       // Extract the token from the response data
       const token = response.data.token;
-      const responseData = await response.data.details
-      console.log("response data" , responseData)
-      // Store the token in local storage or context for authentication
       setAuth({ token: `Bearer ${token}` });
       localStorage.setItem('token', `Bearer ${token}`);
       localStorage.setItem("id", response.data.details.id)
@@ -39,17 +36,10 @@ const Login = () => {
       localStorage.setItem("name", response.data.details.name)
       localStorage.setItem("roleId", response.data.details.roleId)
       localStorage.setItem("plan", response.data.details.plan);
-     // localStorage.setItem("subscription_status" ,response.data.subscription_status)
-      // Show a success message to the user using react-toastify
-      // toast.success('Login was successful', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-
-      // Navigate to the "/property" page (assuming "navigate" is a function that does this)
       navigate("/");
     } catch (error) {
-      // Handle login failure
       console.error("Login failed:", error.response.data.error);
       toast.error(error.response.data.error, { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-      // You may want to display an error message to the user here
     }
   };
 

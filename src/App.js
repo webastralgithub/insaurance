@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import Login from "./components/Login";
 import Admin from "./components/Admin";
 import Roles from "./components/Roles";
@@ -67,13 +67,12 @@ import ManageSubscription from "./components/ManageSubscription";
 import BecomeKlintale from "./components/BecomeKlintale";
 import ManageConfigure from "./components/ManageConfigure";
 import AddFeatures from "./components/AddFeatures";
-import FeatureUdate from "./components/FeatureUpdate";
 import FeatureUpdate from "./components/FeatureUpdate";
 
 
 
 const App = () => {
-
+ 
   const [toggle, setToggle] = useState(false)
   const { auth , roleId } = useContext(AuthContext)
   const [role, setRole] = useState(0)
@@ -84,6 +83,7 @@ const App = () => {
     if (!token) {
       return 0
     }
+  
     const name = localStorage.getItem("name")
     const roleId = localStorage.getItem("roleId")
     const id = localStorage.getItem("id")
@@ -172,6 +172,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
             <Route
               path="/contacts/send/:id" exact
               element={
@@ -197,6 +198,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
             <Route
               path="contacts/share/:id" exact
               element={

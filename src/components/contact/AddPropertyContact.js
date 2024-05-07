@@ -19,7 +19,7 @@ import PlacesNew from "../PlacesNew";
 const AddPropertyContact = () => {
   const scrollToRef = useRef(null);
 const {id}=useParams()
-console.log(id)
+
 const parent=localStorage.getItem("parent")
     const [selectedRealtor, setSelectedRealtor] = useState(null);
     const [selectedLawyer, setSelectedLawyer] = useState(null);
@@ -197,7 +197,7 @@ const parent=localStorage.getItem("parent")
   
     const handleChange = (e) => {
       const { name, value } = e.target;
-  console.log(property)
+
       // Clear validation errors when the user makes changes
       clearErrors(name);
   
@@ -233,7 +233,7 @@ const parent=localStorage.getItem("parent")
       return isValid;
     };
     const handleAddressChange = (newAddress) => {
-      console.log(newAddress)
+   
       setProperty({ ...property, address: newAddress });
     };
     const handlePrincipalAddressChange = (newAddress) => {
