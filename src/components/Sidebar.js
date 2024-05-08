@@ -175,6 +175,7 @@ const Sidebar = (props) => {
             </Link>}
                    
             </div> */}
+            
             {props.role == 1 && <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                   <img className="vector-icon" alt="" src="/vector.svg" />
                   <div className="properties daily-events" >Campaigns</div>
@@ -227,6 +228,7 @@ const Sidebar = (props) => {
               </div>
             </Link>}
             </div>
+
             <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
               <div className="order-detail">
 
@@ -235,6 +237,15 @@ const Sidebar = (props) => {
 
               </div>
             </Link>
+            {props.role == 1 &&
+            <Link to="/admin-userlist" className={location.pathname === "/admin-userlist" ? "active" : ""}>
+              <div className="order-detail">
+
+                <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                <div className="daily-events">User List</div>
+
+              </div>
+            </Link>}
            
           
            

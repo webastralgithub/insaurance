@@ -21,6 +21,7 @@ const MyCalendar = () => {
     totalAvailableJobs, totalReffrals, totalReffralsReceived } = useContext(
       AuthContext
     );
+    const url = process.env.REACT_APP_API_URL;
     const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
   const headers = {
     Authorization: auth.token,
@@ -45,7 +46,7 @@ const MyCalendar = () => {
     setTodo(newtask)
     navigate(`/todo-list/edit/${selected.event.id}`)
   }
-  const url = process.env.REACT_APP_API_URL;
+
 
   useEffect(() => {
     getTasks();

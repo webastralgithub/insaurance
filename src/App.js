@@ -68,7 +68,7 @@ import BecomeKlintale from "./components/BecomeKlintale";
 import ManageConfigure from "./components/ManageConfigure";
 import AddFeatures from "./components/AddFeatures";
 import FeatureUpdate from "./components/FeatureUpdate";
-
+import UserList from "./components/UserList";
 
 
 const App = () => {
@@ -548,6 +548,15 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+             <Route
+              path="/admin-userlist" exact
+              element={
+                <PrivateRoute>
+                  <UserList />
+                </PrivateRoute>
+              }
+            />
+
             <Route
               path="/website-visitors" exact
               element={
@@ -636,6 +645,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
             {role == 1 && <Route
               path="/owners/:id" exact
               element={
