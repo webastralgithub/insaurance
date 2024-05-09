@@ -17,9 +17,6 @@ import Modal from "react-modal";
 import { toast } from "react-toastify";
 import "./ToolTip.css";
 
-
-
-
 const CustomDropdown = ({ children, searchText, ...props }) => {
   const selectedOptions = props.getValue();
 

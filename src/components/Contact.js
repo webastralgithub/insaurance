@@ -244,6 +244,7 @@ const Contact = ({ role }) => {
       transform: "translate(-50%, -50%)",
       background: "#000",
       border: "1px solid #fff",
+      padding:"0"
     },
     overlay: {
       backgroundColor: "rgb(0 0 0 / 75%)",
