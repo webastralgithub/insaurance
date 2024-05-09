@@ -24,7 +24,7 @@ const TodoList = ({role}) => {
 
   const navigate = useNavigate();
   const { auth,setAuth,todo,setTodo,tasklength,setTasklength } = useContext(AuthContext);
-  console.log(auth);
+
 
   const headers = {
     Authorization: auth.token,
@@ -33,14 +33,14 @@ const TodoList = ({role}) => {
   //   if (!dateTimeString) {
   //     return ""; // Handle cases where the date-time string is empty or undefined
   //   }
-  // console.log(dateTimeString)
+ 
   //   const dateTime = new Date(dateTimeString);
-  //   console.log(dateTime)
+  
   //   const year = dateTime.getFullYear();
   //   const month = String(dateTime.getMonth() + 1).padStart(2, "0");
   //   const day = String(dateTime.getDate()).padStart(2, "0");
   //   const hours = String(dateTime.getHours()).padStart(2, "0");
-  //   console.log(hours)
+  
   //   const minutes = String(dateTime.getMinutes()).padStart(2, "0");
   //   const seconds = String(dateTime.getSeconds()).padStart(2, "0");
   
@@ -72,9 +72,9 @@ const TodoList = ({role}) => {
     if (!dateTimeString) {
       return ""; // Handle cases where the date-time string is empty or undefined
     }
-  console.log(dateTimeString)
+ 
     const dateTime = new Date(dateTimeString);
-    console.log(dateTime)
+   
     const year = dateTime.getFullYear();
     const month = String(dateTime.getMonth() + 1).padStart(2, "0");
     const day = String(dateTime.getDate()).padStart(2, "0");
@@ -146,10 +146,10 @@ const todayMonthDay = (today.getMonth() + 1).toString().padStart(2, '0') + '-' +
 
 const birthdayTodos = response.data.filter((todo) => {
   if (todo.isBirthday || todo.isAnniversary) {
-    console.log(todo.FollowupDate,"Dvdffd")
+   
     // Extract the month and day part of the FollowupDate
     const todoMonthDay = formatDateNew(todo?.FollowupDate)
-console.log(todoMonthDay,"dfadaffdf",todayMonthDay)
+
     return todoMonthDay === todayMonthDay;
   }
   return todo
@@ -159,7 +159,7 @@ console.log(todoMonthDay,"dfadaffdf",todayMonthDay)
     
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -180,7 +180,7 @@ console.log(todoMonthDay,"dfadaffdf",todayMonthDay)
     const response = await axios.put(`${url}api/todo/update/${id}`,
     {IsRead:status},
     { headers });
-    console.log(response)
+
     getTasks()
     
   } 
@@ -193,12 +193,12 @@ console.log(todoMonthDay,"dfadaffdf",todayMonthDay)
   
   // Rest of your code...
   const contactsPerPage = 10; // Adjust the number of contacts per page as needed
-console.log(filteredContacts,"Dsdd")
+
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   )
-  console.log(contactsToDisplay.length,"SDsdf")
+  
 // Adjust the number of contacts per page as needed
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
   const handlePageChange = (newPage) => {
@@ -248,7 +248,7 @@ console.log(filteredContacts,"Dsdd")
             </tr>
           </thead>
           <tbody>
-            {contactsToDisplay?.map((task) => (
+            {contactsToDisplay?.map((task, index) => (
               <>
              { !task.IsRead&&<tr key={task.id}>
                 <td

@@ -49,7 +49,7 @@ const AddLead = ({user}) => {
 
   const navigate = useNavigate();
 
-  const { auth } = useContext(AuthContext);
+  const { auth,leadlength,setLeadlength } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -141,14 +141,19 @@ default:
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
-     paddingLeft:"0px"
+     paddingLeft:"0px",
+     
     }),
     control: styles => ({ ...styles, border: 'unset',boxShadow:"unset",borderColor:"unset",minHeight:"0" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
      
       return {
         ...styles,
-      
+       backGround:"#fff",
+       color:"#000",
+       position:"relative",
+       zIndex:"99",
+       fontSize:"14px"
      
       };
     },
@@ -170,7 +175,6 @@ getCategories()
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -217,6 +221,7 @@ getCategories()
 
       if (response.status === 201) {
         // Contact added successfully
+        setLeadlength(leadlength+1)
         navigate("/leads"); // Redirect to the contacts list page
       } else {
         console.error("Failed to add contact");
@@ -246,12 +251,13 @@ getCategories()
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-user-add">
+    <form onSubmit={handleSubmit} className="form-user-add form-add-lead">
            <div className="property_header header-with-back-btn">
           
           <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Lead</h3>
         
-          <div className="top-bar-action-btns"><button type="submit" style={{background:"#004686"}} >Save</button>
+          <div className="top-bar-action-btns">
+            {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
           </div>
           </div> 
           <div className="form-user-add-wrapper">
@@ -342,7 +348,7 @@ getCategories()
   
     
       
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap" style={{position:"relative", zIndex:"99"}}>
           <label>Users</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
@@ -366,6 +372,7 @@ getCategories()
           <Select
             placeholder="Select Active Agent..."
             value={selectedAgent}
+            className= "add-lead-select-tab"
             onChange={(selectedOption) => 
                 {
                     setContact({ ...contact, agentId: selectedOption.value })
@@ -373,7 +380,7 @@ getCategories()
             options={realtorOptions}
             components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
             styles={colourStyles}
-            className="select-new"
+            // className="select-new"
             
           />
   

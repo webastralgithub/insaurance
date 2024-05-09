@@ -62,7 +62,7 @@ const EditTodoForm = () => {
     if (name === "FollowupDate") {
       // Convert the date input value to ISO format before updating the state
       const isoDate = formatDate(value);
-      console.log(formatDate(value))
+
       setEditedTodo({ ...editedTodo, [name]: isoDate });
     } else {
       setEditedTodo({ ...editedTodo, [name]: value });
@@ -112,7 +112,7 @@ const EditTodoForm = () => {
 
   const validateForm = () => {
     let isValid = true;
-    console.log(editedTodo.Followup, "fddfdfdff")
+
     if (!editedTodo.Followup) {
 
       if (editedTodo.Followup == undefined) {
@@ -164,7 +164,7 @@ const EditTodoForm = () => {
       const response = await axios.put(`${url}api/todo/update/${id}`,
         { ...editedTodo },
         { headers });
-      console.log(response)
+
       navigate(-1)
       toast.success("Todo updated successfully", {
         autoClose: 3000,
@@ -208,10 +208,7 @@ const EditTodoForm = () => {
 
   const getTodos = async () => {
     const response = await axios.get(`${url}api/todo/get`, { headers });
-console.log("here",response);
-    console.log(id)// Replace with the specific id you want to filter by
     const filtered = response.data.find(x => x.id == id)
-    console.log(filtered, "filtered")
     const followupDateISO = filtered?.FollowupDate
       ? new Date(filtered.FollowupDate).toISOString().slice(0, 16)
       : '';
@@ -223,7 +220,6 @@ console.log("here",response);
   const getContacts = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
-      console.log(response.data)
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
         value: realtor.id,
         label: realtor.firstname,
@@ -249,7 +245,6 @@ console.log("here",response);
   const handlePhoneNumberChange = (event) => {
     // Extract the raw phone number from the input
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-    console.log(rawPhoneNumber, "fsffsf")
     // Update the phone number state with the raw input
     setEditedTodo({ ...editedTodo, phone: rawPhoneNumber.slice(1, 11) });
   };

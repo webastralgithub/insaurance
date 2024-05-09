@@ -1,17 +1,21 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, createContext } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Select from "react-select";
 import Modal from "react-modal";
+//import { Modal, Button } from 'react-bootstrap';
 import axios from "axios";
 import "./EmailCamp.css";
 import { toast } from "react-toastify";
 import { AuthContext } from "./context/AuthContext";
 import { type } from "@testing-library/user-event/dist/type";
+import { useNavigate } from "react-router-dom";
+
+
 
 const CustomDropdown = ({ children, searchText, ...props }) => {
   const selectedOptions = props.getValue();
- 
+
   const handleOptionClick = (option) => {
     const isSelected = selectedOptions.some(
       (selected) => selected.value === option.value
@@ -50,9 +54,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
         <div
           onClick={() => handleOptionClick(option)}
           key={option.value}
-          className={`custom-option ${
-            isOptionSelected(option) ? "selected" : ""
-          }`}
+          className={`custom-option ${isOptionSelected(option) ? "selected" : ""
+            }`}
           style={{
             backgroundColor: isOptionSelected(option)
               ? "rgb(0 70 134 / 8%)"
@@ -81,6 +84,7 @@ const EmailCampaign = () => {
   const [previewContentId, setPreviewContentId] = useState(null);
   const [previewUserContentId, setUserPreviewContentId] = useState(null);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [chooseTemplate, setChooseTemplate] = useState(false);
   const [isUserPreviewModalOpen, setUserIsPreviewModalOpen] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,13 +94,22 @@ const EmailCampaign = () => {
   const [subject, setSubject] = useState("");
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [contactOptions, setContactoptions] = useState([]);
-  const [templateSendEmailContent, setTemplateContent] = useState("template");
-  const ref =useRef()
+  const [templateSendEmailContent, setTemplateSendEmailContent] = useState("template");
+  const [active, setActive] = useState(2)
+  const ref = useRef()
+
   useEffect(() => {
     getContacts();
     getEmailTemplates();
     getEmailTemplatesByUserId();
   }, []);
+
+  const [dataUrlTemplate, setdataUrlTemplate] = useState([])
+  const convertToDataUrl = (htmlContent) => {
+    const encodedHtml = btoa(htmlContent);
+    return `data:text/html;base64,${encodedHtml}`;
+  };
+
 
   const getEmailTemplates = async () => {
     try {
@@ -107,6 +120,12 @@ const EmailCampaign = () => {
       });
       if (response.data && Array.isArray(response.data)) {
         setTemplates(response.data);
+        const dataUrls = response?.data?.map(template => ({
+          id: template.id,
+          name: template.name,
+          dataUrl: convertToDataUrl(template.text)
+        }));
+        setdataUrlTemplate(dataUrls)
       } else {
         console.error("Invalid response format:", response);
       }
@@ -114,22 +133,18 @@ const EmailCampaign = () => {
       console.error("Error fetching email templates:", error);
     }
   };
-
-      const handleChange=(e)=>{
-           setTemplateContent(e.target.value)
-      }
-
+  console.log("dataUrlTemplate", dataUrlTemplate)
   const getEmailTemplatesByUserId = async () => {
     try {
       const response = await axios.get(
         `${url}api/user-email-templates`, {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        });
-    
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+
       if (response.data && Array.isArray(response.data)) {
-        setUserTemplates(response.data); 
+        setUserTemplates(response.data);
       } else {
         console.error("Invalid response format:", response);
       }
@@ -137,15 +152,15 @@ const EmailCampaign = () => {
       console.error("Error fetching email templates:", error);
     }
   };
-  
+
   const updateEmailTemplate = async (id, newData) => {
-    
+
     try {
       if (editedTempalteContent === previewContent) {
         toast.error("No changes detected. Please update the content first.");
         return;
       }
-  
+
       const response = await axios.put(
         `${url}api/update/${previewContentId}`,
         { text: newData },
@@ -168,15 +183,15 @@ const EmailCampaign = () => {
       toast.error("Failed to update email template");
     }
   };
-  
+
   const updateUserEmailTemplate = async (id, newData) => {
-   
+
     try {
       // if (editedUserTempalteContent === previewUserContent) {
       //   toast.error("No changes detected. Please update the content first.");
       //   return;
       // }
-  
+
       const response = await axios.put(
         `${url}api/update/${previewUserContentId}`,
         { text: newData },
@@ -199,7 +214,8 @@ const EmailCampaign = () => {
       toast.error("Failed to update email template");
     }
   };
-  
+
+
   const PreviewModal = ({
     isOpen,
     closeModal,
@@ -227,52 +243,65 @@ const EmailCampaign = () => {
         console.error("Error fetching email template:", error);
       }
     };
+
     setEditedTempalteContent(editedTempalteContent);
-    
+
     const handleSave = () => {
       if (editedTempalteContent.trim() === previewContent.trim()) {
         toast.error("No changes detected. Please update the content first.");
         return;
       }
+      setEditedTempalteContent(editedContent);
+
       onSave(previewContentId, editedContent);
-      // setEditedTempalteContent(editedContent);
+
       closeModal();
+      setIsOpen(true)
     };
 
     const handleContentChange = (event) => {
-      console.log(event);
       setEditedContent(event.target.innerHTML);
     };
 
+    const handleInputChange = (e) => {
+      setSubject(e.target.value)
+    }
+
+    const rootElement = document.getElementById('root');
+    Modal.setAppElement(rootElement);
+
     return (
-      <Modal
-        isOpen={isOpen}
-        onRequestClose={closeModal}
-        className="preview-modal"
-        overlayClassName="preview-modal-overlay"
-      >
-        <div
-          className="preview-content"
-          contentEditable={isEditMode}
-          dangerouslySetInnerHTML={{ __html: templateContent }}
-          onInput={handleContentChange}
-          // previewDataId="1"
-        ></div>
-        {isEditMode && (
-          <button className="save-btn" onClick={handleSave}>
-            <img alt="" src="/save_icon.svg" />
-          </button>
-        )}
-        {!isEditMode && (
-          <button className="edit-box" onClick={handleEdit}>
-            {" "}
-            <img alt="" src="/edit-icon.svg" />
-          </button>
-        )}
-        <button className="close-box" onClick={closeModal}>
-          x
-        </button>
-      </Modal>
+      <div>
+        <div>
+          <Modal
+            isOpen={isOpen}
+            onRequestClose={closeModal}
+            className="preview-modal"
+            overlayClassName="preview-modal-overlay"
+          >
+            <div
+              className="preview-content"
+              contentEditable={isEditMode}
+              dangerouslySetInnerHTML={{ __html: templateContent }}
+              onInput={handleContentChange}
+            ></div>
+            {isEditMode && (
+              <button className="save-btn" onClick={handleSave}>
+                <img alt="" src="/save_icon.svg" />
+              </button>
+            )}
+            {!isEditMode && (
+              <button className="edit-box" onClick={handleEdit}>
+                {" "}
+                <img alt="" src="/edit-icon.svg" />
+              </button>
+            )}
+            <button className="close-box" onClick={closeModal}>
+              x
+            </button>
+          </Modal>
+        </div>
+      </div>
     );
   };
 
@@ -288,19 +317,31 @@ const EmailCampaign = () => {
     setPreviewContentId(null);
   };
 
+
   const PreviewUserModal = ({
     isOpen,
     closeModal,
     templateUserContent,
-    onSave
+    onSave,
   }) => {
     const [isUserEditMode, setUserIsEditMode] = useState(false);
     const [userEditedContent, setUserEditedContent] = useState("");
 
+
     const handleUserEdit = async (templateUserId) => {
       setUserIsEditMode(true);
+    };
+
+    const handleUserSave = async () => {
+      if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
+        toast.error("No changes detected. Please update the content first.");
+        return;
+      }
+
       try {
-        const response = await axios.get(`${url}api/get/email/${templateUserId}`, {
+        const response = await axios.put(`${url}api/update/${previewUserContentId}`, {
+          templateContent: userEditedContent
+        }, {
           headers: {
             Authorization: `Bearer ${auth.token}`,
           },
@@ -311,64 +352,62 @@ const EmailCampaign = () => {
         } else {
           console.error("Invalid email template format:", response);
         }
+
+        closeModal();
+        toast.success("Template Updated successfully")
+
+        getEmailTemplatesByUserId()
       } catch (error) {
+        toast.error("Template server is busy")
         console.error("Error fetching email template:", error);
       }
-    };
-    
-    const handleUserSave = () => {
-      // if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
-      //   toast.error("No changes detected. Please update the content first.");
-      //   return;
-      // }
-    
-      onSave(previewUserContentId, userEditedContent);
-      setUserEditedTempalteContent(userEditedContent);
-      closeModal();
+
+      //setUserEditedTempalteContent(userEditedContent);
+
     };
 
     const handleUserContentChange = (event) => {
-      // console.log("handleContentChange",event.target.innerHTML);
       setUserEditedContent(event.target.innerHTML);
       // setIsEditMode(true);
     };
 
     return (
-      <Modal
-        isOpen={isOpen}
-        onRequestClose={closeModal}
-        className="preview-modal"
-        overlayClassName="preview-modal-overlay"
-      >
-        <div
-          className="preview-content"
-          contentEditable={isUserEditMode}
-          dangerouslySetInnerHTML={{ __html: templateUserContent }}
-          onInput={handleUserContentChange}
-          // previewDataId="1"
-        ></div>
-        {isUserEditMode && (
-          <button className="save-btn" onClick={handleUserSave}>
-            <img alt="" src="/save_icon.svg" />
+      <>
+        <Modal
+          isOpen={isOpen}
+          onRequestClose={closeModal}
+          className="preview-modal"
+          overlayClassName="preview-modal-overlay"
+        >
+          <div
+            className="preview-content"
+            contentEditable={isUserEditMode}
+            dangerouslySetInnerHTML={{ __html: templateUserContent }}
+            onInput={handleUserContentChange}
+          ></div>
+          {isUserEditMode && (
+            <button className="save-btn" onClick={handleUserSave}>
+              <img alt="" src="/save_icon.svg" />
+            </button>
+          )}
+          {!isUserEditMode && (
+            <button className="edit-box" onClick={handleUserEdit}>
+              {" "}
+              <img alt="" src="/edit-icon.svg" />
+            </button>
+          )}
+          <button className="close-box" onClick={closeModal}>
+            x
           </button>
-        )}
-        {!isUserEditMode && (
-          <button className="edit-box" onClick={handleUserEdit}>
-            {" "}
-            <img alt="" src="/edit-icon.svg" />
-          </button>
-        )}
-        <button className="close-box" onClick={closeModal}>
-          x
-        </button>
-      </Modal>
+        </Modal>
+      </>
     );
   };
 
   const openUserPreviewModal = (templateUserId, templateUserContent) => {
+    setUserIsPreviewModalOpen(true);
     setUserPreviewContent(templateUserContent);
     setUserPreviewContentId(templateUserId);
-    setUserIsPreviewModalOpen(true);
   };
 
   const closeUserPreviewModal = () => {
@@ -381,6 +420,8 @@ const EmailCampaign = () => {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+
+
   const PlaceholderWithIcon = (props) => (
     <div
       style={{
@@ -410,6 +451,8 @@ const EmailCampaign = () => {
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
         (contact) => contact.isLead === false
       );
+
+
       // Set the filtered contacts in the state
 
       const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
@@ -418,7 +461,7 @@ const EmailCampaign = () => {
       }));
       setContactoptions(realtorOptions);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // Handle error
     }
   };
@@ -452,7 +495,7 @@ const EmailCampaign = () => {
       overflowY: "auto",
       boxShadow: "none",
     }),
-    menuList: (styles) => ({ ...styles, overflowY: "none", display: "none" }),
+    menuList: (styles) => ({ ...styles, overflowY: "none" }),
     multiValue: (styles) => ({ ...styles, minWidth: "unset" }),
     input: (styles) => ({ ...styles, color: "#fff" }),
     placeholder: (styles) => ({ ...styles, color: "#fff" }),
@@ -478,6 +521,7 @@ const EmailCampaign = () => {
   const handleContactChange = (selectedOptions) => {
     setSelectedContacts(selectedOptions);
   };
+
   const customStyles = {
     content: {
       top: "50%",
@@ -495,24 +539,30 @@ const EmailCampaign = () => {
       zIndex: "9",
     },
   };
+  const [templateName, setTemplateName] = useState("")
+
   const sendRefferal = async () => {
-    console.log(selectedContacts);
-    if(selectedContacts == '' || selectedContacts == undefined){
+    if (!subject) {
+      toast.error("subject must not be empty")
+      return
+    }
+
+    if (selectedContacts == '' || selectedContacts == undefined) {
       toast.error("Please select at least one contact", {
-            autoClose: 3000,
-            position: toast.POSITION.TOP_RIGHT,
-          });
-   return
-}
+        autoClose: 3000,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return
+    }
     try {
-      const response = await axios.post(
-        `${url}api/contacts/email`,
+      const response = await axios.post(`${url}api/contacts/email`,
+
         {
           selectedContacts: selectedContacts.map((option) => option.value),
-          emailContent:content.emailContent,
+          emailContent: content.emailContent,
           subject: subject,
-          selectedemailTemplate:ref.current?ref.current.value:'',
-          type:templateSendEmailContent
+          templateName: templateName,
+          type: templateSendEmailContent
         },
         {
           headers,
@@ -524,149 +574,44 @@ const EmailCampaign = () => {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         });
-        setSelectedContacts();
+        setSelectedContacts([]);
+        setSubject("")
+        setContent("")
         closeModal();
+        setChooseTemplate(false)
       }
     } catch (err) {
       toast.error("Email server is bussy try after sometime", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-      setSelectedContacts();
+      // setSelectedContacts([]);
       closeModal();
     }
   };
+
+
   const closeModal = () => {
     setIsOpen(false);
   };
-  const [content, setContent] = useState({
-    emailContent: "",
-    // children: [],
-  });
+
+  const [content, setContent] = useState({ emailContent: "", });
+  const navigate = useNavigate();
+
+  const openTemplate = (id, text, name) => {
+    const selected = { id, text, name }
+    setSelectedTemplate(selected);
+    navigate('/templates', { state: { selectedTemplate: selected } })
+  }
+
+  const handleSaveCustomContent = () => {
+    setTemplateSendEmailContent("custom")
+    setIsOpen(true)
+  }
 
   return (
     <div className="add_property_btn">
-      <div className="inner-pages-top">
-        <h3> Email Campaigns</h3>
-        <div className="search-group">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search here"
-          />
-          <img src="/search.svg" />
-        </div>
 
-        {/* Rest of your component remains the same... */}
-      </div>
-      <div className="template-grid">
-        {/* Display email templates in a grid */}
-        {templates.map((template) => (
-          <div key={template.id} className="template-item">
-            {/* Add div for preview */}
-            <div
-              className="email-template-box"
-              style={{
-                width: "100%",
-                height: "100px",
-                border: "1px solid #ccc",
-                overflow: "hidden",
-              }}
-            >
-              <div dangerouslySetInnerHTML={{ __html: template.text }} />
-              <button onClick={() => openPreviewModal(template.id, template.text)}>
-                Preview
-              </button>
-            </div>
-            <div className="email-template-name">{template.name}</div>
-          </div>
-        ))}
-      </div>
-
-      <PreviewModal
-        className="preview-modal"
-        isOpen={isPreviewModalOpen}
-        closeModal={closePreviewModal}
-        templateContent={previewContent}
-        onSave={updateEmailTemplate}
-      />
-
-      <h3>User Email Templates </h3>
-      <div className="radio-input-wrappers" >
-        <div >
-        <input type="radio" value="template" defaultChecked={templateSendEmailContent=="template"?true:""} className="radio" onChange={handleChange} name="template"/>
-      <label>
-        Email Template
-      </label>
-        </div>
-        <div>
-      <input type="radio" value="custom" defaultChecked={templateSendEmailContent=="custom"?true:""} className="radio" onChange={handleChange} name="template"/>
-<label>
-Custom Text
-</label>
-        </div>
-      </div>
-     
-      <div className="camp-gap">
-        <input
-          type="text"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          placeholder="Subject"
-        />
-        </div>
-      {templateSendEmailContent == "template" &&
-   
-    <div className="template-grid">
-        {/* Display email templates in a grid */}
-        
-              
-
-<div className="list-select-img">
-   
-      
-<ul>    
-    {userTemplates.map((userTemplate) => (
-       
-        <li><input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
-            <label for={userTemplate.id}>
-          <div key={userTemplate.id} className="template-item">
-            {/* Add div for preview */}
-            
-            <div
-              className="email-template-box"
-              style={{
-                width: "100%",
-                height: "100px",
-                border: "1px solid #ccc",
-                overflow: "hidden",
-              }}
-            >
-              <div dangerouslySetInnerHTML={{ __html: userTemplate.text }} />
-              <button onClick={() => openUserPreviewModal(userTemplate.id, userTemplate.text)}>
-                Preview
-              
-              </button>
-            </div>
-            <div className="email-template-name"> {userTemplate.name} 
-         
-            </div>
-          </div>
-          </label>
-         </li>
-      
-      ))}
- </ul>  
-
-      
-
-</div>
-
-      </div>
-  
-      }
-    
       <PreviewUserModal
         className="preview-modal"
         isOpen={isUserPreviewModalOpen}
@@ -674,41 +619,188 @@ Custom Text
         templateUserContent={previewUserContent}
         onSave={updateUserEmailTemplate}
       />
-      <div className="camp-gap">
-    
-     {templateSendEmailContent == "custom" &&
-        <CKEditor
-          editor={ClassicEditor}
-          data={content.emailContent}
-          onChange={(event, editor) => {
-            const data = editor.getData();
-            setContent({ ...content, emailContent: data });
-          }}
-          config={{
-            toolbar: [
-              "heading",
-              "|",
-              "bold",
-              "italic",
-              "link",
-              "|",
-              "bulletedList",
-              "numberedList",
-              "|",
-              "undo",
-              "redo",
-            ],
-          }}
-          className="custom-ckeditor"
-          style={{ width: "100%" }}
-        />
+      <div className="inner-pages-top inner-pages-top-flex-direction">
+        {chooseTemplate &&
+          <div className="inner-pages-top" style={{ justifyContent: 'flex-start' }}>
+            <button className="back-only-btn" >
+              <img src="/back.svg" onClick={() => { setChooseTemplate(false) }} />
+            </button>
+            <h3> Email Campaigns</h3>
+          </div>
+
+          // <h3> <button className="back-only-btn"
+          //   onClick={() => {
+          //     setChooseTemplate(false); // Change the view state to "contacts"
+          //   }}
+          // > <img src="/back.svg" /></button> </h3>
         }
-        <div className="icon-dashboard share-ref-top-wrp">
-          <button onClick={() => setIsOpen(true)}>
-            <p>Share</p>
-          </button>
-        </div>
+        {chooseTemplate == true ? <div className="add_user_btn buttons-with-returb-btn">
+          <button className={active == "2" ? 'active' : ''} onClick={() => setActive(2)}>
+            Custom Text</button>
+          <button className={active == "1" ? 'active' : ''} onClick={() => setActive(1)}>
+            Email Template</button>
+
+        </div> : ""}
       </div>
+
+      <>
+        {!chooseTemplate && <>
+          <div className="inner-pages-top">
+            <h3> Email Campaigns</h3>
+            <div className="add_user_btn">
+              <button onClick={() => setChooseTemplate(true)}> Send New Email </button>
+            </div>
+            <div className="search-group">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search here"
+              />
+              <img src="/search.svg" />
+            </div>
+            {/* Rest of your component remains the same... */}
+          </div>
+
+
+          <div className="add_property_btn" >
+            <div className="template-grid">
+              <div className="new-email-tem-set">
+                <ul className="image-list">
+                  {userTemplates.map((userTemplate, index) => (
+                    <>
+                      <li key={index}>
+                        <input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
+                        <label htmlFor={userTemplate.id}>
+                          <div key={userTemplate.id} className="template-item">
+                            {/* Add div for preview */}
+
+                            <div
+                              className="email-template-box"
+                              style={{
+                                width: "100%",
+                                height: "100px",
+                                border: "1px solid #ccc",
+                                overflow: "hidden",
+                              }}
+                            >
+                              <div dangerouslySetInnerHTML={{ __html: userTemplate.text }} />
+                            </div>
+                            <div className="email-template-name"> {userTemplate.name}
+                            </div>
+                          </div>
+                          <button onClick={() => openUserPreviewModal(userTemplate.id, userTemplate.text)}>
+                            Edit
+                          </button>
+                        </label>
+                      </li>
+                    </>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </>}
+      </>
+
+      <>
+        {chooseTemplate &&
+          <div className="template-grid">
+            <div className="custom-text-tab-sec">
+              {/* <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} /> */}
+            </div>  {active == "1" &&
+              <>
+                <PreviewModal
+                  className="preview-modal"
+                  isOpen={isPreviewModalOpen}
+                  closeModal={closePreviewModal}
+                  templateContent={previewContent}
+                  onSave={updateEmailTemplate}
+                />
+                 {templates.map((template) => (
+                  <div key={template.id} className="template-item">
+                    <label htmlFor={template.id}></label>
+                    <div
+                      className="email-template-box"
+                      style={{
+                        width: "100%",
+                        height: "100px",
+                        border: "1px solid #ccc",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div dangerouslySetInnerHTML={{ __html: template.text }} />
+                      <button onClick={() => openTemplate(template.id, template.text, template.name)}>Choose template</button>
+                       <button onClick={() => openPreviewModal(template.id, template.text)}>choose template</button> 
+                     </div>
+                    <div className="email-template-name" >{template.name}</div>
+                  </div>
+                ))} 
+{/* <div>  {dataUrlTemplate && dataUrlTemplate?.map((template) => (
+                  <div key={template.id} className="template-item">
+                    <label htmlFor={template.id}></label>
+                    <div
+                      className="email-template-box"
+                      style={{
+                        width: "100%",
+                        height: "100px",
+                        border: "1px solid #ccc",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <img src={template.dataUrl} alt="Template Preview" />
+                      {/* <div dangerouslySetInnerHTML={{ __html: template.text }} /> */}
+                      {/* <button onClick={() => openTemplate(template.id, template.dataUrl, template.name)}>Choose template</button> */}
+                    
+                    {/* </div>
+                    <div className="email-template-name" >{template.name}</div>
+                  </div>
+                ))}</div> */} 
+              
+              </>}
+
+            {active == "2" && <><div className="custom-text-tab-sec">
+              <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
+              <CKEditor
+                editor={ClassicEditor}
+                data={content.emailContent}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setContent({ ...content, emailContent: data });
+                }}
+                config={{
+                  toolbar: [
+                    "heading",
+                    "|",
+                    "bold",
+                    "italic",
+                    "link",
+                    "|",
+                    "bulletedList",
+                    "numberedList",
+                    "|",
+                    "undo",
+                    "redo",
+                  ],
+                }}
+                className="custom-ckeditor"
+                style={{ width: "100%" }}
+              />
+
+              {subject && content.emailContent ? <div className="camp-gap camp-gap-button-wrapper-nxt">
+                <div className="icon-dashboard share-ref-top-wrp">
+                  <button onClick={handleSaveCustomContent}>
+                    <p>Share</p>
+                  </button>
+                </div>
+              </div> : ""}
+
+            </div>
+            </>
+            }
+          </div>
+        }
+      </>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -749,8 +841,10 @@ Custom Text
               }}
               styles={colourStyles}
               className="select-new"
-              isMulti // This is what enables multiple selections
+              isMulti
             />
+
+            {/* main share button */}
             <div className="modal-convert-btns">
               <button type="submit">Share</button>
             </div>

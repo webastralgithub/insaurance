@@ -32,8 +32,6 @@ const AddRoleForm = ({ onAdd, onCancel }) => {
 
 
   };
-  console.log(newPassword)
-
   return (
 
     <div className="modal-roles-add">
@@ -90,7 +88,6 @@ export default function RealtorProfile() {
     }
   };
   const addRole = async (role) => {
-    console.log(role)
     if(role.newPassword.length<6){
       toast.error('password must be min 6 charcters', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       return
@@ -111,7 +108,6 @@ export default function RealtorProfile() {
         const user = await 
           axios.get(`${url}api/admin/get-realtor/${id}`,{ headers })
      let userData=user.data
-console.log(userData)
      setPreviewImage(userData.profileImg)
         setUser({
             username:userData.username,
@@ -126,7 +122,7 @@ console.log(userData)
         }
           );
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     })();
   }, []);
@@ -159,7 +155,7 @@ console.log(userData)
       setUser({ ...user,profileImg: uploadedImageUrls[0] }); // Store the image file in the user state
     }
     } else {
-      console.log("herrrrrrrrr")
+  
       // Handle other input fields
   
         const { name, value } = e.target;
@@ -228,7 +224,7 @@ console.log(userData)
         position: toast.POSITION.TOP_RIGHT,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

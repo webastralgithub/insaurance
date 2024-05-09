@@ -215,7 +215,7 @@ const clearErrors = (fieldName) => {
   }
   };
   const handleAddressChange = (newAddress) => {
-    console.log(newAddress)
+
     setContact({ ...contact, address1: newAddress });
   };
   const handleChange = (e) => {

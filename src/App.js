@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import Login from "./components/Login";
 import Admin from "./components/Admin";
 import Roles from "./components/Roles";
@@ -61,13 +61,20 @@ import AddPost from "./components/AddPost";
 import EmailCampaign from "./components/EmailCampaign";
 import Unsubscribe from "./components/Unsubscribe";
 import Groups from "./components/ManageGroup";
-
+import Templates from "./components/Template";
+import UpgradePlan from "./components/UpgradePlan";
+import ManageSubscription from "./components/ManageSubscription";
+import BecomeKlintale from "./components/BecomeKlintale";
+import ManageConfigure from "./components/ManageConfigure";
+import AddFeatures from "./components/AddFeatures";
+import FeatureUpdate from "./components/FeatureUpdate";
+import UserList from "./components/UserList";
 
 
 const App = () => {
-
+ 
   const [toggle, setToggle] = useState(false)
-  const { auth } = useContext(AuthContext)
+  const { auth , roleId } = useContext(AuthContext)
   const [role, setRole] = useState(0)
   const [id, setId] = useState(0)
   const [nameofuser, setnameofUser] = useState("")
@@ -76,6 +83,7 @@ const App = () => {
     if (!token) {
       return 0
     }
+  
     const name = localStorage.getItem("name")
     const roleId = localStorage.getItem("roleId")
     const id = localStorage.getItem("id")
@@ -103,8 +111,6 @@ const App = () => {
 
     }
   }, [auth])
-
-  //console.log(role,"Afdsff")
 
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_SECRET_API_KEY} libraries={["places"]}>
@@ -166,6 +172,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
             <Route
               path="/contacts/send/:id" exact
               element={
@@ -191,6 +198,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
             <Route
               path="contacts/share/:id" exact
               element={
@@ -279,100 +287,100 @@ const App = () => {
                   <Category role={role} />
                 </PrivateRoute>
               }
-              />
+            />
             <Route
-            path="/profile" exact
-            element={
-              <PrivateRoute>
-                <Profile nameofuser={nameofuser} />
-              </PrivateRoute>
-            }
-          />
-             <Route
-            path="/listing/add" exact
-            element={
-              <PrivateRoute>
-                <AddProperty/>
-              </PrivateRoute>
-            }
-          />
-           <Route
-            path="/unsubscribe" exact
-            element={
-              <PrivateRoute>
-                <Unsubscribe/>
-              </PrivateRoute>
-            }
-          />
-            { role==1&& <Route
-            path="/owners/:id" exact
-            element={
-              <PrivateRoute>
-                <RealtorProfile/>
-              </PrivateRoute>
-            }
-          />}
-               { role==1&& <Route
-            path="/owners/add" exact
-            element={
-              <PrivateRoute>
-                <AddUserForm/>
-              </PrivateRoute>
-            }
-          />}
-             <Route
-            path="/analytics" exact
-            element={
-              <PrivateRoute>
-                <Ip role={role}/>
-              </PrivateRoute>
-            }
-          />
-           <Route
-            path="/listing/edit/:id" exact
-            element={
-              <PrivateRoute>
-                <EditPropertyForm role={role}/>
-              </PrivateRoute>
-            }
-          />
-          {role==1&&<Route
-          path="/users" exact
-          element={
-            <PrivateRoute>
-              <Realtor/>
-            </PrivateRoute>
-          }
-        />}
-
-          <Route
-            path="/klientale-contacts" exact
-            element={
-              <PrivateRoute>
-                <KlientaleContacts />
-              </PrivateRoute>
-            }
-          />
+              path="/profile" exact
+              element={
+                <PrivateRoute>
+                  <Profile nameofuser={nameofuser} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/listing/add" exact
+              element={
+                <PrivateRoute>
+                  <AddProperty />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/unsubscribe" exact
+              element={
+                <PrivateRoute>
+                  <Unsubscribe />
+                </PrivateRoute>
+              }
+            />
+            {role == 1 && <Route
+              path="/owners/:id" exact
+              element={
+                <PrivateRoute>
+                  <RealtorProfile />
+                </PrivateRoute>
+              }
+            />}
+            {role == 1 && <Route
+              path="/owners/add" exact
+              element={
+                <PrivateRoute>
+                  <AddUserForm />
+                </PrivateRoute>
+              }
+            />}
+            <Route
+              path="/analytics" exact
+              element={
+                <PrivateRoute>
+                  <Ip role={role} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/listing/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditPropertyForm role={role} />
+                </PrivateRoute>
+              }
+            />
+            {role == 1 && <Route
+              path="/users" exact
+              element={
+                <PrivateRoute>
+                  <Realtor />
+                </PrivateRoute>
+              }
+            />}
 
             <Route
-            path="/groups" exact
-            element={
-              <PrivateRoute>
-                <Groups />
-              </PrivateRoute>
-            }
-          />
+              path="/klientale-contacts" exact
+              element={
+                <PrivateRoute>
+                  <KlientaleContacts />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path="/send-messages"
-            element={
-              <PrivateRoute>
-                <SendMessages />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path="/groups" exact
+              element={
+                <PrivateRoute>
+                  <Groups />
+                </PrivateRoute>
+              }
+            />
 
-            
+            <Route
+              path="/send-messages"
+              element={
+                <PrivateRoute>
+                  <SendMessages />
+                </PrivateRoute>
+              }
+            />
+
+
             <Route
               path="/categories/add" exact
               element={
@@ -487,6 +495,69 @@ const App = () => {
               }
             />
             <Route
+              path="/upgrade-plan" exact
+              element={
+                <PrivateRoute>
+                  <UpgradePlan />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/manage-subscription" exact
+              element={
+                <PrivateRoute>
+                  <ManageSubscription />
+                </PrivateRoute>
+              }
+            />
+
+    
+            <Route
+              path="/manage-configure" exact
+              element={
+                <PrivateRoute>
+                  <ManageConfigure />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/manage-configure/add-features" exact
+              element={
+                <PrivateRoute>
+                  <AddFeatures />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/features-update" exact
+              element={
+                <PrivateRoute>
+                  <FeatureUpdate />
+                </PrivateRoute>
+              }
+            />
+
+
+
+            <Route
+              path="/become-klintale" exact
+              element={
+                <PrivateRoute>
+                  <BecomeKlintale />
+                </PrivateRoute>
+              }
+            />
+             <Route
+              path="/admin-userlist" exact
+              element={
+                <PrivateRoute>
+                  <UserList />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
               path="/website-visitors" exact
               element={
                 <PrivateRoute>
@@ -574,6 +645,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
             {role == 1 && <Route
               path="/owners/:id" exact
               element={
@@ -628,6 +700,14 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <SendMessages />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/templates"
+              element={
+                <PrivateRoute>
+                  <Templates />
                 </PrivateRoute>
               }
             />

@@ -6,7 +6,6 @@ import { Link, useNavigate } from 'react-router-dom';
 const Footer = () => {
     const { auth,setAuth } = useContext(AuthContext);
      const navigate=useNavigate()
-console.log(auth)
     const handleLogout = () => {
         localStorage.removeItem('token');
         setAuth(null);

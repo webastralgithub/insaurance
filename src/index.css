@@ -1170,7 +1170,7 @@ margin-top: 0;
 }
 
 .todo-notes-section.todo-notes-section-new-right .ck-content {
-  height: 313px;
+  height: 338px;
 }
 
 @media (max-width:991px){
@@ -1375,7 +1375,7 @@ margin-top: 0;
   
 .inner-pages-top .search-group{
   width: 100% !important;
-  margin-top: 10px !important;
+  margin-top: 50px !important;
 }
   .profile-page-form .profilepg-btm-from-cnt .form-devider .input-feilds label {
     width: 100%;
@@ -1521,6 +1521,31 @@ margin-top: 0;
    .icon-dashboard{
     margin-left: 12px;
    }
+
+   .manage-group-css{
+    width: 100% !important;
+   }
+
+   .manage-group-css tr td,
+   .manage-group-css tr th{
+     width: 50%;
+   }
+
+   .select-check-line-group-contacts{
+    width: 100% !important;
+   }
+
+   .todo-sectionnew .todo-notes-section-new-left {
+    width: 100% !important;
+   }
+
+   .todo-sectionnew .todo-notes-section-new-right {
+    width: 100% !important;
+   }
+
+   .form-send-message{
+    text-align: left;
+   }
 }
 
 @media (max-width:480px){
@@ -1608,6 +1633,7 @@ margin-top: 0;
 /*  */
 .form-send-message {
   margin-left: auto;
+  text-align: right;
 }
 .form-send-message button {
   background: #004686;
@@ -1624,4 +1650,45 @@ margin-top: 0;
 }
 .css-b62m3t-container .css-ao180k-control .css-p8a3hd-ValueContainer {
   width: fit-content;
+}
+
+form.add-configr-form {
+  margin: 0;
+}
+
+.manage-configr-table span {
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.manage-cross-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.manage-configr-table form.add-configr-form .form-user-add-wrapper select {
+  width: 100%;
+  color: #000;
+}
+
+form.add-configr-form .form-user-add-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 20px;
+}
+
+form.add-configr-form .form-user-add-wrapper .form-user-add-inner-wrap {
+  width: 46% !important;
+}
+
+.fc-daygrid-event-harness a .fc-event-title {
+  font-size: 10px;
+}
+
+.fc-daygrid-event-harness a .fc-event-time {
+  font-size: 11px;
 }

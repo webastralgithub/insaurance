@@ -145,6 +145,7 @@ overflow:"unset"
     },
   
   }; 
+
   const colourStyles = {
     valueContainer:styles=>({...styles,overflowX:"auto",flex:"unset",flexWrap:"no-wrap",width:selectedContacts.length>0?"354px":"100%",padding:"2px 0",
     '&::-webkit-scrollbar-track': {
@@ -172,7 +173,7 @@ overflow:"unset"
  
   
     }),
-    menuList:styles=>({...styles,overflowY:"none",display:"none"}),
+    menuList:styles=>({...styles,overflowY:"none"}),
     multiValue:styles=>({...styles,minWidth:"unset"}),
     input: styles =>({...styles,color:"#fff"}),
     placeholder: styles =>({...styles,color:"#fff"}),
@@ -200,7 +201,7 @@ overflow:"unset"
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
+  
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -254,9 +255,9 @@ overflow:"unset"
       // Set the filtered contacts in the state
      
       setContacts(response.data);
-      console.log(response.data);
+  
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');

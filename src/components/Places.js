@@ -9,14 +9,12 @@ const Places = ({ value, onChange,newField,newClass}) => {
 
   const handlePlaceChanged = (event) => { 
 
-    console.log("sdddddddd",event);
+
     const [place] = inputRef?.current?.getPlaces();
     if (place) {
       const object = {};
       object['address'] = place.formatted_address;
       onChange(place.formatted_address);
-      console.log(place);
-      console.log(place.formatted_address);
     } 
   }
 

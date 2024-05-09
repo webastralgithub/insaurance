@@ -81,7 +81,7 @@ if(role==4){
 
 }
 },[auth])
-console.log(role) 
+
 
   return (
     <LoadScript googleMapsApiKey={process.env.REACT_APP_SECRET_API_KEY}  libraries={["places"]}>

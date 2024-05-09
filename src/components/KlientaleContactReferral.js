@@ -50,6 +50,7 @@ const [searchText, setSearchText] = useState('');
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -65,16 +66,16 @@ const [searchText, setSearchText] = useState('');
   useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
-
-    console.log(selectRef.current.controlRef.firstChild)
- 
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
       }
     }
   }, [selectedContacts]);
+
+
+
   const sendRefferal=async(contact)=>{
-    const response =axios.post(`https://admin.klientale.com/api/share`,
+    const response =axios.post(`${klintaleUrl}share`,
      {sendTo:id,selectedContacts:[contact],type:2,email:email.email});
     if (response.status === 200) {
       toast.success("Contact Sent successfully", {
@@ -236,13 +237,13 @@ overflow:"unset"
   }; 
   const getCategories = async () => {
     try {
-     const res= await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+     const res= await axios.get(`${url}api/categories/get`, { headers });
      const options=res.data.map((realtor) => ({
       value: realtor.id,
       label: realtor.name,
     }));
      setCategories(options)
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -264,7 +265,7 @@ overflow:"unset"
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
 
     } catch (error) {
@@ -302,7 +303,7 @@ overflow:"unset"
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const contactsWithoutParentId = response.data.user.filter((contact) => contact.parentId === null);
       const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false );
@@ -317,7 +318,7 @@ overflow:"unset"
       setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -343,7 +344,7 @@ localStorage.setItem("parent",name)
   // setParentId(id)
   //   setParentView(true)
    navigate(`${id}`)
-    console.log(id)
+  
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
@@ -378,8 +379,8 @@ localStorage.setItem("parent",name)
         navigate("/klientale-contacts"); // Change the view state to "contacts"
       }}
       > <img src="/back.svg" /></button> {parentView ?`${parentName} Family `:"Send Me Referrals "} ({contactName?.name})</h3>
-     <span class="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px","position":"absolute", "top":"200px"}}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
+     <span className="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px","position":"absolute", "top":"200px"}}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
             <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/>
           </svg>
           Send me referrals from your following contacts</span>

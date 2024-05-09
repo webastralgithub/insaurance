@@ -58,8 +58,6 @@ const Referral = ({ role }) => {
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
 
-      console.log(selectRef.current.controlRef.firstChild);
-
       if (valueContainer) {
         valueContainer.scrollTo({
           left: valueContainer.scrollWidth,
@@ -188,7 +186,7 @@ const Referral = ({ role }) => {
   const getCategories = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}api/categories/get`,
+        `${url}api/categories/get`,
         { headers }
       );
       const options = res.data.map((realtor) => ({
@@ -196,7 +194,7 @@ const Referral = ({ role }) => {
         label: realtor.name,
       }));
       setCategories(options);
-      console.log("User created successfully!", res);
+   
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -286,7 +284,7 @@ else{
       // Set the filtered contacts in the state
 
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -310,7 +308,7 @@ else{
     // setParentId(id)
     //   setParentView(true)
     navigate(`${id}`);
-    console.log(id);
+
     try {
       const response = await axios.get(
         `${url}api/contacts/get-children/${id}`,
@@ -336,14 +334,14 @@ else{
      <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="custom-modal"
+        className="custom-modal referal-model"
         overlayClassName="custom-overlay"
       >
         <div className="modal-header">
           <h2>{bussinessDetail?.firstname}</h2>
           <button onClick={closeModal}>&times;</button>
         </div>
-        <div className="modal-content">
+        <div className="modal-content" style={{width:"unset"}}>
         <div className="user-info">
       <p>
         <strong>Name:</strong> {bussinessDetail?.firstname}
@@ -438,6 +436,7 @@ else{
                 </>
               )
                 }
+
               {active == 3 &&(
                 <>
                    <th>IP Address</th>
@@ -447,6 +446,7 @@ else{
               }
             </tr>
           </thead>
+          
           {contacts.length > 0 &&
             contacts.map((contact) => (
               <tbody>

@@ -39,7 +39,7 @@ const AddRoleForm = ({ onAdd, onCancel }) => {
 
 
   };
-  console.log(newPassword)
+ 
 
   return (
 
@@ -83,7 +83,7 @@ export default function Profile(props) {
         const user = await 
           axios.get(`${url}api/admin/get-current-user`,{ headers })
      let userData=user.data.user
-     console.log(userData)
+     
      setPreviewImage(userData.profileImg?userData.profileImg:"/placeholder@2x.png")
         setUser({
           id:userData.id,
@@ -104,7 +104,7 @@ export default function Profile(props) {
         }
           );
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     })();
   }, []);
@@ -123,7 +123,7 @@ export default function Profile(props) {
   };
   const handleEmailChange = (event) => {
     // Extract the raw phone number from the input
-  console.log("here",event.target.value)
+
 
     // Update the phone number state with the raw input
     setUser({ ...user,email: event.target.value  });
@@ -144,7 +144,7 @@ export default function Profile(props) {
     }
   };
   const handleInput = async(e) => {
-    console.log(e)
+
     if (e.target.name === 'image') {
       // Handle image file upload
 
@@ -182,9 +182,7 @@ export default function Profile(props) {
           default:
             break;
         }
-    
-      // Handle other input fields
-      console.log(e.target.name)
+
       setUser({ ...user, [e.target.name]: e.target.value });
     }
   };
@@ -240,7 +238,7 @@ if(user.email){
       toast.error('password must be min 6 charcters', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       return
     }
-    console.log(role)
+   
    const response = await axios.put(`${url}api/admin/admin/change-password/${user.id}`, role,{headers});
 
    if (response.status === 200) {
@@ -265,7 +263,7 @@ if(user.email){
   const getContacts = async (value = active) => {
     setActive(value);
   };
-  console.log(user,'sjdsfjdsfdsg');
+
 
   const handleUploadButtonClick = () => {
     // Trigger the file input when the label is clicked
@@ -292,7 +290,7 @@ if(user.email){
         position: toast.POSITION.TOP_RIGHT,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   return (

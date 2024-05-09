@@ -298,11 +298,11 @@ th.price {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  overflow: hidden;
+  
 }
 
 .modal-roles-add form input{
-  width: 100%;
+  width: unset;
   background: #fff;
   border: none;
   padding: 15px 10px;
@@ -337,16 +337,31 @@ th.price {
   background: #004686;
 }
 .download-file {
-    position: relative;
-    padding: 10px 25px !important;
+  position: relative;
+  padding: 0px 25px 18px 25px !important;
+  background: #fff;
+  overflow: hidden;
 }
 .download-file button.close-btn {
   position: absolute;
-  top: -14px;
-  right: -15px;
+  top: 2px;
+  right: -1px;
   background-color: unset;
   border: unset;
   rotate: 45deg;
+}
+
+.bulk-upload-popup {
+  width: 350px;
+}
+
+.bulk-upload-popup {
+  width: 350px;
+  padding-top: 20px !important;
+}
+
+.download-file button.close-btn img {
+  filter: brightness(0) saturate(100%);
 }
 
 .file-upload {
@@ -452,3 +467,58 @@ th.price {
   }
 }
 
+
+.add_user_btn-mng-cnfgr-pg {
+  margin: 0;
+}
+
+.add_user_btn-mng-cnfgr-pg .add_user_btn {
+  margin: 0;
+}
+
+.manage-configr-table table {
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+
+.manage-configr-table table th {
+  border: unset !important;
+}
+
+.manage-configr-table table td {
+  border: unset !important;
+}
+
+.manage-configr-table table td {
+  color: #000;
+  font-size: 14px !important;
+}
+
+td.manage-pg-table-confgr {
+  width: 60%;
+  padding-right: 30px;
+}
+
+.add_user_btn-mng-cnfgr-pg button img {
+  margin-right: 8px;
+}
+
+td.manage-configr-table-btn {
+  width: 110px;
+}
+
+td.manage-configr-table-btn buttton {
+  background: #004686;
+  color: #fff;
+  padding: 7px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+@media (max-width:600px){
+  .manage-configr-table table {
+    width: 900px;
+}
+}

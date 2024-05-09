@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 const YourComponent = ({url,headers}) => {
   const responseFacebook = async(facebookLoginResponse) => {
-    console.log(facebookLoginResponse);
+
     const responseObject = {
         name: facebookLoginResponse.name,
         email: facebookLoginResponse.email,

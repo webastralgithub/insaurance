@@ -16,7 +16,8 @@ table tr td, table tr th{
 .add_property_btn{
    top: 100px;
 }
-.form-user-add .form-user-add-wrapper{
+
+/* .form-user-add .form-user-add-wrapper{
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
@@ -28,7 +29,7 @@ table tr td, table tr th{
     position: relative;
     border-radius: 20px;
     border: solid 1px transparent;
-}
+} */
  .form-user-add .form-user-add-wrapper.birthday-section{
 z-index: unset;
 }
@@ -37,7 +38,7 @@ z-index: unset;
     display: flex;
     gap: 10px;
     font-size: 14px;
-    border-bottom: 1px solid #fff;
+    /* border-bottom: 1px solid #fff; */
     padding-bottom: 4px;
     position: relative !important;
     flex-direction: column;
@@ -191,7 +192,7 @@ z-index: unset;
     display: flex;
     gap: 10px;
     font-size: 14px;
-    border-bottom: 1px solid #fff;
+    /* border-bottom: 1px solid #fff; */
     padding-bottom: 4px;
 }
 
@@ -206,7 +207,7 @@ z-index: unset;
     width: 100%;
     background-color: transparent !important;
     border: none;
-    border-left: 1px solid #fff;
+    /* border-left: 1px solid #fff; */
     color: #858585;
     font-size: 14px;
     font-weight: 300;
@@ -391,6 +392,7 @@ z-index: unset;
 
 .add_user_btn{
     width: 100%;
+    box-sizing: border-box;
 }
 
 .share-text{
@@ -419,11 +421,16 @@ z-index: unset;
 }
 
 .todo-sectionnew .todo-notes-section-new-left{
-    width: 60% !important;
+    width: 30% !important;
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content{
     width: 100%;
+    height: 382px !important;
+}
+
+.todo-notes-section.todo-notes-section-new-right .ck-content{
+    
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div{
@@ -431,7 +438,7 @@ z-index: unset;
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div form{
-    width: 50%;
+    width: 100%;
 }
 
 .todo-sectionnew .todo-notes-section-new-left .convert-lead-pop-up-content div form:first-child{
@@ -444,8 +451,14 @@ z-index: unset;
 
 
 .todo-sectionnew .todo-notes-section-new-right{
-    width: 40% !important;
+    width: 70% !important;
 }
+
+.todo-sectionnew .todo-notes-section-new-right .ck.ck-editor__main{
+    width: 100% !important;
+}
+
+
 
 .todo-sectionnew  ul.custom-dropdown{
     margin: 0;
@@ -581,10 +594,32 @@ z-index: unset;
     display: block;
 }
 
+.select-check-line-group-contacts{
+    width: 250px;
+}
+
+.select-check-line-group-contacts h3{
+    background: #004686;
+    margin: 0;
+    padding: 17px 10px;
+    color: #fff;
+    font-size: 17px;
+}
+
+.select-check-line-group-contacts .listing{
+    margin: 0;
+    padding: 10px 10px;
+    border-bottom: 1px solid #ebebeb;
+}
+
 @media (max-width:1000px){
     .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap {
         width: 45%;
         justify-content: space-between;
+    }
+    .todo-sectionnew .todo-notes-section-new-left {
+        width: 100% !important;
+        z-index: 1;
     }
   
 }
@@ -612,6 +647,15 @@ z-index: unset;
 
     .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap label:last-child{
        margin-right: 0;
+    }
+
+    .todo-sectionnew .todo-notes-section-new-left {
+        width: 100% !important;
+        z-index: 1;
+    }
+
+    .todo-sectionnew .todo-notes-section-new-right {
+        width: 100% !important;
     }
 }
 
@@ -653,12 +697,20 @@ z-index: unset;
     .add-contact-user-custom-left, .add-contact-user-custom-right{
         width: 100%;
         margin: 0;
+        flex-wrap: wrap;
     }
     
     .convert-lead-pop-up-content{
         width: 100%;
         padding: 0px !important;
     }
+
+    .inner-pages-top-contacts .search-group {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-bottom: 20px;
+    }
+
 }
 
 @media (max-width:480px){
@@ -738,9 +790,74 @@ z-index: unset;
     top: 5px;
     width: 5px;
     height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
+    /* border: solid white;
+    border-width: 0 3px 3px 0; */
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
   }
+
+  .listing{
+    margin-left: 17px;
+  }
+
+  .become-klintale {
+    height: auto !important;
+    display: flex;
+    width: auto !important;
+    gap: 15px;
+}
+
+.become-klintale button {
+    padding: 0;
+}
+
+.become-klintale button p {
+    width: 100% !important;
+    padding: 0 30px;
+}
+
+form.add-task-setion-form .form-user-add-wrapper .todo-section .todo-main-section .form-user-add-inner-wrap input, form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wrap input, .add-cnt-form-desc .form-user-add-wrapper .form-user-add-inner-wrap input {
+    color: #000000e8;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0;
+}
+
+form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wrap {
+    width: 100%;
+    margin: auto;
+}
+
+.add-cnt-form-desc .form-user-add-wrapper .form-user-add-inner-wrap {
+    width: 100%;
+}
+
+.add-cnt-form-desc .form-user-add-wrapper .add-contact-user-custom-wrapper .add-contact-user-custom-left {
+    width: 100%;
+    padding: 0;
+}
+
+.add-cnt-form-desc .add-contact-user-custom-right {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.add-cnt-form-desc .add-contact-user-custom-right .add-contact-user-custom-left {
+    width: 100%;
+}
+
+.social-media-post-sec .form-user-add-inner-wrap .edit-new-input input {
+    color: #000;
+    font-size: 13px;
+}
+
+.add-contact-form .add-contact-user-custom-right .add-contact-user-custom-wrapper .form-user-add-inner-wrap label {
+    padding: 0 8px 8px 0;
+    display: inline-block;
+}
+
+.facebook-share-btn button.react-share__ShareButton {
+    margin: 0;
+}

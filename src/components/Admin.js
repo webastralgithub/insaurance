@@ -115,7 +115,7 @@ useEffect(() => {
   const handleCreateUser = async (userData) => {
     try {
       await axios.post(`${process.env.REACT_APP_API_URL}api/admin/create-user`,userData,{headers} );
-      console.log("User created successfully!");
+     
       getUsers()
       closeModal()
     } catch (error) {
@@ -135,12 +135,12 @@ useEffect(() => {
     setIsOpen(false);
   };
  
-  console.log("Userfggfg ",roles);
+  
   const getRoles = async () => {
     try {
      const res= await axios.get(`${process.env.REACT_APP_API_URL}api/role`);
      setRoles(res.data.roles)
-      console.log("User created successfully!",res);
+   
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -149,7 +149,7 @@ useEffect(() => {
     try {
      const res= await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
      setUsers(res.data)
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -242,7 +242,7 @@ const AddUserForm = ({ onAdd, onCancel,roles }) => {
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(userData)
+    
     setUserData({ ...userData,[name]: value });
   };
 

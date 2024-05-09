@@ -19,7 +19,7 @@ const getCurrentTime = (date) => {
 }
 const AddTodo = () => {
   const{date}=useParams()
-  // console.log(date)
+
   const [contact, setContact] = useState(
     {
         Followup:"" ,
@@ -152,7 +152,7 @@ const sourceOptions = [
   const getContacts = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
-      console.log(response.data)
+
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
         value: realtor.id,
         label: realtor.firstname,
@@ -229,13 +229,16 @@ setPhoneError("")
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-user-add">
+
+
+    <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form">
            <div className="property_header header-with-back-btn">
           
           <h3> <button type="button" className="back-only-btn" onClick={
     goBack}> <img src="/back.svg" /></button>Add Task</h3>
           
-          <div className="top-bar-action-btns"><button type="submit" style={{background:"#004686"}} >Save</button>
+          <div className="top-bar-action-btns"> 
+          {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
         
           </div>   </div> 
           <div className="form-user-add-wrapper">

@@ -43,11 +43,13 @@ const ShareMe = ({ role }) => {
 
 
 
-  const { auth, email, property, setProperty, setAuth } = useContext(AuthContext);
+  const { auth, email, property, setProperty, setAuth, setActiveID } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
+
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -64,7 +66,6 @@ const ShareMe = ({ role }) => {
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
 
-      console.log(selectRef.current.controlRef.firstChild)
 
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
@@ -123,24 +124,39 @@ const ShareMe = ({ role }) => {
   }
 
   const handleDeleteClick = (propertyId) => {
-    sendRefferal(propertyId);
+    ;
+    confirmAlert({
+      title: 'Confirm Send',
+      message: 'Are you sure you want to send this contact?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => sendRefferal(propertyId),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
 
   };
 
   const handleShareKlintaleClick = async (contact) => {
+
     const { email, phone, name, category_name } = contact;
     const combinedObject = {
       name,
       email,
       phone,
       category_name,
-      selectedContacts: [id],
+      sendTo: contact.id, selectedContacts: [id],
     };
 
     try {
-      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share`, combinedObject, { headers }
+      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share-me`, combinedObject, { headers }
       );
-      console.log("response", response)
+     
       if (response.status === 200) {
         toast.success("Contact Shared successfully", {
           autoClose: 3000,
@@ -148,11 +164,31 @@ const ShareMe = ({ role }) => {
         });
       }
     } catch (error) {
-      console.log("error on sharing klintale contact", error)
+      toast.error("error on sharing klintale contact", {
+        autoClose: 3000,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      console.error("error on sharing klintale contact", error)
     }
 
   }
 
+  const handleDeleteKlintaleClick = (propertyId) => {
+    confirmAlert({
+      title: 'Confirm Send',
+      message: 'Are you sure you want to send this contact?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleShareKlintaleClick(propertyId),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
   const customStyles = {
     content: {
       top: "50%",
@@ -242,7 +278,7 @@ const ShareMe = ({ role }) => {
 
 
     }),
-    menuList: styles => ({ ...styles, overflowY: "none", display: "none" }),
+    menuList: styles => ({ ...styles, overflowY: "none"}),
     multiValue: styles => ({ ...styles, minWidth: "unset" }),
     input: styles => ({ ...styles, color: "#fff" }),
     placeholder: styles => ({ ...styles, color: "#fff" }),
@@ -265,18 +301,20 @@ const ShareMe = ({ role }) => {
   };
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/categories/get`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
       }));
       setCategories(options)
-      console.log("User created successfully!", res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
 
+
+  
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
 
@@ -287,9 +325,9 @@ const ShareMe = ({ role }) => {
   const fetchUsers = async () => {
     try {
 
-      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const data = response.data.user;
-      console.log("klintale contacts", data)
+  
       setKlintaleContacts(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -309,7 +347,7 @@ const ShareMe = ({ role }) => {
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
 
     } catch (error) {
@@ -365,7 +403,7 @@ const ShareMe = ({ role }) => {
       setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -391,7 +429,7 @@ const ShareMe = ({ role }) => {
     // setParentId(id)
     //   setParentView(true)
     navigate(`${id}`)
-    console.log(id)
+
     try {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
@@ -419,6 +457,9 @@ const ShareMe = ({ role }) => {
   // Rest of your component remains the same..
 
 
+  
+
+
 
   return (
     <div>
@@ -436,8 +477,8 @@ const ShareMe = ({ role }) => {
 
             }}
           > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Share Me"} ({contactName?.firstname})</h3>
-          <span class="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
+          <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
               <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
             </svg>
             Share my info to your following contacts</span>
@@ -498,7 +539,7 @@ const ShareMe = ({ role }) => {
                     {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        handleDeleteClick(contact.id)
+                        handleDeleteClick(contact)
                       }} >Share</button>       </td>
                     <td>{contact.firstname}</td>
                     <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
@@ -533,7 +574,7 @@ const ShareMe = ({ role }) => {
                     {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        handleShareKlintaleClick(contact)
+                        handleDeleteKlintaleClick(contact)
                       }} >Share</button>       </td>
                     <td>{contact.name}</td>
                     <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>

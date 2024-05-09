@@ -41,7 +41,7 @@ const navigate=useNavigate()
       navigate("/");
     } catch (error) {
       // Handle login failure
-      console.log("Login failed:", error.response.data.error);
+      console.error("Login failed:", error.response.data.error);
       toast.error( error.response.data.error, { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       // You may want to display an error message to the user here
     }

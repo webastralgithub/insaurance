@@ -14,7 +14,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 const Followup = () => {
     const {id}=useParams()
 const {auth,todo}=useContext(AuthContext)
-console.log(todo,"Dfadfdffddfa")
+
 const url = process.env.REACT_APP_API_URL;
     const headers = {
         Authorization: auth.token,
@@ -114,7 +114,7 @@ const noSelectionOption = { value: null, label: 'No Selection' };
 
      const validateForm = () => {
       let isValid = true;
-  console.log(editedTodo.Followup,editedTodo.FollowupDate,"fddfdfdff")
+ 
       // if (!editedTodo.Followup) {
       //   setMlsNoError("Task Title is required");
       //   isValid = false;
@@ -162,12 +162,11 @@ const noSelectionOption = { value: null, label: 'No Selection' };
       return
     }
     const { id, ...restOfEditedTodo } = editedTodo;
-    console.log(restOfEditedTodo,"dfdffddfdfdf")
+  
 
     const response = await axios.post(`${url}api/todo/create`,
     {...restOfEditedTodo,Followup:editedTodo.Followup,taskId:id},
     { headers });
-    console.log(response)
     navigate(-1)
     toast.success("Followup updated successfully", {
       autoClose: 3000,
@@ -211,16 +210,13 @@ const noSelectionOption = { value: null, label: 'No Selection' };
   
 const getTodos=async()=>{
     const response = await axios.get(`${url}api/todo/get`, { headers });
-
-  console.log(id)// Replace with the specific id you want to filter by
     const filtered = response.data.find(x => x.id == id)
-    console.log(filtered,"filtered")
+
     const followupDateISO = filtered?.FollowupDate
     ? new Date(filtered.FollowupDate).toISOString().slice(0, 16)
     : '';
 
     setEditedTodo({...filtered,FollowupDate:""});
-    console.log({...filtered,FollowupDate:""},"gsjir0hehoid")
     setDefaultFollowupDate(formatDate(""))
     //setDefaultFollowupDate(followupDateISO);
 
@@ -228,7 +224,6 @@ const getTodos=async()=>{
 const getContacts = async () => {
   try {
     const response = await axios.get(`${url}api/contacts/get`, { headers });
-    console.log(response.data)
     const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
       value: realtor.id,
       label: realtor.firstname,
@@ -239,23 +234,18 @@ const getContacts = async () => {
   
 
   } catch (error) {
-   
+   console.error(error)
   }
-
 };
-
 
 const editAll=()=>{
   setEditingField('all');
 }
-
-
-
   const handlePhoneNumberChange = (event) => {
     // Extract the raw phone number from the input
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
     setPhoneError("")
-console.log(rawPhoneNumber,"fsffsf")
+
     // Update the phone number state with the raw input
     setEditedTodo({ ...editedTodo,phone: rawPhoneNumber.slice(1,11) });
   };

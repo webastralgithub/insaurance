@@ -19,7 +19,7 @@ import EditableField from "../EditableField";
 
 const EditPropertyContactForm = () => {
 const{id}=useParams()
-console.log(id)
+
 const scrollToRef = useRef(null);
 const{property}=useContext(AuthContext)
     const [editedProperty, setEditedProperty] = useState({ ...property });
@@ -122,7 +122,7 @@ let response;
       };
 
       const handleAddressChange = (newAddress) => {
-        console.log(newAddress)
+  
         setEditedProperty({ ...editedProperty, address: newAddress });
       };
       const handlePrincipalAddressChange = (newAddress) => {
@@ -131,12 +131,10 @@ let response;
        const getProperties = async () => {
         const response = await axios.get(`${url}api/property/contact/get/${id}`, { headers });
 
-      console.log(id)// Replace with the specific id you want to filter by
+    // Replace with the specific id you want to filter by
        // const filtered = response.data.find(x => x.id == id)
 const filtered =response.data[0]
-      
-    //     console.log(filtered);
-    //   console.log(filtered)
+    
       setEditedProperty(response.data[0])
       setImages(JSON.parse(filtered?.images))
 setMainImage(filtered?.mainImage)
@@ -159,7 +157,7 @@ if(filtered.closeTime){
     }
       if(filtered?.status){
         var a=statusOptions[filtered.status-1]
-        console.log(a)
+
         setSelectedStatus({
           value:a.id,
           label:a.name
@@ -246,7 +244,7 @@ if(filtered.closeTime){
       }
       setEditedProperty({ ...editedProperty, [name]: value });
     };
-    console.log(editedProperty?.subjectRemovalDate)
+   
   
     return (
       <div className="form-user-add" ref={scrollToRef}>

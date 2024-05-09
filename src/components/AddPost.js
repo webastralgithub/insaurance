@@ -31,22 +31,22 @@ const AddPost = () => {
   });
   
 const fetchConnectedAccounts=()=>{
-  console.log()
+
 }
   const shareUrl = 'http://insurancecrm.nvinfobase.com/categories/6';
   const title = 'Critical Illness Insurance';
   const imageUrl = 'https://insauranceadmin.nvinfobase.com/storage/uploads/jL8ADup73NCwUx6h6xpiE6xNTVCz7nOB8lNAmAFA.webp'; // URL of the image to be shared
 const connectAccount=(platform)=>{
-  console.log(platform)
+
 }
 const disconnectAccount=()=>{
-  console.log()
+
 }
 
   // Function to check currently connected accounts
   const checkConnectedAccounts = async () => {
     // API call to fetch user's connected accounts from the backend
-    const connected = await fetchConnectedAccounts(); // Replace with your API function
+    const connected =  fetchConnectedAccounts(); // Replace with your API function
 
     if (connected) {
       setConnectedAccounts({
@@ -129,7 +129,7 @@ const disconnectAccount=()=>{
       <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">
         <div className="form-catagory-edit-sec-left">
           <div className="form-user-add-inner-wrap">
-            <label>Name</label>
+          <label>Name<span className="required-star">*</span></label>
 
             <div className="edit-new-input">
               <input

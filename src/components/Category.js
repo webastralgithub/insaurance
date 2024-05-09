@@ -22,7 +22,7 @@ const [width, setWidth] = useState(window.innerWidth);
 
 const navigate=useNavigate()
   const {auth}=useContext(AuthContext)
-  console.log(auth)
+
   const headers={
     Authorization:auth.token
   }
@@ -139,20 +139,11 @@ const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 const endIndex = startIndex + ITEMS_PER_PAGE;
 const filteredUsers = filteredUsersNew.slice(startIndex, endIndex);
 
-
-
- 
-
-
- 
-
-  console.log("Userfggfg ",roles);
- 
   const getUsers = async () => {
     try {
      const res= await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
      setUsers(res.data)
-      console.log("User created successfully!",res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }

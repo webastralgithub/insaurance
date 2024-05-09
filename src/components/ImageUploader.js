@@ -25,7 +25,6 @@ const ImageUploader = (props) => {
         if (response) {
           const responseData = await response.json(); // Parse the JSON response
           const uploadedImageUrl = responseData;
-          console.log(uploadedImageUrl,"gchgfgfg")
           setImages(uploadedImageUrl);
 
           // Handle a successful API response here, if needed
@@ -49,7 +48,7 @@ const ImageUploader = (props) => {
       <div className="upload-container">
         <input
           type="file"
-          accept="image/*"
+          accept="image/jpeg, image/jpg"
           className="file-input"
           ref={fileRef}
           onChange={handleImageChange}

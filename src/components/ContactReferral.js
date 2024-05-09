@@ -40,12 +40,13 @@ const ContactReferral = ({ role }) => {
   const [isLoading, setIsLoading] = useState(false);
 
 
- 
+
   const { auth, email, property, setProperty, setAuth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -62,7 +63,6 @@ const ContactReferral = ({ role }) => {
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
 
-      console.log(selectRef.current.controlRef.firstChild)
 
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
@@ -72,20 +72,25 @@ const ContactReferral = ({ role }) => {
 
 
   const sendRefferal = async (contact) => {
-    const response = await axios.post(`${url}api/contacts/share`,
-      { sendTo: id, selectedContacts: [contact], type: 2 }, {
-      headers,
-    });
-    if (response.status === 200) {
-      toast.success("Contact Sent successfully", {
-        autoClose: 3000,
-        position: toast.POSITION.TOP_RIGHT,
+    try {
+      const response = await axios.post(`${url}api/contacts/share`,
+        { sendTo: id, selectedContacts: [contact], type: 2 }, {
+        headers,
       });
-      setSelectedContacts()
-      closeModal()
-
+      if (response.status === 200) {
+        toast.success("Contact Sent successfully", {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setSelectedContacts()
+        closeModal()
+      }
+    } catch (error) {
+      toast.error("error in sending refferal")
+      console.error("error", error)
     }
   }
+
   const convert = async (e) => {
     e.preventDefault()
     if (!seletedCategory?.value) {
@@ -147,29 +152,31 @@ const ContactReferral = ({ role }) => {
   };
 
   const handleShareKlintaleClick = async (contact) => {
-    setIsLoading(true)
     const { email, phone, name, category_name } = contact;
     const combinedObject = {
       name,
       email,
       phone,
       category_name,
-      selectedContacts: [id],
+      sendTo: id, selectedContacts: [contact.id],
     };
 
     try {
-      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share`, combinedObject, { headers }
+      const response = await axios.post(`${url}api/klientale-contact-send-me`, combinedObject, { headers }
       );
-      console.log("response", response)
+
       if (response.status === 200) {
         toast.success("Contact Shared successfully", {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         });
       }
-      setIsLoading(false)
     } catch (error) {
-      console.log("error on sharing klintale contact", error)
+      toast.error("Error on sharing klintale contact", {
+        autoClose: 3000,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      console.error("error on sharing klintale contact", error)
     }
 
   }
@@ -285,18 +292,18 @@ const ContactReferral = ({ role }) => {
   };
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/categories/get`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
       }));
       setCategories(options)
-      console.log("User created successfully!", res);
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
-  
+
 
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
@@ -316,10 +323,10 @@ const ContactReferral = ({ role }) => {
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
     } catch (error) {
-      console.log("error in getting users", error)
+      console.error("error in getting users", error)
     }
   };
 
@@ -327,9 +334,8 @@ const ContactReferral = ({ role }) => {
   const fetchUsers = async () => {
     try {
 
-      const response = await axios.get(`https://admin.klientale.com/api/listing/${email.email}`);
+      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const data = response.data.user;
-      console.log("klintale contacts", data)
       setKlintaleContacts(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -381,7 +387,7 @@ const ContactReferral = ({ role }) => {
       setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -409,7 +415,6 @@ const ContactReferral = ({ role }) => {
     // setParentId(id)
     //   setParentView(true)
     navigate(`${id}`)
-    console.log(id)
     try {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
@@ -446,8 +451,8 @@ const ContactReferral = ({ role }) => {
             navigate("/contacts"); // Change the view state to "contacts"
           }}
         > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Send Me Referrals "}({contactName?.firstname})</h3>
-        <span class="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
+        <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
             <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
           </svg>
           Send me referrals from your following contacts</span>

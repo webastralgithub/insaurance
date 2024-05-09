@@ -93,11 +93,11 @@ const EditLeads = () => {
     if(!phoneNumber){
       return ""
     }
-    console.log(`+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`,"effferg")
+  
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
   };
   const handleAddressChange = (newAddress) => {
-    console.log("Dfdffdfdfd",newAddress)
+
     setEditedContact({ ...editedContact, address1: newAddress });
   };
 
@@ -173,7 +173,7 @@ const EditLeads = () => {
     }));
    
      setCategories( [noSelectionOption,...options])
-      console.log("User created successfully!",res);
+      
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -303,7 +303,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
 
   const handleSaveClick = async () => {
     if(validateForm()){
-      console.log(editedContact,typeof editedContact?.category)
+  
    
     try {
       let contact={}
@@ -315,8 +315,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
         contact={...editedContact}
       }
     }
-    
-      console.log(contact)
+
 
       const response = await axios.put(`${url}api/contacts/update/${id}`, contact, {
         headers,
@@ -363,7 +362,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
       </div>
       <div className="form-user-edit-inner-wrap form-user-add-wrapper">
         <div className="form-user-add-inner-wrap">
-          <label>Name</label>
+        <label>Name<span className="required-star">*</span></label>
         
             <div className="edit-new-input">
               <input name="firstname" value={editedContact.firstname} onChange={handleChange} placeholder="Name" />
@@ -448,7 +447,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               placeholder="Select User..."
               value={selectedRealtor}
               onChange={(selectedOption) => {
-                console.log(selectedOption)
+         
                 setEditedContact({ ...editedContact, realtorId: selectedOption.value });
                 setSelectedRealtor(selectedOption);
               }}
@@ -511,7 +510,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               placeholder="Have you bought a home before?"
               value={listingOptions}
               onChange={(selectedOption) => {
-                console.log(selectedOption)
+                
                 setEditedContact({ ...editedContact, listingOptions: selectedOption.value });
                 setListingOptions(selectedOption);
               }}
@@ -527,7 +526,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               placeholder="Which area are you interested in?"
               value={areaOptions}
               onChange={(selectedOption) => {
-                console.log(selectedOption)
+              
                 setEditedContact({ ...editedContact, areaOptions: selectedOption.value });
                 setAreaOptions(selectedOption);
               }}
@@ -543,7 +542,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               placeholder="What is your budget?"
               value={budgetOption}
               onChange={(selectedOption) => {
-                console.log(selectedOption)
+    
                 setEditedContact({ ...editedContact, budget: selectedOption.value });
                 setBudgetOptions(selectedOption);
               }}
@@ -559,7 +558,6 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               placeholder="Select Trait"
               value={traitOption}
               onChange={(selectedOption) => {
-                console.log(selectedOption)
                 setEditedContact({ ...editedContact, trait: selectedOption.value });
                 setTraitOptions(selectedOption);
               }}

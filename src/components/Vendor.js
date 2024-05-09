@@ -145,7 +145,7 @@ const Vendor = () => {
     
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -171,7 +171,6 @@ localStorage.setItem("parent",name)
   // setParentId(id)
   //   setParentView(true)
    navigate(`${id}`)
-    console.log(id)
     try {
         const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null && contact.isVendor==true);

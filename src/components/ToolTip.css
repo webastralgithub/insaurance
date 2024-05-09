@@ -21,3 +21,27 @@
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
+
+  .subscription-btnn {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.subscription-btnn button {
+  background-color: #b6c7db;
+  color: #004686;
+  padding: 0 20px;
+  cursor: pointer;
+  margin-right: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 2px solid #b6c7db;
+  border-radius: 12px;
+  height: 44px;
+}
+
+@media (max-width:600px){
+  .subscription-btnn {
+    display: none;
+}
+}

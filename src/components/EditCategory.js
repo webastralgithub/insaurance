@@ -94,7 +94,7 @@ const EditCategory = () => {
       });
       const contactDetails = response.data;
       setEditedContact(contactDetails);
-      console.log(contactDetails?.images);
+  
       setImages(JSON.parse(contactDetails?.images));
     } catch (error) {
       console.error("Error fetching contact details: ", error);

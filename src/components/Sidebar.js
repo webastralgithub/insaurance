@@ -8,14 +8,13 @@ import { AuthContext } from './context/AuthContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-
+import { useParams } from "react-router-dom";
 
 const Sidebar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
   const [sub, setSub] = useState('');
   const [IsOpenSub, setIsOpenSub] = useState(false);
-
   const location = useLocation();
   const [count, setCount] = useState({})
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,8 +32,7 @@ const Sidebar = (props) => {
   setIsOpenSub(true)
   }
 
-
-  const { auth, setAuth, tasklength } = useContext(AuthContext);
+  const { auth, setAuth, tasklength ,contactlength,setConatctlength,leadlength,setLeadlength, activeID } = useContext(AuthContext);
   const [toggle, setToggle] = useState(false)
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
@@ -77,7 +75,8 @@ const Sidebar = (props) => {
           axios.get(`${url}api/admin/get-current-user`, { headers })
         let userData = user.data.user
         setCount(userData)
-
+        setConatctlength(userData.contact_count)
+        setLeadlength(userData.leads_count);
       } catch (error) {
         handleLogout()
       }
@@ -85,6 +84,7 @@ const Sidebar = (props) => {
   }, []);
 
   return (<>
+
     {width > 991 ? (
       <>
         <div className="side-menu">
@@ -112,19 +112,19 @@ const Sidebar = (props) => {
             <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
               <div className="order-detail">
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Leads ({count?.leads_count})</div>
+                <div className="daily-events">Leads ({leadlength})</div>
 
               </div>
             </Link>
-            <Link to="/contacts" className={location.pathname === "/contacts" ? "active" : ""}>
+            <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname.includes("/contacts/share/")|| location.pathname.includes("/contacts/send/") ? "active" : ""}>
               <div className="order-detail">
 
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Contacts ({count?.contact_count})</div>
+                <div className="daily-events">Contacts ({contactlength})</div>
 
               </div>
             </Link>
-            <Link to="/referral" className={location.pathname === "/refrals" ? "active" : ""}>
+            <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
               <div className="order-detail">
 
                 <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -132,6 +132,7 @@ const Sidebar = (props) => {
 
               </div>
             </Link>
+
             <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
               <div className="order-detail">
 
@@ -140,6 +141,7 @@ const Sidebar = (props) => {
 
               </div>
             </Link>
+
             {/* <div onClick={() => { setSub("admin"); isOpenSub(); }} className={IsOpenSub && sub == "admin" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                   <img className="vector-icon" alt="" src="/vector.svg" />
                   <div className="properties daily-events" >Administrator </div>
@@ -173,6 +175,7 @@ const Sidebar = (props) => {
             </Link>}
                    
             </div> */}
+            
             {props.role == 1 && <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                   <img className="vector-icon" alt="" src="/vector.svg" />
                   <div className="properties daily-events" >Campaigns</div>
@@ -186,6 +189,7 @@ const Sidebar = (props) => {
                 <div className="daily-events">Email Campaigns</div>
                </div>
               </Link>}
+
             {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
               <div className="order-detail">
 
@@ -224,6 +228,7 @@ const Sidebar = (props) => {
               </div>
             </Link>}
             </div>
+
             <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
               <div className="order-detail">
 
@@ -232,6 +237,15 @@ const Sidebar = (props) => {
 
               </div>
             </Link>
+            {props.role == 1 &&
+            <Link to="/admin-userlist" className={location.pathname === "/admin-userlist" ? "active" : ""}>
+              <div className="order-detail">
+
+                <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                <div className="daily-events">User List</div>
+
+              </div>
+            </Link>}
            
           
            
@@ -409,6 +423,16 @@ to multiply the revenue. </h6>
                   <img className="vector-icon" alt="" src="/vector.svg" />
                   <div className="properties daily-events" >Campaigns</div>
                 </div>}
+
+                {props.role == 1 &&
+          <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
+              <div className="order-detail">
+
+                <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                <div className="daily-events">Klientale Contacts</div>
+
+              </div>
+            </Link>}
                 <div className="subMenu-drp">
                 {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/email-campaign" className={location.pathname === "/email-campaign" ? "active" : ""}>
               <div className="order-detail">
@@ -418,6 +442,16 @@ to multiply the revenue. </h6>
 
               </div>
             </Link>}
+            {IsOpenSub && sub == "camp" && props.role == 1 && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
+            <div className="order-detail">
+
+              <img className="order-detail-child" alt="" src="/group-30036.svg" />
+              <div className="daily-events">Send SMS</div>
+
+            </div>
+          </Link>}
+
+       
                  
             {IsOpenSub && sub == "camp" && props.role == 1 && 
             // <Link to="/social-media" className={location.pathname === "/social-media" ? "active" : ""}>
@@ -430,6 +464,8 @@ to multiply the revenue. </h6>
 
 
             // </Link>
+
+
             <Link to="/posts" className={location.pathname === "/posts" ? "active" : ""}>
             <div className="order-detail">
 
@@ -447,6 +483,7 @@ to multiply the revenue. </h6>
 
               </div>
             </Link>}
+           
             </div>
             
               {/* {props.role==1&&<Link to="/permission" className={location.pathname === "/permission" ? "active" : ""} >

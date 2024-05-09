@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import "./NavbarContainer.css";
 import Select, { components } from "react-select";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -45,8 +46,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
     <div
       className="custom-dropdown"
       style={{
-        maxHeight: "250px",
-        minHeight: "250px",
+        maxHeight: "240px",
+        minHeight: "240px",
         overflowY: "auto",
         background: "#fff",
         boxShadow: "none",
@@ -57,9 +58,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
         <div
           onClick={() => handleOptionClick(option)}
           key={option.value}
-          className={`custom-option ${
-            isOptionSelected(option) ? "selected" : ""
-          }`}
+          className={`custom-option ${isOptionSelected(option) ? "selected" : ""
+            }`}
           style={{
             backgroundColor: isOptionSelected(option)
               ? "rgb(0 70 134 / 8%)"
@@ -86,12 +86,12 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const NavbarContainer = (props) => {
   const { pathname } = useLocation();
-  const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
+  const { auth, setAuth, tasklength, setTasklength, plan, roleId, subscriptionStatus } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
-
   const [contactOptions, setContactoptions] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedContacts, setSelectedContacts] = useState(false);
@@ -126,7 +126,7 @@ const NavbarContainer = (props) => {
     },
     overlay: {
       backgroundColor: "rgb(0 0 0 / 34%)",
-      zIndex: "9",
+      zIndex: "9999",
     },
   };
 
@@ -192,6 +192,14 @@ const NavbarContainer = (props) => {
           headers,
         });
         let userData = user.data.user;
+        let userDataLead = user.data
+
+        localStorage.setItem('subscription_status', userData.subscription_status)
+        localStorage.getItem('category_id', userData.category_id)
+        localStorage.setItem("totalReffralEarnedMoney", userDataLead.totalReffralEarnedMoney)
+        localStorage.setItem("totalAvailableJobs", userDataLead.totalAvailableJobs)
+        localStorage.setItem("totalReffrals", userDataLead.totalReffrals)
+        localStorage.setItem("totalReffralsReceived", userDataLead.totalReffralsReceived)
 
         setPreviewImage(
           userData.profileImg ? userData.profileImg : "/placeholder@2x.png"
@@ -252,9 +260,9 @@ const NavbarContainer = (props) => {
     if (!dateTimeString) {
       return ""; // Handle cases where the date-time string is empty or undefined
     }
-    console.log(dateTimeString);
+
     const dateTime = new Date(dateTimeString);
-    console.log(dateTime);
+
     const year = dateTime.getFullYear();
     const month = String(dateTime.getMonth() + 1).padStart(2, "0");
     const day = String(dateTime.getDate()).padStart(2, "0");
@@ -285,12 +293,14 @@ const NavbarContainer = (props) => {
       }));
       setContactoptions(realtorOptions);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
     }
   };
+
+
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo/get`, { headers });
@@ -310,78 +320,85 @@ const NavbarContainer = (props) => {
 
       const birthdayTodos = response.data.filter((todo) => {
         if (todo.isBirthday || todo.isAnniversary) {
-          console.log(todo.FollowupDate, "Dvdffd");
           // Extract the month and day part of the FollowupDate
           const todoMonthDay = formatDateNew(todo?.FollowupDate);
-          console.log(todoMonthDay, "dfadaffdf", todayMonthDay);
           return todoMonthDay === todayMonthDay;
         }
         return todo;
       });
       setTasklength(birthdayTodos.length);
-      console.log(birthdayTodos.length);
-    } catch (error) {}
+
+    } catch (error) { }
   };
+
   return (
     <div className="top-navbar">
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-      >
-        <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
-          <img
-            className="close-modal-share"
-            onClick={closeModal}
-            src="/plus.svg"
-          />
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              sendRefferal();
-            }}
-          >
-            <h3 className="heading-category">Select Contact(s) </h3>
-            <span className="share-contact-comment">
-              Grow your network - Bigger Network - More Leads{" "}
-            </span>
-            {error && <p className="error-category">{error}</p>}
-            <Select
-              placeholder={
-                <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
-              }
-              ref={selectRef}
-              value={selectedContacts}
-              menuIsOpen={true}
-              onChange={(selectedOptions) => {
-                setSelectedContacts(selectedOptions);
 
-                // You can also extract the values into an array if needed
-              }}
-              onInputChange={(input) => setSearchText(input)}
-              options={contactOptions}
-              components={{
-                DropdownIndicator: () => null,
-                IndicatorSeparator: () => null,
-                Menu: (props) => (
-                  <CustomDropdown searchText={searchText} {...props} />
-                ),
-              }}
-              styles={colourStyles}
-              className="select-new"
-              isMulti // This is what enables multiple selections
+      <div className="test-class-popup" style={{ backgroundColor: 'red' }}>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customStyles}
+
+
+        >
+          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+            <img
+              className="close-modal-share"
+              onClick={closeModal}
+              src="/plus.svg"
             />
-            <div className="modal-convert-btns">
-              <button type="submit">Share</button>
-            </div>
-          </form>
-        </div>
-      </Modal>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendRefferal();
+              }}
+            >
+              <h3 className="heading-category">Select Contact(s) </h3>
+              <span className="share-contact-comment">
+                Grow your network - Bigger Network - More Leads{" "}
+              </span>
+              {error && <p className="error-category">{error}</p>}
+              <Select
+                placeholder={
+                  <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
+                }
+                ref={selectRef}
+                value={selectedContacts}
+                menuIsOpen={true}
+                onChange={(selectedOptions) => {
+                  setSelectedContacts(selectedOptions);
 
+                  // You can also extract the values into an array if needed
+                }}
+                onInputChange={(input) => setSearchText(input)}
+                options={contactOptions}
+                components={{
+                  DropdownIndicator: () => null,
+                  IndicatorSeparator: () => null,
+                  Menu: (props) => (
+                    <CustomDropdown searchText={searchText} {...props} />
+                  ),
+                }}
+                styles={colourStyles}
+                className="select-new"
+                isMulti // This is what enables multiple selections
+              />
+              <div className="modal-convert-btns">
+                <button type="submit">Share</button>
+              </div>
+            </form>
+          </div>
+        </Modal>
+      </div>
       {/* <div className="search-group">
        <input type="text" placeholder="Search here"/>
        <img src="/search.svg" />
       </div> */}
+      <div className="subscription-btnn  ">
+        {subscriptionStatus === "active" || location.pathname == "/upgrade-plan" ? "" : <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button>}
+        {/* <button onClick={() => navigate("/upgrade-plan")}> <FontAwesomeIcon icon={faCrown} /> Upgrade Plan</button> */}
+      </div>
 
       <div className="icon-dashboard setting-nav">
         <div className="icon-dashboard-child" />
@@ -399,9 +416,9 @@ const NavbarContainer = (props) => {
 
       <div className="icon-dashboard share-ref-top-wrp">
         <button onClick={() => setIsOpen(true)}>
-          <div class="tooltip">
+          <div className="tooltip">
             <p>Share Us</p>
-            <span class="tooltiptext">
+            <span className="tooltiptext">
               Grow your network -<br></br> Bigger Network - More Leads
             </span>
           </div>
@@ -440,6 +457,8 @@ const NavbarContainer = (props) => {
               <div onClick={() => setShowMenu(false)} className="profile-menu">
                 <Link to="/profile">My Profile</Link>
                 <Link onClick={handleLogout}>Logout</Link>
+                <Link to="/manage-subscription">Manage Subscription</Link>
+                {roleId == 1 && <Link to='/manage-configure'>Manage Configure</Link>}
               </div>
             )}
           </div>

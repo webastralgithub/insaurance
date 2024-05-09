@@ -1,0 +1,18 @@
+img.subscription {
+    background: transparent;
+    filter: brightness(0) saturate(100%) invert(44%) sepia(95%) saturate(7091%) hue-rotate(352deg) brightness(91%) contrast(129%);
+}
+
+button.manage-active-buttons {
+    background-color: #004686;
+    border: 2px solid #004686;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    height: 44px;
+    margin-right: 5px;
+    padding: 0 20px;
+    width: 120px;
+}

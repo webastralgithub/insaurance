@@ -153,7 +153,7 @@ const ChildNotes = (props) => {
     // Remove the trailing period and return the initials
     return initials.slice(0, -1);
   }
-console.log(useGoogleAddress,"fsffdfdadffd")
+
   const handleAddFamilyMember = () => {
     // Add an empty family member to the contacts list
     const updatedContacts = [...contacts];
@@ -178,9 +178,9 @@ console.log(useGoogleAddress,"fsffdfdadffd")
   };
 const removefamily=(index)=>{
 const newContacts=[...contacts]
-console.log(contacts)
+
 newContacts.splice(index, 1);
-console.log(contacts.length,newContacts)
+
 setContacts(newContacts)
 }
   return (
