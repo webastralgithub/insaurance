@@ -72,7 +72,7 @@ section.inner-sec-stats {
     margin: 0;
 }
 .stats-heading span {
-    font-size: 14px;
+    font-size: 16px;
     color: #424141;
 }
 .stats-parent-section {
@@ -92,7 +92,7 @@ section.inner-sec-stats {
     align-items: center;
 }
 .stats-order span {
-    font-size: 12px;
+    font-size: 16px;
 }
 span.order-numbers {
     font-size: 20px;
@@ -118,7 +118,7 @@ span.order-numbers {
     align-items: center;
 }
 .total-stats-perc span {
-    font-size: 12px;
+    font-size: 13px;
     color: #3e3e3e;
 }
 .stats-inner-perc {
