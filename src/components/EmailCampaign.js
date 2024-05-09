@@ -755,7 +755,7 @@ const EmailCampaign = () => {
                     {/* </div>
                     <div className="email-template-name" >{template.name}</div>
                   </div>
-                ))}</div> */} */
+                ))}</div> */} 
               
               </>}
 

@@ -334,14 +334,14 @@ else{
      <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="custom-modal"
+        className="custom-modal referal-model"
         overlayClassName="custom-overlay"
       >
         <div className="modal-header">
           <h2>{bussinessDetail?.firstname}</h2>
           <button onClick={closeModal}>&times;</button>
         </div>
-        <div className="modal-content">
+        <div className="modal-content" style={{width:"unset"}}>
         <div className="user-info">
       <p>
         <strong>Name:</strong> {bussinessDetail?.firstname}

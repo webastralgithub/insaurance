@@ -93,6 +93,7 @@ section.inner-sec-stats {
 }
 .stats-order span {
     font-size: 16px;
+    font-weight: 500;
 }
 span.order-numbers {
     font-size: 20px;
@@ -118,8 +119,9 @@ span.order-numbers {
     align-items: center;
 }
 .total-stats-perc span {
-    font-size: 13px;
     color: #3e3e3e;
+    font-size: 13px;
+    font-weight: 500;
 }
 .stats-inner-perc {
     height: 100%;

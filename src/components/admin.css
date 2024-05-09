@@ -38,7 +38,7 @@ z-index: unset;
     display: flex;
     gap: 10px;
     font-size: 14px;
-    border-bottom: 1px solid #fff;
+    /* border-bottom: 1px solid #fff; */
     padding-bottom: 4px;
     position: relative !important;
     flex-direction: column;
@@ -192,7 +192,7 @@ z-index: unset;
     display: flex;
     gap: 10px;
     font-size: 14px;
-    border-bottom: 1px solid #fff;
+    /* border-bottom: 1px solid #fff; */
     padding-bottom: 4px;
 }
 
@@ -207,7 +207,7 @@ z-index: unset;
     width: 100%;
     background-color: transparent !important;
     border: none;
-    border-left: 1px solid #fff;
+    /* border-left: 1px solid #fff; */
     color: #858585;
     font-size: 14px;
     font-weight: 300;
@@ -697,11 +697,18 @@ z-index: unset;
     .add-contact-user-custom-left, .add-contact-user-custom-right{
         width: 100%;
         margin: 0;
+        flex-wrap: wrap;
     }
     
     .convert-lead-pop-up-content{
         width: 100%;
         padding: 0px !important;
+    }
+
+    .inner-pages-top-contacts .search-group {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-bottom: 20px;
     }
 
 }
@@ -839,4 +846,18 @@ form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wra
 
 .add-cnt-form-desc .add-contact-user-custom-right .add-contact-user-custom-left {
     width: 100%;
+}
+
+.social-media-post-sec .form-user-add-inner-wrap .edit-new-input input {
+    color: #000;
+    font-size: 13px;
+}
+
+.add-contact-form .add-contact-user-custom-right .add-contact-user-custom-wrapper .form-user-add-inner-wrap label {
+    padding: 0 8px 8px 0;
+    display: inline-block;
+}
+
+.facebook-share-btn button.react-share__ShareButton {
+    margin: 0;
 }

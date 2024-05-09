@@ -243,7 +243,7 @@ const Contact = ({ role }) => {
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
       background: "#000",
-      border: "1px solid #fff",
+      border:"1px solid #fff",
       padding:"0"
     },
     overlay: {
@@ -525,7 +525,7 @@ const Contact = ({ role }) => {
             </div>
           )}
           {modalMode === "upload" && (
-            <div className="modal-roles-add download-file">
+            <div className="modal-roles-add download-file bulk-upload-popup">
               <button className="close-btn" onClick={closeModal}><img src="/plus.svg" /></button>
               <div>
                 <input style={{ display: "none" }} ref={fileRef} type="file" onChange={handleFileChange} />

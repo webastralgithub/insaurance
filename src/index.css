@@ -1375,7 +1375,7 @@ margin-top: 0;
   
 .inner-pages-top .search-group{
   width: 100% !important;
-  margin-top: 10px !important;
+  margin-top: 50px !important;
 }
   .profile-page-form .profilepg-btm-from-cnt .form-devider .input-feilds label {
     width: 100%;
@@ -1683,4 +1683,12 @@ form.add-configr-form .form-user-add-wrapper {
 
 form.add-configr-form .form-user-add-wrapper .form-user-add-inner-wrap {
   width: 46% !important;
+}
+
+.fc-daygrid-event-harness a .fc-event-title {
+  font-size: 10px;
+}
+
+.fc-daygrid-event-harness a .fc-event-time {
+  font-size: 11px;
 }
