@@ -4,7 +4,8 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPencil, faTimes,faRightToBracket } from "@fortawesome/free-solid-svg-icons";
+
 import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
@@ -441,8 +442,8 @@ const KlientaleContacts = ({ role }) => {
     /> */}
 
         <div className="icon-dashboard share-ref-top-wrp become-klintale">
-          <button onClick={() => navigate("/become-klintale")}>
-            <p>SignUp To Klientale</p>
+          <button className="upgade-klientale" onClick={() => navigate("/become-klintale")}>
+            <p>Upgrade To Klientale</p>
           </button>
           <button onClick={() => setIsOpen(true)}>
             <p>My Preference</p>
