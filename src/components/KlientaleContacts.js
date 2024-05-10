@@ -445,7 +445,7 @@ const KlientaleContacts = ({ role }) => {
             <p>SignUp To Klientale</p>
           </button>
           <button onClick={() => setIsOpen(true)}>
-            <p>My Prefrences</p>
+            <p>My Preference</p>
           </button>
         </div>
         <div className="search-group">

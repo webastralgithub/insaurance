@@ -362,7 +362,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
       </div>
       <div className="form-user-edit-inner-wrap form-user-add-wrapper">
         <div className="form-user-add-inner-wrap">
-          <label>Name</label>
+        <label>Name<span className="required-star">*</span></label>
         
             <div className="edit-new-input">
               <input name="firstname" value={editedContact.firstname} onChange={handleChange} placeholder="Name" />

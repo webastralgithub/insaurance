@@ -29,13 +29,24 @@
 }
 .subscription-btnn button {
   background-color: #b6c7db;
-  color: #004686;
-  padding: 0 20px;
+  color: #fff;
+  padding: 0 22px;
   cursor: pointer;
   margin-right: 5px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  border: 2px solid #b6c7db;
-  border-radius: 12px;
-  height: 44px;
+  border: 0px solid #ffffff00;
+  border-radius: 7px;
+  height: 49px;
+  background: linear-gradient(180deg, rgba(0, 72, 137, 1) 0%, rgb(1, 48, 90) 100%);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width:600px){
+  .subscription-btnn {
+    display: none;
+}
 }

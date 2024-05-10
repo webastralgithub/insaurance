@@ -2350,4 +2350,65 @@
 .pricing-table-pnts table.table {
   width: 700px;
 }
+.referal-model {
+width: 95%;
+}
+
+.add_property_btn.upgrade-plan {
+  padding-top: 70px !important;
+}
+
+}
+
+/* http://localhost:3000/referral popup css */
+
+.referal-model {
+  padding: 40px 0 0 0;
+  background: #004686;
+  max-width: 400px;
+}
+
+.referal-model .modal-header {
+  background: linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%);
+  margin: 0;
+  padding: 7px 0 7px 20px;
+  color: #fff;
+}
+
+.referal-model .modal-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.referal-model .modal-footer {
+  background: #ebebeb;
+  text-align: center;
+}
+
+.referal-model .modal-footer button {
+  background: #004686;
+  padding: 10px 50px;
+  font-weight: 600;
+}
+
+.referal-model .modal-footer {
+  background: #ebebeb;
+  text-align: center;
+  padding: 18px 0;
+}
+
+.referal-model .modal-header button {
+  color: #fff;
+  font-size: 30px;
+  font-weight: bold;
+  position: relative;
+  top: -46px;
+}
+
+.referal-model .user-info p {
+  text-align: start;
+}
+
+.referal-model .modal-content {
+  border: unset;
 }

@@ -165,16 +165,16 @@ const SocialMediaLogin = () => {
         <div style={{ marginBottom: "20px" }} className='inner-pages-top'>
           <h3>Social Media Share</h3>
           <div className="new-social" style={{ display: "flex" }} >
-
+            <div className='facebook-share-btn'>             
             <FacebookLoginButton editedContact={editedContact} connectedAccounts={connectedAccounts} setConnectedAccounts={setConnectedAccounts} />
+            </div>  
             <LinkedIn editedContact={editedContact} />
             <button onClick={shareOnInstagram}> Instagram</button>
             <Instagram editedContact={editedContact} />
           </div>
 
         </div>
-
-        <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">
+        <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec social-media-post-sec">
           <div className="form-catagory-edit-sec-left">
             <div className="form-user-add-inner-wrap">
               <label>Name</label>
