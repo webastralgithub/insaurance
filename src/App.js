@@ -191,7 +191,7 @@ const App = () => {
               }
             />
             <Route
-              path="/klientale-contacts/share/:id" exact
+              path="/klientale-contacts/share/:id/:name" exact
               element={
                 <PrivateRoute>
                   <KlientaleShareMe role={role} />

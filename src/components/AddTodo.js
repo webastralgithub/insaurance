@@ -19,16 +19,14 @@ const getCurrentTime = (date) => {
 }
 const AddTodo = () => {
   const{date}=useParams()
-
+console.log("date tewsytinf" , date)
   const [contact, setContact] = useState(
     {
         Followup:"" ,
-        FollowupDate:date?date+" "+getCurrentTime(date):"",
+        FollowupDate:date,
         Comments:"",
         IsRead:false ,
         phone: "",
-   
-  
     }
       
   );
@@ -37,7 +35,8 @@ const AddTodo = () => {
   const [propertyTypeError, setPropertyTypeError] = useState("");
   const noSelectionOption = { value: null, label: 'No Selection' };
     // Validate the form fields and set validation errors
-    const validateForm = () => {
+
+ const validateForm = () => {
       let isValid = true;
   
       if (!contact.Followup) {
@@ -54,8 +53,6 @@ const AddTodo = () => {
         setPropertyTypeError("Follow up Date is required");
         isValid = false;
       }
-  
- 
   
         if(!isValid){
     window.scrollTo(0,0)
@@ -92,7 +89,6 @@ const AddTodo = () => {
   // Define an array of province options
 
   const navigate = useNavigate();
-
   const { auth,setAuth,tasklength,setTasklength  } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
@@ -260,7 +256,8 @@ setPhoneError("")
         <div className="form-user-add-inner-wrap">
           <label>Follow Up Date <span className="required-star">*</span></label>
           <input
-            type="datetime-local"
+          placeholder={contact.FollowupDate}
+            type="date"
             name="FollowupDate"
             value={contact.FollowupDate}
             onChange={handleChange}

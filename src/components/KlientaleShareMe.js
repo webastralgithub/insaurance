@@ -20,10 +20,11 @@ import Spinner from "./Spinner";
 
 
 const KlientaleShareMe = ({ role }) => {
-  const { id } = useParams()
+  const { id,name } = useParams()
+  const param = useParams()
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
-  const [contactName, setContactName] = useState();
+  const [contactName, setContactName] = useState(param.name);
 
   const [active, setActive] = useState(0);
   const [parentid, setParentId] = useState()
@@ -83,7 +84,7 @@ const KlientaleShareMe = ({ role }) => {
 
 
   const sendRefferal = async (contact) => {
- 
+
     try {
       setIsLoading(true);
 
@@ -314,7 +315,7 @@ const KlientaleShareMe = ({ role }) => {
       contact.phone?.toLowerCase().includes(searchText)
     );
   });
-  
+
   const getContacts = async () => {
     try {
       const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
@@ -401,7 +402,7 @@ const KlientaleShareMe = ({ role }) => {
               navigate("/klientale-contacts"); // Change the view state to "contacts"
 
             }}
-          > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Share Me"} ({contactName?.name})</h3>
+          > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Share Me"} ({param.name})</h3>
           <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
               <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
@@ -464,7 +465,7 @@ const KlientaleShareMe = ({ role }) => {
                   <td>  <button className="permissions share-ref-button-tb"
                     onClick={() => {
                       handleDeleteClick(contact.id)
-                    }}       >Share</button>       </td>
+                    }}>Share</button>       </td>
                   <td>{contact.name}</td>
                   <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                   <td>{contact.email}</td>

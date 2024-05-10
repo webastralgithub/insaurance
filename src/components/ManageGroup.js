@@ -77,6 +77,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
 
 
   const handleView = async (postid) => {
+    
     await axios.delete(`${url}api/group-delete/${postid}`, { headers });
 
     toast.success('Group Removed successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });

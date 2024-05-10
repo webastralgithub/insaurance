@@ -9,9 +9,10 @@ import axios from 'axios';
 import { AuthContext } from './context/AuthContext';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
- // Functions for connecting/disconnecting accounts
+// Functions for connecting/disconnecting accounts
 
 const SocialMediaLogin = () => {
+  const [postdescription, setpostdescription] = useState("")
   const [connectedAccounts, setConnectedAccounts] = useState({
     facebook: false,
     linkedin: false,
@@ -19,23 +20,40 @@ const SocialMediaLogin = () => {
   });
   const { id } = useParams();
 
-  const [editedContact,setEditedContact] =useState({});
-const fetchConnectedAccounts=()=>{
+  const [editedContact, setEditedContact] = useState({
+    created_at: " ",
+    description: "",
+    id: "",
+    images: "",
+    name: "",
+    updated_at: "",
+    user_id: ""
+  });
 
-}
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedContact(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const fetchConnectedAccounts = () => {
+
+  }
   const shareUrl = 'http://insurancecrm.nvinfobase.com/categories/6';
   const title = 'Critical Illness Insurance';
   const imageUrl = 'https://insauranceadmin.nvinfobase.com/storage/uploads/jL8ADup73NCwUx6h6xpiE6xNTVCz7nOB8lNAmAFA.webp'; // URL of the image to be shared
-const connectAccount=(platform)=>{
+  const connectAccount = (platform) => {
 
-}
-const disconnectAccount=()=>{
+  }
+  const disconnectAccount = () => {
 
-}
-const { auth,setAuth,tasklength,setTasklength  } = useContext(AuthContext);
-const headers = {
-  Authorization: auth.token,
-};
+  }
+  const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
+  const headers = {
+    Authorization: auth.token,
+  };
 
   // Function to check currently connected accounts
   const checkConnectedAccounts = async () => {
@@ -71,10 +89,10 @@ const headers = {
         },
         body: JSON.stringify({ message: message }),
       });
-  
+
       if (response.ok) {
         toast.success('Posted to Facebook successfully!')
-        
+
         // Handle success
       } else {
         toast.error('Failed to post to Facebook:', response)
@@ -86,26 +104,39 @@ const headers = {
       // Handle error
     }
   };
-  
+
   // Usage example:
   // Call postToFacebook function with the obtained accessToken and message
   const accessToken = 'EAACtatswqk0BOwXE7p3dmCyLCOw41eBQVKmXXokHkrcusvgPs2VHisDEymDLMcFkflAaydup9QGNYieBfHt2qxaDSKdEscSzHvd5HZBsB8vPFvxx45r0bZCKZA4gfdHDv5CZBTJEf9qtEEdnDpeRYlWwnjPKeBrNru9oznCDnB1vcvpYc3DB2FnqzCCN15PzF1IZAlDBEMQyqNGpE6AoKb3xPSEoZD'; // Replace with the obtained access token
   const message = 'Hello from my app!';
-  
-;
-//   const editedContact={
-//     "id": 6,
-//     "name": "Travel Insurance",
-//     "images": "[\"https:\\/\\/insauranceadmin.nvinfobase.com\\/storage\\/uploads\\/jL8ADup73NCwUx6h6xpiE6xNTVCz7nOB8lNAmAFA.webp\"]",
-//     "notes": "<p>Covers medical emergencies, trip cancellations, lost luggage, and other unexpected events while traveling domestically or internationally.</p>",
-//     "created_at": "2023-11-29T09:22:35.000000Z",
-//     "updated_at": "2023-11-29T13:07:32.000000Z"
-// }
 
-const getPostById= async()=>{
-  const res= await axios.get(`${process.env.REACT_APP_API_URL}api/post/get/${id}`, { headers });
-  setEditedContact(res.data)
-}
+  ;
+  //   const editedContact={
+  //     "id": 6,
+  //     "name": "Travel Insurance",
+  //     "images": "[\"https:\\/\\/insauranceadmin.nvinfobase.com\\/storage\\/uploads\\/jL8ADup73NCwUx6h6xpiE6xNTVCz7nOB8lNAmAFA.webp\"]",
+  //     "notes": "<p>Covers medical emergencies, trip cancellations, lost luggage, and other unexpected events while traveling domestically or internationally.</p>",
+  //     "created_at": "2023-11-29T09:22:35.000000Z",
+  //     "updated_at": "2023-11-29T13:07:32.000000Z"
+  // }
+
+  const getPostById = async () => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}api/post/get/${id}`, { headers });
+    const responseData = await res.data
+    setEditedContact({
+      created_at: responseData.created_at,
+      description: responseData.description,
+      id: responseData.id,
+      images: responseData.images,
+      name: responseData.name,
+      updated_at: responseData.updated_at,
+      user_id: responseData.user_id
+    
+    })
+
+    // setEditedContact(res.data)
+
+  }
 
   useEffect(() => {
     checkConnectedAccounts();
@@ -130,74 +161,79 @@ const getPostById= async()=>{
 
   return (
     <div className="form-user-add">
-    <div className="add_property_btn">
-    <div style={{marginBottom:"20px"}} className='inner-pages-top'>
-      <h3>Social Media Share</h3>
-      <div className="new-social" style={{display:"flex"}} >
+      <div className="add_property_btn">
+        <div style={{ marginBottom: "20px" }} className='inner-pages-top'>
+          <h3>Social Media Share</h3>
+          <div className="new-social" style={{ display: "flex" }} >
 
-<FacebookLoginButton editedContact={editedContact}  connectedAccounts={connectedAccounts} setConnectedAccounts={setConnectedAccounts} />
-      <LinkedIn editedContact={editedContact}/>
-      <button onClick={shareOnInstagram}> Instagram</button>
-       <Instagram  editedContact={editedContact} />
-      </div>
-
-      </div>
-      <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">
-        <div className="form-catagory-edit-sec-left">
-          <div className="form-user-add-inner-wrap">
-            <label>Name</label>
-
-            <div className="edit-new-input">
-              <input
-                name="name"
-                value={editedContact.name}
-             disabled
-              />
-           
-            </div>
+            <FacebookLoginButton editedContact={editedContact} connectedAccounts={connectedAccounts} setConnectedAccounts={setConnectedAccounts} />
+            <LinkedIn editedContact={editedContact} />
+            <button onClick={shareOnInstagram}> Instagram</button>
+            <Instagram editedContact={editedContact} />
           </div>
-       
-          {editedContact?.images &&<img src={editedContact?.images} style={{height:"300px",width:"400px"}}></img>}
+
         </div>
 
-        <div className="form-catagory-edit-sec-right">
-          <div className="add-contact-user-custom-right">
+        <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">
+          <div className="form-catagory-edit-sec-left">
             <div className="form-user-add-inner-wrap">
-              <label>Description</label>
-              <CKEditor
-                editor={ClassicEditor}
-                data={editedContact?.description ? editedContact.description : ""}
-            
-                config={{
-                  toolbar: [
-                    "heading",
-                    "|",
-                    "bold",
-                    "italic",
-                    "link",
-                    "|",
-                    "bulletedList",
-                    "numberedList",
-                    "|",
-                    "undo",
-                    "redo",
-                  ],
-                }}
-                className="custom-ckeditor" // Add a custom class for CKEditor container
-                style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-                disabled
-              />
+              <label>Name</label>
+
+              <div className="edit-new-input">
+                <input
+                  name="name"
+                  value={editedContact.name}
+                  onChange={handleInputChange}
+                  //disabled
+                />
+
+              </div>
+            </div>
+
+            {editedContact?.images && <img src={editedContact?.images} style={{ height: "300px", width: "400px" }}></img>}
+          </div>
+
+          <div className="form-catagory-edit-sec-right">
+            <div className="add-contact-user-custom-right">
+              <div className="form-user-add-inner-wrap">
+                <label>Description</label>
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={editedContact?.description ? editedContact.description : ""}
+
+                  config={{
+                    toolbar: [
+                      "heading",
+                      "|",
+                      "bold",
+                      "italic",
+                      "link",
+                      "|",
+                      "bulletedList",
+                      "numberedList",
+                      "|",
+                      "undo",
+                      "redo",
+                    ],
+                  }}
+                  className="custom-ckeditor" // Add a custom class for CKEditor container
+                  style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setpostdescription(data);
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
 
-        <div className="form-user-add-inner-btm-btn-wrap">
-          {/* <button style={{ background: "#004686" }} onClick={handleSaveClick}>
+          <div className="form-user-add-inner-btm-btn-wrap">
+            {/* <button style={{ background: "#004686" }} onClick={handleSaveClick}>
             Save
           </button> */}
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

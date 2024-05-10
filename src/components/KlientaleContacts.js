@@ -487,7 +487,7 @@ const KlientaleContacts = ({ role }) => {
                 <td>
                   <button className="permissions share-ref-button-tb"
                     onClick={() => {
-                      navigate(`/klientale-contacts/share/${user.id}`)
+                      navigate(`/klientale-contacts/share/${user.id}/${user.name}`)
                     }}       >Share Me</button>
                 </td>
                 <td>  <button className="permissions share-ref-button-tb"

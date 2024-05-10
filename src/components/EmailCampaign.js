@@ -650,7 +650,7 @@ const EmailCampaign = () => {
             <div className="add_user_btn">
               <button onClick={() => setChooseTemplate(true)}> Send New Email </button>
             </div>
-            <div className="search-group">
+            {/* <div className="search-group">
               <input
                 type="text"
                 value={searchQuery}
@@ -658,7 +658,7 @@ const EmailCampaign = () => {
                 placeholder="Search here"
               />
               <img src="/search.svg" />
-            </div>
+            </div> */}
             {/* Rest of your component remains the same... */}
           </div>
 
@@ -717,7 +717,7 @@ const EmailCampaign = () => {
                   templateContent={previewContent}
                   onSave={updateEmailTemplate}
                 />
-                 {templates.map((template) => (
+                {templates.map((template) => (
                   <div key={template.id} className="template-item">
                     <label htmlFor={template.id}></label>
                     <div
@@ -731,32 +731,12 @@ const EmailCampaign = () => {
                     >
                       <div dangerouslySetInnerHTML={{ __html: template.text }} />
                       <button onClick={() => openTemplate(template.id, template.text, template.name)}>Choose template</button>
-                       <button onClick={() => openPreviewModal(template.id, template.text)}>choose template</button> 
-                     </div>
+
+                    </div>
                     <div className="email-template-name" >{template.name}</div>
                   </div>
-                ))} 
-{/* <div>  {dataUrlTemplate && dataUrlTemplate?.map((template) => (
-                  <div key={template.id} className="template-item">
-                    <label htmlFor={template.id}></label>
-                    <div
-                      className="email-template-box"
-                      style={{
-                        width: "100%",
-                        height: "100px",
-                        border: "1px solid #ccc",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <img src={template.dataUrl} alt="Template Preview" />
-                      {/* <div dangerouslySetInnerHTML={{ __html: template.text }} /> */}
-                      {/* <button onClick={() => openTemplate(template.id, template.dataUrl, template.name)}>Choose template</button> */}
-                    
-                    {/* </div>
-                    <div className="email-template-name" >{template.name}</div>
-                  </div>
-                ))}</div> */} */
-              
+                ))}
+
               </>}
 
             {active == "2" && <><div className="custom-text-tab-sec">

@@ -12,6 +12,7 @@ import { useNavigate, useRouter } from "react-router-dom";
 import Groups from "./ManageGroup";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { confirmAlert } from 'react-confirm-alert';
 
 const CustomDropdown = ({ children, isGroupFormActive, searchText, contact, ...props }) => {
 
@@ -423,9 +424,45 @@ const SendMessage = ({ role }) => {
       setError("Failed to fetch group names");
     }
   };
+
   const groupDelete = (postid) => {
-    setGroupNames(groupNames.filter((p) => p.id !== postid));
+
+    confirmAlert({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this Group?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => setGroupNames(groupNames.filter((p) => p.id !== postid)),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+
   }
+ 
+
+
+  const handleDeleteClick = (propertyId) => {
+    confirmAlert({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this Group?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => groupDelete(propertyId),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
+
   const getGroupContacts = async (id) => {
     try {
       const response = await axios.get(`${url}api/group-contacts/${id}`, { headers });
@@ -493,8 +530,8 @@ const SendMessage = ({ role }) => {
             <button onClick={() => {
               setView(true);
             }}>
-             <FontAwesomeIcon icon={faUserGroup} /> Manage Group
-         </button>
+              <FontAwesomeIcon icon={faUserGroup} /> Manage Group
+            </button>
           </div>}
           {view && <div className="top-bar-action-btns">
             <button onClick={() => {
@@ -514,7 +551,8 @@ const SendMessage = ({ role }) => {
               setSelectedContacts={setSelectedContacts}
               groupNames={groupNames}
               groupDelete={groupDelete}
-              setEdit={setEdit} />
+              setEdit={setEdit}
+            />
           </>
 
         }

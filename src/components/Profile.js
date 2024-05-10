@@ -294,7 +294,7 @@ export default function Profile(props) {
 
 
         </Modal>
-        <h3>My profile</h3>
+        <h3>My Profile</h3>
 
       </div>
 
