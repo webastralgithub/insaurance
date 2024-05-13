@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       auth, setAuth, property, setProperty, todo, setTodo, tasklength, setTasklength,
       plan, setPlan, leadlength, setLeadlength, contactlength, setConatctlength,
       roleId, totalReffralEarnedMoney, totalAvailableJobs, totalReffrals, totalReffralsReceived,
-      currentUsercategory_id
+      currentUsercategory_id,settotalAvailableJobs,settotalReffralEarnedMoney,settotalReffrals,settotalReffralsReceived
     }}>
       {children}
     </AuthContext.Provider>
