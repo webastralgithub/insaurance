@@ -424,10 +424,9 @@ const Contact = ({ role }) => {
       // setAuth(null);
       // navigate('/');
     }
-
   };
-  const contactsPerPage = 1; // Adjust the number of contacts per page as needed
 
+  const contactsPerPage = 20; // Adjust the number of contacts per page as needed
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage

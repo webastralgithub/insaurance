@@ -59,6 +59,7 @@ const FeatureUpdate = (props) => {
         //     setErrors(newErrors);
         //     return
         // }
+
         let updatedData = {
             name: formData.name,
             set_limit: formData.set_limit,

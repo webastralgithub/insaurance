@@ -319,19 +319,16 @@ const UpgradePlan = () => {
                                             <input {...getCVCProps({ onChange: handleChange })} name="cvc" />
                                             <small>{erroredInputs.cvc && erroredInputs.cvc}</small>
                                         </div>
-                                        <div className="input-group input-plan-tenure">
+                                        {/* <div className="input-group input-plan-tenure">
                                             <select value={selectMonth} onChange={(e) => setSelectMonth(e.target.value)}>
-                                                {/* <option value="">Billing Period</option> */}
+                        
                                                 <option value="1">1 Month</option>
-                                                {/* <option value="3">3 Month</option>
-                                                <option value="6">6 Month</option>
-                                                <option value="9">9 Month</option>
-                                                <option value="12">1 year</option> */}
+                                               
                                             </select>
-                                        </div>
+                                        </div> */}
 
                                     </div>
-                                    {selectMonth == "" || errors.name || erroredInputs.cvc || erroredInputs.expiryDate || erroredInputs.cardNumber ? <button disabled type="button">Pay</button> : <button type="submit">Pay</button>}
+                                    {errors.name || erroredInputs.cvc || erroredInputs.expiryDate || erroredInputs.cardNumber ? <button disabled type="button">Pay</button> : <button type="submit">Pay</button>}
                                 </form>
                             </div>
                         </Modal>

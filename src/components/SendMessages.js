@@ -443,7 +443,7 @@ const SendMessage = ({ role }) => {
     });
 
   }
- 
+
 
 
   const handleDeleteClick = (propertyId) => {
@@ -482,13 +482,13 @@ const SendMessage = ({ role }) => {
 
   useEffect(() => {
     const mergedContacts = [
-      ...(contactOptions?.map((user) => ({
-        value: user.value,
-        name: user.label,
-      })) || []),
+
       ...(groupNames?.map((group) => ({
         value: group.id + '/group',
         name: group.group_name,
+      })) || []), ...(contactOptions?.map((user) => ({
+        value: user.value,
+        name: user.label,
       })) || [])
     ];
 

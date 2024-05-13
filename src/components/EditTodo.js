@@ -209,6 +209,7 @@ const EditTodoForm = () => {
   const getTodos = async () => {
     const response = await axios.get(`${url}api/todo/get`, { headers });
     const filtered = response.data.find(x => x.id == id)
+    
     const followupDateISO = filtered?.FollowupDate
       ? new Date(filtered.FollowupDate).toISOString().slice(0, 16)
       : '';

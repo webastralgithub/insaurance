@@ -14,17 +14,13 @@ const AddVendor = () => {
   const [contact, setContact] = useState({
     firstname: "",
     lastname: "",
-
-    address1: "",
+  address1: "",
     isVendor:true,
-
-   
     source: "",
     phone: "",
     parentId: null,
     //createdAt: "",
-    //updatedAt: "",
-
+    //updatedAt: ""
     realtorId: null,
     propertyId: null,
    // children: [],
@@ -195,7 +191,8 @@ const clearErrors = (fieldName) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    if (validateForm())
+       {
     try {
       const response = await axios.post(`${url}api/contacts/create`, contact, {
         headers,
@@ -239,9 +236,6 @@ const clearErrors = (fieldName) => {
            <div className="property_header header-with-back-btn">
           
           <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Vendor</h3>
-        
-          <div className="top-bar-action-btns"><button type="submit" style={{background:"#004686"}} >Save</button>
-          </div>
           </div> 
           <div className="form-user-add-wrapper">
           <div className="form-user-add-inner-wrap">
@@ -280,15 +274,9 @@ const clearErrors = (fieldName) => {
         />
           <span className="error-message">{workPhoneError}</span>
         </div>
-       
-      
-
-         
+                
        <Places value={contact.address1} onChange={handleAddressChange} newField="Work Address" /> 
    
-      
-     
-
         <div className="form-user-add-inner-wrap">
           <label>Website</label>
           <input
@@ -308,19 +296,10 @@ const clearErrors = (fieldName) => {
             onChange={handleChange}
           />
         </div>
-       
-
-
-    
-       
-  
-    
-   
-
         </div>
         <div className="form-user-add-inner-btm-btn-wrap">
      
-        <button type="submit" >Save</button>
+        <button>Save</button>
         </div>
       </form>
  

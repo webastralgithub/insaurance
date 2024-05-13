@@ -318,7 +318,7 @@ overflow:"unset"
       <div className="inner-pages-top">
 
      
-<h3>  {parentView ?`${parentName} Family `:"Posts"}</h3>
+<h3>  {parentView ?`${parentName} Family `:"Social Media Posts"}</h3>
 <div className="add_user_btn">
          <button onClick={() =>navigate("/add-post")}>
     <img src="/plus.svg" />

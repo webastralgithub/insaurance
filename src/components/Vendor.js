@@ -196,7 +196,6 @@ localStorage.setItem("parent",name)
       <h3> Suppliers</h3>
       <div className="add_user_btn">
 
-
     <button onClick={() =>navigate("/vendors/add")}>
     <img src="/plus.svg" />
     Add Supplier</button>

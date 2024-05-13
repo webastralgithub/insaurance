@@ -75,7 +75,6 @@ placeholder="Search here"/>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Username</th>
-                            <th>Membership Type</th>
                             {/* <th>User Type</th>
                             <th>Membership</th>
                             <th>Actions</th> */}
@@ -88,7 +87,6 @@ placeholder="Search here"/>
                                 <td>{user.email}</td>
                                 <td>{user.phone}</td>
                                 <td>{user.username}</td>
-                                <td>{user?.membership_type}</td>
                                 {/* <td>{user.user_role}</td>
                                 <td>{user.membership_name}</td>
                                 <td>{user.user_role}</td> */}
