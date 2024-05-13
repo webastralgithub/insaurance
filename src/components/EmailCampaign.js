@@ -133,7 +133,6 @@ const EmailCampaign = () => {
       console.error("Error fetching email templates:", error);
     }
   };
-  console.log("dataUrlTemplate", dataUrlTemplate)
   const getEmailTemplatesByUserId = async () => {
     try {
       const response = await axios.get(

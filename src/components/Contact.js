@@ -118,9 +118,6 @@ const Contact = ({ role }) => {
   useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
-
-      console.log(selectRef.current.controlRef.firstChild)
-
       if (valueContainer) {
         valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
       }
@@ -191,13 +188,7 @@ const Contact = ({ role }) => {
   }
   const handleUpload = async () => {
     if (!selectedFile) {
-      console.log("hereeeeee")
-      toast.push(
-        <Message type="error" closable duration={5000}>
-          Please select a file
-        </Message>,
-        { placement: 'topEnd' }
-      );
+      toast.error(" Please select a file");
       return;
     }
 
@@ -210,12 +201,12 @@ const Contact = ({ role }) => {
 
       closeModal()
       getContacts()
-      // Do something with the response if needed
     } catch (error) {
       console.error('Error uploading file:', error);
       // Handle error
     }
   };
+  
   const handleDeleteClick = (propertyId) => {
     confirmAlert({
       title: 'Confirm Delete',
@@ -352,7 +343,7 @@ const Contact = ({ role }) => {
         label: realtor.name,
       }));
       setCategories(options)
-      console.log("User created successfully!", res);
+   
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -428,7 +419,7 @@ const Contact = ({ role }) => {
       setContactoptions(realtorOptions)
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -451,7 +442,7 @@ const Contact = ({ role }) => {
     localStorage.setItem("parent", name)
     setParentName(name)
     navigate(`${id}`)
-    console.log(id)
+
     try {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);

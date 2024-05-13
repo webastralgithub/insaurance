@@ -20,7 +20,7 @@ const UserList = () => {
             const response = await axios.get(`${url}api/admin/get-users-website`, { headers });
             const responseData = await response.data;
             setUserList(responseData)
-            console.log("data userList", responseData)
+         
         } catch (error) {
             console.error("server is busy")
         }

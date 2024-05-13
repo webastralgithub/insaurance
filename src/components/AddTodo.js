@@ -19,7 +19,6 @@ const getCurrentTime = (date) => {
 }
 const AddTodo = () => {
   const{date}=useParams()
-console.log("date tewsytinf" , date)
   const [contact, setContact] = useState(
     {
         Followup:"" ,
