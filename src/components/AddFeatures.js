@@ -93,7 +93,7 @@ const AddFeatures = () => {
                 <div className="form-user-add-wrapper">
 
                     <div className="form-user-add-inner-wrap">
-                        <label>Title <span className="required-star">*</span></label>
+                        <label>Title <span style={{ color: 'red' }} className="required-star">*</span></label>
                         <input
                             type="text"
                             name="title"

@@ -98,19 +98,19 @@ const MyCalendar = () => {
  
   const handleRedirect = async () => {
     navigate("/klientale-contacts")
-    // try {
-    //   const response = await axios.post(`${klintaleUrl}create-preference-category`);
+     try {
+     const response = await axios.post(`${klintaleUrl}create-preference-category`);
 
-    //   if (response.status === 200) {
-    //     toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    //     // Redirect to the contacts list page
-    //     navigate("")
-    //   } else {
-    //     console.error("Failed to add contact");
-    //   }
-    // } catch (error) {
-    //   console.error("An error occurred while adding a contact:", error);
-    // }
+     if (response.status === 200) {
+       toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+          //Redirect to the contacts list page
+         navigate("")
+      } else {
+        console.error("Failed to add contact");
+      }
+     } catch (error) {
+      console.error("An error occurred while adding a contact:", error);
+    }
   }
   return (
     <div className='add_property_btn'>

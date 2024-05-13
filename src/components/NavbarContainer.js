@@ -86,7 +86,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const NavbarContainer = (props) => {
   const { pathname } = useLocation();
-  const { auth, setAuth, tasklength, setTasklength, plan, roleId, subscriptionStatus } = useContext(AuthContext);
+  const { auth, setAuth, tasklength, setTasklength, plan, roleId, subscriptionStatus ,settotalAvailableJobs,settotalReffralEarnedMoney,settotalReffrals,settotalReffralsReceived} = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -200,7 +200,10 @@ const NavbarContainer = (props) => {
         localStorage.setItem("totalAvailableJobs", userDataLead.totalAvailableJobs)
         localStorage.setItem("totalReffrals", userDataLead.totalReffrals)
         localStorage.setItem("totalReffralsReceived", userDataLead.totalReffralsReceived)
-
+        settotalAvailableJobs(userDataLead.totalAvailableJobs)
+        settotalReffralEarnedMoney(userDataLead.totalReffralEarnedMoney)
+        settotalReffrals(userDataLead.totalReffrals)
+        settotalReffralsReceived(userDataLead.totalReffralsReceived)
         setPreviewImage(
           userData.profileImg ? userData.profileImg : "/placeholder@2x.png"
         );
