@@ -281,7 +281,7 @@ const Templates = () => {
 
     return (
         <>
-            <div className="inner-pages-top" style={{ justifyContent: 'flex-start' }}>
+            <div className="inner-pages-top" style={{ justifyContent: 'flex-start', marginTop: '50px' }}>
                 <button className="back-only-btn" >
                     <img src="/back.svg" onClick={goBackToPrevious} />
                 </button>

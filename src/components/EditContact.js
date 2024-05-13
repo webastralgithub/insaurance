@@ -513,7 +513,7 @@ if(editedContact.phone){
               className="select-new"
             />
           ) : (
-            <div className="edit-new-input">
+            <div className="edit-new-input" style={{background:"unset"}}>
               {selectedAgent?.label}
               <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("agentId")} />
             </div>

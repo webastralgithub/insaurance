@@ -218,6 +218,7 @@ z-index: unset;
 
 .form-user-add .form-user-edit-inner-wrap .form-user-add-inner-wrap .select-new {
     padding-left: 8px !important;
+    border-left: transparent;
 }
 
 .form-user-add-wrapper .form-user-add-inner-wrap .select-new{
@@ -863,4 +864,82 @@ form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wra
 
 .facebook-share-btn button.react-share__ShareButton {
     margin: 0;
+}
+
+.form-user-add-inner-wrap-user, .form-user-add-inner-wrap-agent{
+    z-index: 99999;
+}
+
+.form-user-add-inner-wrap-source, .form-user-add-inner-wrap-bought, .form-user-add-inner-wrap-interest, .form-user-add-inner-wrap-budget{
+    z-index: 99999999999 !important;
+}
+
+.form-user-add-inner-wrap-users {
+    z-index: 999999 !important;
+}
+
+.form-user-add-inner-wrap-add-lead-agent{
+    z-index: 999999999 !important;
+}
+
+.form-user-add-inner-wrap-add-lead-source{
+    z-index: 9999999 !important;
+}
+
+.form-user-add-inner-wrap-add-lead-category{
+    z-index: 999999 !important;
+}
+
+.add-contact-user-custom-left .form-user-add-inner-wrap .select-new input{
+    color: #000;
+}
+
+.add-contact-user-custom-left .form-user-add-inner-wrap .select-new .css-1asdg40-control {
+    background-color: unset;
+}
+
+.add-contact-user-custom-left .form-user-add-inner-wrap .select-new .css-1asdg40-control .css-1jqq78o-placeholder {
+    color: #000;
+}
+
+.form-user-edit-inner-wrap .form-user-add-inner-wrap .css-1jqq78o-placeholder {
+    color: #000;
+}
+
+.form-user-edit-inner-wrap .form-user-add-inner-wrap .edit-new-input input::placeholder {
+    color: #000;
+}
+
+.leads-add-lead-form .form-user-add-wrapper .form-user-add-inner-wrap input::placeholder {
+    color: #000;
+}
+
+.leads-add-lead-form .form-user-add-wrapper .form-user-add-inner-wrap .css-1jqq78o-placeholder {
+    color: #000;
+}
+
+form.add-contact-form .form-user-add-inner-wrap .edit-new-input input::placeholder {
+    color: #000;
+}
+
+form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-contact-user-custom-wrapper .form-user-add-inner-wrap .select-new {
+    border-bottom: 1px solid #000;
+}
+
+form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-contact-user-custom-wrapper .form-user-add-inner-wrap .select-new .css-1y9lc05-control {
+    background: unset;
+}
+
+form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-contact-user-custom-wrapper .form-user-add-inner-wrap .select-new .css-1y9lc05-control .css-1jqq78o-placeholder {
+    color: #000;
+}
+
+.form-user-add-inner-wrap-add-contact-service {
+    z-index: 999999;
+    position: relative;
+}
+
+.form-user-add-inner-wrap-add-contact-agent {
+    z-index: 99999999;
+    position: relative;
 }

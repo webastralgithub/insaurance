@@ -251,7 +251,7 @@ getCategories()
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-user-add form-add-lead">
+    <form onSubmit={handleSubmit} className="form-user-add form-add-lead leads-add-lead-form">
            <div className="property_header header-with-back-btn">
           
           <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Lead</h3>
@@ -348,7 +348,7 @@ getCategories()
   
     
       
-        <div className="form-user-add-inner-wrap" style={{position:"relative", zIndex:"99"}}>
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-users" style={{position:"relative", zIndex:"99"}}>
           <label>Users</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
@@ -366,13 +366,13 @@ getCategories()
           />
   
         </div>
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-agent">
           <label>Active Agent</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
             placeholder="Select Active Agent..."
             value={selectedAgent}
-            className= "add-lead-select-tab"
+            className= "select-new add-lead-select-tab"
             onChange={(selectedOption) => 
                 {
                     setContact({ ...contact, agentId: selectedOption.value })
@@ -385,7 +385,7 @@ getCategories()
           />
   
         </div>
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-source">
           <label>Source</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
@@ -403,7 +403,7 @@ getCategories()
           />
   
         </div>
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category">
           <label>Category</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select

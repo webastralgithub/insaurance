@@ -361,7 +361,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
         </div>
       </div>
       <div className="form-user-edit-inner-wrap form-user-add-wrapper">
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-name">
         <label>Name<span className="required-star">*</span></label>
         
             <div className="edit-new-input">
@@ -373,7 +373,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
 
        
 
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-phone">
           <label>Phone</label>
           {editingField === "phone" || editingField === "all" ? (
             <div className="edit-new-input">
@@ -395,7 +395,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
           )}
         </div>
 
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-email">
   <label>Email</label>
   {editingField === "email" || editingField === "all" ? (
     <div className="edit-new-input">
@@ -418,7 +418,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
 
    
        <Places value={editedContact.address1} onChange={handleAddressChange} /> 
-       <div className="form-user-add-inner-wrap">
+       <div className="form-user-add-inner-wrap form-user-add-inner-wrap-profession">
           <label>Profession</label>
           <div className="edit-new-input">
           <input
@@ -429,7 +429,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
           />
                   </div>
         </div>
-         <div className="form-user-add-inner-wrap">
+         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-messgae">
           <label>Message</label>
         
             <div className="edit-new-input">
@@ -440,7 +440,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
         </div>
 
 
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-user">
           <label>User</label>
           {editingField === "realtorId" || editingField === "all" ? (
             <Select
@@ -463,7 +463,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
             </div>
           )}
         </div>
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-agent">
           <label>Active Agent</label>
           {editingField === "agentId" || editingField === "all" ? (
             <Select
@@ -485,7 +485,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
             </div>
           )}
         </div>
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-source">
           <label>Source</label>
    
           <Select
@@ -504,7 +504,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
   
         </div>
      
-        <div className="form-user-add-inner-wrap">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-bought">
        <label>Have you bought a home before?</label>
        <Select
               placeholder="Have you bought a home before?"
@@ -520,7 +520,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               className="select-new"
             />
          </div>
-         <div className="form-user-add-inner-wrap">
+         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-interest">
        <label>Area Interested in?</label>
        <Select
               placeholder="Which area are you interested in?"
@@ -536,7 +536,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               className="select-new"
             />
          </div>
-         <div className="form-user-add-inner-wrap">
+         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-budget">
        <label>Budget?</label>
        <Select
               placeholder="What is your budget?"
@@ -552,7 +552,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               className="select-new"
             />
          </div>
-         <div className="form-user-add-inner-wrap">
+         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-describe">
        <label>Desirable Trait?</label>
        <Select
               placeholder="Select Trait"
@@ -567,7 +567,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
               className="select-new"
             />
          </div>
-         <div className="form-user-add-inner-wrap">
+         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-category">
           <label>Category</label>
    
           <Select

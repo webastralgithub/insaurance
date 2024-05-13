@@ -561,7 +561,7 @@ const SendMessage = ({ role }) => {
           onRequestClose={closeModal}
           style={customStyles}
         >
-          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category send-msg-grp-popup">
             <img
               className="close-modal-share"
               onClick={closeModal}

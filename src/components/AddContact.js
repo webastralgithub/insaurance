@@ -388,7 +388,7 @@ const AddContact = ({ user }) => {
           />
   
         </div> */}
-            <div className="form-user-add-inner-wrap">
+            <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
               <label>Active Agent</label>
               <img src="/icons-form/Group30055.svg" />
               <Select
@@ -407,7 +407,7 @@ const AddContact = ({ user }) => {
               />
 
             </div>
-            <div className="form-user-add-inner-wrap">
+            <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
               <label>Service Require</label>
               <Select
                 placeholder="Select Service(s) Required..."

@@ -247,6 +247,11 @@ th.price {
   border-top: 1px solid #0000001f;
   background: #00000014;
   z-index: 99999;
+  width: 90%;
+}
+
+.send-msg-grp-popup form .modal-convert-btns {
+  width: 90%;
 }
 
 .modal-roles-add form{
@@ -520,5 +525,12 @@ td.manage-configr-table-btn buttton {
 @media (max-width:600px){
   .manage-configr-table table {
     width: 900px;
+}
+.pop-up-content-category form .modal-convert-btns{
+  width: 100%;
+}
+
+.send-msg-grp-popup form .modal-convert-btns {
+  width: 100%;
 }
 }
