@@ -366,7 +366,7 @@ const Lead = () => {
         > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Leads"}</h3>
              <span className="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px" , "position":"absolute", "top":"200px"}}>
         
-        Your contacts are fully encrypted and cannot be seen or accessed by anybody.</span>
+             Your Leads are fully encrypted and cannot be seen or accessed by anybody else.</span>
         <div className="add_user_btn">
           <button onClick={() => navigate("/leads/add")}>
             <img src="/plus.svg" />

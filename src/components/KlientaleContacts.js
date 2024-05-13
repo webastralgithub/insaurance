@@ -337,7 +337,7 @@ const KlientaleContacts = ({ role }) => {
   };
 
 
-  const contactsPerPage = 10;
+  const contactsPerPage = 20;
   const contactsToDisplay = filtered?.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage

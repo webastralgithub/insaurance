@@ -9,6 +9,7 @@ import PlacesNew from "./PlacesNew";
 
 const ChildContact = (props) => {
   const { id } = useParams();
+  console.log("properties" , props);
   const parentNameNew = localStorage.getItem("parent");
 
   const [notesErr,setNotesErr]=useState([])
@@ -19,6 +20,7 @@ const ChildContact = (props) => {
   const [showContent, setShowContent] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [useGoogleAddress, setUseGoogleAddress] = useState(true); 
+
   const navigate = useNavigate();
   const [newContact, setNewContact] = useState({
     firstname: "",
@@ -27,7 +29,7 @@ const ChildContact = (props) => {
     address1: "",
   
     phone: "",
-    parentId: null,
+    parentId: "",
     //createdAt: "",
     //updatedAt: "",
     realtorId: null,
@@ -102,6 +104,7 @@ const ChildContact = (props) => {
     return emailPattern.test(email);
   };
   const saveContactChanges = async (contact) => {
+    console.log("contact dfuifi" , contact)
    
     if(!contact.firstname){
       setNotesErr(
@@ -245,8 +248,7 @@ const ChildContact = (props) => {
 </label>
 
 </div>
-          
-              </th>
+             </th>
               <th>   
                 
 </th>

@@ -426,12 +426,12 @@ const Contact = ({ role }) => {
     }
 
   };
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
+  const contactsPerPage = 1; // Adjust the number of contacts per page as needed
 
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
-  );
+  );console.log("contactsToDisplay" , contactsToDisplay)
   // Adjust the number of contacts per page as needed
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
   const handlePageChange = (newPage) => {
@@ -588,9 +588,9 @@ const Contact = ({ role }) => {
             }
           }}
         > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Contacts"}</h3>
-        <span class="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
+        <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
 
-          Your contacts are in your computer only and not on our server and shared by anyone.</span>
+        Your contacts are fully encrypted and cannot be seen or accessed by anybody else.</span>
         <div className="add_user_btn">
 
           {parentView ? <button onClick={() => navigate(`/contacts/add/${parentid}`)}>

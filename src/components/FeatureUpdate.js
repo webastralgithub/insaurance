@@ -143,9 +143,9 @@ const FeatureUpdate = (props) => {
                             <option value="leads">Leads</option>
                             <option value="contacts">Contacts</option>
                             <option value="referrals">Referrals</option>
-                        </select>
+                        </select>{errors.page && <span style={{ color: 'red' }}>{errors.page}</span>}
 
-                    </div>{errors.page && <span style={{ color: 'red' }}>{errors.page}</span>}
+                    </div>
 
                 </div>
                 <div className="form-user-add-inner-btm-btn-wrap">

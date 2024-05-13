@@ -17,12 +17,13 @@ const getCurrentTime = (date) => {
   const minutes = `${now.getMinutes()}`.padStart(2, '0');
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
 const AddTodo = () => {
   const{date}=useParams()
   const [contact, setContact] = useState(
     {
         Followup:"" ,
-        FollowupDate:date,
+        FollowupDate:date ,
         Comments:"",
         IsRead:false ,
         phone: "",

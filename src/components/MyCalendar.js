@@ -27,6 +27,7 @@ const MyCalendar = () => {
     Authorization: auth.token,
   };
   const handleDateClick = (selected) => {
+    
     // handle date selection
     const clickedDate = selected.date;
 
@@ -61,9 +62,7 @@ const MyCalendar = () => {
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo/get`, { headers });
-
-      // Set the filtered tasks in the state
-      setTasks(response.data);
+   setTasks(response.data);
 
       const eventsdata = response.data.map((item) => ({
         id: item.id,
@@ -126,7 +125,7 @@ const MyCalendar = () => {
         <div className="stats-parent-section">
           <div className="stats-sec">
             <div className="stats-order">
-              <span>Total Reffral Earned Money</span>
+              <span>Total Referral Earned Money</span>
               <span className="order-numbers">{totalReffralEarnedMoney}</span>
             </div>
             <div className="stats-percentage">
@@ -154,7 +153,7 @@ const MyCalendar = () => {
 
           <div className="stats-sec">
             <div className="stats-order">
-              <span>Total Reffrals</span>
+              <span>Total Referrals</span>
               <span className="order-numbers">{totalReffrals}</span>
             </div>
             <div className="stats-percentage">
@@ -167,7 +166,7 @@ const MyCalendar = () => {
           </div>
           <div className="stats-sec">
             <div className="stats-order">
-              <span>Total Reffrals Received</span>
+              <span>Total Referrals Received</span>
               <span className="order-numbers">{totalReffralsReceived}</span>
             </div>
             <div className="stats-percentage">

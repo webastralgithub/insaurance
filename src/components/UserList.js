@@ -38,12 +38,14 @@ const UserList = () => {
           contact.email?.toLowerCase().includes(searchText)
         );
       });
-    const contactsPerPage = 10;
+    const contactsPerPage = 20;
    
     const contactsToDisplay = filteredContacts?.slice(
       (currentPage - 1) * contactsPerPage,
       currentPage * contactsPerPage
     );
+
+
     // Adjust the number of contacts per page as needed
     const totalPages = Math.ceil(filteredContacts?.length / contactsPerPage);
     const handlePageChange = (newPage) => {
@@ -73,6 +75,7 @@ placeholder="Search here"/>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Username</th>
+                            <th>Membership Type</th>
                             {/* <th>User Type</th>
                             <th>Membership</th>
                             <th>Actions</th> */}
@@ -85,6 +88,7 @@ placeholder="Search here"/>
                                 <td>{user.email}</td>
                                 <td>{user.phone}</td>
                                 <td>{user.username}</td>
+                                <td>{user?.membership_type}</td>
                                 {/* <td>{user.user_role}</td>
                                 <td>{user.membership_name}</td>
                                 <td>{user.user_role}</td> */}

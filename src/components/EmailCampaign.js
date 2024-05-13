@@ -324,12 +324,15 @@ const EmailCampaign = () => {
     onSave,
   }) => {
     const [isUserEditMode, setUserIsEditMode] = useState(false);
-    const [userEditedContent, setUserEditedContent] = useState("");
+    const [userEditedContent, setUserEditedContent] = useState(previewUserContent);
 
 
     const handleUserEdit = async (templateUserId) => {
       setUserIsEditMode(true);
     };
+
+
+
 
     const handleUserSave = async () => {
       if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
@@ -360,13 +363,12 @@ const EmailCampaign = () => {
         toast.error("Template server is busy")
         console.error("Error fetching email template:", error);
       }
-
-      //setUserEditedTempalteContent(userEditedContent);
-
     };
 
     const handleUserContentChange = (event) => {
+
       setUserEditedContent(event.target.innerHTML);
+      
       // setIsEditMode(true);
     };
 
@@ -404,14 +406,15 @@ const EmailCampaign = () => {
   };
 
   const openUserPreviewModal = (templateUserId, templateUserContent) => {
+ 
     setUserIsPreviewModalOpen(true);
     setUserPreviewContent(templateUserContent);
     setUserPreviewContentId(templateUserId);
+    
   };
-
   const closeUserPreviewModal = () => {
     setUserIsPreviewModalOpen(false);
-    setUserPreviewContent("");
+   // setUserPreviewContent("");
     setUserPreviewContentId(null);
   };
   const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
@@ -609,6 +612,7 @@ const EmailCampaign = () => {
   }
 
   return (
+
     <div className="add_property_btn">
 
       <PreviewUserModal
@@ -624,6 +628,7 @@ const EmailCampaign = () => {
             <button className="back-only-btn" >
               <img src="/back.svg" onClick={() => { setChooseTemplate(false) }} />
             </button>
+
             <h3> Email Campaigns</h3>
           </div>
 
@@ -633,6 +638,7 @@ const EmailCampaign = () => {
           //   }}
           // > <img src="/back.svg" /></button> </h3>
         }
+        
         {chooseTemplate == true ? <div className="add_user_btn buttons-with-returb-btn">
           <button className={active == "2" ? 'active' : ''} onClick={() => setActive(2)}>
             Custom Text</button>

@@ -357,21 +357,19 @@ if(editedContact.phone){
             </button>{" "}
             Edit Contact
           </h3>
-          <div className="top-bar-action-btns">
+          {/* <div className="top-bar-action-btns">
           <button style={{ background: "#004686" }} onClick={handleSaveClick}>
             Save
           </button>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="parent">
       <div className="add_user_btn family_meber" >
         
         <h4>
-            
         General Details
-       
-            </h4>
+              </h4>
           
             </div>
       <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">
@@ -593,12 +591,10 @@ if(editedContact.phone){
       <div className="add_user_btn family_meber" >
         
       <h4>
-          
-      Additional Information
-     
-          </h4>
-        
+          Additional Information
+        </h4>  
           </div>
+
   <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper birthday-section">
       
       <div className="form-user-add-inner-wrap">
@@ -625,6 +621,8 @@ if(editedContact.phone){
         />
                </div>
 </div>
+
+
 {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-btn">
 <div className="top-bar-action-btns">
           <button style={{ background: "#004686" }} onClick={handleSaveAdditional}>
@@ -638,7 +636,7 @@ if(editedContact.phone){
     </div>
        
                 <div className="parent">
-              <ChildContact id={editedContact.id}/>
+              <ChildContact id={editedContact.id} />
               </div>
             
                 <div className="parent">

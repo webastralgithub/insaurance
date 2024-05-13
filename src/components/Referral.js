@@ -290,7 +290,7 @@ else{
       // navigate('/');
     }
   };
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
+  const contactsPerPage = 20; // Adjust the number of contacts per page as needed
 
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
@@ -326,7 +326,6 @@ else{
       // navigate('/');
     }
   };
-
 
 
   return (

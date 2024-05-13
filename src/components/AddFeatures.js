@@ -13,15 +13,15 @@ const AddFeatures = () => {
     const navigate = useNavigate()
 
     const [errors, setErrors] = useState({
-        name: "",
-        set_limit: "",
+        title: "",
+        limit: "",
         short_description: "",
         page: ""
     });
 
     const [formData, setFormdata] = useState({
-        name: "",
-        set_limit: "",
+        title: "",
+        limit: "",
         short_description: "",
         page: ""
     })
@@ -52,13 +52,21 @@ const AddFeatures = () => {
             setErrors(newErrors);
             return
         }
+
+        const sendformData = {
+            name :formData.name,
+            set_limit :formData.limit,
+            short_description : formData.short_description ,
+            page : formData.page
+
+        }
         try {
        
-            const response = await axios.post(`${url}api/limit`, formData, { headers });
+            const response = await axios.post(`${url}api/limit`, sendformData, { headers });
             const responseData = response.data;
             setFormdata({
                 name: "",
-                set_limit: "",
+                limit: "",
                 short_description: "",
                 page: ""
             })
@@ -88,11 +96,11 @@ const AddFeatures = () => {
                         <label>Title <span className="required-star">*</span></label>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="title"
+                            value={formData.title}
                             onChange={handleChange}
                         />
-                        {errors.name && <span style={{ color: 'red' }}>{errors.name}</span>}
+                        {errors.title && <span style={{ color: 'red' }}>{errors.title}</span>}
                     </div>
 
 
@@ -100,10 +108,10 @@ const AddFeatures = () => {
                         <label>Limit</label>
                         <input
                             type="text"
-                            name="set_limit"
-                            value={formData.set_limit}
+                            name="limit"
+                            value={formData.limit}
                             onChange={handleChange}
-                        /> {errors.set_limit && <span style={{ color: 'red' }}>{errors.set_limit}</span>}
+                        /> {errors.limit && <span style={{ color: 'red' }}>{errors.limit}</span>}
                     </div>
 
                     <div className="form-user-add-inner-wrap">
@@ -127,9 +135,9 @@ const AddFeatures = () => {
                             <option value="leads">Leads</option>
                             <option value="contacts">Contacts</option>
                             <option value="referrals">Referrals</option>
-                        </select>
+                        </select>{errors.page && <span style={{ color: 'red' }}>{errors.page}</span>}
 
-                    </div>{errors.page && <span style={{ color: 'red' }}>{errors.page}</span>}
+                    </div>
 
                 </div>
                 <div className="form-user-add-inner-btm-btn-wrap">

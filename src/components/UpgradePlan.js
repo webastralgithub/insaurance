@@ -235,7 +235,7 @@ const UpgradePlan = () => {
 
                                             </tbody>
                                         </table>
-                                        {plan ===2 ? "" : <button onClick={() => setIsOpen(true)}>Choose Plan</button>}
+                                        {plan ===2 ? "" : <button onClick={() => setIsOpen(true)}>Choose Premium</button>}
                                    
                                     </div>
                                 </div>
