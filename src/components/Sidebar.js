@@ -51,7 +51,7 @@ const Sidebar = (props) => {
       window.removeEventListener('resize', handleWindowSizeChange);
     };
   }, []);
-  //console.log(window.innerWidth, window.innerHeight)
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     setAuth(null);

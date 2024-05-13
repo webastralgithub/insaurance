@@ -37,16 +37,19 @@ const AddRoleForm = ({ onAdd, onCancel }) => {
 
   return (
 
-    <div className="modal-roles-add">
+    <div className="modal-roles-add change-password-popup">
       <form onSubmit={handleSubmit}>
+        <h3>Change Password</h3>
         <input
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           placeholder="New Password"
         />
+        <div className="change-password-popup-btns">
         <button type="submit">Change Password</button>
         <button onClick={onCancel}>Cancel</button>
+        </div>
       </form>
     </div>
   );
@@ -126,7 +129,8 @@ export default function Profile(props) {
       transform: "translate(-50%, -50%)",
       background: "#000",
       border: "1px solid #fff",
-      padding:"0"
+      padding:"0",
+      width:"400px"
     },
     overlay: {
       backgroundColor: "rgb(0 0 0 / 75%)",
@@ -295,7 +299,7 @@ export default function Profile(props) {
 
 
         </Modal>
-        <h3>My profile</h3>
+        <h3>My Profile</h3>
 
       </div>
 

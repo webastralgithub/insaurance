@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 // Functions for connecting/disconnecting accounts
 
 const SocialMediaLogin = () => {
+  const [postdescription, setpostdescription] = useState("")
   const [connectedAccounts, setConnectedAccounts] = useState({
     facebook: false,
     linkedin: false,
@@ -19,7 +20,24 @@ const SocialMediaLogin = () => {
   });
   const { id } = useParams();
 
-  const [editedContact, setEditedContact] = useState({});
+  const [editedContact, setEditedContact] = useState({
+    created_at: " ",
+    description: "",
+    id: "",
+    images: "",
+    name: "",
+    updated_at: "",
+    user_id: ""
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedContact(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
   const fetchConnectedAccounts = () => {
 
   }
@@ -104,7 +122,20 @@ const SocialMediaLogin = () => {
 
   const getPostById = async () => {
     const res = await axios.get(`${process.env.REACT_APP_API_URL}api/post/get/${id}`, { headers });
-    setEditedContact(res.data)
+    const responseData = await res.data
+    setEditedContact({
+      created_at: responseData.created_at,
+      description: responseData.description,
+      id: responseData.id,
+      images: responseData.images,
+      name: responseData.name,
+      updated_at: responseData.updated_at,
+      user_id: responseData.user_id
+    
+    })
+
+    // setEditedContact(res.data)
+
   }
 
   useEffect(() => {
@@ -152,7 +183,8 @@ const SocialMediaLogin = () => {
                 <input
                   name="name"
                   value={editedContact.name}
-                  disabled
+                  onChange={handleInputChange}
+                  //disabled
                 />
 
               </div>
@@ -186,7 +218,10 @@ const SocialMediaLogin = () => {
                   }}
                   className="custom-ckeditor" // Add a custom class for CKEditor container
                   style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-                  disabled
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setpostdescription(data);
+                  }}
                 />
               </div>
             </div>

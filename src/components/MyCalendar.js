@@ -33,11 +33,11 @@ const MyCalendar = () => {
     const currentDate = new Date(); // Get the current date
 
     // Check if the clicked date is before the current date
-    if (clickedDate < currentDate) {
-      // If the clicked date is before the current date, prevent further action
-      toast.error('Invalid date selection', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-      return;
-    }
+    // if (clickedDate < currentDate) {
+    //   // If the clicked date is before the current date, prevent further action
+    //   toast.error('Invalid date selection', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+    //   return;
+    // }
     navigate("todo-list/add/new/" + selected?.dateStr)
   }
 
@@ -187,6 +187,7 @@ const MyCalendar = () => {
         {/* <button onClick={() => handleChangeView('year')}>Year</button> */}
         {/* Add a Year view button if needed */}
       </div>
+      
       <FullCalendar
         initialView="dayGridMonth"
 

@@ -20,7 +20,7 @@ const UserList = () => {
             const response = await axios.get(`${url}api/admin/get-users-website`, { headers });
             const responseData = await response.data;
             setUserList(responseData)
-            console.log("data userList", responseData)
+         
         } catch (error) {
             console.error("server is busy")
         }
@@ -91,7 +91,7 @@ placeholder="Search here"/>
                                 <td>
                                     {/* <button className="permissions share-ref-button-tb"
                                         onClick={() => {
-                                            navigate(`/klientale-contacts/share/${user.id}`)
+                                            navigate(`/klientale-contacts/share/${user.id}/${user.name}`)
                                         }}       >Share Me</button> */}
                                 </td>
                                 <td>

@@ -34,7 +34,7 @@ const Ip = ({ role }) => {
   const url = process.env.REACT_APP_API_URL;
   // Rest of your code...
 
-  const filteredContacts = tasks.filter((contact) => {
+  const filteredContacts = tasks?.filter((contact) => {
     const searchText = searchQuery.toLowerCase();
 
     return contact?.ipAddress?.toLowerCase().includes(searchText);
@@ -49,7 +49,7 @@ const Ip = ({ role }) => {
       setTasks(response.data.userIps);
       setLengthOfIp(response.data.userIps.length);
     } catch (error) {
-      
+      console.error("error", error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -72,11 +72,11 @@ const Ip = ({ role }) => {
     }
 
     const dateTime = new Date(dateTimeString);
-    const year = dateTime.getFullYear();
-    const month = String(dateTime.getMonth() + 1).padStart(2, "0");
-    const day = String(dateTime.getDate()).padStart(2, "0");
-    const hours = String(dateTime.getHours()).padStart(2, "0");
-    const minutes = String(dateTime.getMinutes()).padStart(2, "0");
+    const year = dateTime?.getFullYear();
+    const month = String(dateTime?.getMonth() + 1).padStart(2, "0");
+    const day = String(dateTime?.getDate()).padStart(2, "0");
+    const hours = String(dateTime?.getHours()).padStart(2, "0");
+    const minutes = String(dateTime?.getMinutes()).padStart(2, "0");
 
     // Return date in "YYYY-MM-DDTHH:MM" format
     return dateTimeString
@@ -87,12 +87,12 @@ const Ip = ({ role }) => {
 
   // Rest of your code...
   // Adjust the number of contacts per page as needed
-  const contactsToDisplay = filteredContacts.slice(
+  const contactsToDisplay = filteredContacts?.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   );
   // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
+  const totalPages = Math.ceil(filteredContacts?.length / contactsPerPage);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
@@ -127,11 +127,11 @@ const Ip = ({ role }) => {
             </tr>
           </thead>
           <tbody>
-            {contactsToDisplay?.map((task, index) => (
+            {contactsToDisplay && contactsToDisplay?.map((task, index) => (
               <>
-                <tr key={task.id}>
-                  <td>{task.ipAddress}</td>
-                  <td>{formatDate(task.time)}</td>
+                <tr key={task?.id}>
+                  <td>{task?.ipAddress}</td>
+                  <td>{formatDate(task?.time)}</td>
                 </tr>
               </>
             ))}

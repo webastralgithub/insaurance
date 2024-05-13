@@ -72,9 +72,10 @@ const ContactReferral = ({ role }) => {
 
 
   const sendRefferal = async (contact) => {
+
     try {
       const response = await axios.post(`${url}api/contacts/share`,
-        { sendTo: id, selectedContacts: [contact], type: 2 }, {
+        { sendTo:contact, selectedContacts: [id], type: 2 }, {
         headers,
       });
       if (response.status === 200) {
@@ -116,14 +117,14 @@ const ContactReferral = ({ role }) => {
     }
   }
 
-  const handleDeleteClick = (propertyId) => {
+  const handleDeleteClick = (property) => {
     confirmAlert({
       title: 'Confirm Send',
       message: 'Are you sure you want to send this contact?',
       buttons: [
         {
           label: 'Yes',
-          onClick: () => sendRefferal(propertyId),
+          onClick: () => sendRefferal(property),
         },
         {
           label: 'No',
@@ -241,6 +242,7 @@ const ContactReferral = ({ role }) => {
     },
 
   };
+
   const colourStyles = {
     valueContainer: styles => ({
       ...styles, overflowX: "auto", flex: "unset", flexWrap: "no-wrap", width: selectedContacts.length > 0 ? "354px" : "100%", padding: "2px 0",
@@ -508,8 +510,8 @@ const ContactReferral = ({ role }) => {
                   {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                   <td>  <button className="permissions share-ref-button-tb"
                     onClick={() => {
-                      handleDeleteClick(contact.id)
-                    }}       >Send</button>       </td>
+                      handleDeleteClick(contact)
+                    }}>Send</button>       </td>
                   <td>{contact.firstname}</td>
 
                   <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>

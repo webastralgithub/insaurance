@@ -232,6 +232,8 @@ z-index: unset;
     width: 100% !important;
     height: 22px;
     border: none;
+    color: #000;
+    background-color: transparent;
 }
 
 .form-user-edit-inner-wrap .form-user-add-inner-wrap div.edit-new-input textarea:focus-visible{
@@ -822,6 +824,7 @@ form.add-task-setion-form .form-user-add-wrapper .todo-section .todo-main-sectio
     font-size: 14px;
     font-weight: 500;
     padding: 0;
+    border-left: transparent;
 }
 
 form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wrap {
