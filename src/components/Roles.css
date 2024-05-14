@@ -373,7 +373,7 @@ th.price {
   border: 2px dotted #000000;
   background-color: #fff;
   position: static;
-  width: 100%;
+  width: 99%;
   display: flex;
   justify-content: center;
   padding: 6px 0;
@@ -531,6 +531,16 @@ td.manage-configr-table-btn buttton {
 }
 
 .send-msg-grp-popup form .modal-convert-btns {
-  width: 100%;
+	width: 88%;
+	background: #ebebeb;
 }
+.bulk-upload-popup {
+  width: auto;
+}
+
+.ReactModalPortal .pop-up-add-configure .modal-convert-btns {
+  width: 88%;
+  background: #ebebeb;
+}
+
 }

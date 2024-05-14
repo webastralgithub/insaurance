@@ -206,13 +206,13 @@ const AddVendor = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-user-add">
-      <div className="property_header header-with-back-btn">
-
-        <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Vendor</h3>
-      </div>
-      <div className="form-user-add-wrapper">
-        <div className="form-user-add-inner-wrap">
+    <form onSubmit={handleSubmit} className="form-user-add add-vendor-form">
+           <div className="property_header header-with-back-btn">
+          
+          <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Vendor</h3>
+          </div> 
+          <div className="form-user-add-wrapper">
+          <div className="form-user-add-inner-wrap">
           <label>Name<span className="required-star">*</span></label>
           <input
             type="text"

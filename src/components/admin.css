@@ -714,6 +714,22 @@ z-index: unset;
         margin-bottom: 20px;
     }
 
+    .inner-pages-top-share-ref span.share-text {
+        position: static !important;
+    }
+
+    .inner-pages-top-share-ref .search-group {
+        margin: 10px 0 0 0 !important;
+    }
+
+    .add_property_btn .inner-pages-top-share-ref-tab .add_user_btn {
+        width: 100% !important;
+    }
+
+    .add_property_btn .inner-pages-top.inner-pages-top-share-ref.inner-pages-top-share-ref-tab .add_user_btn {
+        width: 100% !important;
+    }
+
 }
 
 @media (max-width:480px){
@@ -866,28 +882,60 @@ form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wra
     margin: 0;
 }
 
-.form-user-add-inner-wrap-user, .form-user-add-inner-wrap-agent{
-    z-index: 99999;
+.form-user-add-inner-wrap-user-edit-lead-pg {
+    z-index: 99;
 }
 
-.form-user-add-inner-wrap-source, .form-user-add-inner-wrap-bought, .form-user-add-inner-wrap-interest, .form-user-add-inner-wrap-budget{
-    z-index: 99999999999 !important;
+.form-user-add-inner-wrap-agent{
+    z-index: 89;
+}
+
+.form-user-add-inner-wrap-bought{
+    z-index: 75 !important;
+}
+
+.form-user-add-inner-wrap-interest{
+    z-index: 70 !important;
+}
+
+.form-user-add-inner-wrap-budget{
+    z-index: 65 !important;
+}
+
+.form-user-add-inner-wrap-describe{
+    z-index: 60;
+}
+
+.form-user-add-inner-wrap-category {
+    z-index: 55;
 }
 
 .form-user-add-inner-wrap-users {
-    z-index: 999999 !important;
+    z-index: 99 !important;
 }
 
 .form-user-add-inner-wrap-add-lead-agent{
-    z-index: 999999999 !important;
+    z-index: 89 !important;
 }
 
 .form-user-add-inner-wrap-add-lead-source{
-    z-index: 9999999 !important;
+    z-index: 79 !important;
 }
 
 .form-user-add-inner-wrap-add-lead-category{
-    z-index: 999999 !important;
+    z-index: 69 !important;
+}
+
+.form-user-agent-edit-contact {
+    z-index: 99;
+}
+
+.form-user-service-edit-contact {
+    z-index: 89;
+}
+
+.form-user-category-edit-contact {
+    z-index: 79;
 }
 
 .add-contact-user-custom-left .form-user-add-inner-wrap .select-new input{
@@ -942,4 +990,12 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
 .form-user-add-inner-wrap-add-contact-agent {
     z-index: 99999999;
     position: relative;
+}
+
+.add-vendor-form .form-user-add-wrapper .form-user-add-inner-wrap {
+    width: 100%;
+}
+
+.add-vendor-form .form-user-add-inner-btm-btn-wrap button {
+    background: #004686;
 }

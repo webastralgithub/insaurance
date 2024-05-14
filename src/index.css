@@ -485,6 +485,7 @@ color: #004686;
   display: flex;
   gap: 20px;
 }
+
 .new-social button{
 margin: 0;
 display: flex;
@@ -495,11 +496,11 @@ margin-left: 57px;
 font-size: 15px;
 font-weight: 500;
 background-color: #004686 !important;
-    color: white !important;
-
-    padding: 14px 30px !important;
-    border: 2px solid #004686 !important;
+color: white !important;
+padding: 14px 30px !important;
+border: 2px solid #004686 !important;
 }
+
 .inner-pages-top-share-ref .add_user_btn button{
   margin-left: 0 !important;
   padding: 10px 20px;
@@ -1170,12 +1171,14 @@ border: none !important;
   padding-top: 20px;
 }
 
-.profile-page-btm-tabs-ind div.add_property_btn .inner-pages-top .add_user_btn button{
-  margin-left: 10px !important;
+.profile-page-btm-tabs-ind div.add_property_btn .inner-pages-top .add_user_btn button {
+  margin-left: 10px!important;
+  background: #004686 !important;
+  color: #fff !important;
 }
 
 .profile-page-btm-tabs-ind div.add_property_btn .inner-pages-top .add_user_btn button img{
-  filter: invert(1);
+  /* filter: invert(1); */
 }
 
 form.profile-page-form{
@@ -1592,6 +1595,31 @@ margin-top: 0;
    .form-send-message{
     text-align: left;
    }
+
+   .new-social {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 10px;
+  }
+
+  .new-social button {
+    width: 47%;
+    margin: 0;
+  }
+
+  .new-social .facebook-share-btn {
+    width: 47%;
+  }
+
+  .new-social .facebook-share-btn button{
+    width: 100%;
+  }
+
+  .form-catagory-edit-sec .form-catagory-edit-sec-left img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: cover;
+  }
 }
 
 @media (max-width:480px){
@@ -1728,7 +1756,7 @@ form.add-configr-form .form-user-add-wrapper {
 }
 
 form.add-configr-form .form-user-add-wrapper .form-user-add-inner-wrap {
-  width: 46% !important;
+  width: 100% !important;
 }
 
 .fc-daygrid-event-harness a .fc-event-title {
