@@ -12,6 +12,7 @@
 
 # production
 /build
+/.next
 
 #phpStorm folder
 /.idea

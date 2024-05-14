@@ -54,7 +54,7 @@ const AddFeatures = () => {
         }
 
         const sendformData = {
-            name :formData.name,
+            name :formData.title,
             set_limit :formData.limit,
             short_description : formData.short_description ,
             page : formData.page

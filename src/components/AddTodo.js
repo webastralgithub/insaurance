@@ -7,33 +7,25 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import InputMask from 'react-input-mask';
 import { toast } from "react-toastify";
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
 
-const getCurrentTime = (date) => {
-  const now = new Date(date);
-  const year = now.getFullYear();
-  const month = `${now.getMonth() + 1}`.padStart(2, '0');
-  const day = `${now.getDate()}`.padStart(2, '0');
-  const hours = `${now.getHours()}`.padStart(2, '0');
-  const minutes = `${now.getMinutes()}`.padStart(2, '0');
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
+
 
 const AddTodo = () => {
   const { date } = useParams()
-  const currentDate = new Date();
-  const hours = currentDate.getHours();
-  const minutes = currentDate.getMinutes();
-  const seconds = currentDate.getSeconds();
 
-
-
+  const [dateTime, setDateTime] = useState(date ? new Date(date) : new Date());
+  const handleDateTimeChange = (newDateTime) => {
+    setDateTime(newDateTime);
+  };
   const [contact, setContact] = useState(
     {
       Followup: "",
-      FollowupDate: date,
+      FollowupDate: dateTime,
       Comments: "",
       IsRead: false,
-      phone: "",
+      phone:"",
     }
 
   );
@@ -230,7 +222,6 @@ const AddTodo = () => {
   const goBack = () => {
     navigate(-1); // This function takes you back one step in the navigation stack
   };
-
   return (
 
 
@@ -238,7 +229,7 @@ const AddTodo = () => {
       <div className="property_header header-with-back-btn">
 
         <h3> <button type="button" className="back-only-btn" onClick={
-          goBack}> <img src="/back.svg" /></button>Add New Task</h3>
+          goBack}> <img src="/back.svg" /></button>Add Task</h3>
 
         <div className="top-bar-action-btns">
           {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
@@ -262,12 +253,9 @@ const AddTodo = () => {
 
             <div className="form-user-add-inner-wrap">
               <label>Follow Up Date <span className="required-star">*</span></label>
-              <input
-                placeholder={contact.FollowupDate}
-                type="date"
-                name="FollowupDate"
-                value={contact.FollowupDate}
-                onChange={handleChange}
+              <Datetime
+                value={dateTime}
+                onChange={handleDateTimeChange}
               />
               <span className="error-message">{propertyTypeError}</span>
             </div>

@@ -21,25 +21,24 @@ const MyCalendar = () => {
     totalAvailableJobs, totalReffrals, totalReffralsReceived } = useContext(
       AuthContext
     );
-    const url = process.env.REACT_APP_API_URL;
-    const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
+  const url = process.env.REACT_APP_API_URL;
+  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
   const headers = {
     Authorization: auth.token,
   };
   const handleDateClick = (selected) => {
-    
-    // handle date selection
-    const clickedDate = selected.date;
+   const clickedDate = selected.date;
 
     const currentDate = new Date(); // Get the current date
-
+    const currentTime = new Date();
+    let time = selected?.dateStr + ' ' + currentTime.toLocaleTimeString();
     // Check if the clicked date is before the current date
     // if (clickedDate < currentDate) {
     //   // If the clicked date is before the current date, prevent further action
     //   toast.error('Invalid date selection', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     //   return;
     // }
-    navigate("todo-list/add/new/" + selected?.dateStr)
+    navigate("todo-list/add/new/" + time)
   }
 
   const eventClick = (selected) => {
@@ -62,7 +61,7 @@ const MyCalendar = () => {
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo/get`, { headers });
-   setTasks(response.data);
+      setTasks(response.data);
 
       const eventsdata = response.data.map((item) => ({
         id: item.id,
@@ -95,20 +94,20 @@ const MyCalendar = () => {
     }
   }
 
- 
+
   const handleRedirect = async () => {
     navigate("/klientale-contacts")
-     try {
-     const response = await axios.post(`${klintaleUrl}create-preference-category`);
+    try {
+      const response = await axios.post(`${klintaleUrl}create-preference-category`);
 
-     if (response.status === 200) {
-       toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-          //Redirect to the contacts list page
-         navigate("")
+      if (response.status === 200) {
+        toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+        //Redirect to the contacts list page
+        navigate("")
       } else {
         console.error("Failed to add contact");
       }
-     } catch (error) {
+    } catch (error) {
       console.error("An error occurred while adding a contact:", error);
     }
   }
@@ -137,7 +136,7 @@ const MyCalendar = () => {
             </div>
           </div>
 
-          <div className="stats-sec" onClick={handleRedirect} style={{"cursor":"pointer"}}>
+          <div className="stats-sec" onClick={handleRedirect} style={{ "cursor": "pointer" }}>
             <div className="stats-order">
               <span>Total Available Jobs</span>
               <span className="order-numbers">{totalAvailableJobs}</span>
@@ -186,7 +185,7 @@ const MyCalendar = () => {
         {/* <button onClick={() => handleChangeView('year')}>Year</button> */}
         {/* Add a Year view button if needed */}
       </div>
-      
+
       <FullCalendar
         initialView="dayGridMonth"
 

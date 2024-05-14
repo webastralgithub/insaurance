@@ -430,7 +430,7 @@ const Contact = ({ role }) => {
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
-  );console.log("contactsToDisplay" , contactsToDisplay)
+  );
   // Adjust the number of contacts per page as needed
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
   const handlePageChange = (newPage) => {
@@ -651,7 +651,7 @@ const Contact = ({ role }) => {
             </tr>
           </thead>
           {contacts.length > 0 &&
-            contactsToDisplay.map((contact) => (<tbody>
+            contactsToDisplay.map((contact) => (<tbody key={contact.id}>
 
               <tr key={contact.id}>
                 <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
