@@ -9,7 +9,6 @@ import PlacesNew from "./PlacesNew";
 
 const ChildContact = (props) => {
   const { id } = useParams();
-console.log("created by id " , id)
   const parentNameNew = localStorage.getItem("parent");
 
   const [notesErr, setNotesErr] = useState([])
@@ -22,16 +21,19 @@ console.log("created by id " , id)
   const [useGoogleAddress, setUseGoogleAddress] = useState(true);
 
   const navigate = useNavigate();
-  
   const [newContact, setNewContact] = useState({
     firstname: "",
     lastname: "",
+
     address1: "",
+
     phone: "",
     parentId: "",
-    createdBy :id ,
+    //createdAt: "",
+    //updatedAt: "",
     realtorId: null,
     propertyId: null,
+    // children: [],
   });
 
   const [users, setUsers] = useState([]);
@@ -101,7 +103,7 @@ console.log("created by id " , id)
     return emailPattern.test(email);
   };
   const saveContactChanges = async (contact) => {
-    console.log("contact dfuifi", contact)
+
 
     if (!contact.firstname) {
       setNotesErr(
@@ -140,7 +142,7 @@ console.log("created by id " , id)
       } else {
 
         // If the contact doesn't have an id, send a POST request to add a new contact
-        const response = await axios.post(`${url}api/contacts/create`, { ...contact, parentId: id }, { headers });
+        const response = await axios.post(`${url}api/contacts/create`, { ...contact, createdBy: id }, { headers });
         // Add the new contact to the contacts list
         getContacts()
         toast.success('Contact added successfully');
@@ -210,6 +212,8 @@ console.log("created by id " , id)
               <th>Email Id</th>
               <th style={{ width: "200px" }}>Address
                 <div className='address-toggle' key={"inner"}>
+
+
                   <input
                     type="radio"
                     name="addressTypeinner"
@@ -223,6 +227,8 @@ console.log("created by id " , id)
                   <label>
                     Google
                   </label>
+
+
                   <input
                     type="radio"
                     name="addressTypeinner"
@@ -237,9 +243,9 @@ console.log("created by id " , id)
                   <label>
                     Manual
                   </label>
-
                 </div>
-              </th> </tr>
+              </th>
+            </tr>
           </thead>
           <tbody>
             {contacts.length > 0 &&
