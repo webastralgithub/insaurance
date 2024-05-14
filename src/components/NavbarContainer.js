@@ -345,7 +345,7 @@ const NavbarContainer = (props) => {
 
 
         >
-          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category pop-up-add-configure">
             <img
               className="close-modal-share"
               onClick={closeModal}

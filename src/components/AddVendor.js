@@ -232,7 +232,7 @@ const clearErrors = (fieldName) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-user-add">
+    <form onSubmit={handleSubmit} className="form-user-add add-vendor-form">
            <div className="property_header header-with-back-btn">
           
           <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Vendor</h3>

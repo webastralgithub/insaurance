@@ -440,7 +440,7 @@ const initialLabel = matchedOption ? matchedOption.label : '';
         </div>
 
 
-        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-user">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-user-edit-lead-pg">
           <label>User</label>
           {editingField === "realtorId" || editingField === "all" ? (
             <Select

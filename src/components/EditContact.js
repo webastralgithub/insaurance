@@ -497,7 +497,7 @@ const EditContact = ({ nameofuser }) => {
             </div>
           )}
         </div> */}
-              <div className="form-user-add-inner-wrap">
+              <div className="form-user-add-inner-wrap   form-user-agent-edit-contact">
                 <label>Active Agent</label>
                 {editingField === "agentId" || editingField === "all" ? (
                   <Select
@@ -520,7 +520,7 @@ const EditContact = ({ nameofuser }) => {
                 )}
               </div>
 
-              <div className="form-user-add-inner-wrap">
+              <div className="form-user-add-inner-wrap  form-user-service-edit-contact">
                 <label>Service Require</label>
 
 
@@ -543,7 +543,7 @@ const EditContact = ({ nameofuser }) => {
 
               </div>
 
-              <div className="form-user-add-inner-wrap">
+              <div className="form-user-add-inner-wrap  form-user-category-edit-contact">
                 <label>Category</label>
 
                 <Select
