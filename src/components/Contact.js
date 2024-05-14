@@ -140,9 +140,23 @@ const Contact = ({ role }) => {
   }
   const downloadExampleExcel = () => {
     const data = [
-      ['Name', 'Email', 'Address', 'Phone'],
+      ['Name', 'Email', 'Address', 'Phone'],];
 
-    ];
+    const csvContent = `Name,Email,Address,Phone`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'example.csv');
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    closeModal()
   }
   const ExampleFileDownloadCSV = () => {
 
@@ -206,7 +220,7 @@ const Contact = ({ role }) => {
       // Handle error
     }
   };
-  
+
   const handleDeleteClick = (propertyId) => {
     confirmAlert({
       title: 'Confirm Delete',
@@ -234,8 +248,8 @@ const Contact = ({ role }) => {
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
       background: "#000",
-      border:"1px solid #fff",
-      padding:"0"
+      border: "1px solid #fff",
+      padding: "0"
     },
     overlay: {
       backgroundColor: "rgb(0 0 0 / 75%)",
@@ -343,7 +357,7 @@ const Contact = ({ role }) => {
         label: realtor.name,
       }));
       setCategories(options)
-   
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -510,6 +524,7 @@ const Contact = ({ role }) => {
               <div>
                 <input style={{ visibility: "hidden", padding: "0", height: "0" }}></input>
                 <button onClick={downloadExampleExcel}>Example Excel</button>
+
                 <button onClick={ExampleFileDownloadCSV}>Example Csv</button>
               </div>
             </div>
@@ -589,7 +604,7 @@ const Contact = ({ role }) => {
         > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Contacts"}</h3>
         <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
 
-        Your contacts are fully encrypted and cannot be seen or accessed by anybody else.</span>
+          Your contacts are fully encrypted and cannot be seen or accessed by anybody else.</span>
         <div className="add_user_btn">
 
           {parentView ? <button onClick={() => navigate(`/contacts/add/${parentid}`)}>
