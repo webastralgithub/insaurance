@@ -237,7 +237,7 @@ const birthdayTodos = response.data.filter((todo) => {
 <th>Follow Up Date</th>	
 <th>Phone</th>
 
-<th>Contact</th>
+{/* <th>Contact</th> */}
 {/* <th>Family Member</th> */}
 {/* <th>Owner</th>
 <th>Active Agent</th> */}
@@ -275,12 +275,12 @@ const birthdayTodos = response.data.filter((todo) => {
               <td>
                 {task.realtor?.name}
               </td> */}
-             {task.contact? <td   className="property-link"   onClick={() => {
+             {/* {task.contact? <td   className="property-link"   onClick={() => {
                    
                     navigate(`/contact/edit/${task.contact.id}`);
                   }}>
                 { task.contact.firstname}
-              </td>:<td></td>}
+              </td>:<td></td>} */}
       
               <td>
               <button className="permissions"

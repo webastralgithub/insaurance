@@ -389,7 +389,8 @@ else{
       </div>
 
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
-        <div className="add_user_btn">
+        <div className="add_user_btn"> 
+        
           <button
             className={active == 1 ? "active" : ""}
             onClick={() => getContacts(1)}
@@ -436,13 +437,13 @@ else{
               )
                 }
 
-              {active == 3 &&(
+              {/* {active == 3 &&(
                 <>
                    <th>IP Address</th>
                   <th>Date</th>
                 </>
               )
-              }
+              } */}
             </tr>
           </thead>
           

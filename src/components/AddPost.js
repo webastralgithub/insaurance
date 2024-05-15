@@ -149,6 +149,7 @@ const AddPost = () => {
 
                 </div>
               </div>
+              {/* <label>Image<span className="required-star">*</span></label> */}
               <ImageUploader
                 images={images}
                 setImages={setImages}

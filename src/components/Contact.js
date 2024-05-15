@@ -216,6 +216,7 @@ const Contact = ({ role }) => {
       closeModal()
       getContacts()
     } catch (error) {
+      toast.error(error.response.data.error, { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       console.error('Error uploading file:', error);
       // Handle error
     }

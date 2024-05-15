@@ -549,7 +549,7 @@ const App = () => {
               }
             />
              <Route
-              path="/admin-userlist" exact
+              path="/userlist" exact
               element={
                 <PrivateRoute>
                   <UserList />

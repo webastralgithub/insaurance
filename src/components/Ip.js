@@ -46,8 +46,8 @@ const Ip = ({ role }) => {
       const today = new Date();
       const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-      setTasks(response.data.userIps);
-      setLengthOfIp(response.data.userIps.length);
+      setTasks(response?.data?.userIps);
+      setLengthOfIp(response?.data.userIps?.length);
     } catch (error) {
       console.error("error", error)
       // localStorage.removeItem('token');
