@@ -47,8 +47,8 @@ const AddRoleForm = ({ onAdd, onCancel }) => {
           placeholder="New Password"
         />
         <div className="change-password-popup-btns">
-        <button type="submit">Change Password</button>
-        <button onClick={onCancel}>Cancel</button>
+          <button type="submit">Change Password</button>
+          <button onClick={onCancel}>Cancel</button>
         </div>
       </form>
     </div>
@@ -129,8 +129,8 @@ export default function Profile(props) {
       transform: "translate(-50%, -50%)",
       background: "#000",
       border: "1px solid #fff",
-      padding:"0",
-      width:"400px"
+      padding: "0",
+      width: "400px"
     },
     overlay: {
       backgroundColor: "rgb(0 0 0 / 75%)",
@@ -485,17 +485,9 @@ export default function Profile(props) {
                       </div>
                     </div>
                   </div>
-
-
-
                 </div>
-
-
-
               </div>
             </div>
-
-
           </div>
         </form>
       </>

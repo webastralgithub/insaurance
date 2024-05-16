@@ -414,19 +414,10 @@ const BecomeKlintale = () => {
                                     <input {...getCVCProps({ onChange: handleChange })} name="cvc" />
                                     <small>{erroredInputs.cvc && erroredInputs.cvc}</small>
                                 </div>
-                                <div className="input-group input-plan-tenure">
-                                    <select value={selectMonth}>
-                                        {/* <option value="">Billing Period</option> */}
-                                        <option value="1">1 Month</option>
-                                        {/* <option value="3">3 Month</option>
-                                        <option value="6">6 Month</option>
-                                        <option value="9">9 Month</option>
-                                        <option value="12">1 Year</option> */}
-                                    </select>
-                                </div>
+                        
 
                             </div>
-                            {selectMonth == "" || errors.name || erroredInputs.cvc || erroredInputs.expiryDate || erroredInputs.cardNumber ? <button disabled type="button">Pay</button> : <button type="submit">Pay</button>}
+                            {errors.name || erroredInputs.cvc || erroredInputs.expiryDate || erroredInputs.cardNumber ? <button disabled type="button">Pay</button> : <button type="submit">Pay</button>}
                         </form>
                     </div>
                 </Modal>

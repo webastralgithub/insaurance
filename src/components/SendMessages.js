@@ -11,7 +11,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import { useNavigate, useRouter } from "react-router-dom";
 import Groups from "./ManageGroup";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import { faUserGroup, faUser } from '@fortawesome/free-solid-svg-icons';
 import { confirmAlert } from 'react-confirm-alert';
 
 const CustomDropdown = ({ children, isGroupFormActive, searchText, contact, ...props }) => {
@@ -101,7 +101,10 @@ const CustomOption = ({ data, isSelected, selectOption, mapmergeContact, ...prop
       <div>
         <components.Option {...props}>
           <div className="select-check-line" style={{ display: 'flex' }}>
-            <span onClick={handleButtonClick}>{data.label}</span>
+
+            <span onClick={handleButtonClick}>  {typeof data?.value === 'string' && data.value.includes('/group') ?
+              <FontAwesomeIcon icon={faUserGroup} /> :
+              <FontAwesomeIcon icon={faUser} />}{data.label}</span>
             <label className="container-chk ">
               <input type="checkbox" defaultChecked={isSelected} />
               <span className="checkmark"></span>

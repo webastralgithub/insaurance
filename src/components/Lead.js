@@ -39,7 +39,7 @@ const Lead = () => {
 
 
 
-  const { auth ,contactlength,setConatctlength,leadlength,setLeadlength} = useContext(AuthContext);
+  const { auth, contactlength, setConatctlength, leadlength, setLeadlength } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -73,9 +73,6 @@ const Lead = () => {
       setCategories([{ id: -1, name: "Today's Leads" }, ...res.data, {
         id: 0, name: "Others"
       }])
-
-
-
       //  setActiveCategory(res.data[0].id);
       setActiveCategory(-1);
     } catch (error) {
@@ -117,7 +114,7 @@ const Lead = () => {
       setUsers(res.data);
 
     } catch (error) {
-
+      console.error(error)
     }
   };
 
@@ -192,8 +189,8 @@ const Lead = () => {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-      setConatctlength(contactlength+1);
-      setLeadlength(leadlength-1);
+      setConatctlength(contactlength + 1);
+      setLeadlength(leadlength - 1);
       setSelectedCategory()
       closeModal()
     }
@@ -364,9 +361,9 @@ const Lead = () => {
             }
           }}
         > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Leads"}</h3>
-             <span className="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px" , "position":"absolute", "top":"200px"}}>
-        
-             Your Leads are fully encrypted and cannot be seen or accessed by anybody else.</span>
+        <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
+
+          Your Leads are fully encrypted and cannot be seen or accessed by anybody else.</span>
         <div className="add_user_btn">
           <button onClick={() => navigate("/leads/add")}>
             <img src="/plus.svg" />
@@ -384,10 +381,10 @@ const Lead = () => {
 
       {/* Rest of your component remains the same... */}
       <div className="add_property_btn">
-        {categories.map((category, index) => (
+        {categories && categories.map((category, index) => (
           <div key={category.id}>
             <div className="add_user_btn family_meber" onClick={() => handleCategoryClick(category.id)}>
-              <h4>{category.name} {category.name !== "Today's Leads" && (<>({index !== category.length - 1 && category.totalContacts}{!category.id && noCategoryContacts.length}{index === 0 && todayContacs.length})</>)}</h4>            <button style={{ padding: "12px 18px" }}>{activeCategory == category.id ? "-" : "+"}</button>
+              <h4>{category?.name} {category?.name !== "Today's Leads" && (<>({index !== category.length - 1 && category.totalContacts}{!category.id && noCategoryContacts.length}{index === 0 && todayContacs.length})</>)}</h4>            <button style={{ padding: "12px 18px" }}>{activeCategory == category.id ? "-" : "+"}</button>
             </div>
             {activeCategory == category.id && <div>
               <div className="table-container">

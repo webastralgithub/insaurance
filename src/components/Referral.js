@@ -21,7 +21,7 @@ const Referral = ({ role }) => {
   const navigate = useNavigate();
   const [parentView, setParentView] = useState(false);
   const [parentName, setParentName] = useState([]);
-  const [bussinessDetail,serBussinessDetail] =useState();
+  const [bussinessDetail, serBussinessDetail] = useState();
   const [contactOptions, setContactoptions] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedContacts, setSelectedContacts] = useState(false);
@@ -85,7 +85,7 @@ const Referral = ({ role }) => {
     },
   };
 
-  const openModal = async(id) => {
+  const openModal = async (id) => {
     setIsOpen(true);
     const response = await axios.get(`${url}api/contacts/get/${id}`, {
       headers,
@@ -194,7 +194,7 @@ const Referral = ({ role }) => {
         label: realtor.name,
       }));
       setCategories(options);
-   
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -223,7 +223,7 @@ const Referral = ({ role }) => {
         { headers }
       );
       setUsers(res.data);
-    } catch (error) {}
+    } catch (error) { }
   };
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -236,36 +236,36 @@ const Referral = ({ role }) => {
 
     return `${year}-${month}-${day}`;
   };
-  var filteredContacts=''
-if(active != 3){
- filteredContacts = contacts.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact.lastname?.toLowerCase().includes(searchText) ||
-      formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
-      contact.email?.toLowerCase().includes(searchText) ||
-      (contact.address1 + " " + contact.address2)
-        .toLowerCase()
-        .includes(searchText) ||
-      contact.city?.toLowerCase().includes(searchText) ||
-      contact.provinceName?.toLowerCase().includes(searchText) ||
-      contact.realtor?.name.toLowerCase().includes(searchText) ||
-      contact.source?.toLowerCase().includes(searchText) ||
-      contact.phone?.toLowerCase().includes(searchText)
-    );
-  });
-}
-else{
-  filteredContacts = contacts.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.ipAddress?.toLowerCase().includes(searchText) ||
-      contact.time?.toLowerCase().includes(searchText)
-     
-    );
-  });
-}
+  var filteredContacts = ''
+  if (active != 3) {
+    filteredContacts = contacts.filter((contact) => {
+      const searchText = searchQuery.toLowerCase();
+      return (
+        contact?.firstname?.toLowerCase().includes(searchText) ||
+        contact.lastname?.toLowerCase().includes(searchText) ||
+        formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
+        contact.email?.toLowerCase().includes(searchText) ||
+        (contact.address1 + " " + contact.address2)
+          .toLowerCase()
+          .includes(searchText) ||
+        contact.city?.toLowerCase().includes(searchText) ||
+        contact.provinceName?.toLowerCase().includes(searchText) ||
+        contact.realtor?.name.toLowerCase().includes(searchText) ||
+        contact.source?.toLowerCase().includes(searchText) ||
+        contact.phone?.toLowerCase().includes(searchText)
+      );
+    });
+  }
+  else {
+    filteredContacts = contacts.filter((contact) => {
+      const searchText = searchQuery.toLowerCase();
+      return (
+        contact?.ipAddress?.toLowerCase().includes(searchText) ||
+        contact.time?.toLowerCase().includes(searchText)
+
+      );
+    });
+  }
 
   const getContacts = async (value = active) => {
     setActive(value);
@@ -303,7 +303,7 @@ else{
   };
   const changeView = async (id, name) => {
     localStorage.setItem("parent", name);
-    const tabs = (value) => {};
+    const tabs = (value) => { };
     setParentName(name);
     // setParentId(id)
     //   setParentView(true)
@@ -330,7 +330,7 @@ else{
 
   return (
     <div className="add_property_btn">
-     <Modal
+      <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         className="custom-modal referal-model"
@@ -340,24 +340,24 @@ else{
           <h2>{bussinessDetail?.firstname}</h2>
           <button onClick={closeModal}>&times;</button>
         </div>
-        <div className="modal-content" style={{width:"unset"}}>
-        <div className="user-info">
-      <p>
-        <strong>Name:</strong> {bussinessDetail?.firstname}
-      </p>
-      <p>
-        <strong>Company Name:</strong> {bussinessDetail?.company}
-      </p>
-      <p>
-        <strong>Email:</strong> {bussinessDetail?.email}
-      </p>
-      <p>
-        <strong>Address:</strong> {bussinessDetail?.address1 ? bussinessDetail?.address1 + ' ' + bussinessDetail?.address2:""}
-      </p>
-      <p>
-        <strong>Phone:</strong> {bussinessDetail?.phone ? bussinessDetail?.phone:""}
-      </p>
-    </div>
+        <div className="modal-content" style={{ width: "unset" }}>
+          <div className="user-info">
+            <p>
+              <strong>Name:</strong> {bussinessDetail?.firstname}
+            </p>
+            <p>
+              <strong>Company Name:</strong> {bussinessDetail?.company}
+            </p>
+            <p>
+              <strong>Email:</strong> {bussinessDetail?.email}
+            </p>
+            <p>
+              <strong>Address:</strong> {bussinessDetail?.address1 ? bussinessDetail?.address1 + ' ' + bussinessDetail?.address2 : ""}
+            </p>
+            <p>
+              <strong>Phone:</strong> {bussinessDetail?.phone ? bussinessDetail?.phone : ""}
+            </p>
+          </div>
         </div>
         <div className="modal-footer">
           <button onClick={closeModal}>Close</button>
@@ -389,8 +389,8 @@ else{
       </div>
 
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
-        <div className="add_user_btn"> 
-        
+        <div className="add_user_btn">
+
           <button
             className={active == 1 ? "active" : ""}
             onClick={() => getContacts(1)}
@@ -419,23 +419,27 @@ else{
         <table>
           <thead>
             <tr>
-              {active == 1 &&(
+              {active == 1 && (
                 <>
-                 <th>Business Name</th>
+                  <th>Business Name</th>
                   <th>Sent By</th>
                   <th>Category</th>
+                  <th>Email</th>
+                  <th>Phone</th>
                 </>
               )
 
               }
-              {active == 2 &&(
+              {active == 2 && (
                 <>
-                 <th>Business Name</th>
+                  <th>Business Name</th>
                   <th>Sent to</th>
                   <th>Category</th>
+                  <th>Email</th>
+                  <th>Phone</th>
                 </>
               )
-                }
+              }
 
               {/* {active == 3 &&(
                 <>
@@ -446,7 +450,7 @@ else{
               } */}
             </tr>
           </thead>
-          
+
           {contacts.length > 0 &&
             contacts.map((contact) => (
               <tbody>
@@ -474,7 +478,10 @@ else{
                         {contact?.send_contact?.category?.name ||
                           contact?.referrer_contact?.category?.name}
                       </td>
-
+                      <td> {contact?.send_contact?.email ||
+                        contact?.referrer_contact?.email}</td>
+                      <td> {contact?.send_contact?.phone ||
+                        contact?.referrer_contact?.phone}</td>
                       {/* <td> 
                     
                   <button className="permissions"
@@ -488,9 +495,9 @@ else{
                   </>
                 ) : (
                   <>
-                   <tr key={contact?.id}>
-                    <td>{contact?.ipAddress}</td>
-                    <td>{formatDate(contact?.time)}</td>
+                    <tr key={contact?.id}>
+                      <td>{contact?.ipAddress}</td>
+                      <td>{formatDate(contact?.time)}</td>
                     </tr>
                   </>
                 )}

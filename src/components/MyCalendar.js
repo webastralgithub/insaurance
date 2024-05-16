@@ -63,7 +63,8 @@ const MyCalendar = () => {
       const response = await axios.get(`${url}api/todo/get`, { headers });
       setTasks(response.data);
 
-      const eventsdata = response.data.map((item) => ({
+      const eventsdata = response.data.map((item, index) => ({
+        key: item.id,
         id: item.id,
         title: item.Followup, // Use the desired property as the event title
         start: item.FollowupDate.slice(0, -4), // Convert the date string to a Date object

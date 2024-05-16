@@ -236,15 +236,6 @@ const birthdayTodos = response.data.filter((todo) => {
 <th>Task Title</th>
 <th>Follow Up Date</th>	
 <th>Phone</th>
-
-{/* <th>Contact</th> */}
-{/* <th>Family Member</th> */}
-{/* <th>Owner</th>
-<th>Active Agent</th> */}
-
-              <th></th>
-              
-              {/* Include other fields as needed */}
             </tr>
           </thead>
           <tbody>

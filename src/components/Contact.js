@@ -402,6 +402,8 @@ const Contact = ({ role }) => {
 
     return `${year}-${month}-${day}`;
   };
+
+  
   const filteredContacts = contacts.filter((contact) => {
     const searchText = searchQuery.toLowerCase();
     return (
@@ -624,7 +626,8 @@ const Contact = ({ role }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
           <img src="/search.svg" />
-        </div>
+        </div> 
+
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>
           <button style={{ marginLeft: "30px" }} onClick={(e) => {
             e.preventDefault()

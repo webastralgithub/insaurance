@@ -72,9 +72,9 @@ import UserList from "./components/UserList";
 
 
 const App = () => {
- 
-  const [toggle, setToggle] = useState(false)
-  const { auth , roleId } = useContext(AuthContext)
+
+
+  const { toggle, setToggle, auth, roleId } = useContext(AuthContext)
   const [role, setRole] = useState(0)
   const [id, setId] = useState(0)
   const [nameofuser, setnameofUser] = useState("")
@@ -83,7 +83,7 @@ const App = () => {
     if (!token) {
       return 0
     }
-  
+
     const name = localStorage.getItem("name")
     const roleId = localStorage.getItem("roleId")
     const id = localStorage.getItem("id")
@@ -511,33 +511,35 @@ const App = () => {
               }
             />
 
-    
-            <Route
-              path="/manage-configure" exact
-              element={
-                <PrivateRoute>
-                  <ManageConfigure />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/manage-configure/add-features" exact
-              element={
-                <PrivateRoute>
-                  <AddFeatures />
-                </PrivateRoute>
-              }
-            />
+            {roleId == 1 &&
+              <>              <Route
+                path="/manage-configure" exact
+                element={
+                  <PrivateRoute>
+                    <ManageConfigure />
+                  </PrivateRoute>
+                }
+              />
+                <Route
+                  path="/manage-configure/add-features" exact
+                  element={
+                    <PrivateRoute>
+                      <AddFeatures />
+                    </PrivateRoute>
+                  }
+                />
 
-            <Route
-              path="/features-update" exact
-              element={
-                <PrivateRoute>
-                  <FeatureUpdate />
-                </PrivateRoute>
-              }
-            />
+                <Route
+                  path="/features-update" exact
+                  element={
+                    <PrivateRoute>
+                      <FeatureUpdate />
+                    </PrivateRoute>
+                  }
+                />
+              </>
 
+            }
 
 
             <Route
@@ -548,14 +550,17 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-             <Route
-              path="/userlist" exact
-              element={
-                <PrivateRoute>
-                  <UserList />
-                </PrivateRoute>
-              }
-            />
+
+            {roleId == 1 &&
+              <Route
+                path="/userlist" exact
+                element={
+                  <PrivateRoute>
+                    <UserList />
+                  </PrivateRoute>
+                }
+              />
+            }
 
             <Route
               path="/website-visitors" exact

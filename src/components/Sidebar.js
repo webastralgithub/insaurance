@@ -20,7 +20,6 @@ const Sidebar = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => {
-
     setMenuOpen(false);
   };
 
@@ -32,8 +31,8 @@ const Sidebar = (props) => {
       setIsOpenSub(true)
   }
 
-  const { auth, setAuth, tasklength, contactlength, setConatctlength, leadlength, setLeadlength, activeID } = useContext(AuthContext);
-  const [toggle, setToggle] = useState(false)
+  const { toggle, setToggle,auth, setAuth, tasklength, contactlength, 
+    setConatctlength, leadlength, setLeadlength, activeID, roleId } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
     Authorization: auth.token,
@@ -83,56 +82,57 @@ const Sidebar = (props) => {
     })();
   }, []);
 
-  return (<>
 
-    {width > 991 ? (
-      <>
-        <div className="side-menu">
-          <Link className="top-man-logo" to="/">
-            <img className="icon" alt="" src="/insurance.png" />
-          </Link>
-          <div className="side-menu-child" />
-          <div className="menu">
-            <Link to="/" className={location.pathname === "/" ? "active" : ""}>
-              <div className="dashboard">
 
-                <img className="icon" alt="" src="/icon.svg" />
+  return (
+    <>
 
-                <div className="daily-events">Dashboard </div>
-
-              </div>
+      {width > 991 ? (
+        <>
+          <div className="side-menu">
+            <Link className="top-man-logo" to="/">
+              <img className="icon" alt="" src="/insurance.png" />
             </Link>
+            <div className="side-menu-child" />
+            <div className="menu">
+              <Link  to="/" className={location.pathname === "/" ? "active" : ""}>
+                <div className="dashboard">
+                  <img className="icon" alt="" src="/icon.svg" />
+                  <div className="daily-events">Dashboard </div>
 
-            <Link to="/todo-list" className={location.pathname === "/todo-list" ? "active" : ""}>
-              <div className="order-list">
-                <img className="group-icon" alt="" src="/group.svg" />
-                <div className="daily-events">To-Do List ({tasklength})</div>
-              </div>
-            </Link>
-            <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
-              <div className="order-detail">
-                <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Leads ({leadlength})</div>
+                </div>
+              </Link>
 
-              </div>
-            </Link>
-            <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ? "active" : ""}>
-              <div className="order-detail">
+              <Link to="/todo-list" className={location.pathname === "/todo-list" ? "active" : ""}>
+                <div className="order-list">
+                  <img className="group-icon" alt="" src="/group.svg" />
+                  <div className="daily-events">To-Do List ({tasklength})</div>
+                </div>
+              </Link>
+              <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
+                <div className="order-detail">
+                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                  <div className="daily-events">Leads ({leadlength})</div>
 
-                <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Contacts ({contactlength})</div>
+                </div>
+              </Link>
+              <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ? "active" : ""}>
+                <div className="order-detail">
 
-              </div>
-            </Link>
-            <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
-              <div className="order-detail">
+                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                  <div className="daily-events">Contacts ({contactlength})</div>
 
-                <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Referrals</div>
+                </div>
+              </Link>
+              <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
+                <div className="order-detail">
 
-              </div>
-            </Link>
-       
+                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                  <div className="daily-events">Referrals</div>
+
+                </div>
+              </Link>
+
               <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
                 <div className="order-detail">
 
@@ -142,7 +142,7 @@ const Sidebar = (props) => {
                 </div>
               </Link>
 
-            {/* <div onClick={() => { setSub("admin"); isOpenSub(); }} className={IsOpenSub && sub == "admin" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
+              {/* <div onClick={() => { setSub("admin"); isOpenSub(); }} className={IsOpenSub && sub == "admin" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                   <img className="vector-icon" alt="" src="/vector.svg" />
                   <div className="properties daily-events" >Administrator </div>
                 </div>
@@ -176,271 +176,13 @@ const Sidebar = (props) => {
                    
             </div> */}
 
-            <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
-              <img className="vector-icon" alt="" src="/vector.svg" />
-              <div className="properties daily-events" >Campaigns</div>
-            </div>
-
-            <div className="subMenu-drp">
-              {IsOpenSub && sub == "camp" && <Link to="/email-campaign" className={location.pathname === "/email-campaign" ? "active" : ""}>
-                <div className="order-detail">
-
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                  <div className="daily-events">Email Campaigns</div>
-                </div>
-              </Link>}
-
-              {IsOpenSub && sub == "camp" && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
-                <div className="order-detail">
-
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                  <div className="daily-events">Send SMS</div>
-
-                </div>
-              </Link>}
-
-              {IsOpenSub && sub == "camp" &&
-                // <Link to="/social-media" className={location.pathname === "/social-media" ? "active" : ""}>
-                //   <div className="order-list">
-
-                //     <img className="customer-child" alt="" src="/group-30037.svg" />
-                //     <div className="daily-events">Social Media</div>
-
-                //   </div>
-
-
-                // </Link>
-                <Link to="/posts" className={location.pathname === "/posts" ? "active" : ""}>
-                  <div className="order-detail">
-
-                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                    <div className="daily-events">Social Media Campaigns</div>
-
-                  </div>
-                </Link>
-              }
-              {IsOpenSub && sub == "camp" &&
-                <Link to="/unsubscribe" className={location.pathname === "/unsubscribe" ? "active" : ""}>
-                  <div className="order-detail">
-
-                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                    <div className="daily-events">Unsubscribed Users</div>
-
-                  </div>
-                </Link>}
-            </div>
-
-            <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
-              <div className="order-detail">
-
-                <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">Klientale Contacts</div>
-
-              </div>
-            </Link>
-
-            <Link to="/userlist" className={location.pathname === "/admin-userlist" ? "active" : ""}>
-              <div className="order-detail">
-
-                <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                <div className="daily-events">User List</div>
-
-              </div>
-            </Link>
-
-
-
-            {/* {props.role==1&& <Link to="/roles" className={location.pathname === "/roles" ? "active" : ""} >
-  <div className="customer-detail">
-
-    <img className="vector-icon" alt="" src="/role.svg" />
-    <div className="properties">Roles</div>
-   
-  </div>
-  </Link>} */}
-            {/* <Link to="/mortgage" className={location.pathname === "/mortgage" ? "active" : ""} >
-  <div className="customer-detail">
-
-    <img className="vector-icon" alt="" src="/vector.svg" />
-    <div className="properties">Mortgage Calculator</div>
-   
-  </div>
-  </Link> */}
-            {/* {props.role==1&&<Link to="/website-visitors" className={location.pathname === "/website" ? "active" : ""}>
-  <div className="order-list">
-
-    <img className="customer-child" alt="" src="/group-30037.svg" />
-    <div className="daily-events">Website Visitors</div>
-   
-  </div>
-  </Link>} */}
-            {/* {props.role==1&& <Link to="/permission" className={location.pathname === "/permission" ? "active" : ""} >
-  <div className="customer-detail">
-
-      <img className="vector-icon" alt="" src="/permisson.svg" />
-        <div className="properties">Permission</div>
-    
-    </div>
-    </Link>} */}
-
-
-
-
-            {auth ? (
-              <button className="btn-logout" onClick={() => handleLogout()}>Logout</button>
-            ) : (
-              <button className="btn-logout" onClick={() => handleLogin()}>Login</button>
-            )}
-
-
-            {/* <div className="add-property-box-side-nav">
-    <h6>Add new listing here
-to multiply the revenue. </h6>
-   
-     <div className="add_user_btn">
-      <button onClick={() =>navigate("/listing/add")}>
-        <img src="/plus.svg" />
-        Add Exclusive Listing</button>
-      </div>
-    </div>          */}
-
-          </div>
-        </div>
-      </>) :
-      <div>
-        <Menu
-          customBurgerIcon={<FontAwesomeIcon icon={faBars} />} // Use FontAwesome hamburger icon
-          isOpen={true}
-          onStateChange={({ isOpen }) => setMenuOpen(isOpen)}
-        >
-          <div className="side-menu" onClick={closeMenu}>
-            <Link className="side-users-logo" to="/listing">
-              <img className="icon" alt="" src="/insurance.png" />
-            </Link>
-            <div className="side-menu-child" />
-            <div className="menu">
-              <Link to="/" className={location.pathname === "/" ? "active" : ""}>
-                <div className="dashboard">
-
-                  <img className="icon" alt="" src="/icon.svg" />
-
-                  <div className="daily-events">Dashboard</div>
-
-                </div>
-              </Link>
-
-              <Link to="/todo-list" className={location.pathname === "/todo-list" ? "active" : ""}>
-                <div className="order-list">
-                  <img className="group-icon" alt="" src="/group.svg" />
-                  <div className="daily-events">To-Do List ({tasklength})</div>
-                </div>
-              </Link>
-              <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
-                <div className="order-detail">
-
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                  <div className="daily-events">Leads ({count?.leads_count})</div>
-
-                </div>
-              </Link>
-
-              <Link to="/contacts" className={location.pathname === "/contacts" ? "active" : ""}>
-                <div className="order-detail">
-
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                  <div className="daily-events">Contacts ({count?.contact_count})</div>
-
-                </div>
-              </Link>
-              <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
-                <div className="order-detail">
-
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                  <div className="daily-events">Referrals</div>
-
-                </div>
-              </Link>
-
-{/* 
-              {props.role == 1 && <Link to="/vendors" className={location.pathname === "/vendors" ? "active" : ""}>
-                <div className="order-detail">
-
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                  <div className="daily-events">Vendors ({count?.vendor_count})</div>
-
-                </div>
-              </Link>} */}
-              {/* {props.role == 1 && <Link to="/categories" className={location.pathname === "/categories" ? "active" : ""} > */}
-                {/* <div className="customer-detail">
-
-                  <img className="vector-icon" alt="" src="/vector.svg" />
-                  <div className="properties">Categories ({count?.category_count})</div>
-
-                </div>
-              </Link>} */}
-              {/* {props.role == 1 && <Link to="/social-media" className={location.pathname === "/social-media" ? "active" : ""}>
-                <div className="order-list">
-
-                  <img className="customer-child" alt="" src="/group-30037.svg" />
-                  <div className="daily-events">Social Media</div>
-
-                </div>
-              </Link>} */}
-
-              {/* {props.role == 1 && <Link to="/social" className={location.pathname === "/social" ? "active" : ""}>
-                <div className="order-list">
-
-                  <img className="customer-child" alt="" src="/group-30037.svg" />
-                  <div className="daily-events">Social Share</div>
-
-                </div>
-
-              </Link>} */}
-              {/* {props.role == 1 && <Link to="/users" className={location.pathname === "/users" ? "active" : ""}>
-                <div className="order-list">
-
-                  <img className="customer-child" alt="" src="/group-30037.svg" />
-                  <div className="daily-events">Users ({count?.owner_count})</div>
-
-                </div>
-              </Link>} */}
-              {/* {props.role==1&&<Link to="/roles" className={location.pathname === "/roles" ? "active" : ""} >
-  <div className="customer-detail">
-
-    <img className="vector-icon" alt="" src="/role.svg" />
-    <div className="properties">Roles</div>
-   
-  </div>
-  </Link>} */}
-              {/* <Link to="/mortgage" className={location.pathname === "/mortgage" ? "active" : ""} >
-  <div className="customer-detail">
-
-    <img className="vector-icon" alt="" src="/vector.svg" />
-    <div className="properties">Mortgage Calculator</div>
-   
-  </div>
-
-  </Link> */}
-              <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
-                <div className="order-list">
-
-                  <img className="customer-child" alt="" src="/group-30037.svg" />
-                  <div className="daily-events">Analytics</div>
-
-                </div>
-              </Link>
-              {/* {props.role == 1 && <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
-                <img className="vector-icon" alt="" src="/vector.svg" />
-                <div className="properties daily-events" >Campaigns</div>
-              </div>} */}
-
               <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                 <img className="vector-icon" alt="" src="/vector.svg" />
                 <div className="properties daily-events" >Campaigns</div>
               </div>
 
               <div className="subMenu-drp">
-                {IsOpenSub && sub == "camp" && <Link to="/email-campaign" className={location.pathname === "/email-campaign" ? "active" : ""}>
+                {IsOpenSub && sub == "camp" && <Link to="/email-campaign" className={location.pathname === "/email-campaign" || location.pathname === '/templates' ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -488,7 +230,6 @@ to multiply the revenue. </h6>
                   </Link>}
               </div>
 
-
               <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
                 <div className="order-detail">
 
@@ -497,18 +238,278 @@ to multiply the revenue. </h6>
 
                 </div>
               </Link>
-              <Link to="/userlist" className={location.pathname === "/admin-userlist" ? "active" : ""}>
+              {roleId == 1 &&
+                <Link to="/userlist" className={location.pathname === "/admin-userlist" ? "active" : ""}>
+                  <div className="order-detail">
+
+                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <div className="daily-events">User List</div>
+
+                  </div>
+                </Link>
+
+              }
+
+              {/* {props.role==1&& <Link to="/roles" className={location.pathname === "/roles" ? "active" : ""} >
+  <div className="customer-detail">
+
+    <img className="vector-icon" alt="" src="/role.svg" />
+    <div className="properties">Roles</div>
+   
+  </div>
+  </Link>} */}
+              {/* <Link to="/mortgage" className={location.pathname === "/mortgage" ? "active" : ""} >
+  <div className="customer-detail">
+
+    <img className="vector-icon" alt="" src="/vector.svg" />
+    <div className="properties">Mortgage Calculator</div>
+   
+  </div>
+  </Link> */}
+              {/* {props.role==1&&<Link to="/website-visitors" className={location.pathname === "/website" ? "active" : ""}>
+  <div className="order-list">
+
+    <img className="customer-child" alt="" src="/group-30037.svg" />
+    <div className="daily-events">Website Visitors</div>
+   
+  </div>
+  </Link>} */}
+              {/* {props.role==1&& <Link to="/permission" className={location.pathname === "/permission" ? "active" : ""} >
+  <div className="customer-detail">
+
+      <img className="vector-icon" alt="" src="/permisson.svg" />
+        <div className="properties">Permission</div>
+    
+    </div>
+    </Link>} */}
+
+
+
+
+              {auth ? (
+                <button className="btn-logout" onClick={() => handleLogout()}>Logout</button>
+              ) : (
+                <button className="btn-logout" onClick={() => handleLogin()}>Login</button>
+              )}
+
+
+              {/* <div className="add-property-box-side-nav">
+    <h6>Add new listing here
+to multiply the revenue. </h6>
+   
+     <div className="add_user_btn">
+      <button onClick={() =>navigate("/listing/add")}>
+        <img src="/plus.svg" />
+        Add Exclusive Listing</button>
+      </div>
+    </div>          */}
+
+            </div>
+          </div>
+        </>) :
+        <div>
+          <Menu
+            customBurgerIcon={<FontAwesomeIcon icon={faBars} />} // Use FontAwesome hamburger icon
+            isOpen={true}
+            onStateChange={({ isOpen }) => setMenuOpen(isOpen)}
+          >
+            <div className="side-menu" onClick={closeMenu}>
+              <Link className="side-users-logo" to="/listing">
+                <img className="icon" alt="" src="/insurance.png" />
+              </Link>
+              <div className="side-menu-child" />
+              <div className="menu">
+                <Link to="/" className={location.pathname === "/" ? "active" : ""}>
+                  <div className="dashboard">
+
+                    <img className="icon" alt="" src="/icon.svg" />
+
+                    <div className="daily-events">Dashboard</div>
+
+                  </div>
+                </Link>
+
+                <Link to="/todo-list" className={location.pathname === "/todo-list" ? "active" : ""}>
+                  <div className="order-list">
+                    <img className="group-icon" alt="" src="/group.svg" />
+                    <div className="daily-events">To-Do List ({tasklength})</div>
+                  </div>
+                </Link>
+                <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
+                  <div className="order-detail">
+
+                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <div className="daily-events">Leads ({count?.leads_count})</div>
+
+                  </div>
+                </Link>
+
+                <Link to="/contacts" className={location.pathname === "/contacts" ? "active" : ""}>
+                  <div className="order-detail">
+
+                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <div className="daily-events">Contacts ({count?.contact_count})</div>
+
+                  </div>
+                </Link>
+                <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
+                  <div className="order-detail">
+
+                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <div className="daily-events">Referrals</div>
+
+                  </div>
+                </Link>
+
+                {/* 
+              {props.role == 1 && <Link to="/vendors" className={location.pathname === "/vendors" ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                  <div className="daily-events">User List</div>
+                  <div className="daily-events">Vendors ({count?.vendor_count})</div>
 
                 </div>
-              </Link>
+              </Link>} */}
+                {/* {props.role == 1 && <Link to="/categories" className={location.pathname === "/categories" ? "active" : ""} > */}
+                {/* <div className="customer-detail">
+
+                  <img className="vector-icon" alt="" src="/vector.svg" />
+                  <div className="properties">Categories ({count?.category_count})</div>
+
+                </div>
+              </Link>} */}
+                {/* {props.role == 1 && <Link to="/social-media" className={location.pathname === "/social-media" ? "active" : ""}>
+                <div className="order-list">
+
+                  <img className="customer-child" alt="" src="/group-30037.svg" />
+                  <div className="daily-events">Social Media</div>
+
+                </div>
+              </Link>} */}
+
+                {/* {props.role == 1 && <Link to="/social" className={location.pathname === "/social" ? "active" : ""}>
+                <div className="order-list">
+
+                  <img className="customer-child" alt="" src="/group-30037.svg" />
+                  <div className="daily-events">Social Share</div>
+
+                </div>
+
+              </Link>} */}
+                {/* {props.role == 1 && <Link to="/users" className={location.pathname === "/users" ? "active" : ""}>
+                <div className="order-list">
+
+                  <img className="customer-child" alt="" src="/group-30037.svg" />
+                  <div className="daily-events">Users ({count?.owner_count})</div>
+
+                </div>
+              </Link>} */}
+                {/* {props.role==1&&<Link to="/roles" className={location.pathname === "/roles" ? "active" : ""} >
+  <div className="customer-detail">
+
+    <img className="vector-icon" alt="" src="/role.svg" />
+    <div className="properties">Roles</div>
+   
+  </div>
+  </Link>} */}
+                {/* <Link to="/mortgage" className={location.pathname === "/mortgage" ? "active" : ""} >
+  <div className="customer-detail">
+
+    <img className="vector-icon" alt="" src="/vector.svg" />
+    <div className="properties">Mortgage Calculator</div>
+   
+  </div>
+
+  </Link> */}
+                <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
+                  <div className="order-list">
+
+                    <img className="customer-child" alt="" src="/group-30037.svg" />
+                    <div className="daily-events">Analytics</div>
+
+                  </div>
+                </Link>
+                {/* {props.role == 1 && <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
+                <img className="vector-icon" alt="" src="/vector.svg" />
+                <div className="properties daily-events" >Campaigns</div>
+              </div>} */}
+
+                <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
+                  <img className="vector-icon" alt="" src="/vector.svg" />
+                  <div className="properties daily-events" >Campaigns</div>
+                </div>
+
+                <div className="subMenu-drp">
+                  {IsOpenSub && sub == "camp" && <Link to="/email-campaign" className={location.pathname === "/email-campaign" ? "active" : ""}>
+                    <div className="order-detail">
+
+                      <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                      <div className="daily-events">Email Campaigns</div>
+                    </div>
+                  </Link>}
+
+                  {IsOpenSub && sub == "camp" && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
+                    <div className="order-detail">
+
+                      <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                      <div className="daily-events">Send SMS</div>
+
+                    </div>
+                  </Link>}
+
+                  {IsOpenSub && sub == "camp" &&
+                    // <Link to="/social-media" className={location.pathname === "/social-media" ? "active" : ""}>
+                    //   <div className="order-list">
+
+                    //     <img className="customer-child" alt="" src="/group-30037.svg" />
+                    //     <div className="daily-events">Social Media</div>
+
+                    //   </div>
+
+
+                    // </Link>
+                    <Link to="/posts" className={location.pathname === "/posts" ? "active" : ""}>
+                      <div className="order-detail">
+
+                        <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                        <div className="daily-events">Social Media Campaigns</div>
+
+                      </div>
+                    </Link>
+                  }
+                  {IsOpenSub && sub == "camp" &&
+                    <Link to="/unsubscribe" className={location.pathname === "/unsubscribe" ? "active" : ""}>
+                      <div className="order-detail">
+
+                        <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                        <div className="daily-events">Unsubscribed Users</div>
+
+                      </div>
+                    </Link>}
+                </div>
+
+
+                <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
+                  <div className="order-detail">
+
+                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <div className="daily-events">Klientale Contacts</div>
+
+                  </div>
+                </Link>
+                {roleId == 1 &&
+                  <Link to="/userlist" className={location.pathname === "/admin-userlist" ? "active" : ""}>
+                    <div className="order-detail">
+
+                      <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                      <div className="daily-events">User List</div>
+
+                    </div>
+                  </Link>}
 
 
 
-              {/* {props.role==1&&<Link to="/permission" className={location.pathname === "/permission" ? "active" : ""} >
+                {/* {props.role==1&&<Link to="/permission" className={location.pathname === "/permission" ? "active" : ""} >
   <div className="customer-detail">
 
     <img className="vector-icon" alt="" src="/permisson.svg" />
@@ -516,20 +517,20 @@ to multiply the revenue. </h6>
    
   </div>
   </Link>} */}
-              <div className="add_user_btn">
-                {auth ? (
-                  <button onClick={() => handleLogout()}>Logout</button>
-                ) : (
-                  <button onClick={() => handleLogin()}>Login</button>
-                )}
-              </div>
+                <div className="add_user_btn">
+                  {auth ? (
+                    <button onClick={() => handleLogout()}>Logout</button>
+                  ) : (
+                    <button onClick={() => handleLogin()}>Login</button>
+                  )}
+                </div>
 
+              </div>
             </div>
-          </div>
-        </Menu>
-      </div>
-    }
-  </>
+          </Menu>
+        </div>
+      }
+    </>
 
 
   )

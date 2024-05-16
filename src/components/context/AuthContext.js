@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [totalAvailableJobs, settotalAvailableJobs] = useState(localStorage.getItem("totalAvailableJobs"))
   const [totalReffrals, settotalReffrals] = useState(localStorage.getItem("totalReffrals"))
   const [totalReffralsReceived, settotalReffralsReceived] = useState(localStorage.getItem("totalReffralsReceived"))
-
+  const [toggle, setToggle] = useState(false)
   const [auth, setAuth] = useState(
     localStorage.getItem('token') ? { token: localStorage.getItem('token') } : null
   );
@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{
+      toggle, setToggle,
       subscriptionStatus, setSubscriptionStatus, email, setEmail,
       auth, setAuth, property, setProperty, todo, setTodo, tasklength, setTasklength,
       plan, setPlan, leadlength, setLeadlength, contactlength, setConatctlength,
