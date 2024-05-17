@@ -604,7 +604,7 @@ const Contact = ({ role }) => {
               setViewState("contacts"); // Change the view state to "contacts"
             }
           }}
-        > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Contacts"}</h3>
+        > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Your contacts/leads"}</h3>
         <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
 
           Your contacts are fully encrypted and cannot be seen or accessed by anybody else.</span>
@@ -658,7 +658,7 @@ const Contact = ({ role }) => {
               <th>Company Name</th>
               {/* <th>Services Require</th> */}
 
-              <th>Category</th>
+              <th>Profession</th>
 
               {/* <th></th>
               <th></th> */}

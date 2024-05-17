@@ -83,7 +83,7 @@ const ShareMe = ({ role }) => {
         headers,
       });
       if (response.status === 200) {
-        toast.success("Contact Shared successfully", {
+        toast.success(`${contact.firstname} Shared successfully`, {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -156,9 +156,9 @@ const ShareMe = ({ role }) => {
     try {
       const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share-me`, combinedObject, { headers }
       );
-     
+
       if (response.status === 200) {
-        toast.success("Contact Shared successfully", {
+        toast.success(`${contact.name} Shared successfully`, {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -173,22 +173,7 @@ const ShareMe = ({ role }) => {
 
   }
 
-  const handleDeleteKlintaleClick = (propertyId) => {
-    confirmAlert({
-      title: 'Confirm Send',
-      message: 'Are you sure you want to send this contact?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => handleShareKlintaleClick(propertyId),
-        },
-        {
-          label: 'No',
-          onClick: () => { },
-        },
-      ],
-    });
-  };
+
   const customStyles = {
     content: {
       top: "50%",
@@ -278,7 +263,7 @@ const ShareMe = ({ role }) => {
 
 
     }),
-    menuList: styles => ({ ...styles, overflowY: "none"}),
+    menuList: styles => ({ ...styles, overflowY: "none" }),
     multiValue: styles => ({ ...styles, minWidth: "unset" }),
     input: styles => ({ ...styles, color: "#fff" }),
     placeholder: styles => ({ ...styles, color: "#fff" }),
@@ -314,7 +299,7 @@ const ShareMe = ({ role }) => {
   };
 
 
-  
+
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
 
@@ -327,7 +312,7 @@ const ShareMe = ({ role }) => {
 
       const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const data = response.data.user;
-  
+
       setKlintaleContacts(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -457,7 +442,7 @@ const ShareMe = ({ role }) => {
   // Rest of your component remains the same..
 
 
-  
+
 
 
 
@@ -520,7 +505,7 @@ const ShareMe = ({ role }) => {
 
                 {/* <th>Services Require</th> */}
 
-                <th>Category</th>
+                <th>Profession</th>
 
                 {/* <th></th>
              <th></th> */}
@@ -532,14 +517,14 @@ const ShareMe = ({ role }) => {
             </thead>
 
             {active == "0" && <>
-              {contacts.length > 0 && 
+              {contacts.length > 0 &&
                 contactsToDisplay.map((contact) => (contact.id != id && <tbody>
 
                   <tr key={contact.id}>
                     {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        handleDeleteClick(contact)
+                        sendRefferal(contact)
                       }} >Share</button>       </td>
                     <td>{contact.firstname}</td>
                     <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
@@ -574,7 +559,7 @@ const ShareMe = ({ role }) => {
                     {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        handleDeleteKlintaleClick(contact)
+                        handleShareKlintaleClick(contact)
                       }} >Share</button>       </td>
                     <td>{contact.name}</td>
                     <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
@@ -584,12 +569,12 @@ const ShareMe = ({ role }) => {
 
 
                 </tbody>))
-                }
+              }
             </>
             }
 
           </table>
-      
+
           {totalPages > 1 && !active && (
             <div className="pagination">
               {Array.from({ length: totalPages }, (_, index) => (
@@ -603,12 +588,12 @@ const ShareMe = ({ role }) => {
               ))}
             </div>
           )}
-      
+
         </div>
         {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}
       </div>
-      {active == "1" && KlientaleContacts.length == 0 ? <p className="no-data">No Data Found</p>:""}
-      {active == "0" && contactsToDisplay.length == 0 ? <p className="no-data">No Data Found</p>:""}
+      {active == "1" && KlientaleContacts.length == 0 ? <p className="no-data">No Data Found</p> : ""}
+      {active == "0" && contactsToDisplay.length == 0 ? <p className="no-data">No Data Found</p> : ""}
     </div>
 
   );

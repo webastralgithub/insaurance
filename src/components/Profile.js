@@ -516,7 +516,7 @@ export default function Profile(props) {
           className={active == 4 ? "active" : ""}
           onClick={() => getContacts(4)}
         >
-          Categories <span>{active == 4 ? "-" : "+"}</span>
+         My Categories <span>{active == 4 ? "-" : "+"}</span>
         </button>
       </div>
 

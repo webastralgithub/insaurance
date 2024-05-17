@@ -295,7 +295,7 @@ const AddTodo = () => {
 
 
             <div className="form-user-add-inner-wrap">
-              <label>Notes</label>
+              <label>Add Notes</label>
 
               <CKEditor
                 editor={ClassicEditor}

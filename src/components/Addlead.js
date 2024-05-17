@@ -348,7 +348,7 @@ getCategories()
   
     
       
-        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-users" style={{position:"relative", zIndex:"99"}}>
+        {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-users" style={{position:"relative", zIndex:"99"}}>
           <label>Users</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
@@ -365,8 +365,9 @@ getCategories()
             
           />
   
-        </div>
-        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-agent">
+        </div> */}
+
+        {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-agent">
           <label>Active Agent</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
@@ -384,7 +385,8 @@ getCategories()
             
           />
   
-        </div>
+        </div> */}
+
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-source">
           <label>Source</label>
           <img src="/icons-form/Group30055.svg"/>
@@ -404,7 +406,7 @@ getCategories()
   
         </div>
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category">
-          <label>Category</label>
+          <label>My Category</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
             placeholder="Select Category.."

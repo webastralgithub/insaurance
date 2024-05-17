@@ -16,7 +16,7 @@ const AddContact = ({ user }) => {
     lastname: "",
     createdBy: user,
     address1: "",
-
+    email: "",
     source: "",
     phone: "",
     parentId: null,
@@ -25,6 +25,12 @@ const AddContact = ({ user }) => {
     realtorId: null,
     propertyId: null,
     // children: [],
+  });
+
+  const [errors, setErrors] = useState({
+    firstname: "",
+    email: "",
+    phone: ""
   });
   const noSelectionOption = { value: null, label: 'No Selection' };
 
@@ -61,32 +67,7 @@ const AddContact = ({ user }) => {
     return emailPattern.test(email);
   };
 
-  const validateForm = () => {
-    let isValid = true;
 
-    if (!contact.firstname) {
-      setFirstError("Name is required");
-      isValid = false;
-    }
-    if (contact.email) {
-      const emailval = validateEmail(contact.email)
-      if (!emailval) {
-        setEmailError("invalid email")
-        isValid = false;
-      }
-    }
-    if (contact.phone) {
-      if (contact.phone.length != 10) {
-        setPhoneError("Invalid phone number")
-        isValid = false;
-      }
-    }
-
-    if (!isValid) {
-      window.scrollTo(0, 0)
-    }
-    return isValid;
-  };
   const navigate = useNavigate();
 
   const { auth } = useContext(AuthContext);
@@ -133,11 +114,11 @@ const AddContact = ({ user }) => {
       return {
         ...styles,
 
-        backGround:"#fff",
-        color:"#000",
-        position:"relative",
-        zIndex:"99",
-        fontSize:"14px"
+        backGround: "#fff",
+        color: "#000",
+        position: "relative",
+        zIndex: "99",
+        fontSize: "14px"
       };
     },
 
@@ -171,11 +152,8 @@ const AddContact = ({ user }) => {
       }));
 
       setProperties([noSelectionOption, ...realtorOptions]);
-
-
-
     } catch (error) {
-
+      console.error(error)
     }
 
   };
@@ -194,9 +172,56 @@ const AddContact = ({ user }) => {
     }
   };
 
+ 
+
+  const validateForm = () => {
+    let isValid = true;
+    const { firstname, email, phone } = contact;
+
+    // Trim whitespace from all fields
+    const trimmedFirstName = firstname.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    // Reset errors
+    setErrors({
+      firstname: "",
+      email: "",
+      phone: ""
+    });
+
+    // Validate firstname
+    if (!trimmedFirstName) {
+      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
+      isValid = false;
+    }
+
+    // Validate email
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
+      isValid = false;
+    }
+
+    // Validate phone number
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone)) {
+      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
+      isValid = false;
+    }
+
+    if (!isValid) {
+      window.scrollTo(0, 0);
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    const isValid = validateForm();
+if(!isValid){
+  return
+}
+  
       try {
         const response = await axios.post(`${url}api/contacts/create`, contact, {
           headers,
@@ -215,7 +240,7 @@ const AddContact = ({ user }) => {
         console.error("An error occurred while adding a contact:", error);
       }
     }
-  };
+  
   const handleAddressChange = (newAddress) => {
     setContact({ ...contact, address1: newAddress });
   };
@@ -235,10 +260,15 @@ const AddContact = ({ user }) => {
         break;
     }
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    clearErrors(name);
     setContact({ ...contact, [name]: value });
+
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: ""
+    }));
   };
 
   // const handleRealtorSelectChange = (selectedOption) => {
@@ -259,20 +289,20 @@ const AddContact = ({ user }) => {
       </div>
 
       <div className="add-cnt-form-desc">
-      <div className="form-user-add-wrapper">
+        <div className="form-user-add-wrapper">
 
-        <div className="form-user-add-inner-wrap">
-          <label>Name<span className="required-star">*</span></label>
-          <input
-            type="text"
-            name="firstname"
-            value={contact.firstname}
-            onChange={handleChange}
+          <div className="form-user-add-inner-wrap">
+            <label>Name<span className="required-star">*</span></label>
+            <input
+              type="text"
+              name="firstname"
+              value={contact.firstname}
+              onChange={handleChange}
 
-          />
-          <span className="error-message">{firstError}</span>
-        </div>
-        {/* <div className="form-user-add-inner-wrap">
+            />
+            <span className="error-message">{errors.firstname}</span>
+          </div>
+          {/* <div className="form-user-add-inner-wrap">
           <label>Last Name</label>
           <input
             type="text"
@@ -283,28 +313,28 @@ const AddContact = ({ user }) => {
           />
         </div>
       */}
-        <div className="form-user-add-inner-wrap">
-          <label>Email Id</label>
-          <input
-            type="text"
-            name="email"
-            value={contact.email}
-            onChange={handleChange}
-          />
-          <span className="error-message">{emailError}</span>
-        </div>
-        <div className="form-user-add-inner-wrap">
-          <label>Profession</label>
-          <div className="edit-new-input">
+          <div className="form-user-add-inner-wrap">
+            <label>Email Id</label>
             <input
               type="text"
-              name="profession"
-              value={contact.profession}
+              name="email"
+              value={contact.email}
               onChange={handleChange}
             />
+            <span className="error-message">{errors.email}</span>
           </div>
-        </div>
-        {/* <div className="form-user-add-inner-wrap">
+          <div className="form-user-add-inner-wrap">
+            <label>Profession</label>
+            <div className="edit-new-input">
+              <input
+                type="text"
+                name="profession"
+                value={contact.profession}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          {/* <div className="form-user-add-inner-wrap">
           <label>Birth Date</label>
           <input
             type="date"
@@ -313,14 +343,12 @@ const AddContact = ({ user }) => {
             onChange={handleChange}
           /> 
         </div>*/}
-
-
-        <Places value={contact.address1} onChange={handleAddressChange} />
+          <Places value={contact.address1} onChange={handleAddressChange} />
 
 
 
 
-        {/* <div className="form-user-add-inner-wrap">
+          {/* <div className="form-user-add-inner-wrap">
           <label>City</label>
           <input
             type="text"
@@ -331,46 +359,46 @@ const AddContact = ({ user }) => {
         </div> */}
 
 
-            <div className="form-user-add-inner-wrap">
-              <label>Phone</label>
-              <InputMask
-                mask="+1 (999) 999-9999"
+          <div className="form-user-add-inner-wrap">
+            <label>Phone</label>
+            <InputMask
+              mask="+1 (999) 999-9999"
+              type="text"
+              name="phone"
+              value={contact.phone}
+              onChange={handlePhoneNumberChange}
+              placeholder="+1 (___) ___-____"
+
+            />
+            <span className="error-message">{errors.phone}</span>
+          </div>
+
+
+          <div className="form-user-add-inner-wrap">
+            <label>Company Name</label>
+            <div className="edit-new-input">
+              <input
                 type="text"
-                name="phone"
-                value={contact.phone}
-                onChange={handlePhoneNumberChange}
-                placeholder="+1 (___) ___-____"
-
+                name="company"
+                value={contact.company}
+                onChange={handleChange}
               />
-              <span className="error-message">{phoneError}</span>
             </div>
+          </div>
+
+          {/* ------------------- */}
 
 
-            <div className="form-user-add-inner-wrap">
-              <label>Company Name</label>
-              <div className="edit-new-input">
-                <input
-                  type="text"
-                  name="company"
-                  value={contact.company}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-        {/* ------------------- */}
-
-                
-      </div>
+        </div>
 
 
-      <div className="add-contact-user-custom-right">
+        <div className="add-contact-user-custom-right">
 
-      <div className="add-contact-user-custom-wrapper">
-          <div className="add-contact-user-custom-left">
-           
-            
-            {/* <div className="form-user-add-inner-wrap">
+          <div className="add-contact-user-custom-wrapper">
+            <div className="add-contact-user-custom-left">
+
+
+              {/* <div className="form-user-add-inner-wrap">
           <label>User</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
@@ -388,85 +416,85 @@ const AddContact = ({ user }) => {
           />
   
         </div> */}
-            <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
-              <label>Active Agent</label>
-              <img src="/icons-form/Group30055.svg" />
-              <Select
-                placeholder="Select Active Agent..."
-                value={selectedAgent}
+              <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
+                <label>Active Agent</label>
+                <img src="/icons-form/Group30055.svg" />
+                <Select
+                  placeholder="Select Active Agent..."
+                  value={selectedAgent}
 
-                onChange={(selectedOption) => {
-                  setContact({ ...contact, agentId: selectedOption.value })
-                  setSelectedAgent(selectedOption)
-                }}
-                options={realtorOptions}
-                components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                styles={colourStyles}
-                className="select-new"
+                  onChange={(selectedOption) => {
+                    setContact({ ...contact, agentId: selectedOption.value })
+                    setSelectedAgent(selectedOption)
+                  }}
+                  options={realtorOptions}
+                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                  styles={colourStyles}
+                  className="select-new"
 
-              />
+                />
 
+              </div>
+              <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
+                <label>Service Require</label>
+                <Select
+                  placeholder="Select Service(s) Required..."
+                  value={selectedServices}
+                  onChange={(selectedOptions) => {
+                    setSelectedServices(selectedOptions);
+                    // You can also extract the values into an array if needed
+                    const selectedValues = selectedOptions.map(option => option.value);
+                    setContact({ ...contact, servceRequire: selectedValues });
+                  }}
+                  options={serviceOptions}
+                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                  styles={colourStyles}
+                  className="select-new"
+                  isMulti // This is what enables multiple selections
+                />
+
+              </div>
+              <div className="form-user-add-inner-wrap">
+                <label>Category</label>
+                <img src="/icons-form/Group30055.svg" />
+                <Select
+                  placeholder="Select Category.."
+                  value={seletedCategory}
+                  onChange={(selectedOption) => {
+                    setContact({ ...contact, category: selectedOption.value })
+                    setSelectedCategory(selectedOption)
+                  }}
+                  options={categories}
+                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                  styles={colourStyles}
+                  className="select-new"
+
+                />
+
+              </div>
             </div>
-            <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
-              <label>Service Require</label>
-              <Select
-                placeholder="Select Service(s) Required..."
-                value={selectedServices}
-                onChange={(selectedOptions) => {
-                  setSelectedServices(selectedOptions);
-                  // You can also extract the values into an array if needed
-                  const selectedValues = selectedOptions.map(option => option.value);
-                  setContact({ ...contact, servceRequire: selectedValues });
-                }}
-                options={serviceOptions}
-                components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                styles={colourStyles}
-                className="select-new"
-                isMulti // This is what enables multiple selections
-              />
 
-            </div>
-            <div className="form-user-add-inner-wrap">
-              <label>Category</label>
-              <img src="/icons-form/Group30055.svg" />
-              <Select
-                placeholder="Select Category.."
-                value={seletedCategory}
-                onChange={(selectedOption) => {
-                  setContact({ ...contact, category: selectedOption.value })
-                  setSelectedCategory(selectedOption)
-                }}
-                options={categories}
-                components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                styles={colourStyles}
-                className="select-new"
+          </div>
 
-              />
 
-            </div>
-          </div>        
-
+          <div className="form-user-add-inner-wrap">
+            <label>Description</label>
+            <CKEditor
+              editor={ClassicEditor}
+              data={contact.notes}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                setContact({ ...contact, notes: data });
+              }}
+              config={{
+                toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+              }}
+              className="custom-ckeditor" // Add a custom class for CKEditor container
+              style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+            />
+          </div>
         </div>
-
-        
-            <div className="form-user-add-inner-wrap">
-              <label>Description</label>
-              <CKEditor
-                editor={ClassicEditor}
-                data={contact.notes}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setContact({ ...contact, notes: data });
-                }}
-                config={{
-                  toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-                }}
-                className="custom-ckeditor" // Add a custom class for CKEditor container
-                style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-              />
-            </div>
-          </div>
-          </div>
+      </div>
       <div className="form-user-add-inner-btm-btn-wrap">
         <button type="submit" >Save</button>
       </div>
