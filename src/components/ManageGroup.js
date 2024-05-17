@@ -75,13 +75,25 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
     });
   };
 
-
   const handleView = async (postid) => {
-    
-    await axios.delete(`${url}api/group-delete/${postid}`, { headers });
-
-    toast.success('Group Removed successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    groupDelete(postid)
+    confirmAlert({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this Group?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            await axios.delete(`${url}api/group-delete/${postid}`, { headers });
+            toast.success('Group Removed successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+            groupDelete(postid)
+          },
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
   }
   const handleEdit = async (postid, name) => {
     setGroupName(name);
@@ -318,7 +330,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
           onRequestClose={handleCloseModal}
         >
 
-          <form className="select-check-line-group-contacts" style={{width: "380px"}}>
+          <form className="select-check-line-group-contacts" style={{ width: "380px" }}>
             <h3 className="heading-category-group-contacts">Group Contacts
               <img
                 className="close-modal-share"

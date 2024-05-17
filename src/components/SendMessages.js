@@ -429,42 +429,9 @@ const SendMessage = ({ role }) => {
   };
 
   const groupDelete = (postid) => {
-
-    confirmAlert({
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this Group?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => setGroupNames(groupNames.filter((p) => p.id !== postid)),
-        },
-        {
-          label: 'No',
-          onClick: () => { },
-        },
-      ],
-    });
-
+    setGroupNames(groupNames.filter((p) => p.id !== postid))
+     
   }
-
-
-
-  const handleDeleteClick = (propertyId) => {
-    confirmAlert({
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this Group?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => groupDelete(propertyId),
-        },
-        {
-          label: 'No',
-          onClick: () => { },
-        },
-      ],
-    });
-  };
 
   const getGroupContacts = async (id) => {
     try {

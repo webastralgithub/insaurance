@@ -31,7 +31,7 @@ const Sidebar = (props) => {
       setIsOpenSub(true)
   }
 
-  const { toggle, setToggle,auth, setAuth, tasklength, contactlength, 
+  const { toggle, setToggle, auth, setAuth, tasklength, contactlength,
     setConatctlength, leadlength, setLeadlength, activeID, roleId } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
@@ -82,7 +82,20 @@ const Sidebar = (props) => {
     })();
   }, []);
 
+  const handleStateChange = (state) => {
+    setMenuOpen(state.isOpen);
+  };
 
+
+  const handleMenuItemClick = () => {
+    setMenuOpen(false);
+  };
+
+  const handleInnerOptionClick = (e) => {
+    e.stopPropagation();
+    setSub("camp");
+     isOpenSub();  
+  };
 
   return (
     <>
@@ -95,7 +108,7 @@ const Sidebar = (props) => {
             </Link>
             <div className="side-menu-child" />
             <div className="menu">
-              <Link  to="/" className={location.pathname === "/" ? "active" : ""}>
+              <Link to="/" className={location.pathname === "/" ? "active" : ""}>
                 <div className="dashboard">
                   <img className="icon" alt="" src="/icon.svg" />
                   <div className="daily-events">Dashboard </div>
@@ -310,8 +323,8 @@ to multiply the revenue. </h6>
         <div>
           <Menu
             customBurgerIcon={<FontAwesomeIcon icon={faBars} />} // Use FontAwesome hamburger icon
-            isOpen={true}
-            onStateChange={({ isOpen }) => setMenuOpen(isOpen)}
+            isOpen={menuOpen}
+            onStateChange={handleStateChange}
           >
             <div className="side-menu" onClick={closeMenu}>
               <Link className="side-users-logo" to="/listing">
@@ -434,7 +447,7 @@ to multiply the revenue. </h6>
                 <div className="properties daily-events" >Campaigns</div>
               </div>} */}
 
-                <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
+                <div onClick={ handleInnerOptionClick} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                   <img className="vector-icon" alt="" src="/vector.svg" />
                   <div className="properties daily-events" >Campaigns</div>
                 </div>
