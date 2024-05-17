@@ -314,7 +314,7 @@ if(!isValid){
         </div>
       */}
           <div className="form-user-add-inner-wrap">
-            <label>Email Id</label>
+            <label>Email Id<span className="required-star">*</span></label>
             <input
               type="text"
               name="email"
@@ -360,7 +360,7 @@ if(!isValid){
 
 
           <div className="form-user-add-inner-wrap">
-            <label>Phone</label>
+            <label>Phone<span className="required-star">*</span></label>
             <InputMask
               mask="+1 (999) 999-9999"
               type="text"

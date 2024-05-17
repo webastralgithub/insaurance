@@ -273,34 +273,8 @@ const KlientaleContacts = ({ role }) => {
 
     return `${year}-${month}-${day}`;
   };
-  var filteredContacts = "";
-  if (active != 3) {
-    filteredContacts = contacts.filter((contact) => {
-      const searchText = searchQuery.toLowerCase();
-      return (
-        contact?.firstname?.toLowerCase().includes(searchText) ||
-        contact.lastname?.toLowerCase().includes(searchText) ||
-        formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
-        contact.email?.toLowerCase().includes(searchText) ||
-        (contact.address1 + " " + contact.address2)
-          .toLowerCase()
-          .includes(searchText) ||
-        contact.city?.toLowerCase().includes(searchText) ||
-        contact.provinceName?.toLowerCase().includes(searchText) ||
-        contact.realtor?.name.toLowerCase().includes(searchText) ||
-        contact.source?.toLowerCase().includes(searchText) ||
-        contact.phone?.toLowerCase().includes(searchText)
-      );
-    });
-  } else {
-    filteredContacts = contacts.filter((contact) => {
-      const searchText = searchQuery.toLowerCase();
-      return (
-        contact?.ipAddress?.toLowerCase().includes(searchText) ||
-        contact.time?.toLowerCase().includes(searchText)
-      );
-    });
-  }
+
+ 
   const handleSelectChange = async (event) => {
     event.preventDefault();
     setCurrentPage(1)
@@ -336,17 +310,25 @@ const KlientaleContacts = ({ role }) => {
     setIsOpen(false);
   };
 
+  const filteredContacts = filtered ? filtered.filter(user =>
+    (user.name && user.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (user.phone && user.phone.toLowerCase().includes(searchQuery.toLowerCase()))
+  ) : [];
 
   const contactsPerPage = 20;
-  const contactsToDisplay = filtered?.slice(
+  const contactsToDisplay = filteredContacts?.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   );
   // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filtered?.length / contactsPerPage);
+  const totalPages = Math.ceil(filteredContacts?.length / contactsPerPage);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  
+  
 
   const PlaceholderWithIcon = (props) => (
     <div
@@ -476,7 +458,7 @@ const KlientaleContacts = ({ role }) => {
             </tr>
           </thead>
           <tbody>
-            {contactsToDisplay && contactsToDisplay.map((user) => (
+            {contactsToDisplay && contactsToDisplay?.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>

@@ -290,17 +290,6 @@ const Referral = ({ role }) => {
       // navigate('/');
     }
   };
-  const contactsPerPage = 20; // Adjust the number of contacts per page as needed
-
-  const contactsToDisplay = filteredContacts.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-  // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
   const changeView = async (id, name) => {
     localStorage.setItem("parent", name);
     const tabs = (value) => { };
@@ -326,6 +315,33 @@ const Referral = ({ role }) => {
       // navigate('/');
     }
   };
+
+  const filteredContactsSearch = contacts ? contacts.filter(contact =>
+    (contact?.send_contact?.email && contact?.send_contact?.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.send_contact?.phone && contact?.send_contact?.phone.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.send_contact?.category?.name && contact?.send_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+
+    (contact?.referrer_contact?.email && contact?.referrer_contact?.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.referrer_contact?.phone && contact?.referrer_contact?.phone.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.referrer_contact?.category?.name && contact?.referrer_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.send_contact?.firstname && contact?.send_contact?.firstname.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.referrer_contact?.firstname?.name && contact?.referrer_contact?.firstname.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.send_contact?.category?.name && contact?.send_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (contact?.referrer_contact?.category?.name && contact?.referrer_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  ) : [];
+
+
+  const contactsPerPage = 20;
+  const contactsToDisplay = filteredContactsSearch?.slice(
+    (currentPage - 1) * contactsPerPage,
+    currentPage * contactsPerPage
+  );
+  // Adjust the number of contacts per page as needed
+  const totalPages = Math.ceil(filteredContactsSearch?.length / contactsPerPage);
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
 
 
   return (
@@ -451,8 +467,8 @@ const Referral = ({ role }) => {
             </tr>
           </thead>
 
-          {contacts.length > 0 &&
-            contacts.map((contact) => (
+          {contactsToDisplay.length > 0 &&
+            contactsToDisplay.map((contact) => (
               <tbody>
                 {active === 1 || active === 2 ? (
                   <>
@@ -504,7 +520,7 @@ const Referral = ({ role }) => {
               </tbody>
             ))}
         </table>
-        {totalPages > 1 && !active && (
+        {totalPages > 1 && (
           <div className="pagination">
             {Array.from({ length: totalPages }, (_, index) => (
               <button

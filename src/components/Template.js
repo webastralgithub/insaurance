@@ -288,7 +288,7 @@ const Templates = () => {
                 <h3> Email Campaigns</h3>
             </div>
             <div className='main-div'>
-                <div className='preview-content-parent'>
+                <div className='preview-content-parent search-on-top-template'>
 
                     <div className="preview-modal custom-div">
                         <div
@@ -310,7 +310,7 @@ const Templates = () => {
                             </button>
                         )}
                     </div>
-                    <div className='input-buttton'>
+                    <div className='input-buttton '>
                         <input
                             type="text"
                             value={subject}

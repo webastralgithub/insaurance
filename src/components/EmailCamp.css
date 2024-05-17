@@ -614,3 +614,24 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
   right: 10px;
 }
 }
+
+.search-on-top-template {
+  flex-direction: column-reverse;
+  row-gap: 20px;
+}
+
+.search-on-top-template .input-buttton {
+  width: 61%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.search-on-top-template .input-buttton button {
+  margin: 0 !important;
+  width: 23%;
+}
+.search-on-top-template .input-buttton button {
+  margin: 0 !important;
+  width: 23%;
+}

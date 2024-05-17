@@ -453,9 +453,10 @@ const Contact = ({ role }) => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  const changeView = async (id, name) => {
+  
 
-    localStorage.setItem("parent", name)
+  const changeView = async (id, name) => {
+ localStorage.setItem("parent", name)
     setParentName(name)
     navigate(`${id}`)
 
@@ -487,7 +488,7 @@ const Contact = ({ role }) => {
 
   return (
     <div className="add_property_btn">
-      <div className="inner-pages-top inner-pages-top-contacts">
+      <div className="inner-pages-top inner-pages-top-contacts inner-pages-top-contacts-duplicate">
 
         <Modal
           isOpen={modalIsOpen}
@@ -702,9 +703,7 @@ const Contact = ({ role }) => {
                         })
                       }
                       openModal("add")
-
-
-                    }}      > Convert to Lead</button>
+                    }}> Convert to Lead</button>
                 </td>
                 <td>
                   <button className="permissions"
