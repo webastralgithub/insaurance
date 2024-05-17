@@ -290,11 +290,11 @@ const ChildContact = (props) => {
                       onChange={(newAddress) => handleAddressChange(newAddress, index)}
                     />
                   </td>
-                  <td>
+                  <td className="family-add-btn">
                     <button className="permissions" onClick={() => saveContactChanges(contact)}>{contact.id ? "Update" : "Save"}</button>
 
                   </td>
-                  <td> {index == contacts.length - 1 && contact.id && <button className="permissions" onClick={handleAddFamilyMember}>Add More</button>}</td>
+                  <td className="family-add-btn"> {index == contacts.length - 1 && contact.id && <button className="permissions" onClick={handleAddFamilyMember}>Add More</button>}</td>
                   <td> {!contact.id && <button className="permissions" onClick={() => removefamily(index)}>Remove</button>}</td>
                 </tr>
 

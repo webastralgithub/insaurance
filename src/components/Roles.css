@@ -240,18 +240,18 @@ th.price {
 .pop-up-content-category form .modal-convert-btns{
   position: absolute;
   bottom: 0;
-  padding: 20px 21px;
+  padding: 20px 0px;
   left: 0;
   max-width: 100%;
   width: -webkit-fill-available;
   border-top: 1px solid #0000001f;
   background: #00000014;
   z-index: 99999;
-  width: 90%;
+  width: 100%;
 }
 
 .send-msg-grp-popup form .modal-convert-btns {
-  width: 90%;
+  width: 100%;
 }
 
 .modal-roles-add form{

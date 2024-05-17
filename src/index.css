@@ -95,7 +95,7 @@ body {
 }
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .select-new .css-1y9lc05-control {
-  background: transparent;
+  /* background: transparent; */
 }
 
 /* .leads-add-lead-form .form-user-add-wrapper .form-user-add-inner-wrap .select-new .css-1nmdiq5-menu{
@@ -1620,6 +1620,10 @@ margin-top: 0;
     height: auto !important;
     object-fit: cover;
   }
+
+  .add_property_btn .table-container table {
+    width: 400px;
+}
 }
 
 @media (max-width:480px){
@@ -1806,3 +1810,32 @@ form.add-configr-form .form-user-add-wrapper .form-user-add-inner-wrap {
   width: 150px !important;
 }
 
+form.add-task-setion-form .form-user-add-wrapper .form-user-add-inner-wrap .rdtPicker table thead th {
+  color: #000;
+}
+
+form.add-vendor-form .form-user-add-wrapper .form-user-add-inner-wrap input {
+  color: #000;
+  font-size: 15px;
+}
+
+.family_meber_contact table tbody td.family-add-btn {
+  width: 10%;
+}
+
+.family_meber_contact table tbody td.family-add-btn button {
+  width: 100%;
+}
+
+.add-task-setion-form .form-user-add-inner-wrap table th, .add-task-setion-form .form-user-add-inner-wrap table td {
+  font-size: 20px !important;
+}
+
+body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input, body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap textarea, body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap select {
+  background: #fff !important;
+  padding: 14px 7px !important;
+}
+
+body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-input{
+  padding: 0;
+}

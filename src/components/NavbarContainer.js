@@ -92,7 +92,7 @@ const NavbarContainer = (props) => {
   const [showMenu, setShowMenu] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [contactOptions, setContactoptions] = useState(false);
+  const [contactOptions, setContactoptions] = useState();
   const [searchText, setSearchText] = useState("");
   const [selectedContacts, setSelectedContacts] = useState(false);
   const selectRef = useRef(null);
