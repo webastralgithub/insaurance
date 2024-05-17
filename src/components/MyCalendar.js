@@ -10,13 +10,14 @@ import { AuthContext } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
+import { Tooltip } from 'react-tooltip'
 
 const MyCalendar = () => {
   const [view, setView] = useState('month');
   const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
+  const [tooltipContent, setTooltipContent] = useState('');
   const { auth, setAuth, setTodo, totalReffralEarnedMoney, currentUsercategory_id,
     totalAvailableJobs, totalReffrals, totalReffralsReceived } = useContext(
       AuthContext
@@ -78,7 +79,18 @@ const MyCalendar = () => {
       navigate('/');
     }
   };
+  const eventMouseEnter = (info) => {
+    const startTime = new Date(info.event.start);
+    const istStartTime = startTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true });
+      const tooltipContent = `${istStartTime} - ${info.event.title}`;
+    setTooltipContent(tooltipContent);    setTooltipContent(tooltipContent);
 
+  };
+
+  const eventMouseLeave = () => {
+    setTooltipContent('');
+  
+  };
   const handleChangeView = (newView) => {
     setView(newView);
   };
@@ -113,7 +125,18 @@ const MyCalendar = () => {
     }
   }
   return (
+    
     <div className='add_property_btn'>
+     {!tooltipContent&& <Tooltip anchorSelect=".fc-daygrid-day-frame" place="top"
+      style={{ zIndex: 999999999999 }}
+      >
+      Do you want to add task? Click here 
+</Tooltip>}
+<Tooltip anchorSelect=".fc-daygrid-event-harness" place="top"
+      style={{ zIndex: 999999999999 ,maxWidth:"200px", whiteSpace:"normal",wordWrap:'break-word'}}
+      >
+    {tooltipContent}
+</Tooltip>
       <section className="inner-sec-stats">
         <div className="stats-heading-section">
           <div className="stats-heading">
@@ -207,7 +230,8 @@ const MyCalendar = () => {
         events={events}
         dateClick={handleDateClick}
         eventClick={eventClick}
-
+        eventMouseEnter={eventMouseEnter}
+        eventMouseLeave={eventMouseLeave}
       />
     </div>
   );

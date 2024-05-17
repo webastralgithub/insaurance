@@ -14,22 +14,25 @@ const UserList = () => {
         Authorization: auth.token,
     };
     const [userList, setUserList] = useState()
+    const [currentPage, setCurrentPage] = useState(1);
+    const [perPage, setPerPage] = useState(20); 
     const [searchQuery, setSearchQuery] = useState("");
+   const  [totalPages,setTotalPages] =useState("");
+  
+   useEffect(() => {
     const getUserList = async () => {
         try {
-            const response = await axios.get(`${url}api/admin/get-users-website`, { headers });
-            const responseData = await response.data;
-            setUserList(responseData)
-         
+            const response = await axios.get(`${url}api/admin/get-users-website?page=${currentPage}&perPage=${perPage}`, { headers });
+            setUserList(response.data.users);
+            setTotalPages(response.data.totalPages);
         } catch (error) {
-            console.error("server is busy")
+            console.error("Server is busy");
         }
-    }
+    };
 
-    useEffect(() => {
-        getUserList();
-    }, [])
-    const [currentPage, setCurrentPage] = useState(1);
+    getUserList();
+}, [currentPage, perPage]);
+ 
 
     const filteredContacts = userList?.filter((contact) => {
         const searchText = searchQuery.toLowerCase();
@@ -47,11 +50,21 @@ const UserList = () => {
 
 
     // Adjust the number of contacts per page as needed
-    const totalPages = Math.ceil(filteredContacts?.length / contactsPerPage);
+    // const totalPages = Math.ceil(filteredContacts?.length / contactsPerPage);
     const handlePageChange = (newPage) => {
       setCurrentPage(newPage);
-    };;
-    
+  
+    };
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        for (let i = 1; i <= totalPages; i++) {
+            pageNumbers.push(i);
+        }
+        return pageNumbers.map((number) => (
+            <button      className={currentPage === number ? "active" : ""}
+            key={number} onClick={() => handlePageChange(number)}>{number}</button>
+        ));
+    };
 
     return (
         
@@ -81,7 +94,7 @@ placeholder="Search here"/>
                         </tr>
                     </thead>
                     <tbody>
-                        {contactsToDisplay && contactsToDisplay.map((user) => (
+                        {userList && userList.map((user) => (
                             <tr key={user.id}>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
@@ -108,18 +121,14 @@ placeholder="Search here"/>
                     </tbody>
                 </table>
 
-                {totalPages > 1 && (
+                {userList?.length > 0 && (
 
                     <div className="pagination">
-                        {Array.from({ length: totalPages }, (_, index) => (
-                            <button
-                                key={index + 1}
-                                onClick={() => handlePageChange(index + 1)}
-                                className={currentPage === index + 1 ? "active" : ""}
-                            >
-                                {index + 1}
-                            </button>
-                        ))}
+          
+          
+          {renderPageNumbers()}
+          
+                    
                     </div>
                 )}
             </div>
