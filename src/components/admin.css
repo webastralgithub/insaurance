@@ -999,3 +999,7 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
 .add-vendor-form .form-user-add-inner-btm-btn-wrap button {
     background: #004686;
 }
+
+.todo-main-section.todo-notes-section-new-left .sms-list-form form .css-yqrvhi-menu .select-check-line svg {
+    margin-right: 5px;
+}

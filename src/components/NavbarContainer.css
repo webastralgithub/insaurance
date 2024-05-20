@@ -297,6 +297,15 @@
 .add_property_btn .inner-pages-top-contacts.inner-pages-top-contacts-duplicate  .add_user_btn {
   width: auto !important;
   margin: 0 !important;
+  gap: 15px;
+}
+
+.add_property_btn .inner-pages-top-contacts.inner-pages-top-contacts-duplicate .add_user_btn button {
+  margin: 0 !important;
+}
+
+.add_property_btn .inner-pages-top-contacts.inner-pages-top-contacts-duplicate .add_user_btn button {
+  margin: 0;
 }
 
 .inner-pages-top-contacts.inner-pages-top-contacts-duplicate .search-group {

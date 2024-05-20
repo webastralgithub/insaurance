@@ -1,89 +1,93 @@
 .ck.ck-editor__editable_inline>:last-child {
-    margin-bottom: var(--ck-spacing-large);
-    height: 100px;
+  margin-bottom: var(--ck-spacing-large);
+  height: 100px;
 }
+
 .template-grid {
-    display: flex;
-    row-gap: 30px;
-    justify-content: start;
-    column-gap: 30px;
-    margin-top: 20px;
-    flex-wrap: wrap;
+  display: flex;
+  row-gap: 30px;
+  justify-content: start;
+  column-gap: 30px;
+  margin-top: 20px;
+  flex-wrap: wrap;
 }
+
 .template-item button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 12px 30px;
-    border-radius: 8px;
-    z-index: 99;
-    font-size: 22px;
-    background-color: #fff;
-    color: #004381;
-    font-weight: 600;
-    border: unset;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px 30px;
+  border-radius: 8px;
+  z-index: 99;
+  font-size: 22px;
+  background-color: #fff;
+  color: #004381;
+  font-weight: 600;
+  border: unset;
 }
+
 .template-item {
-    width: 31%;
-    position: relative;
+  width: 31%;
+  position: relative;
 }
 
 .email-template-name {
-    text-transform: capitalize;
-    background-color: #b9cbdb;
-    color: #00356d;
-    border-radius: 4px;
-    font-size: 18px;
-    text-align: start;
-    padding: 15px 20px;
-    font-weight: 500;
+  text-transform: capitalize;
+  background-color: #b9cbdb;
+  color: #00356d;
+  border-radius: 4px;
+  font-size: 18px;
+  text-align: start;
+  padding: 15px 20px;
+  font-weight: 500;
 }
 
 .template-grid .template-item .email-template-box {
-    width: 100% !important;
-    height: 190px !important;
-    border: unset !important;
-    box-shadow: 0px 0px 6px 2px #a1a1a1;
-    padding: 0;
-    /* background-color: #b9cbdb; */
-    position: relative;
-    border-radius: 6px 6px 0 0;
-    margin-bottom: 1px;
-}   
+  width: 100% !important;
+  height: 190px !important;
+  border: unset !important;
+  box-shadow: 0px 0px 6px 2px #a1a1a1;
+  padding: 0;
+  /* background-color: #b9cbdb; */
+  position: relative;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: 1px;
+}
 
 .template-grid .template-item .email-template-box::before {
-    content: "";
-    top: 0;
-    left: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #00417f99;
-    z-index: 9;
+  content: "";
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #00417f99;
+  z-index: 9;
 }
 
 .template-item button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 12px 30px;
-    border-radius: 4px;
-    z-index: 99;
-    font-size: 22px;
-    font-weight: 500;
-    visibility: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px 30px;
+  border-radius: 4px;
+  z-index: 99;
+  font-size: 22px;
+  font-weight: 500;
+  visibility: hidden;
 }
+
 .template-item button:hover {
-    background-color: #00407dbf;
-    color: #fff;
-    border: 3px solid #fff;
+  background-color: #00407dbf;
+  color: #fff;
+  border: 3px solid #fff;
 }
 
 .template-item:hover .email-template-box button {
-    visibility: visible;
-    transition: all 0.3s;
+  visibility: visible;
+  transition: all 0.3s;
 }
 
 /* .ReactModalPortal {
@@ -136,321 +140,339 @@ button.edit-box img {
 
 
 .preview-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 99;
-    background-color: #00000059;
-    height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  background-color: #00000059;
+  height: 100%;
 }
 
-.preview-modal-overlay .ReactModal__Content{
-    width: -moz-fit-content;
-    width: fit-content;
-    margin: auto;
-    position: relative;
-    padding-top: 50px;
-    background-color: #004483;
-    top: 70px;
+.preview-modal-overlay .ReactModal__Content {
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: auto;
+  position: relative;
+  padding-top: 50px;
+  background-color: #004483;
+  top: 70px;
 }
 
 button.close-box {
-    position: absolute;
-    top: -3px;
-    right: 5px;
-    padding: 5px 10px;
-    font-size: 34px;
-    border-radius: 4px;
-    background-color: transparent;
-    border: unset;
-    color: #fff;
+  position: absolute;
+  top: -3px;
+  right: 5px;
+  padding: 5px 10px;
+  font-size: 34px;
+  border-radius: 4px;
+  background-color: transparent;
+  border: unset;
+  color: #fff;
 }
 
 .preview-modal-overlay .save-btn {
-    top: 6px;
+  top: 6px;
 }
 
 button.edit-box {
-    position: absolute;
-    top: 11px;
-    right: 52px;
-    background-color: unset;
-    border: unset;
+  position: absolute;
+  top: 11px;
+  right: 52px;
+  background-color: unset;
+  border: unset;
 }
 
 .preview-modal-overlay .save-btn {
-    position: absolute;
-    top: 6px;
-    right: 52px;
-    background-color: unset;
-    border: unset;
+  position: absolute;
+  top: 6px;
+  right: 52px;
+  background-color: unset;
+  border: unset;
 }
 
 
-button.edit-box img, .preview-modal-overlay .save-btn img {
-    filter: brightness(0) saturate(100%) invert(78%) sepia(100%) saturate(0%) hue-rotate(89deg) brightness(107%) contrast(101%);
+button.edit-box img,
+.preview-modal-overlay .save-btn img {
+  filter: brightness(0) saturate(100%) invert(78%) sepia(100%) saturate(0%) hue-rotate(89deg) brightness(107%) contrast(101%);
 }
 
 .preview-modal-overlay .preview-modal {
-    height: 500px;
-    /* overflow: scroll; */
-    overflow-y: scroll;
-}
-
-.preview-modal-overlay .preview-modal::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 10px;
-    background-color: #ddd;
-}
-
-.preview-modal-overlay .preview-modal::-webkit-scrollbar {
-    width: 10px;
-    background-color: #ddd;
-}
-
-.preview-modal-overlay .preview-modal::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: #004483;
-}
-.container {
-    display: block;
-    position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 22px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  
-  /* Hide the browser's default radio button */
-  .container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-  }
-  
-  /* Create a custom radio button */
-  .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 25px;
-    width: 25px;
-    background-color: #eee;
-    border-radius: 50%;
-  }
-  
-  /* On mouse-over, add a grey background color */
-  .container:hover input ~ .checkmark {
-    background-color: #ccc;
-  }
-  
-  /* When the radio button is checked, add a blue background */
-  .container input:checked ~ .checkmark {
-    background-color: #2196F3;
-  }
-  
-  /* Create the indicator (the dot/circle - hidden when not checked) */
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-  
-  /* Show the indicator (dot/circle) when checked */
-  .container input:checked ~ .checkmark:after {
-    display: block;
-  }
-  
-  /* Style the indicator (dot/circle) */
-  .container .checkmark:after {
-       top: 9px;
-      left: 9px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: white;
-  }
-  .radio-input-wrappers{
-
-        display: flex;
-        gap: 14px;
-   
-  }
-  .radio-input-wrappers div{
-    
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-}
-
-
-
-
-
-.list-select-img{
-    width: 100%;
-}
-
-  .list-select-img ul {
-    list-style-type: none;
-    display: flex;
-    padding-left: 0;
-  }
-  
-  .list-select-img ul  li {
-    display: inline-block;
-    width: 33%;
-  }
-  
-  .list-select-img input[type="radio"] {
-    display: none;
-  }
-  
-  .list-select-img label {
-    border: 1px solid #fff;
-    padding: 0px;
-    display: block;
-    position: relative;
-    margin: 10px;
-    cursor: pointer;
-  }
-
-  .list-select-img label .template-item{
-    width: 100%;
-  }
-  
-  .list-select-img label:before {
-    background-color: white;
-    color: white;
-    content: " ";
-    display: block;
-    border-radius: 50%;
-    border: 2px solid #004686;
-    position: absolute;
-    top: -12px;
-    left: -10px;
-    width: 25px;
-    height: 25px;
-    text-align: center;
-    line-height: 28px;
-    transition-duration: 0.4s;
-    transform: scale(0);
-  }
-  
-  .list-select-img label img {
-    height: 100px;
-    width: 100px;
-    transition-duration: 0.2s;
-    transform-origin: 50% 50%;
-  }
-  
-  .list-select-img :checked + label {
-    border-color: #ddd;
-  }
-  
-  .list-select-img :checked + label:before {
-    content: "✓";
-    background-color: #ffffff;
-    transform: scale(1);
-    z-index: 9999999;
-    color: #004686;
-  }
-  
-  .list-select-img :checked + label img {
-    transform: scale(0.9);
-    box-shadow: 0 0 5px #333;
-    z-index: -1;
-  }
-
-  /* 22/April/2024 */
-
-  .image-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .image-list li {
-    position: relative; /* Position relative for absolute positioning of edit button */
-    display: flex; /* Use flexbox */
-    align-items: center; /* Center items vertically */
-    margin-bottom: 10px; /* Adjust spacing between items */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
-    border-radius: 8px; /* Add border radius for rounded corners */
-    overflow: hidden; /* Ensure shadow doesn't overflow */
-  }
-  
-  .image-list li img {
-    max-width: 100%; /* Ensure image doesn't exceed container width */
-    height: auto;
-    margin-right: 20px; /* Adjust spacing between image and text */
-  }
-  
-  .image-list li .info {
-    font-size: 14px;
-    color: #333;
-    flex: 1; /* Allow text to take up remaining space */
-  }
-  
-  .edit-button {
-    position: absolute;
-    right: 10px; /* Adjust left position */
-    top: 50%; /* Align vertically */
-    transform: translateY(-50%); /* Center vertically */
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .edit-button:hover {
-    background-color: #0056b3;
-  }
-
-.new-email-tem-set{
+  height: 500px;
+  overflow-y: scroll;
+  max-width: 600px;
   width: 100%;
 }
 
-.new-email-tem-set .image-list li{
+.preview-modal-overlay .preview-modal::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #ddd;
+}
+
+.preview-modal-overlay .preview-modal::-webkit-scrollbar {
+  width: 10px;
+  background-color: #ddd;
+}
+
+.preview-modal-overlay .preview-modal::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  background-color: #004483;
+}
+
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input~.checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked~.checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked~.checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.radio-input-wrappers {
+
+  display: flex;
+  gap: 14px;
+
+}
+
+.radio-input-wrappers div {
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+}
+
+
+
+
+
+.list-select-img {
+  width: 100%;
+}
+
+.list-select-img ul {
+  list-style-type: none;
+  display: flex;
+  padding-left: 0;
+}
+
+.list-select-img ul li {
+  display: inline-block;
+  width: 33%;
+}
+
+.list-select-img input[type="radio"] {
+  display: none;
+}
+
+.list-select-img label {
+  border: 1px solid #fff;
+  padding: 0px;
+  display: block;
+  position: relative;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.list-select-img label .template-item {
+  width: 100%;
+}
+
+.list-select-img label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 2px solid #004686;
+  position: absolute;
+  top: -12px;
+  left: -10px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+.list-select-img label img {
+  height: 100px;
+  width: 100px;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+.list-select-img :checked+label {
+  border-color: #ddd;
+}
+
+.list-select-img :checked+label:before {
+  content: "✓";
+  background-color: #ffffff;
+  transform: scale(1);
+  z-index: 9999999;
+  color: #004686;
+}
+
+.list-select-img :checked+label img {
+  transform: scale(0.9);
+  box-shadow: 0 0 5px #333;
+  z-index: -1;
+}
+
+/* 22/April/2024 */
+
+.image-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.image-list li {
+  position: relative;
+  /* Position relative for absolute positioning of edit button */
+  display: flex;
+  /* Use flexbox */
+  align-items: center;
+  /* Center items vertically */
+  margin-bottom: 10px;
+  /* Adjust spacing between items */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Add box shadow */
+  border-radius: 8px;
+  /* Add border radius for rounded corners */
+  overflow: hidden;
+  /* Ensure shadow doesn't overflow */
+}
+
+.image-list li img {
+  max-width: 100%;
+  /* Ensure image doesn't exceed container width */
+  height: auto;
+  margin-right: 20px;
+  /* Adjust spacing between image and text */
+}
+
+.image-list li .info {
+  font-size: 14px;
+  color: #333;
+  flex: 1;
+  /* Allow text to take up remaining space */
+}
+
+.edit-button {
+  position: absolute;
+  right: 10px;
+  /* Adjust left position */
+  top: 50%;
+  /* Align vertically */
+  transform: translateY(-50%);
+  /* Center vertically */
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+
+.new-email-tem-set {
+  width: 100%;
+}
+
+.new-email-tem-set .image-list li {
   box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
 }
 
-.new-email-tem-set .image-list li input{
+.new-email-tem-set .image-list li input {
   width: 5%;
   display: none;
 }
 
-.new-email-tem-set .image-list li label{
+.new-email-tem-set .image-list li label {
   display: flex;
   align-items: center;
   width: 95%;
 }
 
-.new-email-tem-set .image-list li label .template-item{
+.new-email-tem-set .image-list li label .template-item {
   display: flex;
   align-items: center;
   width: 90%;
 }
 
-.new-email-tem-set .image-list li label .template-item .email-template-box{
+.new-email-tem-set .image-list li label .template-item .email-template-box {
   height: 110px !important;
   width: 170px !important;
 }
 
-.new-email-tem-set .image-list li label .template-item .email-template-name{
- background: none;
+.new-email-tem-set .image-list li label .template-item .email-template-name {
+  background: none;
 }
 
-.new-email-tem-set .image-list li label button{
+.new-email-tem-set .image-list li label button {
   width: 10%;
   background: #00468640;
   color: #004685;
@@ -461,20 +483,20 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
   border-radius: 10px;
 }
 
-.inner-pages-top-flex-direction{
+.inner-pages-top-flex-direction {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 30px;
 }
 
-.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn{
+.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn {
   display: flex;
   border-bottom: 3px solid #e3e3e3;
   width: 100% !important;
 }
 
-.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn button{
+.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn button {
   margin-left: 0;
   border-radius: 5px 5px 0 0 !important;
   color: #000;
@@ -482,20 +504,20 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
   border: 2px solid #00468600;
 }
 
-.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn button.active{
+.inner-pages-top-flex-direction .add_user_btn.buttons-with-returb-btn button.active {
   background-color: #004686;
   color: white;
   border-color: #004686;
 }
 
-.custom-text-tab-sec{
+.custom-text-tab-sec {
   width: 94%;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.custom-text-tab-sec input{
+.custom-text-tab-sec input {
   padding: 10px;
   font-size: 14px;
   box-sizing: border-box;
@@ -510,61 +532,65 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
     width: 47%;
   }
 
-  .camp-gap-button-wrapper-nxt{
+  .camp-gap-button-wrapper-nxt {
     width: 100%;
   }
 }
 
-  @media only screen and (max-width: 600px) {
-    .image-list li {
-      flex-direction: column; /* Stack items vertically on small screens */
-    }
-    .edit-button {
-      position: static; /* Remove absolute positioning on small screens */
-      margin-top: 10px; /* Add margin to separate button from image */
-    }
-
-    .template-item {
-      width: 100%;
-    }
-
-    .new-email-tem-set .image-list li label{
-      width: 100%;
-      flex-direction: column;
-    }
-
-    .new-email-tem-set .image-list li label button {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    .new-email-tem-set .image-list li label .template-item {
-      width: 100%;
-    }
-
-    .new-email-tem-set .image-list li {
-      padding: 10px;
-    }
-
-    .new-email-tem-set .image-list li label .template-item .email-template-box {
-      height: 110px !important;
-      width: 100px !important;
-    }
-
-    .camp-gap-button-wrapper-nxtt,
-    .camp-gap-button-wrapper-nxt .icon-dashboard{
-      margin-left: 0;
-    }
+@media only screen and (max-width: 600px) {
+  .image-list li {
+    flex-direction: column;
+    /* Stack items vertically on small screens */
   }
 
-  .input-buttton{
-    display: inline-flex;
-    margin: 10px;
-    padding: 2px;
-    border: 2px;
+  .edit-button {
+    position: static;
+    /* Remove absolute positioning on small screens */
+    margin-top: 10px;
+    /* Add margin to separate button from image */
   }
 
-  .preview-content-parent .preview-modal.custom-div {
+  .template-item {
+    width: 100%;
+  }
+
+  .new-email-tem-set .image-list li label {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .new-email-tem-set .image-list li label button {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .new-email-tem-set .image-list li label .template-item {
+    width: 100%;
+  }
+
+  .new-email-tem-set .image-list li {
+    padding: 10px;
+  }
+
+  .new-email-tem-set .image-list li label .template-item .email-template-box {
+    height: 110px !important;
+    width: 100px !important;
+  }
+
+  .camp-gap-button-wrapper-nxtt,
+  .camp-gap-button-wrapper-nxt .icon-dashboard {
+    margin-left: 0;
+  }
+}
+
+.input-buttton {
+  display: inline-flex;
+  margin: 10px;
+  padding: 2px;
+  border: 2px;
+}
+
+.preview-content-parent .preview-modal.custom-div {
   display: flex;
   max-width: 680px;
   column-gap: 10px;
@@ -602,17 +628,23 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
   margin-top: 40px;
 }
 
-@media (max-width:600px){
+@media (max-width:600px) {
   .preview-content-parent {
     flex-direction: column-reverse;
     row-gap: 20px;
-}
-.preview-content-parent .input-buttton {
-  width: 100%;
-}
-.preview-content-parent button.edit-box {
-  right: 10px;
-}
+  }
+
+  .preview-content-parent .input-buttton {
+    width: 100%;
+  }
+
+  .preview-content-parent button.edit-box {
+    right: 10px;
+  }
+
+  .preview-modal-overlay .preview-modal {
+    width: 95%;
+  }
 }
 
 .search-on-top-template {
@@ -621,7 +653,7 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
 }
 
 .search-on-top-template .input-buttton {
-  width: 61%;
+  width: 40%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -629,9 +661,5 @@ button.edit-box img, .preview-modal-overlay .save-btn img {
 
 .search-on-top-template .input-buttton button {
   margin: 0 !important;
-  width: 23%;
-}
-.search-on-top-template .input-buttton button {
-  margin: 0 !important;
-  width: 23%;
+  width: 33%;
 }

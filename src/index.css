@@ -1836,6 +1836,10 @@ body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input, body
   padding: 14px 7px !important;
 }
 
+body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input{
+  color: #000;
+}
+
 body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-input{
   padding: 0;
 }

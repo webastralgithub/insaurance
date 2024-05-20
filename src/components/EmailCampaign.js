@@ -271,7 +271,7 @@ const EmailCampaign = () => {
 
     return (
       <div>
-        <div>
+        <div className="preview-template-campaign">
           <Modal
             isOpen={isOpen}
             onRequestClose={closeModal}
@@ -331,9 +331,6 @@ const EmailCampaign = () => {
       setUserIsEditMode(true);
     };
 
-
-
-
     const handleUserSave = async () => {
       if (editedUserTempalteContent.trim() === previewUserContent.trim()) {
         toast.error("No changes detected. Please update the content first.");
@@ -377,11 +374,11 @@ const EmailCampaign = () => {
         <Modal
           isOpen={isOpen}
           onRequestClose={closeModal}
-          className="preview-modal"
+          className="preview-modal handleUserEdit"
           overlayClassName="preview-modal-overlay"
         >
           <div
-            className="preview-content"
+            className="preview-content handleUserEdit"
             contentEditable={isUserEditMode}
             dangerouslySetInnerHTML={{ __html: templateUserContent }}
             onInput={handleUserContentChange}

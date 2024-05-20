@@ -522,6 +522,14 @@ td.manage-configr-table-btn buttton {
   cursor: pointer;
 }
 
+.modal-roles-add.send-msg-grp-popup img.close-modal-share {
+  cursor: pointer;
+}
+
+.modal-roles-add.send-msg-grp-popup form .select-new .css-ao180k-control .css-1hb7zxy-IndicatorsContainer svg {
+  cursor: pointer;
+}
+
 @media (max-width:600px){
   .manage-configr-table table {
     width: 900px;
