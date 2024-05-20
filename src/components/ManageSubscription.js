@@ -102,8 +102,8 @@ const ManageSubscription = () => {
 
               {subscriptions == null && <tr >
                 <td>Premium</td>
-                <td >10</td>
-                <td >Cad</td>
+                <td >$100/month</td>
+                <td >$</td>
                 <td >-</td>
                 <td >-</td>
                 <td>
@@ -120,7 +120,7 @@ const ManageSubscription = () => {
 
               <tr>
                 <td>Basic</td>
-                <td >0</td>
+                <td >Free</td>
                 <td >-</td>
                 <td >{subscriptions ? "-" : 'Unlimited'}</td>
                 <td >{subscriptions ? "-" : 'Unlimited'}</td>

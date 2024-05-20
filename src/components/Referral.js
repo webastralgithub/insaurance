@@ -234,7 +234,8 @@ const Referral = ({ role }) => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+    //return `${year}-${month}-${day}`;
+    return `${day}-${month}-${year}`
   };
   var filteredContacts = ''
   if (active != 3) {
@@ -343,7 +344,7 @@ const Referral = ({ role }) => {
   };
 
 
-
+  console.log("contactsToDisplay", contactsToDisplay[0]);
   return (
     <div className="add_property_btn">
       <Modal
@@ -437,22 +438,24 @@ const Referral = ({ role }) => {
             <tr>
               {active == 1 && (
                 <>
+                  <th>Date</th>
                   <th>Business Name</th>
+                  <th>Profession</th>
                   <th>Sent By</th>
-                  <th>Category</th>
-                  <th>Email</th>
-                  <th>Phone</th>
+                  {/* <th>Email</th>
+                  <th>Phone</th> */}
                 </>
               )
 
               }
               {active == 2 && (
                 <>
-                  <th>Business Name</th>
+                  <th>Date</th>
+                  <th>Referral Name </th>
+                  <th>Profession</th>
                   <th>Sent to</th>
-                  <th>Category</th>
-                  <th>Email</th>
-                  <th>Phone</th>
+                  {/* <th>Email</th>
+                  <th>Phone</th> */}
                 </>
               )
               }
@@ -473,6 +476,7 @@ const Referral = ({ role }) => {
                 {active === 1 || active === 2 ? (
                   <>
                     <tr key={contact.id}>
+                      <td>{formatDate(contact?.created_at)}</td>
                       <td
                         className="property-link"
                         onClick={() => openModal(contact?.send_contact?.id)}
@@ -481,23 +485,19 @@ const Referral = ({ role }) => {
                         {contact?.send_contact?.firstname ||
                           contact?.referrer_contact?.firstname}
                       </td>
-                      {/* <td>{contact?.send_contact?.phone&&formatPhoneNumber(contact?.send_contact?.phone)||contact?.referrer_contact?.phone&&formatPhoneNumber(contact?.referrer_contact?.phone)}</td>
-                  <td>{contact?.send_contact?.email||contact?.referrer_contact?.email}</td>
-                */}
-                      {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
+                      <td>
+                        {contact?.send_contact?.category?.name ||
+                          contact?.referrer_contact?.category?.name}
+                      </td>
                       <td>
                         {" "}
                         {contact?.reciever_contact?.firstname ||
                           contact?.reciever_contact?.firstname}
                       </td>
-                      <td>
-                        {contact?.send_contact?.category?.name ||
-                          contact?.referrer_contact?.category?.name}
-                      </td>
-                      <td> {contact?.send_contact?.email ||
+                      {/* <td> {contact?.send_contact?.email ||
                         contact?.referrer_contact?.email}</td>
                       <td> {contact?.send_contact?.phone ||
-                        contact?.referrer_contact?.phone}</td>
+                        contact?.referrer_contact?.phone}</td> */}
                       {/* <td> 
                     
                   <button className="permissions"

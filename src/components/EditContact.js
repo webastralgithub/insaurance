@@ -27,6 +27,9 @@ const EditContact = ({ nameofuser }) => {
   };
 
   const [editedContact, setEditedContact] = useState({});
+  const [newEditedContact, setnewEditedContact] = useState({})
+
+  console.log("editedContact editedContact", newEditedContact);
   const [birth, setBirth] = useState("")
   const [ann, setAnn] = useState()
   const [emailError, setEmailError] = useState("")
@@ -40,6 +43,7 @@ const EditContact = ({ nameofuser }) => {
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [editingField, setEditingField] = useState('all');
   const noSelectionOption = { value: null, label: 'No Selection' };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     clearErrors(name)
@@ -58,6 +62,7 @@ const EditContact = ({ nameofuser }) => {
   const handleEditClick = (field) => {
     setEditingField(field);
   };
+
   const validateEmail = (email) => {
     // Define a regular expression pattern for email validation.
     const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -114,6 +119,7 @@ const EditContact = ({ nameofuser }) => {
     getContactDetails();
     getRealtorOptions();
     getCategories()
+    newEditContact()
   }, []);
 
   const getCategories = async () => {
@@ -131,6 +137,7 @@ const EditContact = ({ nameofuser }) => {
     }
   };
   const validateForm = () => {
+    const {firstname, phone, email} = editedContact
     let isValid = true;
 
     if (!editedContact.firstname) {
@@ -161,6 +168,21 @@ const EditContact = ({ nameofuser }) => {
     }
     return isValid;
   };
+
+
+  const newEditContact = async () => {
+    try {
+      const response = await axios.get(`${url}api/contacts/get/${id}`, {
+        headers,
+      });
+      const contactDetails = response.data;
+      console.log("contactDetails", contactDetails);
+      setnewEditedContact(contactDetails)
+    } catch (error) {
+
+    }
+  }
+
   const getContactDetails = async () => {
 
     try {
@@ -215,9 +237,6 @@ const EditContact = ({ nameofuser }) => {
           label: contactDetails.activeAgent.name,
         })
       }
-
-
-
 
     } catch (error) {
       console.error("Error fetching contact details: ", error);

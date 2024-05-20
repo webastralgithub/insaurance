@@ -392,9 +392,6 @@ const Contact = ({ role }) => {
       return ""; // Handle cases where the date string is empty or undefined
     }
 
-
-
-
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -654,20 +651,13 @@ const Contact = ({ role }) => {
           <thead>
             <tr>
               <th>Name</th>
+              <th>Business Name</th>
+              <th>Profession</th>
               <th>Phone</th>
               <th>Email</th>
-              <th>Company Name</th>
-              {/* <th>Services Require</th> */}
-
-              <th>Profession</th>
-
-              {/* <th></th>
-              <th></th> */}
+            
               <th>Actions</th>
               <th></th>
-              <th></th>
-              {role == 1 && <th></th>}
-
             </tr>
           </thead>
           {contacts.length > 0 &&
@@ -675,12 +665,11 @@ const Contact = ({ role }) => {
 
               <tr key={contact.id}>
                 <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
-
-                <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                <td>{contact.email}</td>
                 <td>{contact.company}</td>
                 <td>{contact.category?.name}</td>
-
+                <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                <td>{contact.email}</td>
+             
                 <td>
                   <button className="permissions share-ref-button-tb"
                     onClick={() => {

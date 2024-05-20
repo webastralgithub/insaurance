@@ -428,7 +428,7 @@ const KlientaleContacts = ({ role }) => {
             <p>Upgrade To Klientale</p>
           </button>
           <button onClick={() => setIsOpen(true)}>
-            <p>My Preference</p>
+            <p>Select Profession</p>
           </button>
         </div>
         <div className="search-group">
@@ -452,9 +452,9 @@ const KlientaleContacts = ({ role }) => {
               <th>Email</th>
               <th>Phone</th>
               <th>Category</th>
-              <th>User Type</th>
+              {/* <th>User Type</th>
               <th>Membership</th>
-              <th>Actions</th>
+              <th>Actions</th> */}
             </tr>
           </thead>
           <tbody>
@@ -464,8 +464,8 @@ const KlientaleContacts = ({ role }) => {
                 <td>{user.email}</td>
                 <td>{user.phone}</td>
                 <td>{user.category_name}</td>
-                <td>{user.user_role}</td>
-                <td>{user.membership_name}</td>
+                {/* <td>{user.user_role}</td> */}
+                {/* <td>{user.membership_name}</td>
                 <td>{user.user_role}</td>
                 <td>
                   <button className="permissions share-ref-button-tb"
@@ -476,7 +476,7 @@ const KlientaleContacts = ({ role }) => {
                 <td>  <button className="permissions share-ref-button-tb"
                   onClick={() => {
                     navigate(`/klientale-contacts/contacts/send/${user.id}`)
-                  }}       >Send me Referrals</button>       </td>
+                  }}       >Send me Referrals</button>       </td> */}
 
               </tr>
             ))}
