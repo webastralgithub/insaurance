@@ -61,9 +61,10 @@ const Lead = () => {
 
   }, []);
 
+
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${url}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/contacts/categories`, { headers }, );
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,

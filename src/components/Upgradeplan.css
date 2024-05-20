@@ -1667,6 +1667,7 @@
     word-wrap: break-word;
     margin-top:auto;
     margin-bottom:auto;
+    cursor: auto;
   }
   .pricing-table-pnts .text-sm {
     font-size: 12px;
