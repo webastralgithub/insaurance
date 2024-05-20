@@ -210,36 +210,6 @@ const Lead = () => {
 
     return `${year}-${month}-${day}`;
   };
-  const filteredContact = contacts.filter((contact) => {
-    const searchText = searchQuery?.toLowerCase();
-    return (
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact?.lastname?.toLowerCase()?.includes(searchText) ||
-
-      contact?.phone?.toLowerCase().includes(searchText)
-    );
-  });
-
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
-
-  // Filter contacts created today
-
-
-
-
-  const filteredContacts = contacts.filter((contact) => {
-    if (activeCategory == 0) {
-      return !contact.category
-    }
-    if (activeCategory == -1) {
-      const contactDate = new Date(contact.updated_at);
-      return contactDate.getTime() >= today.getTime();
-    }
-    return (
-      contact?.category?.id == activeCategory
-    );
-  });
 
   const getContacts = async () => {
     try {
@@ -266,23 +236,48 @@ const Lead = () => {
       setTodayContacts(contactsCreatedToday)
       // Set the filtered contacts in the state
       setContacts(contactsWithoutParentId);
-
-
     } catch (error) {
       console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
     }
-
   };
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
+  
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
+  const filteredContact = contacts.filter((contact) => {
+    const searchText = searchQuery?.toLowerCase();
+    return (
+      contact?.firstname?.toLowerCase().includes(searchText) ||
+      contact?.lastname?.toLowerCase()?.includes(searchText) ||
+      contact?.email?.toLowerCase().includes(searchText) ||
+      contact?.phone?.toLowerCase().includes(searchText)
+    );
+  });
+
+
+  const filteredContacts = contacts.filter((contact) => {
+    if (activeCategory == 0) {
+      return !contact.category
+    }
+    if (activeCategory == -1) {
+      const contactDate = new Date(contact.updated_at);
+      return contactDate.getTime() >= today.getTime();
+    }
+    return (
+      contact?.category?.id == activeCategory
+    );
+  });
+
+
+  const contactsPerPage = 10;
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   );
-  // Adjust the number of contacts per page as needed
+
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -395,14 +390,8 @@ const Lead = () => {
                       <th>Phone</th>
                       <th>Email</th>
                       <th>Source</th>
-
                       <th>Date</th>
-
                       <th>My Category</th>
-
-
-                      <th></th>
-                      {/* <th></th> */}
                     </tr>
                   </thead>
                   {contacts.length > 0 &&

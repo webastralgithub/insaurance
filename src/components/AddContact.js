@@ -203,7 +203,7 @@ const AddContact = ({ user }) => {
     }
 
     // Validate phone number
-    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone)) {
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone)|| phone.length != 10) {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
     }

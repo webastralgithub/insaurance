@@ -15,7 +15,6 @@ import AddContactNew from "./AddContactNew";
 import ContactProperty from "./contact/ContactProperty";
 import ChildNotes from "./ChildNotes";
 
-
 const EditContact = ({ nameofuser }) => {
   const { id } = useParams();
   const { auth } = useContext(AuthContext);
@@ -25,11 +24,9 @@ const EditContact = ({ nameofuser }) => {
   const headers = {
     Authorization: auth.token,
   };
-
+  
   const [editedContact, setEditedContact] = useState({});
   const [newEditedContact, setnewEditedContact] = useState({})
-
-  console.log("editedContact editedContact", newEditedContact);
   const [birth, setBirth] = useState("")
   const [ann, setAnn] = useState()
   const [emailError, setEmailError] = useState("")
@@ -97,9 +94,6 @@ const EditContact = ({ nameofuser }) => {
     },
   };
 
-
-
-
   const clearErrors = (fieldName) => {
     switch (fieldName) {
       case "firstname":
@@ -119,7 +113,6 @@ const EditContact = ({ nameofuser }) => {
     getContactDetails();
     getRealtorOptions();
     getCategories()
-    newEditContact()
   }, []);
 
   const getCategories = async () => {
@@ -137,32 +130,24 @@ const EditContact = ({ nameofuser }) => {
     }
   };
   const validateForm = () => {
-    const {firstname, phone, email} = editedContact
+    const { firstname, phone, email } = editedContact
     let isValid = true;
 
-    if (!editedContact.firstname) {
-      if (editedContact.firstname == undefined) {
 
-      }
-      else {
-        setFirstError("Name is required");
-        isValid = false;
-      }
-    }
-    if (editedContact.email) {
-      const emailval = validateEmail(editedContact.email)
-      if (!emailval) {
-        setEmailError("invalid email")
-        isValid = false;
-      }
-    }
-    if (editedContact.phone) {
-      if (editedContact.phone.length != 10) {
-        setPhoneError("Invalid phone number")
-        isValid = false;
-      }
+    if (!firstname) {
+      setFirstError("Name is required");
+      isValid = false;
     }
 
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("invalid email")
+      isValid = false;
+    }
+
+    if (!phone || !/^\d+$/.test(phone) || phone.length != 10) {
+      setPhoneError("Invalid phone number")
+      isValid = false;
+    }
     if (!isValid) {
       window.scrollTo(0, 0)
     }
@@ -170,18 +155,6 @@ const EditContact = ({ nameofuser }) => {
   };
 
 
-  const newEditContact = async () => {
-    try {
-      const response = await axios.get(`${url}api/contacts/get/${id}`, {
-        headers,
-      });
-      const contactDetails = response.data;
-      console.log("contactDetails", contactDetails);
-      setnewEditedContact(contactDetails)
-    } catch (error) {
-
-    }
-  }
 
   const getContactDetails = async () => {
 
@@ -259,37 +232,36 @@ const EditContact = ({ nameofuser }) => {
   };
 
   const handleSaveClick = async () => {
+    let isValid = validateForm()
+    if (!isValid) {
+      return
+    }
 
-    if (validateForm()) {
-      try {
-        let contact = {}
-        if (editedContact?.category) {
-          if (typeof editedContact.category === 'object') {
-            contact = { ...editedContact, category: editedContact.category.id }
-          }
-          else {
-            contact = editedContact
-          }
+    try {
+      let contact = {}
+      if (editedContact?.category) {
+        if (typeof editedContact.category === 'object') {
+          contact = { ...editedContact, category: editedContact.category.id }
         }
-
-        const response = await axios.put(`${url}api/contacts/update/${id}`, editedContact, {
-          headers,
-        });
-
-
-        if (response.status === 200) {
-          toast.success("Contact updated successfully", {
-            autoClose: 3000,
-            position: toast.POSITION.TOP_RIGHT,
-          });
-          setEditingField(null);
-          goBack()
-        } else {
-          console.error("Failed to update contact");
+        else {
+          contact = editedContact
         }
-      } catch (error) {
-        console.error("An error occurred while updating the contact:", error);
       }
+      const response = await axios.put(`${url}api/contacts/update/${id}`, editedContact, {
+        headers,
+      });
+      if (response.status === 200) {
+        toast.success("Contact updated successfully", {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setEditingField(null);
+        goBack()
+      } else {
+        console.error("Failed to update contact");
+      }
+    } catch (error) {
+      console.error("An error occurred while updating the contact:", error);
     }
   };
 

@@ -404,6 +404,7 @@ const Contact = ({ role }) => {
   const filteredContacts = contacts.filter((contact) => {
     const searchText = searchQuery.toLowerCase();
     return (
+      contact?.company?.toLowerCase().includes(searchText) ||
       contact?.firstname?.toLowerCase().includes(searchText) ||
       contact.lastname?.toLowerCase().includes(searchText) ||
       formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
