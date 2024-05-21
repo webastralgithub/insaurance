@@ -28,7 +28,7 @@ const MyCalendar = () => {
     Authorization: auth.token,
   };
   const handleDateClick = (selected) => {
-   const clickedDate = selected.date;
+    const clickedDate = selected.date;
 
     const currentDate = new Date(); // Get the current date
     const currentTime = new Date();
@@ -52,19 +52,17 @@ const MyCalendar = () => {
   useEffect(() => {
     getTasks();
   }, []);
+
   const formatDate = (dateString) => {
     const dateObject = new Date(dateString);
-
-    // Format the Date object into a string recognized by FullCalendar
     return dateObject.toISOString();
-
   }
+
   const getTasks = async () => {
     try {
-      const response = await axios.get(`${url}api/todo/get`, { headers });
+      const response = await axios.get(`${url}api/todos/get`, { headers });
       setTasks(response.data);
-
-      const eventsdata = response.data.map((item, index) => ({
+      const eventsdata = response.data.todo.map((item, index) => ({
         key: item.id,
         id: item.id,
         title: item.Followup, // Use the desired property as the event title
@@ -82,14 +80,14 @@ const MyCalendar = () => {
   const eventMouseEnter = (info) => {
     const startTime = new Date(info.event.start);
     const istStartTime = startTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true });
-      const tooltipContent = `${istStartTime} - ${info.event.title}`;
-    setTooltipContent(tooltipContent);    setTooltipContent(tooltipContent);
+    const tooltipContent = `${istStartTime} - ${info.event.title}`;
+    setTooltipContent(tooltipContent); setTooltipContent(tooltipContent);
 
   };
 
   const eventMouseLeave = () => {
     setTooltipContent('');
-  
+
   };
   const handleChangeView = (newView) => {
     setView(newView);
@@ -106,7 +104,6 @@ const MyCalendar = () => {
       buttonText[key] = buttonText[key].charAt(0).toUpperCase() + buttonText[key].slice(1);
     }
   }
-
 
   const handleRedirect = async () => {
     navigate("/klientale-contacts")
@@ -125,18 +122,18 @@ const MyCalendar = () => {
     }
   }
   return (
-    
+
     <div className='add_property_btn'>
-     {!tooltipContent&& <Tooltip anchorSelect=".fc-daygrid-day-frame" place="top"
-      style={{ zIndex: 999999999999 }}
+      {!tooltipContent && <Tooltip anchorSelect=".fc-daygrid-day-frame" place="top"
+        style={{ zIndex: 999999999999 }}
       >
-      Do you want to add task? Click here 
-</Tooltip>}
-<Tooltip anchorSelect=".fc-daygrid-event-harness" place="top"
-      style={{ zIndex: 999999999999 ,maxWidth:"200px", whiteSpace:"normal",wordWrap:'break-word'}}
+        Do you want to add task? Click here
+      </Tooltip>}
+      <Tooltip anchorSelect=".fc-daygrid-event-harness" place="top"
+        style={{ zIndex: 999999999999, maxWidth: "200px", whiteSpace: "normal", wordWrap: 'break-word' }}
       >
-    {tooltipContent}
-</Tooltip>
+        {tooltipContent}
+      </Tooltip>
       <section className="inner-sec-stats">
         <div className="stats-heading-section">
           <div className="stats-heading">

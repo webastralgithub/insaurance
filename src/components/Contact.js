@@ -426,7 +426,7 @@ const Contact = ({ role }) => {
       const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false);
       // Set the filtered contacts in the state
-      setContacts(contactsWithoutParentIdandlead);
+      setContacts(contactsWithoutParentId);
 
       const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
         value: realtor.id,
@@ -442,6 +442,11 @@ const Contact = ({ role }) => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+
+};
+
   const contactsPerPage = 20; // Adjust the number of contacts per page as needed
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
@@ -449,9 +454,7 @@ const Contact = ({ role }) => {
   );
   // Adjust the number of contacts per page as needed
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
+
   
 
   const changeView = async (id, name) => {

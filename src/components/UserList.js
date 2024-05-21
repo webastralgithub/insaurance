@@ -15,70 +15,50 @@ const UserList = () => {
     };
     const [userList, setUserList] = useState()
     const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(20); 
+    const [perPage, setPerPage] = useState(20);
     const [searchQuery, setSearchQuery] = useState("");
-   const  [totalPages,setTotalPages] =useState("");
-  
-   useEffect(() => {
-    const getUserList = async () => {
-        try {
-            const response = await axios.get(`${url}api/admin/get-users-website?page=${currentPage}&perPage=${perPage}`, { headers });
-            setUserList(response.data.users);
-            setTotalPages(response.data.totalPages);
-        } catch (error) {
-            console.error("Server is busy");
-        }
-    };
+    const [totalPages, setTotalPages] = useState("");
 
-    getUserList();
-}, [currentPage, perPage]);
- 
+    useEffect(() => {
+        const getUserList = async () => {
+            try {
+                const response = await axios.get(`${url}api/admin/get-users-website?page=${currentPage}&perPage=${perPage}`, { headers });
+                setUserList(response.data.users);
+                setTotalPages(response.data.totalPages);
+            } catch (error) {
+                console.error("Server is busy");
+            }
+        };
+        getUserList();
+    }, [currentPage, perPage]);
 
-    const filteredContacts = userList?.filter((contact) => {
-        const searchText = searchQuery.toLowerCase();
-        return (
-          contact?.firstname?.toLowerCase().includes(searchText) ||
-          contact.email?.toLowerCase().includes(searchText)
-        );
-      });
-    const contactsPerPage = 20;
-   
-    const contactsToDisplay = filteredContacts?.slice(
-      (currentPage - 1) * contactsPerPage,
-      currentPage * contactsPerPage
-    );
-
-
-    // Adjust the number of contacts per page as needed
-    // const totalPages = Math.ceil(filteredContacts?.length / contactsPerPage);
     const handlePageChange = (newPage) => {
-      setCurrentPage(newPage);
-  
+        setCurrentPage(newPage);
     };
+
     const renderPageNumbers = () => {
         const pageNumbers = [];
         for (let i = 1; i <= totalPages; i++) {
             pageNumbers.push(i);
         }
         return pageNumbers.map((number) => (
-            <button      className={currentPage === number ? "active" : ""}
-            key={number} onClick={() => handlePageChange(number)}>{number}</button>
+            <button className={currentPage === number ? "active" : ""}
+                key={number} onClick={() => handlePageChange(number)}>{number}</button>
         ));
     };
 
     return (
-        
         <div className="add_property_btn">
-                  <div className="inner-pages-top">
-            <h3>Users List</h3>
-            <div className="search-group">
+            <div className="inner-pages-top">
+                <h3>Users List</h3>
+                <div className="search-group">
 
-<input type="text"
-value={searchQuery}
-onChange={(e) => setSearchQuery(e.target.value)}
-placeholder="Search here"/>
-<img src="/search.svg" />
-</div>
+                    <input type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search here" />
+                    <img src="/search.svg" />
+                </div>
             </div>
             <div className="table-container share-ref-table-in">
                 <table>
@@ -124,11 +104,11 @@ placeholder="Search here"/>
                 {userList?.length > 0 && (
 
                     <div className="pagination">
-          
-          
-          {renderPageNumbers()}
-          
-                    
+
+
+                        {renderPageNumbers()}
+
+
                     </div>
                 )}
             </div>

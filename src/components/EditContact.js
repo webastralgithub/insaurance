@@ -396,7 +396,7 @@ const EditContact = ({ nameofuser }) => {
 
 
           <div className="form-user-add-inner-wrap">
-            <label>Email</label>
+            <label>Email<span className="required-star">*</span></label>
             {editingField === "email" || editingField === "all" ? (
               <div className="edit-new-input">
                 <input
@@ -432,7 +432,7 @@ const EditContact = ({ nameofuser }) => {
           <div className="add-contact-user-custom-wrapper">
             <div className="add-contact-user-custom-left">
               <div className="form-user-add-inner-wrap">
-                <label>Phone</label>
+                <label>Phone<span className="required-star">*</span></label>
                 {editingField === "phone" || editingField === "all" ? (
                   <div className="edit-new-input">
                     <InputMask

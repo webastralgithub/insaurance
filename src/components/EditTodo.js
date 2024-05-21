@@ -265,7 +265,7 @@ const EditTodoForm = () => {
         <div className="todo-section">
           <div className="todo-main-section">
             <div className="form-user-add-inner-wrap">
-              <label>Task Title</label>
+              <label>Task Title<span className="required-star">*</span></label>
               {editingField === "Followup" || editingField === "all" ? (
                 <div className="edit-new-input">
                   <input
@@ -288,7 +288,7 @@ const EditTodoForm = () => {
             </div>
 
             <div className="form-user-add-inner-wrap">
-              <label>Follow Up Date</label>
+              <label>Follow Up Date<span className="required-star">*</span></label>
               {editingField === "FollowupDate" || editingField === "all" ? (
                 <div className="edit-new-input">
                   <input
@@ -311,7 +311,7 @@ const EditTodoForm = () => {
             </div>
 
             <div className="form-user-add-inner-wrap">
-              <label>Phone Number</label>
+              <label>Phone Number<span className="required-star">*</span></label>
               {editingField === "phone" || editingField === "all" ? (
                 <div className="edit-new-input">
                   <InputMask
