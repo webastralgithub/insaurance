@@ -14,23 +14,43 @@ const UserList = () => {
         Authorization: auth.token,
     };
     const [userList, setUserList] = useState()
+
+    let searchRef = useRef()
     const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(20);
-    const [searchQuery, setSearchQuery] = useState("");
     const [totalPages, setTotalPages] = useState("");
 
+
+    //https://insuranceadmin.nvinfobase.com/api/admin/getip?page&search=  --analyltics
+
+    const getUserList = async () => {
+        let currPage
+        if (searchRef.current.value) {
+            currPage = ''
+        } else {
+            currPage = currentPage
+        }
+        try {
+
+            const response = await axios.get(`${url}api/admin/get-user?page=${currPage}&search=${searchRef.current.value}`, { headers });
+            setUserList(response.data.users);
+            setTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.error("Server is busy");
+        }
+    };
+
     useEffect(() => {
-        const getUserList = async () => {
-            try {
-                const response = await axios.get(`${url}api/admin/get-users-website?page=${currentPage}&perPage=${perPage}`, { headers });
-                setUserList(response.data.users);
-                setTotalPages(response.data.totalPages);
-            } catch (error) {
-                console.error("Server is busy");
-            }
-        };
         getUserList();
-    }, [currentPage, perPage]);
+    }, [currentPage]);
+
+
+    const clearSearch = () => {
+        searchRef.current.value = ""
+        getUserList();
+    };
+    const handleKeyDown = () => {
+        getUserList();
+    };
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
@@ -54,11 +74,14 @@ const UserList = () => {
                 <div className="search-group">
 
                     <input type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        ref={searchRef}
+                        //value={searchQuery}
+                        //onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search here" />
-                    <img src="/search.svg" />
+                    <img src="/search.svg" onClick={handleKeyDown} />
+                    <span onClick={clearSearch}>X</span>
                 </div>
+
             </div>
             <div className="table-container share-ref-table-in">
                 <table>
@@ -101,16 +124,11 @@ const UserList = () => {
                     </tbody>
                 </table>
 
-                {userList?.length > 0 && (
-
+                {userList?.length > 0 ? (
                     <div className="pagination">
-
-
                         {renderPageNumbers()}
-
-
                     </div>
-                )}
+                ) : <p className="no-data">No data Found</p>}
             </div>
         </div>
     )

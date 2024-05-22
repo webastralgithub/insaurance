@@ -96,7 +96,7 @@ const Contact = ({ role }) => {
 
 
   const { auth, property, setProperty, setAuth, roleId } = useContext(AuthContext);
-  
+
   const headers = {
     Authorization: auth.token,
   };
@@ -365,6 +365,54 @@ const Contact = ({ role }) => {
     }
   };
 
+  //https://insuranceadmin.nvinfobase.com/api/contacts-list?page=&search=
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
+
+  const getTasks = async () => {
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+    try {
+      const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
+      setusers(response?.data?.contacts)
+      setTotalPages(response?.data?.totalPages)
+
+    } catch (error) {
+      console.error("Server is busy");
+    }
+  };
+  useEffect(() => {
+    getTasks();
+  }, [currentPage]);
+
+  const clearSearch = () => {
+    searchRef.current.value = ""
+    getTasks();
+  };
+  const handleKeyDown = () => {
+    getTasks();
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
+
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
 
@@ -372,6 +420,9 @@ const Contact = ({ role }) => {
     setContacts(contacts.filter((p) => p.id !== propertyId));
 
   };
+
+
+
 
   useEffect(() => {
     getContacts();
@@ -401,7 +452,7 @@ const Contact = ({ role }) => {
     return `${year}-${month}-${day}`;
   };
 
-  
+
   const filteredContacts = contacts.filter((contact) => {
     const searchText = searchQuery.toLowerCase();
     return (
@@ -442,11 +493,6 @@ const Contact = ({ role }) => {
     }
   };
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-
-};
-
   const contactsPerPage = 20; // Adjust the number of contacts per page as needed
   const contactsToDisplay = filteredContacts.slice(
     (currentPage - 1) * contactsPerPage,
@@ -455,10 +501,10 @@ const Contact = ({ role }) => {
   // Adjust the number of contacts per page as needed
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
 
-  
+
 
   const changeView = async (id, name) => {
- localStorage.setItem("parent", name)
+    localStorage.setItem("parent", name)
     setParentName(name)
     navigate(`${id}`)
 
@@ -625,11 +671,13 @@ const Contact = ({ role }) => {
         <div className="search-group">
 
           <input type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            ref={searchRef}
+            // value={searchQuery}
+            // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
-          <img src="/search.svg" />
-        </div> 
+          <img src="/search.svg" onClick={handleKeyDown} />
+          <span onClick={clearSearch}>X</span>
+        </div>
 
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>
           <button style={{ marginLeft: "30px" }} onClick={(e) => {
@@ -660,13 +708,13 @@ const Contact = ({ role }) => {
               <th>Profession</th>
               <th>Phone</th>
               <th>Email</th>
-            
+
               <th>Actions</th>
               <th></th>
             </tr>
           </thead>
-          {contacts.length > 0 &&
-            contactsToDisplay.map((contact) => (<tbody key={contact.id}>
+          {userss.length > 0 &&
+            userss.map((contact) => (<tbody key={contact.id}>
 
               <tr key={contact.id}>
                 <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
@@ -674,7 +722,7 @@ const Contact = ({ role }) => {
                 <td>{contact.category?.name}</td>
                 <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                 <td>{contact.email}</td>
-             
+
                 <td>
                   <button className="permissions share-ref-button-tb"
                     onClick={() => {
@@ -715,22 +763,14 @@ const Contact = ({ role }) => {
               </tr>
             </tbody>))}
         </table>
-        {totalPages > 1 && (
+        {userss?.length > 0 && (
           <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? 'active' : ''}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {renderPageNumbers()}
           </div>
         )}
-
+    
       </div>
-      {contactsToDisplay.length == 0 && <p className="no-data">No data Found</p>}
+      {userss.length == 0 && <p className="no-data">No data Found</p>}
     </div>
   );
 };

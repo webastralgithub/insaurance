@@ -109,10 +109,16 @@ const TodoList = ({ role }) => {
 
   //https://insuranceadmin.nvinfobase.com/api/todo/get?page=1&search=test  
   const getTasks = async () => {
+    let currPage
+    if(searchRef.current.value){
+      currPage =''
+    }else{
+      currPage = currentPage
+    }
 
     try {
       setLoading(true)
-      const response = await axios.get(`${url}api/todos/get?page=${currentPage}&&search=${searchRef.current.value}`, { headers });
+      const response = await axios.get(`${url}api/todos/get?page=${currPage}&&search=${searchRef.current.value}`, { headers });
       const today = new Date();
       const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
       const todayMonthDay = (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
@@ -136,7 +142,7 @@ const TodoList = ({ role }) => {
 
   useEffect(() => {
     getTasks();
-  }, [currentPage,]);
+  }, [currentPage]);
 
   const handleKeyDown = () => {
     getTasks()

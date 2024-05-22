@@ -183,6 +183,8 @@ const Referral = ({ role }) => {
       };
     },
   };
+
+
   const getCategories = async () => {
     try {
       const res = await axios.get(
@@ -282,69 +284,58 @@ const Referral = ({ role }) => {
         );
         setContacts(response.data);
       }
-      // Set the filtered contacts in the state
-
     } catch (error) {
       console.error(error);
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
     }
   };
-  const changeView = async (id, name) => {
-    localStorage.setItem("parent", name);
-    const tabs = (value) => { };
-    setParentName(name);
-    // setParentId(id)
-    //   setParentView(true)
-    navigate(`${id}`);
 
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
+
+  const getTasks = async () => {
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
     try {
-      const response = await axios.get(
-        `${url}api/contacts/get-children/${id}`,
-        { headers }
-      );
-      const contactsWithoutParentId = response.data.filter(
-        (contact) => contact.parentId === null
-      );
+      const response = await axios.get(`${url}api/get/contacts-shares/${active}?page=${currPage}&search=${searchRef.current.value}`, { headers });
+      setusers(response?.data?.shares)
+      setTotalPages(response?.data?.totalPages)
 
-      // Set the filtered contacts in the state
-      setContacts(response.data);
     } catch (error) {
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
+      console.error("Server is busy");
     }
   };
+  useEffect(() => {
+    getTasks();
+  }, [currentPage, active]);
 
-  const filteredContactsSearch = contacts ? contacts.filter(contact =>
-    (contact?.send_contact?.email && contact?.send_contact?.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.send_contact?.phone && contact?.send_contact?.phone.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.send_contact?.category?.name && contact?.send_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+  const clearSearch = () => {
+    searchRef.current.value = ""
+    getTasks();
+  };
+  const handleKeyDown = () => {
+    getTasks();
+  };
 
-    (contact?.referrer_contact?.email && contact?.referrer_contact?.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.referrer_contact?.phone && contact?.referrer_contact?.phone.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.referrer_contact?.category?.name && contact?.referrer_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.send_contact?.firstname && contact?.send_contact?.firstname.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.referrer_contact?.firstname?.name && contact?.referrer_contact?.firstname.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.send_contact?.category?.name && contact?.send_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (contact?.referrer_contact?.category?.name && contact?.referrer_contact?.category?.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  ) : [];
-
-
-  const contactsPerPage = 20;
-  const contactsToDisplay = filteredContactsSearch?.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-  // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContactsSearch?.length / contactsPerPage);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
 
-  console.log("contactsToDisplay", contactsToDisplay[0]);
   return (
     <div className="add_property_btn">
       <Modal
@@ -397,11 +388,11 @@ const Referral = ({ role }) => {
         <div className="search-group">
           <input
             type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            ref={searchRef}
             placeholder="Search here"
           />
-          <img src="/search.svg" />
+          <img src="/search.svg" onClick={handleKeyDown} />
+          <span onClick={clearSearch}>X</span>
         </div>
       </div>
 
@@ -410,14 +401,14 @@ const Referral = ({ role }) => {
 
           <button
             className={active == 1 ? "active" : ""}
-            onClick={() => getContacts(1)}
+            onClick={() => setActive(1)}
           >
             Referrals Received
           </button>
 
           <button
             className={active == 2 ? "active" : ""}
-            onClick={() => getContacts(2)}
+            onClick={() => setActive(2)}
           >
             Referrals Sent
           </button>
@@ -442,11 +433,8 @@ const Referral = ({ role }) => {
                   <th>Business Name</th>
                   <th>Profession</th>
                   <th>Sent By</th>
-                  {/* <th>Email</th>
-                  <th>Phone</th> */}
                 </>
               )
-
               }
               {active == 2 && (
                 <>
@@ -454,87 +442,75 @@ const Referral = ({ role }) => {
                   <th>Referral Name </th>
                   <th>Profession</th>
                   <th>Sent to</th>
-                  {/* <th>Email</th>
-                  <th>Phone</th> */}
                 </>
               )
               }
-
-              {/* {active == 3 &&(
-                <>
-                   <th>IP Address</th>
-                  <th>Date</th>
-                </>
-              )
-              } */}
             </tr>
           </thead>
+          {active == 1 && userss?.length > 0 && (
 
-          {contactsToDisplay.length > 0 &&
-            contactsToDisplay.map((contact) => (
+            userss.map((contact) => (
               <tbody>
-                {active === 1 || active === 2 ? (
-                  <>
-                    <tr key={contact.id}>
-                      <td>{formatDate(contact?.created_at)}</td>
-                      <td
-                        className="property-link"
-                        onClick={() => openModal(contact?.send_contact?.id)}
-                      >
-                        {" "}
-                        {contact?.send_contact?.firstname ||
-                          contact?.referrer_contact?.firstname}
-                      </td>
-                      <td>
-                        {contact?.send_contact?.category?.name ||
-                          contact?.referrer_contact?.category?.name}
-                      </td>
-                      <td>
-                        {" "}
-                        {contact?.reciever_contact?.firstname ||
-                          contact?.reciever_contact?.firstname}
-                      </td>
-                      {/* <td> {contact?.send_contact?.email ||
-                        contact?.referrer_contact?.email}</td>
-                      <td> {contact?.send_contact?.phone ||
-                        contact?.referrer_contact?.phone}</td> */}
-                      {/* <td> 
-                    
-                  <button className="permissions"
-                    onClick={() => {changeView(Number(contact.id),contact.firstname)
-
-                   }}> Family Members</button>
-                     
-          
-          </td> */}
-                    </tr>
-                  </>
-                ) : (
-                  <>
-                    <tr key={contact?.id}>
-                      <td>{contact?.ipAddress}</td>
-                      <td>{formatDate(contact?.time)}</td>
-                    </tr>
-                  </>
-                )}
+                <tr key={contact?.id}>
+                  <td>{formatDate(contact?.created_at)}</td>
+                  <td
+                    className="property-link"
+                    onClick={() => openModal(contact?.send_contact?.id)}
+                  >
+                    {" "}
+                    {contact?.send_contact?.firstname ||
+                      contact?.referrer_contact?.firstname}
+                  </td>
+                  <td>
+                    {contact?.send_contact?.category?.name ||
+                      contact?.referrer_contact?.category?.name}
+                  </td>
+                  <td>
+                    {" "}
+                    {contact?.reciever_contact?.firstname ||
+                      contact?.reciever_contact?.firstname}
+                  </td>
+                </tr>
               </tbody>
-            ))}
+            ))
+          )}
+          {active == 2 && userss?.length > 0 && (
+
+            userss.map((contact) => (
+              <tbody>
+                <tr key={contact?.id}>
+                  <td>{formatDate(contact?.created_at)}</td>
+                  <td
+                    className="property-link"
+                    onClick={() => openModal(contact?.send_contact?.id)}
+                  >
+                    {" "}
+                    {contact?.send_contact?.firstname ||
+                      contact?.referrer_contact?.firstname}
+                  </td>
+                  <td>
+                    {contact?.send_contact?.category?.name ||
+                      contact?.referrer_contact?.category?.name}
+                  </td>
+                  <td>
+                    {" "}
+                    {contact?.reciever_contact?.firstname ||
+                      contact?.reciever_contact?.firstname}
+                  </td>
+                </tr>
+              </tbody>
+            ))
+          )}
+
         </table>
-        {totalPages > 1 && (
+        {userss?.length > 0 && (
           <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? "active" : ""}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {renderPageNumbers()}
           </div>
         )}
       </div>
-      {contacts.length == 0 && <p className="no-data">No data Found</p>}
+      {active == 1 && !userss && <p className="no-data">No data Found </p>}
+      {active == 2 && !userss && <p className="no-data">No data Found </p>}
     </div>
   );
 };

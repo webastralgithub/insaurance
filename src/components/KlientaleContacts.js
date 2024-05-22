@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes,faRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faPencil, faTimes, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 
 import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
@@ -93,8 +93,7 @@ const KlientaleContacts = ({ role }) => {
   const navigate = useNavigate();
   const [parentView, setParentView] = useState(false);
   const [parentName, setParentName] = useState([]);
-  const [bussinessDetail, serBussinessDetail] = useState();
-  const [contactOptions, setContactoptions] = useState(false);
+
   const [searchText, setSearchText] = useState("");
   const [selectedContacts, setSelectedContacts] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -103,14 +102,13 @@ const KlientaleContacts = ({ role }) => {
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filtered, setfilteredUsers] = useState(null);
-  const [modalMode, setModalMode] = useState("");
+
   const [users, setUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [viewState, setViewState] = useState("contacts");
+
 
   const [width, setWidth] = useState(window.innerWidth);
 
-  const { auth, email, property, setProperty, setAuth } = useContext(AuthContext);
+  const { auth, email } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -257,24 +255,13 @@ const KlientaleContacts = ({ role }) => {
   useEffect(() => {
     fetchUsers();
   }, [])
-  useEffect(() => {
 
+
+  useEffect(() => {
     fetchCategotires();
   }, []);
 
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return "";
-    }
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
-  };
-
- 
   const handleSelectChange = async (event) => {
     event.preventDefault();
     setCurrentPage(1)
@@ -310,25 +297,11 @@ const KlientaleContacts = ({ role }) => {
     setIsOpen(false);
   };
 
-  const filteredContacts = filtered ? filtered.filter(user =>
-    (user.name && user.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (user.phone && user.phone.toLowerCase().includes(searchQuery.toLowerCase()))
-  ) : [];
-
   const contactsPerPage = 20;
-  const contactsToDisplay = filteredContacts?.slice(
+  const contactsToDisplay = filtered?.slice(
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   );
-  // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts?.length / contactsPerPage);
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
-
-  
-  
 
   const PlaceholderWithIcon = (props) => (
     <div
@@ -355,10 +328,55 @@ const KlientaleContacts = ({ role }) => {
     fetchCategotires();
   }, []);
 
-  const redirecctToWebsite = () => {
-    // window.location.href ='https://admin.klientale.com/';
-    window.open('https://klientale.com/');
+
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPages, setTotalPages] = useState("");
+
+  const getTasks = async () => {
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+    try {
+      const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}`, { headers });
+      setusers(response?.data?.users)
+      setTotalPages(response?.data?.totalPages)
+
+    } catch (error) {
+      console.error("Server is busy");
+    }
   };
+  useEffect(() => {
+    getTasks();
+  }, [currentPage]);
+
+
+  const clearSearch = () => {
+    searchRef.current.value = ""
+    getTasks();
+  };
+  const handleKeyDown = () => {
+    getTasks();
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
+
 
   return (
     <div className="add_property_btn">
@@ -411,17 +429,6 @@ const KlientaleContacts = ({ role }) => {
 
           </div>
         </Modal>
-        {/* <Select
-      // value={value}
-      isMulti
-      value={seletedCategory}
-      onChange={handleSelectChange}
-      // isClearable={value.some((v) => !v.isFixed)}
-      name="colors"
-      className="select-new"
-      styles={colourStyles}
-      options={categories}
-    /> */}
 
         <div className="icon-dashboard share-ref-top-wrp become-klintale">
           <button className="upgade-klientale" onClick={() => navigate("/become-klintale")}>
@@ -434,15 +441,15 @@ const KlientaleContacts = ({ role }) => {
         <div className="search-group">
           <input
             type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            ref={searchRef}
             placeholder="Search here"
           />
-          <img src="/search.svg" />
+
+          <img src="/search.svg" onClick={handleKeyDown} />
+          <span onClick={clearSearch}>X</span>
         </div>
       </div>
 
-      {/* Rest of your component remains the same... */}
 
       <div className="table-container share-ref-table-in">
         <table>
@@ -452,52 +459,28 @@ const KlientaleContacts = ({ role }) => {
               <th>Email</th>
               <th>Phone</th>
               <th>Category</th>
-              {/* <th>User Type</th>
-              <th>Membership</th>
-              <th>Actions</th> */}
             </tr>
           </thead>
           <tbody>
-            {contactsToDisplay && contactsToDisplay?.map((user) => (
+            {userss && userss?.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.phone}</td>
                 <td>{user.category_name}</td>
-                {/* <td>{user.user_role}</td> */}
-                {/* <td>{user.membership_name}</td>
-                <td>{user.user_role}</td>
-                <td>
-                  <button className="permissions share-ref-button-tb"
-                    onClick={() => {
-                      navigate(`/klientale-contacts/share/${user.id}/${user.name}`)
-                    }}       >Share Me</button>
-                </td>
-                <td>  <button className="permissions share-ref-button-tb"
-                  onClick={() => {
-                    navigate(`/klientale-contacts/contacts/send/${user.id}`)
-                  }}       >Send me Referrals</button>       </td> */}
-
               </tr>
             ))}
           </tbody>
         </table>
 
-        {totalPages > 1 &&  (
+        {userss?.length > 0 && (
           <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? "active" : ""}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {renderPageNumbers()}
           </div>
         )}
+        {userss.length == 0 && <p className="no-data">No data Found</p>}
       </div>
-      {users.length == 0 && <p className="no-data">No data Found</p>}
+
     </div>
   );
 };
