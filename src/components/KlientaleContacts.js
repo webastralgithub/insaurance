@@ -4,8 +4,8 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
-
+import { faEdit, faPencil, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { Circles } from 'react-loader-spinner'
 import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
@@ -85,6 +85,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 };
 
 const KlientaleContacts = ({ role }) => {
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
   const { id } = useParams();
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
@@ -296,13 +298,6 @@ const KlientaleContacts = ({ role }) => {
     setSelectedContacts(null);
     setIsOpen(false);
   };
-
-  const contactsPerPage = 20;
-  const contactsToDisplay = filtered?.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-
   const PlaceholderWithIcon = (props) => (
     <div
       style={{
@@ -333,7 +328,8 @@ const KlientaleContacts = ({ role }) => {
   const [userss, setusers] = useState([])
   const [totalPages, setTotalPages] = useState("");
 
-  const getTasks = async () => {
+  const getKlientaleContacts = async () => {
+    setDataLoader(true)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
@@ -341,25 +337,29 @@ const KlientaleContacts = ({ role }) => {
       currPage = currentPage
     }
     try {
+
       const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setusers(response?.data?.users)
       setTotalPages(response?.data?.totalPages)
-
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error("Server is busy");
     }
   };
   useEffect(() => {
-    getTasks();
+    getKlientaleContacts();
   }, [currentPage]);
 
 
   const clearSearch = () => {
     searchRef.current.value = ""
-    getTasks();
+    setButtonActive(1)
+    getKlientaleContacts();
   };
   const handleKeyDown = () => {
-    getTasks();
+    setButtonActive(2)
+    getKlientaleContacts();
   };
 
   const handlePageChange = (newPage) => {
@@ -444,9 +444,8 @@ const KlientaleContacts = ({ role }) => {
             ref={searchRef}
             placeholder="Search here"
           />
-
-          <img src="/search.svg" onClick={handleKeyDown} />
-          <span onClick={clearSearch}>X</span>
+          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
         </div>
       </div>
 
@@ -462,6 +461,24 @@ const KlientaleContacts = ({ role }) => {
             </tr>
           </thead>
           <tbody>
+            <Circles
+
+              height="100"
+              width="100%"
+              color="#004382"
+              ariaLabel="circles-loading"
+              wrapperStyle={{
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9,
+                background: "#00000082"
+              }}
+              wrapperClass=""
+              visible={dataLoader}
+            />
             {userss && userss?.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
@@ -478,9 +495,9 @@ const KlientaleContacts = ({ role }) => {
             {renderPageNumbers()}
           </div>
         )}
-        {userss.length == 0 && <p className="no-data">No data Found</p>}
-      </div>
 
+      </div>
+      {!dataLoader && !userss && <p className="no-data">No data Found</p>}
     </div>
   );
 };

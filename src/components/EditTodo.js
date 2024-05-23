@@ -37,8 +37,6 @@ const EditTodoForm = () => {
 
   // Validate the form fields and set validation errors
 
-
-
   const clearErrors = (fieldName) => {
     switch (fieldName) {
       case "Followup":
@@ -47,15 +45,12 @@ const EditTodoForm = () => {
       case "FollowupDate":
         setPropertyTypeError("");
         break;
-
       default:
         break;
     }
   };
   const navigate = useNavigate()
-
   const noSelectionOption = { value: null, label: 'No Selection' };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     clearErrors(name)
@@ -67,8 +62,6 @@ const EditTodoForm = () => {
     } else {
       setEditedTodo({ ...editedTodo, [name]: value });
     }
-
-
   };
 
   const handleEditClick = (field) => {
@@ -88,20 +81,13 @@ const EditTodoForm = () => {
 
       return {
         ...styles,
-
-
       };
     },
-
   };
   const childOptions = childrenOptions.map((child) => ({
     value: child.id,
     label: child.firstname,
   }));
-
-
-
-
 
   useEffect(() => {
     getTodos()
@@ -166,7 +152,7 @@ const EditTodoForm = () => {
         { headers });
 
       navigate(-1)
-      toast.success("Todo updated successfully", {
+      toast.success("FolowUp Created successfully", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -209,7 +195,7 @@ const EditTodoForm = () => {
   const getTodos = async () => {
     const response = await axios.get(`${url}api/todo/get`, { headers });
     const filtered = response.data.find(x => x.id == id)
-    
+
     const followupDateISO = filtered?.FollowupDate
       ? new Date(filtered.FollowupDate).toISOString().slice(0, 16)
       : '';

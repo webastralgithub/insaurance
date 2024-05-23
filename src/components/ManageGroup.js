@@ -197,7 +197,6 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
 
   const handleDelete = async (postid) => {
     await axios.delete(`${url}api/post/delete/${postid}`, { headers });
-
     toast.success('Post deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setContacts(contacts.filter((p) => p.id !== postid));
 

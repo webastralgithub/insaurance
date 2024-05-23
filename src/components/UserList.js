@@ -2,9 +2,13 @@ import { useState, useContext, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from "./context/AuthContext";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Circles } from 'react-loader-spinner'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const UserList = () => {
-
+    const [dataLoader, setDataLoader] = useState(false)
+    const [buttonActive, setButtonActive] = useState(1)
     const { auth } = useContext(
         AuthContext
     );
@@ -19,10 +23,8 @@ const UserList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState("");
 
-
-    //https://insuranceadmin.nvinfobase.com/api/admin/getip?page&search=  --analyltics
-
     const getUserList = async () => {
+        setDataLoader(true)
         let currPage
         if (searchRef.current.value) {
             currPage = ''
@@ -34,7 +36,9 @@ const UserList = () => {
             const response = await axios.get(`${url}api/admin/get-user?page=${currPage}&search=${searchRef.current.value}`, { headers });
             setUserList(response.data.users);
             setTotalPages(response.data.totalPages);
+            setDataLoader(false)
         } catch (error) {
+            setDataLoader(false)
             console.error("Server is busy");
         }
     };
@@ -46,9 +50,11 @@ const UserList = () => {
 
     const clearSearch = () => {
         searchRef.current.value = ""
+        setButtonActive(1)
         getUserList();
     };
     const handleKeyDown = () => {
+        setButtonActive(2)
         getUserList();
     };
 
@@ -69,17 +75,16 @@ const UserList = () => {
 
     return (
         <div className="add_property_btn">
+
             <div className="inner-pages-top">
                 <h3>Users List</h3>
                 <div className="search-group">
 
                     <input type="text"
                         ref={searchRef}
-                        //value={searchQuery}
-                        //onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search here" />
-                    <img src="/search.svg" onClick={handleKeyDown} />
-                    <span onClick={clearSearch}>X</span>
+                    {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+                    {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
                 </div>
 
             </div>
@@ -97,6 +102,24 @@ const UserList = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        <Circles
+
+                            height="100"
+                            width="100%"
+                            color="#004382"
+                            ariaLabel="circles-loading"
+                            wrapperStyle={{
+                                height: "100%",
+                                width: "100%",
+                                position: "absolute",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                zIndex: 9,
+                                background: "#00000082"
+                            }}
+                            wrapperClass=""
+                            visible={dataLoader}
+                        />
                         {userList && userList.map((user) => (
                             <tr key={user.id}>
                                 <td>{user.name}</td>
@@ -124,12 +147,13 @@ const UserList = () => {
                     </tbody>
                 </table>
 
-                {userList?.length > 0 ? (
+                {userList?.length > 0 && (
                     <div className="pagination">
                         {renderPageNumbers()}
                     </div>
-                ) : <p className="no-data">No data Found</p>}
+                )}
             </div>
+            {!userList && !dataLoader && <p className="no-data">No data Found</p>}
         </div>
     )
 }

@@ -2,19 +2,15 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./admin.css";
 import axios from "axios";
-import Modal from "react-modal";
-import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { AuthContext } from "./context/AuthContext";
-import Show from "./Show";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-confirm-alert/src/react-confirm-alert.css";
-import PerPageDropdown from "./PerPageDropDown";
+import { Circles } from 'react-loader-spinner'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Ip = ({ role }) => {
-  const [lengthofIp, setLengthOfIp] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
   const { auth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
@@ -28,18 +24,21 @@ const Ip = ({ role }) => {
   const [uniqueIpCount, setuniqueIpCount] = useState()
 
   const getTasks = async () => {
+    setDataLoader(true)
     let currPage
     if (searchRef.current.value) {
-        currPage = ''
+      currPage = ''
     } else {
-        currPage = currentPage
+      currPage = currentPage
     }
     try {
       const response = await axios.get(`${url}api/admin/getip?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setuserIps(response?.data?.userIps)
       setTotalPages(response?.data?.totalPages)
       setuniqueIpCount(response?.data?.uniqueIpCount)
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error("Server is busy");
     }
   };
@@ -49,10 +48,12 @@ const Ip = ({ role }) => {
 
 
   const clearSearch = () => {
+    setButtonActive(1)
     searchRef.current.value = ""
     getTasks();
   };
   const handleKeyDown = () => {
+    setButtonActive(2)
     getTasks();
   };
 
@@ -117,8 +118,9 @@ const Ip = ({ role }) => {
             ref={searchRef}
             placeholder="Search here"
           />
-          <img src="/search.svg" onClick={handleKeyDown} />
-          <span onClick={clearSearch}>X</span>
+          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
+
         </div>
       </div>
       <div className="table-container">
@@ -130,6 +132,24 @@ const Ip = ({ role }) => {
             </tr>
           </thead>
           <tbody>
+            <Circles
+
+              height="100"
+              width="100%"
+              color="#004382"
+              ariaLabel="circles-loading"
+              wrapperStyle={{
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9,
+                background: "#00000082"
+              }}
+              wrapperClass=""
+              visible={dataLoader}
+            />
             {userIps && userIps?.map((task, index) => (
               <>
                 <tr key={task?.id}>
@@ -145,9 +165,9 @@ const Ip = ({ role }) => {
             {renderPageNumbers()}
           </div>
         )}
-        {userIps.length == 0 && <p className="no-data">No data Found</p>}
-      </div>
 
+      </div>
+      {userIps.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
     </div>
   );
 };

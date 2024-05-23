@@ -12,9 +12,11 @@ import { toast } from "react-toastify";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Circles } from 'react-loader-spinner'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const TodoList = ({ role }) => {
-  const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]); // Replace 'users' with 'tasks'
   const [width, setWidth] = useState(window.innerWidth);
   const [currentPageData, setCurrentPageData] = useState(1);
@@ -107,17 +109,22 @@ const TodoList = ({ role }) => {
 
 
 
-  //https://insuranceadmin.nvinfobase.com/api/todo/get?page=1&search=test  
+
+
+
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
+
   const getTasks = async () => {
+    setDataLoader(true)
     let currPage
-    if(searchRef.current.value){
-      currPage =''
-    }else{
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
       currPage = currentPage
     }
 
     try {
-      setLoading(true)
       const response = await axios.get(`${url}api/todos/get?page=${currPage}&&search=${searchRef.current.value}`, { headers });
       const today = new Date();
       const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -133,9 +140,9 @@ const TodoList = ({ role }) => {
       setTasks(birthdayTodos);
       setTotalPagess(response.data.totalPages);
       setCurrentPage(response.data?.currentPage)
-      setLoading(false)
-
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error(error)
     }
   };
@@ -145,6 +152,7 @@ const TodoList = ({ role }) => {
   }, [currentPage]);
 
   const handleKeyDown = () => {
+    setButtonActive(2)
     getTasks()
   };
 
@@ -163,14 +171,39 @@ const TodoList = ({ role }) => {
     ));
   };
 
-  const changeStatus = async (status, id) => {
-    const response = await axios.put(`${url}api/todo/update/${id}`,
-      { IsRead: status },
-      { headers });
 
-    getTasks()
+  const handleMarkAsread = (status, id) => {
+    confirmAlert({
+      title: 'Confirm mark as read',
+      message: 'Are you sure you want to mark as Read?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => changeStatus(status, id),
+
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  }
+
+  const changeStatus = async (status, id) => {
+    try {
+      const response = await axios.put(`${url}api/todo/update/${id}`,
+        { IsRead: status },
+        { headers });
+      getTasks()
+      setTasklength(tasklength - 1)
+      toast.success("Mark as read sucessfully")
+    } catch (error) {
+      console.error("error")
+    }
 
   }
+
   const formatPhoneNumber = (phoneNumber) => {
     if (!phoneNumber) {
       return ''
@@ -179,7 +212,8 @@ const TodoList = ({ role }) => {
   };
 
   const clearSearch = () => {
-    searchRef.current.value= ""
+    setButtonActive(1)
+    searchRef.current.value = ""
     getTasks();
   };
 
@@ -197,17 +231,12 @@ const TodoList = ({ role }) => {
         </div>
         <div className="search-group">
           <input type="text"
-            //value={searchQuery}
-            // onChange={(e) => setSearchQuery(e.target.value)}
             ref={searchRef}
             placeholder="Search here" />
-          <img src="/search.svg" onClick={handleKeyDown} />
+          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
         </div>
-        <span onClick={clearSearch}>X</span>
       </div>
-
-
-      {/* {loading ? (<Skeleton count={20} />) : (<> */}
       <div className="table-container">
         <table>
           <thead>
@@ -218,7 +247,24 @@ const TodoList = ({ role }) => {
             </tr>
           </thead>
           <tbody>
+            <Circles
 
+              height="100"
+              width="100%"
+              color="#004382"
+              ariaLabel="circles-loading"
+              wrapperStyle={{
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9,
+                background: "#00000082"
+              }}
+              wrapperClass=""
+              visible={dataLoader}
+            />
             {tasks && tasks?.map((task, index) => (
               <>
                 {!task.IsRead && <tr key={task.id}>
@@ -256,11 +302,7 @@ const TodoList = ({ role }) => {
 
                   <td>
                     <button className="permissions"
-                      onClick={() => {
-                        changeStatus(!task.IsRead, task.id)
-                        setTasklength(tasklength - 1)
-                      }}
-
+                      onClick={() => { handleMarkAsread(!task.IsRead, task.id) }}
                     > Mark as {task.IsRead ? "unread" : "read"}</button>
                   </td>
                   <td> <button className="permissions"
@@ -279,7 +321,7 @@ const TodoList = ({ role }) => {
             {renderPageNumbers()}
           </div>
         )}
-        {tasks.length == 0 && <p className="no-data">No data Found</p>}
+        {tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
 
       </div>
 

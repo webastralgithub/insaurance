@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Select from 'react-select';
 import "./admin.css"
-
+import { Circles } from 'react-loader-spinner'
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
@@ -9,9 +9,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
-
 import { confirmAlert } from 'react-confirm-alert';
 import { useNavigate, useRouter } from "react-router-dom";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Lead = () => {
   const [contacts, setContacts] = useState([]);
@@ -52,19 +52,15 @@ const Lead = () => {
   const handleCategoryClick = (categoryId) => {
     setActiveCategory(categoryId === activeCategory ? null : categoryId);
   };
-  useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    getCategories()
-    return () => {
-      window.removeEventListener('resize', handleWindowSizeChange);
-    };
 
+  useEffect(() => {
+    getCategories()
   }, []);
 
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${url}api/contacts/categories`, { headers }, );
+      const res = await axios.get(`${url}api/contacts/categories`, { headers },);
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -244,7 +240,7 @@ const Lead = () => {
       // navigate('/');
     }
   };
-  
+
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
@@ -284,22 +280,16 @@ const Lead = () => {
     setCurrentPage(newPage);
   };
   const changeView = async (id, name) => {
-
     localStorage.setItem("parent", name)
-
     setParentName(name)
     // setParentId(id)
     //   setParentView(true)
     navigate(`${id}`)
-
     try {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-
       // Set the filtered contacts in the state
       setContacts(response.data);
-
-
     } catch (error) {
       console.error("error", error)
       // localStorage.removeItem('token');
@@ -311,6 +301,46 @@ const Lead = () => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
   };
   // Rest of your component remains the same...
+
+  //const[currentPage, setCurrentPage]= useState(1)
+
+
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
+
+
+
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
+  //const [categories, setCategories] = useState("")
+  const [categoriesCount, setCategoriesCount] = useState("")
+  const [totalLeads, settotalLeads] = useState()
+  const getLeads = async () => {
+    setDataLoader(true)
+    // let currPage
+    // if (searchRef.current.value) {
+    //   currPage = ''
+    // } else {
+    //   currPage = currentPage
+    // }
+    try {
+      const response = await axios.get(`${url}api/leads?search=${""}&category=${categories}&page=${currentPage}`, { headers })
+      const responseData = await response?.data;
+      setTotalPages(responseData?.totalPages)
+      //setCategoriesCount(responseData?.categoryCounts)
+      settotalLeads(responseData?.totalLeads)
+      setDataLoader(false)
+    } catch (error) {
+      setDataLoader(false)
+      console.log("error")
+    }
+  }
+
+  useEffect(() => {
+    getLeads()
+  }, [])
+
 
   return (
     <div className="add_property_btn">
@@ -380,7 +410,8 @@ const Lead = () => {
         {categories && categories.map((category, index) => (
           <div key={category.id}>
             <div className="add_user_btn family_meber" onClick={() => handleCategoryClick(category.id)}>
-              <h4>{category?.name} {category?.name !== "Today's Leads" && (<>({index !== category.length - 1 && category.totalContacts}{!category.id && noCategoryContacts.length}{index === 0 && todayContacs.length})</>)}</h4>            <button style={{ padding: "12px 18px" }}>{activeCategory == category.id ? "-" : "+"}</button>
+              <h4>{category?.name} {category?.name !== "Today's Leads" && (<>({index !== category.length - 1 && category.totalContacts}{!category.id && noCategoryContacts.length}{index === 0 && todayContacs.length})</>)}</h4>
+              <button style={{ padding: "12px 18px" }}>{activeCategory == category.id ? "-" : "+"}</button>
             </div>
             {activeCategory == category.id && <div>
               <div className="table-container">
@@ -423,7 +454,7 @@ const Lead = () => {
                             openModal("add")
                           }
 
-                          }       > Add to Contacts</button>       </td>
+                          }> Add to Contacts</button>       </td>
                         <td>
                           <button className="permissions"
                             onClick={() => {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import "./admin.css";
-
+import { Circles } from 'react-loader-spinner'
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
@@ -292,8 +292,13 @@ const Referral = ({ role }) => {
   let searchRef = useRef()
   const [userss, setusers] = useState([])
   const [totalPagess, setTotalPages] = useState("");
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
+
+
 
   const getTasks = async () => {
+    setDataLoader(true)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
@@ -304,8 +309,9 @@ const Referral = ({ role }) => {
       const response = await axios.get(`${url}api/get/contacts-shares/${active}?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setusers(response?.data?.shares)
       setTotalPages(response?.data?.totalPages)
-
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error("Server is busy");
     }
   };
@@ -314,10 +320,12 @@ const Referral = ({ role }) => {
   }, [currentPage, active]);
 
   const clearSearch = () => {
+    setButtonActive(1)
     searchRef.current.value = ""
     getTasks();
   };
   const handleKeyDown = () => {
+    setButtonActive(2)
     getTasks();
   };
 
@@ -391,8 +399,8 @@ const Referral = ({ role }) => {
             ref={searchRef}
             placeholder="Search here"
           />
-          <img src="/search.svg" onClick={handleKeyDown} />
-          <span onClick={clearSearch}>X</span>
+          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
         </div>
       </div>
 
@@ -401,14 +409,14 @@ const Referral = ({ role }) => {
 
           <button
             className={active == 1 ? "active" : ""}
-            onClick={() => setActive(1)}
+            onClick={() => { setActive(1); setButtonActive(1); searchRef.current.value = "" }}
           >
             Referrals Received
           </button>
 
           <button
             className={active == 2 ? "active" : ""}
-            onClick={() => setActive(2)}
+            onClick={() => { searchRef.current.value = ""; setButtonActive(1); setActive(2) }}
           >
             Referrals Sent
           </button>
@@ -447,10 +455,29 @@ const Referral = ({ role }) => {
               }
             </tr>
           </thead>
+          <Circles
+
+            height="100"
+            width="100%"
+            color="#004382"
+            ariaLabel="circles-loading"
+            wrapperStyle={{
+              height: "100%",
+              width: "100%",
+              position: "absolute",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 9,
+              background: "#00000082"
+            }}
+            wrapperClass=""
+            visible={dataLoader}
+          />
           {active == 1 && userss?.length > 0 && (
 
             userss.map((contact) => (
               <tbody>
+
                 <tr key={contact?.id}>
                   <td>{formatDate(contact?.created_at)}</td>
                   <td
@@ -478,6 +505,7 @@ const Referral = ({ role }) => {
 
             userss.map((contact) => (
               <tbody>
+
                 <tr key={contact?.id}>
                   <td>{formatDate(contact?.created_at)}</td>
                   <td
@@ -509,8 +537,8 @@ const Referral = ({ role }) => {
           </div>
         )}
       </div>
-      {active == 1 && !userss && <p className="no-data">No data Found </p>}
-      {active == 2 && !userss && <p className="no-data">No data Found </p>}
+      {active == 1 && !userss && !dataLoader && <p className="no-data">No data Found </p>}
+      {active == 2 && !userss && !dataLoader && <p className="no-data">No data Found </p>}
     </div>
   );
 };

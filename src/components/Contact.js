@@ -5,13 +5,12 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Message, toaster } from "rsuite";
+import {faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { useNavigate, useRouter } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { Circles } from 'react-loader-spinner'
 
 
 
@@ -261,7 +260,6 @@ const Contact = ({ role }) => {
 
   const openModal = (mode, role) => {
     setModalMode(mode);
-
     setIsOpen(true);
   };
 
@@ -365,12 +363,17 @@ const Contact = ({ role }) => {
     }
   };
 
-  //https://insuranceadmin.nvinfobase.com/api/contacts-list?page=&search=
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
+
+
+
   let searchRef = useRef()
   const [userss, setusers] = useState([])
   const [totalPagess, setTotalPages] = useState("");
 
   const getTasks = async () => {
+    setDataLoader(true)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
@@ -381,8 +384,9 @@ const Contact = ({ role }) => {
       const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setusers(response?.data?.contacts)
       setTotalPages(response?.data?.totalPages)
-
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error("Server is busy");
     }
   };
@@ -391,10 +395,12 @@ const Contact = ({ role }) => {
   }, [currentPage]);
 
   const clearSearch = () => {
+    setButtonActive(1)
     searchRef.current.value = ""
     getTasks();
   };
   const handleKeyDown = () => {
+    setButtonActive(2)
     getTasks();
   };
 
@@ -420,9 +426,6 @@ const Contact = ({ role }) => {
     setContacts(contacts.filter((p) => p.id !== propertyId));
 
   };
-
-
-
 
   useEffect(() => {
     getContacts();
@@ -675,9 +678,8 @@ const Contact = ({ role }) => {
             // value={searchQuery}
             // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
-          <img src="/search.svg" onClick={handleKeyDown} />
-          <span onClick={clearSearch}>X</span>
-        </div>
+          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>} </div>
 
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>
           <button style={{ marginLeft: "30px" }} onClick={(e) => {
@@ -713,8 +715,27 @@ const Contact = ({ role }) => {
               <th></th>
             </tr>
           </thead>
+          <Circles
+
+            height="100"
+            width="100%"
+            color="#004382"
+            ariaLabel="circles-loading"
+            wrapperStyle={{
+              height: "100%",
+              width: "100%",
+              position: "absolute",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 9,
+              background: "#00000082"
+            }}
+            wrapperClass=""
+            visible={dataLoader}
+          />
           {userss.length > 0 &&
             userss.map((contact) => (<tbody key={contact.id}>
+
 
               <tr key={contact.id}>
                 <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
@@ -768,9 +789,9 @@ const Contact = ({ role }) => {
             {renderPageNumbers()}
           </div>
         )}
-    
+
       </div>
-      {userss.length == 0 && <p className="no-data">No data Found</p>}
+      {userss.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
     </div>
   );
 };
