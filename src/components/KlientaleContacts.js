@@ -4,15 +4,15 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Circles } from 'react-loader-spinner'
-import { Message, toaster } from "rsuite";
+import {faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
-import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useNavigate, useParams, useRouter } from "react-router-dom";
 import "./Modal.css";
 import Select from 'react-select'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 const CustomDropdown = ({ children, searchText, ...props }) => {
   const selectedOptions = props.getValue();
 
@@ -357,6 +357,13 @@ const KlientaleContacts = ({ role }) => {
     setButtonActive(1)
     getKlientaleContacts();
   };
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+        setButtonActive(2)
+        getKlientaleContacts()
+    }
+};
+
   const handleKeyDown = () => {
     setButtonActive(2)
     getKlientaleContacts();
@@ -441,17 +448,23 @@ const KlientaleContacts = ({ role }) => {
         <div className="search-group">
           <input
             type="text"
+            onKeyDown={handleKeyDownEnter}
             ref={searchRef}
             placeholder="Search here"
           />
           {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
         </div>
       </div>
 
 
       <div className="table-container share-ref-table-in">
-        <table>
+        {dataLoader ?  
+       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+          <Skeleton count={50} />
+        </div>)
+
+        :(<table>
           <thead>
             <tr>
               <th>Name</th>
@@ -461,24 +474,7 @@ const KlientaleContacts = ({ role }) => {
             </tr>
           </thead>
           <tbody>
-            <Circles
-
-              height="100"
-              width="100%"
-              color="#004382"
-              ariaLabel="circles-loading"
-              wrapperStyle={{
-                height: "100%",
-                width: "100%",
-                position: "absolute",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9,
-                background: "#00000082"
-              }}
-              wrapperClass=""
-              visible={dataLoader}
-            />
+            
             {userss && userss?.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
@@ -488,7 +484,7 @@ const KlientaleContacts = ({ role }) => {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table>)}
 
         {userss?.length > 0 && (
           <div className="pagination">

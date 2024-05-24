@@ -7,6 +7,8 @@ import { AuthContext } from "./context/AuthContext";
 import { Circles } from 'react-loader-spinner'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faXmark } from "@fortawesome/free-solid-svg-icons";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Ip = ({ role }) => {
   const [dataLoader, setDataLoader] = useState(false)
@@ -56,6 +58,13 @@ const Ip = ({ role }) => {
     setButtonActive(2)
     getTasks();
   };
+
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+        setButtonActive(2)
+        getTasks()
+    }
+};
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -107,6 +116,7 @@ const Ip = ({ role }) => {
       .replace("Z", "");
   };
 
+
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top">
@@ -115,6 +125,7 @@ const Ip = ({ role }) => {
         <div className="search-group">
           <input
             type="text"
+            onKeyDown={handleKeyDownEnter}
             ref={searchRef}
             placeholder="Search here"
           />
@@ -124,6 +135,12 @@ const Ip = ({ role }) => {
         </div>
       </div>
       <div className="table-container">
+      {dataLoader ?  
+       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+          <Skeleton count={25} />
+        </div>)
+
+        :(
         <table>
           <thead>
             <tr>
@@ -159,7 +176,7 @@ const Ip = ({ role }) => {
               </>
             ))}
           </tbody>
-        </table>
+        </table>)}
         {userIps?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}

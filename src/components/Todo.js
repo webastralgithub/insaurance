@@ -10,11 +10,11 @@ import Show from "./Show";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
 import { Circles } from 'react-loader-spinner'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const TodoList = ({ role }) => {
   const [tasks, setTasks] = useState([]); // Replace 'users' with 'tasks'
@@ -211,6 +211,14 @@ const TodoList = ({ role }) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
   };
 
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+        setButtonActive(2)
+        getTasks()
+    }
+};
+
+
   const clearSearch = () => {
     setButtonActive(1)
     searchRef.current.value = ""
@@ -232,12 +240,19 @@ const TodoList = ({ role }) => {
         <div className="search-group">
           <input type="text"
             ref={searchRef}
+            onKeyDown={handleKeyDownEnter}
             placeholder="Search here" />
           {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
           {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
         </div>
       </div>
       <div className="table-container">
+      {dataLoader ?  
+       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+          <Skeleton count={50} />
+        </div>)
+
+        :(
         <table>
           <thead>
             <tr>
@@ -247,24 +262,7 @@ const TodoList = ({ role }) => {
             </tr>
           </thead>
           <tbody>
-            <Circles
-
-              height="100"
-              width="100%"
-              color="#004382"
-              ariaLabel="circles-loading"
-              wrapperStyle={{
-                height: "100%",
-                width: "100%",
-                position: "absolute",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9,
-                background: "#00000082"
-              }}
-              wrapperClass=""
-              visible={dataLoader}
-            />
+          
             {tasks && tasks?.map((task, index) => (
               <>
                 {!task.IsRead && <tr key={task.id}>
@@ -314,7 +312,7 @@ const TodoList = ({ role }) => {
             {/* </>)} */}
           </tbody>
 
-        </table>
+        </table>)}
 
         {tasks?.length > 0 && (
           <div className="pagination">

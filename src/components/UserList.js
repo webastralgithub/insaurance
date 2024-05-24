@@ -4,7 +4,10 @@ import { AuthContext } from "./context/AuthContext";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Circles } from 'react-loader-spinner'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 const UserList = () => {
     const [dataLoader, setDataLoader] = useState(false)
@@ -12,7 +15,7 @@ const UserList = () => {
     const { auth } = useContext(
         AuthContext
     );
-    const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
+   
     const url = process.env.REACT_APP_API_URL;
     const headers = {
         Authorization: auth.token,
@@ -53,6 +56,14 @@ const UserList = () => {
         setButtonActive(1)
         getUserList();
     };
+
+    const handleKeyDownEnter = (event) => {
+        if (event.key === 'Enter') {
+            setButtonActive(2)
+            getUserList()
+        }
+    };
+
     const handleKeyDown = () => {
         setButtonActive(2)
         getUserList();
@@ -73,6 +84,17 @@ const UserList = () => {
         ));
     };
 
+//let tewstref = searchRef.current.value
+    useEffect(() => {
+     
+            if (!searchRef.current.value) {
+                setButtonActive(1)
+                getUserList()
+            }
+    }, [searchRef]);
+    
+
+
     return (
         <div className="add_property_btn">
 
@@ -81,71 +103,78 @@ const UserList = () => {
                 <div className="search-group">
 
                     <input type="text"
+                        onKeyDown={handleKeyDownEnter}
                         ref={searchRef}
                         placeholder="Search here" />
                     {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-                    {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
+                    {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
                 </div>
 
             </div>
             <div className="table-container share-ref-table-in">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Username</th>
-                            {/* <th>User Type</th>
+                {dataLoader ?
+                    (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+                        <Skeleton count={50} />
+                    </div>)
+
+                    : (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Username</th>
+                                    {/* <th>User Type</th>
                             <th>Membership</th>
                             <th>Actions</th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <Circles
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <Circles
 
-                            height="100"
-                            width="100%"
-                            color="#004382"
-                            ariaLabel="circles-loading"
-                            wrapperStyle={{
-                                height: "100%",
-                                width: "100%",
-                                position: "absolute",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                zIndex: 9,
-                                background: "#00000082"
-                            }}
-                            wrapperClass=""
-                            visible={dataLoader}
-                        />
-                        {userList && userList.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
-                                <td>{user.phone}</td>
-                                <td>{user.username}</td>
-                                {/* <td>{user.user_role}</td>
+                                    height="100"
+                                    width="100%"
+                                    color="#004382"
+                                    ariaLabel="circles-loading"
+                                    wrapperStyle={{
+                                        height: "100%",
+                                        width: "100%",
+                                        position: "absolute",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        zIndex: 9,
+                                        background: "#00000082"
+                                    }}
+                                    wrapperClass=""
+                                    visible={dataLoader}
+                                />
+                                {userList && userList.map((user) => (
+                                    <tr key={user.id}>
+                                        <td>{user.name}</td>
+                                        <td>{user.email}</td>
+                                        <td>{user.phone}</td>
+                                        <td>{user.username}</td>
+                                        {/* <td>{user.user_role}</td>
                                 <td>{user.membership_name}</td>
                                 <td>{user.user_role}</td> */}
-                                <td>
-                                    {/* <button className="permissions share-ref-button-tb"
+                                        <td>
+                                            {/* <button className="permissions share-ref-button-tb"
                                         onClick={() => {
                                             navigate(`/klientale-contacts/share/${user.id}/${user.name}`)
                                         }}       >Share Me</button> */}
-                                </td>
-                                <td>
-                                    {/* <button className="permissions share-ref-button-tb"
+                                        </td>
+                                        <td>
+                                            {/* <button className="permissions share-ref-button-tb"
                                     onClick={() => {
                                         navigate(`/klientale-contacts/contacts/send/${user.id}`)
                                     }}       >Send me Referrals</button>  */}
-                                </td>
+                                        </td>
 
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>)}
 
                 {userList?.length > 0 && (
                     <div className="pagination">

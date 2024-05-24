@@ -10,8 +10,8 @@ import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useNavigate } from "react-router-dom";
-import { Circles } from 'react-loader-spinner'
-
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const CustomDropdown = ({ children, searchText, ...props }) => {
@@ -394,6 +394,14 @@ const Contact = ({ role }) => {
     getTasks();
   }, [currentPage]);
 
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+        setButtonActive(2)
+        getTasks()
+    }
+};
+
+
   const clearSearch = () => {
     setButtonActive(1)
     searchRef.current.value = ""
@@ -675,6 +683,7 @@ const Contact = ({ role }) => {
 
           <input type="text"
             ref={searchRef}
+            onKeyDown={handleKeyDownEnter}
             // value={searchQuery}
             // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
@@ -702,6 +711,12 @@ const Contact = ({ role }) => {
       {/* Rest of your component remains the same... */}
 
       <div className="table-container">
+      {dataLoader ?  
+       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+          <Skeleton count={25} />
+        </div>)
+
+        :(
         <table>
           <thead>
             <tr>
@@ -715,24 +730,7 @@ const Contact = ({ role }) => {
               <th></th>
             </tr>
           </thead>
-          <Circles
-
-            height="100"
-            width="100%"
-            color="#004382"
-            ariaLabel="circles-loading"
-            wrapperStyle={{
-              height: "100%",
-              width: "100%",
-              position: "absolute",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 9,
-              background: "#00000082"
-            }}
-            wrapperClass=""
-            visible={dataLoader}
-          />
+        
           {userss.length > 0 &&
             userss.map((contact) => (<tbody key={contact.id}>
 
@@ -783,7 +781,7 @@ const Contact = ({ role }) => {
                 </td>
               </tr>
             </tbody>))}
-        </table>
+        </table> )}
         {userss?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}

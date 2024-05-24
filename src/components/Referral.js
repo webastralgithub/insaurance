@@ -12,6 +12,9 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useNavigate, useParams, useRouter } from "react-router-dom";
 import "./Modal.css"
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 const Referral = ({ role }) => {
   const { id } = useParams();
   const selectRef = useRef(null);
@@ -318,6 +321,14 @@ const Referral = ({ role }) => {
   useEffect(() => {
     getTasks();
   }, [currentPage, active]);
+  
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+        setButtonActive(2)
+        getTasks();
+  
+    }
+};
 
   const clearSearch = () => {
     setButtonActive(1)
@@ -397,6 +408,7 @@ const Referral = ({ role }) => {
           <input
             type="text"
             ref={searchRef}
+            onKeyDown={handleKeyDownEnter}
             placeholder="Search here"
           />
           {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
@@ -432,6 +444,12 @@ const Referral = ({ role }) => {
       {/* Rest of your component remains the same... */}
 
       <div className="table-container share-ref-table-in">
+      {dataLoader ?  
+       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+          <Skeleton count={25} />
+        </div>)
+
+        :(
         <table>
           <thead>
             <tr>
@@ -530,7 +548,7 @@ const Referral = ({ role }) => {
             ))
           )}
 
-        </table>
+        </table>)}
         {userss?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}

@@ -10,7 +10,8 @@ import { toast } from "react-toastify";
 import { AuthContext } from "./context/AuthContext";
 import { type } from "@testing-library/user-event/dist/type";
 import { useNavigate } from "react-router-dom";
-
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const CustomDropdown = ({ children, searchText, ...props }) => {
@@ -74,6 +75,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 };
 
 const EmailCampaign = () => {
+  const [dataLoader, setDataLoader] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [templates, setTemplates] = useState([]);
   const [userTemplates, setUserTemplates] = useState([]);
@@ -112,6 +114,7 @@ const EmailCampaign = () => {
 
 
   const getEmailTemplates = async () => {
+
     try {
       const response = await axios.get(`${url}api/get/email`, {
         headers: {
@@ -133,7 +136,9 @@ const EmailCampaign = () => {
       console.error("Error fetching email templates:", error);
     }
   };
+
   const getEmailTemplatesByUserId = async () => {
+    setDataLoader(true)
     try {
       const response = await axios.get(
         `${url}api/user-email-templates`, {
@@ -147,19 +152,19 @@ const EmailCampaign = () => {
       } else {
         console.error("Invalid response format:", response);
       }
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error("Error fetching email templates:", error);
     }
   };
 
   const updateEmailTemplate = async (id, newData) => {
-
     try {
       if (editedTempalteContent === previewContent) {
         toast.error("No changes detected. Please update the content first.");
         return;
       }
-
       const response = await axios.put(
         `${url}api/update/${previewContentId}`,
         { text: newData },
@@ -636,6 +641,7 @@ const EmailCampaign = () => {
           // > <img src="/back.svg" /></button> </h3>
         }
         
+
         {chooseTemplate == true ? <div className="add_user_btn buttons-with-returb-btn">
           <button className={active == "2" ? 'active' : ''} onClick={() => setActive(2)}>
             Custom Text</button>
@@ -669,8 +675,15 @@ const EmailCampaign = () => {
             <div className="template-grid">
               <div className="new-email-tem-set">
                 <ul className="image-list">
+
+                {dataLoader ?  
+       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+          <Skeleton count={50} />
+        </div>)
+
+        :( <>
                   {userTemplates.map((userTemplate, index) => (
-                    <>
+                   
                       <li key={index}>
                         <input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
                         <label htmlFor={userTemplate.id}>
@@ -696,8 +709,8 @@ const EmailCampaign = () => {
                           </button>
                         </label>
                       </li>
-                    </>
-                  ))}
+                   
+                  ))} </>)}
                 </ul>
               </div>
             </div>

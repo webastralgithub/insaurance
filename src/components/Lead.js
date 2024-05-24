@@ -12,6 +12,8 @@ import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import { useNavigate, useRouter } from "react-router-dom";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Lead = () => {
   const [contacts, setContacts] = useState([]);
@@ -34,8 +36,8 @@ const Lead = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
   const [categories, setCategories] = useState([])
-  const [activeCategory, setActiveCategory] = useState(null);
-
+  const [activeCategory, setActiveCategory] = useState(10);
+  const [buttonActive, setButtonActive] = useState(1)
 
 
 
@@ -60,22 +62,20 @@ const Lead = () => {
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${url}api/contacts/categories`, { headers },);
+      const res = await axios.get(`${url}api/leads/categories`, { headers },);
       const options = res.data.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.name,
+        value: realtor.categoryId,
+        label: realtor.categoryName,
       }));
       setCategoriesOptions(options);
 
-      setCategories([{ id: -1, name: "Today's Leads" }, ...res.data, {
-        id: 0, name: "Others"
-      }])
-      //  setActiveCategory(res.data[0].id);
+      setCategories([{ id: -1, categoryName: "Today's Leads" }, ...res.data])
       setActiveCategory(-1);
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
+
 
   const handleDeleteClick = (propertyId) => {
     confirmAlert({
@@ -300,36 +300,29 @@ const Lead = () => {
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
   };
-  // Rest of your component remains the same...
-
-  //const[currentPage, setCurrentPage]= useState(1)
-
 
   const [dataLoader, setDataLoader] = useState(false)
-  const [buttonActive, setButtonActive] = useState(1)
-
 
 
   let searchRef = useRef()
-  const [userss, setusers] = useState([])
-  const [totalPagess, setTotalPages] = useState("");
-  //const [categories, setCategories] = useState("")
-  const [categoriesCount, setCategoriesCount] = useState("")
-  const [totalLeads, settotalLeads] = useState()
+
+  const [leadCountData, setLeadCountData] = useState([])
+  const [activeLeadCategory, setactiveLeadCategory] = useState([])
+
   const getLeads = async () => {
     setDataLoader(true)
-    // let currPage
-    // if (searchRef.current.value) {
-    //   currPage = ''
-    // } else {
-    //   currPage = currentPage
-    // }
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+      setActiveCategory("")
+    } else {
+      currPage = currentPage
+    }
     try {
-      const response = await axios.get(`${url}api/leads?search=${""}&category=${categories}&page=${currentPage}`, { headers })
+      const response = await axios.get(`${url}api/leads?category=${activeCategory}&search=${searchRef.current.value}&page=${currentPage}&today=${""}`, { headers })
       const responseData = await response?.data;
-      setTotalPages(responseData?.totalPages)
-      //setCategoriesCount(responseData?.categoryCounts)
-      settotalLeads(responseData?.totalLeads)
+      setLeadCountData(responseData?.leadsCountWithCategory)
+      setactiveLeadCategory(responseData?.leads)
       setDataLoader(false)
     } catch (error) {
       setDataLoader(false)
@@ -339,8 +332,29 @@ const Lead = () => {
 
   useEffect(() => {
     getLeads()
-  }, [])
+  }, [activeCategory])
 
+  const clearSearch = () => {
+    searchRef.current.value = ""
+    setButtonActive(1)
+    getLeads();
+  };
+
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+      setButtonActive(2)
+      getLeads()
+    }
+  };
+
+  const handleKeyDown = () => {
+    setButtonActive(2)
+    getLeads();
+  };
+
+  const handleCategoryChange = (id) => {
+    setActiveCategory(id === activeCategory ? 10 : id);
+  }
 
   return (
     <div className="add_property_btn">
@@ -398,97 +412,81 @@ const Lead = () => {
 
         <div className="search-group">
           <input type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            ref={searchRef}
+            onKeyDown={handleKeyDownEnter}
             placeholder="Search here" />
-          <img src="/search.svg" />
+          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
         </div>
       </div>
 
       {/* Rest of your component remains the same... */}
       <div className="add_property_btn">
-        {categories && categories.map((category, index) => (
-          <div key={category.id}>
-            <div className="add_user_btn family_meber" onClick={() => handleCategoryClick(category.id)}>
-              <h4>{category?.name} {category?.name !== "Today's Leads" && (<>({index !== category.length - 1 && category.totalContacts}{!category.id && noCategoryContacts.length}{index === 0 && todayContacs.length})</>)}</h4>
-              <button style={{ padding: "12px 18px" }}>{activeCategory == category.id ? "-" : "+"}</button>
-            </div>
-            {activeCategory == category.id && <div>
-              <div className="table-container">
-                <table style={{ marginBottom: contactsToDisplay.length > 0 ? "30px" : "0px" }}>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Phone</th>
-                      <th>Email</th>
-                      <th>Source</th>
-                      <th>Date</th>
-                      <th>My Category</th>
-                    </tr>
-                  </thead>
-                  {contacts.length > 0 &&
-                    contactsToDisplay.map((contact) => (<tbody>
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+            <Skeleton count={50} />
+          </div>) : (<>
+            {leadCountData && leadCountData.map((category, index) => (
+              <div key={category.categoryId}>
+                <div className="add_user_btn family_meber" onClick={() => handleCategoryChange(category.categoryId)} >
+                  <h4>{category?.categoryName} (<>{category.totalLeads})</></h4>
+                  <button style={{ padding: "12px 18px" }} >{activeCategory == category.categoryId ? "-" : "+"}</button>
+                </div>
+                {activeCategory == category?.categoryId && <div>
+                  <div className="table-container">
+                    <table style={{ marginBottom: contactsToDisplay.length > 0 ? "30px" : "0px" }}>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Phone</th>
+                          <th>Email</th>
+                          <th>Source</th>
+                          <th>Date</th>
+                          <th>My Category</th>
+                        </tr>
+                      </thead>
+                      {activeLeadCategory.length > 0 &&
+                        activeLeadCategory.map((contact) => (<tbody>
 
-                      <tr key={contact.id}>
-                        <td className="property-link" onClick={() => navigate("/leads/edit/" + contact.id)}>{contact.firstname}{" "} {contact.lastname}</td>
+                          <tr key={contact.id}>
+                            <td className="property-link" onClick={() => navigate("/leads/edit/" + contact.id)}>{contact.firstname}{" "} {contact.lastname}</td>
 
-                        <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                        <td>{contact.email}</td>
-                        <td>{contact.source}</td>
+                            <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                            <td>{contact.email}</td>
+                            <td>{contact.source}</td>
+                            <td>{contact.created_at.slice(0, 10)}</td>
+                            <td>{contact.category?.name}</td>
+                            <td>  <button className="permissions"
+                              onClick={() => {
+                                setId(contact.id)
+                                if (contact?.category) {
+                                  setSelectedCategory({
+                                    value: contact.category.id,
+                                    label: contact.category.name,
+                                  })
+                                }
+                                openModal("add")
+                              }
 
-                        <td>{contact.created_at.slice(0, 10)}</td>
+                              }> Add to Contacts</button>       </td>
+                            <td>
+                              <button className="permissions"
+                                onClick={() => {
 
-                        <td>{contact.category?.name}</td>
-
-
-
-                        <td>  <button className="permissions"
-                          onClick={() => {
-                            setId(contact.id)
-                            if (contact?.category) {
-                              setSelectedCategory({
-                                value: contact.category.id,
-                                label: contact.category.name,
-                              })
-                            }
-                            openModal("add")
-                          }
-
-                          }> Add to Contacts</button>       </td>
-                        <td>
-                          <button className="permissions"
-                            onClick={() => {
-
-                              navigate("/todo-list/add")
-                            }}       >Create Task</button>
-                        </td>
-                        {/* <td> <button className="permissions"
+                                  navigate("/todo-list/add")
+                                }}       >Create Task</button>
+                            </td>
+                            {/* <td> <button className="permissions"
           onClick={()=>handleDeleteClick(contact.id)}       >Delete</button></td>  */}
 
-                      </tr>
+                          </tr>
 
-                    </tbody>))}
-                </table>
-                {totalPages > 1 && (
-                  <div className="pagination">
-                    {Array.from({ length: totalPages }, (_, index) => (
-                      <button
-                        key={index + 1}
-                        onClick={() => handlePageChange(index + 1)}
-                        className={currentPage === index + 1 ? 'active' : ''}
-                      >
-                        {index + 1}
-                      </button>
-                    ))}
+                        </tbody>))}
+                    </table>
                   </div>
-                )}
-
-              </div>
-              {contactsToDisplay.length == 0 && <p className="no-data">No data Found</p>}
-            </div>}
-          </div>))}
-
-      </div>
+                  {activeCategory.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+                </div>}
+              </div>))}</>)}</div>
     </div>
   );
 };

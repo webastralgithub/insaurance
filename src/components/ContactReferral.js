@@ -11,9 +11,13 @@ import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useNavigate, useParams, useRouter } from "react-router-dom";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
+
 
 const ContactReferral = ({ role }) => {
-
+  const [dataLoader, setDataLoader] = useState(false)
   const { id } = useParams()
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
@@ -372,6 +376,7 @@ const ContactReferral = ({ role }) => {
   });
 
   const getContacts = async () => {
+    setDataLoader(true)
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
@@ -387,8 +392,9 @@ const ContactReferral = ({ role }) => {
         label: realtor.firstname,
       }));
       setContactoptions(realtorOptions)
-
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
@@ -482,6 +488,13 @@ const ContactReferral = ({ role }) => {
       {/* Rest of your component remains the same... */}
 
       <div className="table-container share-ref-table-in">
+
+      {dataLoader ?
+    (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+        <Skeleton count={50} />
+    </div>)
+
+    : (
         <table>
           <thead>
             <tr>
@@ -556,7 +569,7 @@ const ContactReferral = ({ role }) => {
             }
           </>
           }
-        </table>
+        </table>)}
         {totalPages > 1 && !active && (
           <div className="pagination">
             {Array.from({ length: totalPages }, (_, index) => (
@@ -572,8 +585,8 @@ const ContactReferral = ({ role }) => {
         )}
 
       </div>
-      {active == "1" && KlientaleContacts.length == 0 ? <p className="no-data">No Data Found</p> : ""}
-      {active == "0" && contactsToDisplay.length == 0 ? <p className="no-data">No Data Found</p> : ""}
+      {active == "1" && KlientaleContacts.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
+      {active == "0" && contactsToDisplay.length == 0 && !dataLoader && <p className="no-data">No Data Found</p> }
       {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}
     </div>
   );

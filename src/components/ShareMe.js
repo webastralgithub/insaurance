@@ -12,6 +12,11 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useNavigate, useParams, useRouter } from "react-router-dom";
 import Spinner from "./Spinner";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
+
+
 
 const ShareMe = ({ role }) => {
 
@@ -40,6 +45,9 @@ const ShareMe = ({ role }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
   const [isLoading, setIsLoading] = useState(false);
+  const [dataLoader, setDataLoader] = useState(false)
+
+
 
 
 
@@ -76,6 +84,7 @@ const ShareMe = ({ role }) => {
 
 
   const sendRefferal = async (contact) => {
+    setDataLoader(true)
     try {
       setIsLoading(true);
       const response = await axios.post(`${url}api/contacts/share`,
@@ -92,7 +101,9 @@ const ShareMe = ({ role }) => {
         closeModal()
 
       }
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       setIsLoading(false)
       toast.error('Please try after some time email server is busy')
     }
@@ -143,7 +154,7 @@ const ShareMe = ({ role }) => {
   };
 
   const handleShareKlintaleClick = async (contact) => {
-
+    setDataLoader(true)
     const { email, phone, name, category_name } = contact;
     const combinedObject = {
       name,
@@ -163,7 +174,9 @@ const ShareMe = ({ role }) => {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       toast.error("error on sharing klintale contact", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
@@ -308,13 +321,14 @@ const ShareMe = ({ role }) => {
 
   };
   const fetchUsers = async () => {
+    setDataLoader(true)
     try {
-
       const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const data = response.data.user;
-
       setKlintaleContacts(data);
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error("Error fetching users:", error);
     }
   };
@@ -331,12 +345,13 @@ const ShareMe = ({ role }) => {
   }, []);
 
   const getUsers = async () => {
+    setDataLoader(true)
     try {
       const res = await axios.get(`${url}api/admin/get-users`, { headers });
       setUsers(res.data);
-
+      setDataLoader(false)
     } catch (error) {
-
+      setDataLoader(false)
     }
   };
   const formatDate = (dateString) => {
@@ -448,7 +463,7 @@ const ShareMe = ({ role }) => {
 
   return (
     <div>
-      {isLoading && <Spinner />}
+
       <div className="add_property_btn">
 
         <div className="inner-pages-top inner-pages-top-share-ref" style={{ "padding-bottom": "34px" }}>
@@ -495,47 +510,54 @@ const ShareMe = ({ role }) => {
         {/* Rest of your component remains the same... */}
 
         <div className="table-container share-ref-table-in">
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email Id</th>
 
-                {/* <th>Services Require</th> */}
+          {dataLoader ?
+            (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+              <Skeleton count={50} />
+            </div>)
 
-                <th>Profession</th>
+            : (
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email Id</th>
 
-                {/* <th></th>
+                    {/* <th>Services Require</th> */}
+
+                    <th>Profession</th>
+
+                    {/* <th></th>
              <th></th> */}
 
 
 
 
-              </tr>
-            </thead>
+                  </tr>
+                </thead>
 
-            {active == "0" && <>
-              {contacts.length > 0 &&
-                contactsToDisplay.map((contact) => (contact.id != id && <tbody>
+                {active == "0" && <>
+                  {contacts.length > 0 &&
+                    contactsToDisplay.map((contact) => (contact.id != id && <tbody>
 
-                  <tr key={contact.id}>
-                    {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                    <td>  <button className="permissions share-ref-button-tb"
-                      onClick={() => {
-                        sendRefferal(contact)
-                      }} >Share</button>       </td>
-                    <td>{contact.firstname}</td>
-                    <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                    <td>{contact.email}</td>
+                      <tr key={contact.id}>
+                        {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
+                        <td>  <button className="permissions share-ref-button-tb"
+                          onClick={() => {
+                            sendRefferal(contact)
+                          }} >Share</button>       </td>
+                        <td>{contact.firstname}</td>
+                        <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                        <td>{contact.email}</td>
 
-                    {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
+                        {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
 
-                    <td>{contact.category?.name}</td>
+                        <td>{contact.category?.name}</td>
 
 
-                    {/* <td> 
+                        {/* <td> 
                    
                  <button className="permissions"
                    onClick={() => {changeView(Number(contact.id),contact.firstname)
@@ -544,36 +566,36 @@ const ShareMe = ({ role }) => {
                     
          
          </td> */}
-                  </tr>
-                </tbody>))}
+                      </tr>
+                    </tbody>))}
 
-            </>
-            }
+                </>
+                }
 
-            {/* {  klintale contacts} */}
-            {active == "1" && <>
-              {KlientaleContacts.length > 0 &&
-                KlientaleContacts.map((contact) => (contact.id != id && <tbody>
+                {/* {  klintale contacts} */}
+                {active == "1" && <>
+                  {KlientaleContacts.length > 0 &&
+                    KlientaleContacts.map((contact) => (contact.id != id && <tbody>
 
-                  <tr key={contact.id}>
-                    {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                    <td>  <button className="permissions share-ref-button-tb"
-                      onClick={() => {
-                        handleShareKlintaleClick(contact)
-                      }} >Share</button>       </td>
-                    <td>{contact.name}</td>
-                    <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                    <td>{contact.email}</td>
-                    <td>{contact.category_name}</td>
-                  </tr>
+                      <tr key={contact.id}>
+                        {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
+                        <td>  <button className="permissions share-ref-button-tb"
+                          onClick={() => {
+                            handleShareKlintaleClick(contact)
+                          }} >Share</button>       </td>
+                        <td>{contact.name}</td>
+                        <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                        <td>{contact.email}</td>
+                        <td>{contact.category_name}</td>
+                      </tr>
 
 
-                </tbody>))
-              }
-            </>
-            }
+                    </tbody>))
+                  }
+                </>
+                }
 
-          </table>
+              </table>)}
 
           {totalPages > 1 && !active && (
             <div className="pagination">
@@ -590,10 +612,10 @@ const ShareMe = ({ role }) => {
           )}
 
         </div>
-        {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}
+       
       </div>
-      {active == "1" && KlientaleContacts.length == 0 ? <p className="no-data">No Data Found</p> : ""}
-      {active == "0" && contactsToDisplay.length == 0 ? <p className="no-data">No Data Found</p> : ""}
+      {active == "1" && KlientaleContacts.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
+      {active == "0" && contactsToDisplay.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
     </div>
 
   );
