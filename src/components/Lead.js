@@ -36,9 +36,8 @@ const Lead = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
   const [categories, setCategories] = useState([])
-  const [activeCategory, setActiveCategory] = useState(10);
+  const [activeCategory, setActiveCategory] = useState("today");
   const [buttonActive, setButtonActive] = useState(1)
-
 
 
   const { auth, contactlength, setConatctlength, leadlength, setLeadlength } = useContext(AuthContext);
@@ -70,7 +69,7 @@ const Lead = () => {
       setCategoriesOptions(options);
 
       setCategories([{ id: -1, categoryName: "Today's Leads" }, ...res.data])
-      setActiveCategory(-1);
+      // setActiveCategory(-1);
     } catch (error) {
       console.error("User creation failed:", error);
     }
@@ -276,9 +275,9 @@ const Lead = () => {
   );
 
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
+  // const handlePageChange = (newPage) => {
+  //   setCurrentPage(newPage);
+  // };
   const changeView = async (id, name) => {
     localStorage.setItem("parent", name)
     setParentName(name)
@@ -308,20 +307,22 @@ const Lead = () => {
 
   const [leadCountData, setLeadCountData] = useState([])
   const [activeLeadCategory, setactiveLeadCategory] = useState([])
-
+  const [totalPagess, settotalPagess] = useState()
   const getLeads = async () => {
-    setDataLoader(true)
+    //setDataLoader(true)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
-      setActiveCategory("")
+   //   setActiveCategory("")
     } else {
       currPage = currentPage
     }
+
     try {
-      const response = await axios.get(`${url}api/leads?category=${activeCategory}&search=${searchRef.current.value}&page=${currentPage}&today=${""}`, { headers })
+      const response = await axios.get(`${url}api/leads?category=${activeCategory}&search=${searchRef.current.value}&page=${currPage}`, { headers })
       const responseData = await response?.data;
-      setLeadCountData(responseData?.leadsCountWithCategory)
+      setLeadCountData(responseData?.leadsCountWithCategory?.reverse())
+      settotalPagess(responseData?.totalPages)
       setactiveLeadCategory(responseData?.leads)
       setDataLoader(false)
     } catch (error) {
@@ -332,7 +333,7 @@ const Lead = () => {
 
   useEffect(() => {
     getLeads()
-  }, [activeCategory])
+  }, [activeCategory, currentPage])
 
   const clearSearch = () => {
     searchRef.current.value = ""
@@ -353,8 +354,23 @@ const Lead = () => {
   };
 
   const handleCategoryChange = (id) => {
-    setActiveCategory(id === activeCategory ? 10 : id);
+    setActiveCategory(id === activeCategory ? "today" : id);
   }
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
 
   return (
     <div className="add_property_btn">
@@ -483,8 +499,13 @@ const Lead = () => {
 
                         </tbody>))}
                     </table>
+                    {activeLeadCategory?.length > 0 && (
+                      <div className="pagination">
+                        {renderPageNumbers()}
+                      </div>
+                    )}
                   </div>
-                  {activeCategory.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+                  {activeLeadCategory.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
                 </div>}
               </div>))}</>)}</div>
     </div>

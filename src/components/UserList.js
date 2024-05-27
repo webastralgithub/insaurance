@@ -20,9 +20,9 @@ const UserList = () => {
     const headers = {
         Authorization: auth.token,
     };
-    const [userList, setUserList] = useState()
+    const [userList, setUserList] = useState([])
 
-    let searchRef = useRef()
+    let searchRef = useRef("")
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState("");
 
@@ -84,15 +84,13 @@ const UserList = () => {
         ));
     };
 
-//let tewstref = searchRef.current.value
-    useEffect(() => {
-     
-            if (!searchRef.current.value) {
-                setButtonActive(1)
-                getUserList()
-            }
-    }, [searchRef]);
-    
+
+//     const [checkEmptySearch , setCheckEmptySearch] =useEffect(2)    
+// useEffect(() => {
+//     if (searchRef?.current && searchRef?.current?.value == "") { 
+//       setCheckEmptySearch(1)
+//     }
+//   }, [checkEmptySearch]);
 
 
     return (
@@ -149,7 +147,7 @@ const UserList = () => {
                                     wrapperClass=""
                                     visible={dataLoader}
                                 />
-                                {userList && userList.map((user) => (
+                                {userList?.length > 0 && userList?.map((user) => (
                                     <tr key={user.id}>
                                         <td>{user.name}</td>
                                         <td>{user.email}</td>
