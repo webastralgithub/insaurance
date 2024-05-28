@@ -5,8 +5,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Circles } from 'react-loader-spinner'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 
 const UserList = () => {
@@ -15,7 +15,7 @@ const UserList = () => {
     const { auth } = useContext(
         AuthContext
     );
-   
+
     const url = process.env.REACT_APP_API_URL;
     const headers = {
         Authorization: auth.token,
@@ -84,22 +84,11 @@ const UserList = () => {
         ));
     };
 
-
-//     const [checkEmptySearch , setCheckEmptySearch] =useEffect(2)    
-// useEffect(() => {
-//     if (searchRef?.current && searchRef?.current?.value == "") { 
-//       setCheckEmptySearch(1)
-//     }
-//   }, [checkEmptySearch]);
-
-
     return (
         <div className="add_property_btn">
-
             <div className="inner-pages-top">
                 <h3>Users List</h3>
                 <div className="search-group">
-
                     <input type="text"
                         onKeyDown={handleKeyDownEnter}
                         ref={searchRef}
@@ -107,12 +96,11 @@ const UserList = () => {
                     {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
                     {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
                 </div>
-
             </div>
             <div className="table-container share-ref-table-in">
                 {dataLoader ?
                     (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-                        <Skeleton count={50} />
+                        <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
                     </div>)
 
                     : (
@@ -124,8 +112,8 @@ const UserList = () => {
                                     <th>Phone</th>
                                     <th>Username</th>
                                     {/* <th>User Type</th>
-                            <th>Membership</th>
-                            <th>Actions</th> */}
+                                    <th>Membership</th>
+                                    <th>Actions</th> */}
                                 </tr>
                             </thead>
                             <tbody>

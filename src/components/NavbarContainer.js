@@ -86,7 +86,9 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const NavbarContainer = (props) => {
   const { pathname } = useLocation();
-  const { auth, setAuth, tasklength, setTasklength, plan, roleId, subscriptionStatus ,settotalAvailableJobs,settotalReffralEarnedMoney,settotalReffrals,settotalReffralsReceived} = useContext(AuthContext);
+  const { auth, setAuth, tasklength, setTasklength, plan,
+     roleId, subscriptionStatus ,settotalAvailableJobs,settotalReffralEarnedMoney,
+     settotalReffrals,settotalReffralsReceived} = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);

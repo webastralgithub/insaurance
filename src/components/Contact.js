@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -396,10 +396,10 @@ const Contact = ({ role }) => {
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
-        setButtonActive(2)
-        getTasks()
+      setButtonActive(2)
+      getTasks()
     }
-};
+  };
 
 
   const clearSearch = () => {
@@ -688,7 +688,7 @@ const Contact = ({ role }) => {
             // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
           {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>} </div>
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div>
 
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>
           <button style={{ marginLeft: "30px" }} onClick={(e) => {
@@ -711,77 +711,75 @@ const Contact = ({ role }) => {
       {/* Rest of your component remains the same... */}
 
       <div className="table-container">
-      {dataLoader ?  
-       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-          <Skeleton count={25} />
-        </div>)
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+          </div>)
 
-        :(
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Business Name</th>
-              <th>Profession</th>
-              <th>Phone</th>
-              <th>Email</th>
+          : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Business Name</th>
+                  <th>Profession</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-              <th>Actions</th>
-              <th></th>
-            </tr>
-          </thead>
-        
-          {userss.length > 0 &&
-            userss.map((contact) => (<tbody key={contact.id}>
+              {userss.length > 0 &&
+                userss.map((contact) => (<tbody key={contact.id}>
 
 
-              <tr key={contact.id}>
-                <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
-                <td>{contact.company}</td>
-                <td>{contact.category?.name}</td>
-                <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                <td>{contact.email}</td>
+                  <tr key={contact.id}>
+                    <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
+                    <td>{contact?.company}</td>
+                    <td>{contact?.category?.name}</td>
+                    <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
+                    <td>{contact?.email}</td>
 
-                <td>
-                  <button className="permissions share-ref-button-tb"
-                    onClick={() => {
-                      navigate(`/contacts/share/${contact.id}`)
-                    }}       >Share Me</button>
-                </td>
-                <td>  <button className="permissions share-ref-button-tb"
-                  onClick={() => {
-                    navigate(`/contacts/send/${contact.id}`)
-                  }}       >Send me Referrals</button>       </td>
-                <td>
+                    <td>
+                      <button className="permissions share-ref-button-tb"
+                        onClick={() => {
+                          navigate(`/contacts/share/${contact.id}`)
+                        }}       >Share Me</button>
+                    </td>
+                    <td>  <button className="permissions share-ref-button-tb"
+                      onClick={() => {
+                        navigate(`/contacts/send/${contact?.id}`)
+                      }}       >Send me Referrals</button>       </td>
+                    <td>
 
-                  <button className="permissions"
-                    onClick={() => {
-                      setId(contact.id)
-                      if (contact?.category) {
-                        setSelectedCategory({
-                          value: contact.category.id,
-                          label: contact.category.name,
-                        })
-                      }
-                      openModal("add")
-                    }}> Convert to Lead</button>
-                </td>
-                <td>
-                  <button className="permissions"
-                    onClick={() => {
-                      localStorage.setItem("parent", contact.firstname)
-                      localStorage.setItem("phone", contact.phone)
+                      <button className="permissions"
+                        onClick={() => {
+                          setId(contact.id)
+                          if (contact?.category) {
+                            setSelectedCategory({
+                              value: contact.category.id,
+                              label: contact.category.name,
+                            })
+                          }
+                          openModal("add")
+                        }}> Convert to Lead</button>
+                    </td>
+                    <td>
+                      <button className="permissions"
+                        onClick={() => {
+                          localStorage.setItem("parent", contact.firstname)
+                          localStorage.setItem("phone", contact.phone)
 
-                      navigate(`/todo-list/add/${contact.id}`)
-                    }}       >Create Task</button>
-                </td>
-                <td>
-                  {role == 1 && <img className="delete-btn-ico" src="/delete.svg"
-                    onClick={() => handleDeleteClick(contact.id)} alt="" ></img>}
-                </td>
-              </tr>
-            </tbody>))}
-        </table> )}
+                          navigate(`/todo-list/add/${contact.id}`)
+                        }}       >Create Task</button>
+                    </td>
+                    <td>
+                      {role == 1 && <img className="delete-btn-ico" src="/delete.svg"
+                        onClick={() => handleDeleteClick(contact.id)} alt="" ></img>}
+                    </td>
+                  </tr>
+                </tbody>))}
+            </table>)}
         {userss?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}

@@ -74,7 +74,7 @@ import UserList from "./components/UserList";
 const App = () => {
 
 
-  const { toggle, setToggle, auth, roleId } = useContext(AuthContext)
+  const { toggle, setToggle, auth, roleId,subscriptionStatus } = useContext(AuthContext)
   const [role, setRole] = useState(0)
   const [id, setId] = useState(0)
   const [nameofuser, setnameofUser] = useState("")
@@ -494,14 +494,17 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/upgrade-plan" exact
-              element={
-                <PrivateRoute>
-                  <UpgradePlan />
-                </PrivateRoute>
-              }
-            />
+          
+          {subscriptionStatus !== "active" && <Route
+            path="/upgrade-plan" exact
+            element={
+              <PrivateRoute>
+                <UpgradePlan />
+              </PrivateRoute>
+            }
+          />
+      }
+
             <Route
               path="/manage-subscription" exact
               element={

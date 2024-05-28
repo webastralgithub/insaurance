@@ -213,10 +213,10 @@ const TodoList = ({ role }) => {
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
-        setButtonActive(2)
-        getTasks()
+      setButtonActive(2)
+      getTasks()
     }
-};
+  };
 
 
   const clearSearch = () => {
@@ -247,82 +247,82 @@ const TodoList = ({ role }) => {
         </div>
       </div>
       <div className="table-container">
-      {dataLoader ?  
-       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-          <Skeleton count={50} />
-        </div>)
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+      <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+          </div>)
 
-        :(
-        <table>
-          <thead>
-            <tr>
-              <th>Phone</th>
-              <th>Task Title</th>
-              <th>Follow Up Date</th>
-            </tr>
-          </thead>
-          <tbody>
-          
-            {tasks && tasks?.map((task, index) => (
-              <>
-                {!task.IsRead && <tr key={task.id}>
-                  <td>
-                    {task.phone != undefined || task.phone != "null" ? formatPhoneNumber(task.phone) : ""}
-                  </td>
-                  <td
-                    className="property-link"
-                    onClick={() => {
-                      setTodo(task)
-                      navigate(`/todo-list/edit/${task.id}`);
-                    }}
-                  >
-                    {task.Followup}
-                  </td>
+          : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Phone</th>
+                  <th>Task Title</th>
+                  <th>Follow Up Date</th>
+                </tr>
+              </thead>
+              <tbody>
 
-                  <td>
-                    {formatDate(task.FollowupDate)}
-                  </td>
+                {tasks && tasks?.map((task, index) => (
+                  <>
+                    {!task.IsRead && <tr key={task.id}>
+                      <td>
+                        {task.phone != undefined || task.phone != "null" ? formatPhoneNumber(task.phone) : ""}
+                      </td>
+                      <td
+                        className="property-link"
+                        onClick={() => {
+                          setTodo(task)
+                          navigate(`/todo-list/edit/${task.id}`);
+                        }}
+                      >
+                        {task.Followup}
+                      </td>
+
+                      <td>
+                        {formatDate(task.FollowupDate)}
+                      </td>
 
 
-                  {/* <td>
+                      {/* <td>
                 {task.client?.firstname}
               </td>
             
               <td>
                 {task.realtor?.name}
               </td> */}
-                  {/* {task.contact? <td   className="property-link"   onClick={() => {
+                      {/* {task.contact? <td   className="property-link"   onClick={() => {
                    
                     navigate(`/contact/edit/${task.contact.id}`);
                   }}>
                 { task.contact.firstname}
               </td>:<td></td>} */}
 
-                  <td>
-                    <button className="permissions"
-                      onClick={() => { handleMarkAsread(!task.IsRead, task.id) }}
-                    > Mark as {task.IsRead ? "unread" : "read"}</button>
-                  </td>
-                  <td> <button className="permissions"
-                    onClick={() => navigate(`/todo-list/followup/${task.id}`)} >Create Follow-Up</button></td>
+                      <td>
+                        <button className="permissions"
+                          onClick={() => { handleMarkAsread(!task.IsRead, task.id) }}
+                        > Mark as {task.IsRead ? "unread" : "read"}</button>
+                      </td>
+                      <td> <button className="permissions"
+                        onClick={() => navigate(`/todo-list/followup/${task.id}`)} >Create Follow-Up</button></td>
 
-                </tr>}
-              </>
-            ))}
-            {/* </>)} */}
-          </tbody>
+                    </tr>}
+                  </>
+                ))}
+                {/* </>)} */}
+              </tbody>
 
-        </table>)}
+            </table>)}
 
         {tasks?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}
           </div>
         )}
-        {tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+
 
       </div>
-
+      {tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
     </div>
   );
 };

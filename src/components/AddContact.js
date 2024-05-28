@@ -11,26 +11,15 @@ import { toast } from "react-toastify";
 
 
 const AddContact = ({ user }) => {
-  const [contact, setContact] = useState({
-    firstname: "",
-    lastname: "",
-    createdBy: user,
-    address1: "",
-    email: "",
-    source: "",
-    phone: "",
-    parentId: null,
-    //createdAt: "",
-    //updatedAt: "",
-    realtorId: null,
-    propertyId: null,
-    // children: [],
-  });
+
+
+
 
   const [errors, setErrors] = useState({
     firstname: "",
     email: "",
-    phone: ""
+    phone: "",
+    category: ""
   });
   const noSelectionOption = { value: null, label: 'No Selection' };
 
@@ -53,6 +42,22 @@ const AddContact = ({ user }) => {
     label: "British Columbia", // Set the label of "British Columbia"
   });
 
+  const [contact, setContact] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    profession: "",
+    address1: "",
+    phone: "",
+    company: "",
+    servceRequire: selectedServices,
+    category: seletedCategory,
+    notes: "",
+    source: "",
+    createdBy: user,
+    realtorId: null,
+    propertyId: null
+  });
   // Define an array of province options
 
   const serviceOptions = [
@@ -121,8 +126,8 @@ const AddContact = ({ user }) => {
         fontSize: "14px"
       };
     },
-
   };
+
   const url = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -172,13 +177,12 @@ const AddContact = ({ user }) => {
     }
   };
 
- 
+
 
   const validateForm = () => {
     let isValid = true;
     const { firstname, email, phone } = contact;
 
-    // Trim whitespace from all fields
     const trimmedFirstName = firstname.trim();
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
@@ -187,7 +191,8 @@ const AddContact = ({ user }) => {
     setErrors({
       firstname: "",
       email: "",
-      phone: ""
+      phone: "",
+      category: ""
     });
 
     // Validate firstname
@@ -203,8 +208,12 @@ const AddContact = ({ user }) => {
     }
 
     // Validate phone number
-    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone)|| phone.length != 10) {
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
+      isValid = false;
+    }
+    if (!contact.category) {
+      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
       isValid = false;
     }
 
@@ -218,29 +227,31 @@ const AddContact = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
-if(!isValid){
-  return
-}
-  
-      try {
-        const response = await axios.post(`${url}api/contacts/create`, contact, {
-          headers,
-        });
 
-        if (response.status === 201) {
-          // Contact added successfully
-          navigate("/contacts");
-          toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
-        } else if (response.data.status === false) {
-          toast.error(response.data.message)
-        } else {
-          toast.error("Failed to add contact");
-        }
-      } catch (error) {
-        console.error("An error occurred while adding a contact:", error);
-      }
+
+    if (!isValid) {
+      return
     }
-  
+
+    try {
+      const response = await axios.post(`${url}api/contacts/create`, contact, {
+        headers,
+      });
+
+      if (response.status === 201) {
+        // Contact added successfully
+        navigate("/contacts");
+        toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
+      } else if (response.data.status === false) {
+        toast.error(response.data.message)
+      } else {
+        toast.error("Failed to add contact");
+      }
+    } catch (error) {
+      console.error("An error occurred while adding a contact:", error);
+    }
+  }
+
   const handleAddressChange = (newAddress) => {
     setContact({ ...contact, address1: newAddress });
   };
@@ -385,10 +396,6 @@ if(!isValid){
               />
             </div>
           </div>
-
-          {/* ------------------- */}
-
-
         </div>
 
 
@@ -396,7 +403,6 @@ if(!isValid){
 
           <div className="add-contact-user-custom-wrapper">
             <div className="add-contact-user-custom-left">
-
 
               {/* <div className="form-user-add-inner-wrap">
           <label>User</label>
@@ -416,7 +422,7 @@ if(!isValid){
           />
   
         </div> */}
-              <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
+              {/* <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
                 <label>Active Agent</label>
                 <img src="/icons-form/Group30055.svg" />
                 <Select
@@ -434,7 +440,8 @@ if(!isValid){
 
                 />
 
-              </div>
+              </div> */}
+
               <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
                 <label>Service Require</label>
                 <Select
@@ -470,8 +477,8 @@ if(!isValid){
                   className="select-new"
 
                 />
-
               </div>
+              <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
             </div>
 
           </div>

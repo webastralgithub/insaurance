@@ -167,8 +167,6 @@ const Lead = () => {
 
   };
 
-
-
   const convert = async (e) => {
     e.preventDefault()
     if (!seletedCategory?.value) {
@@ -195,10 +193,6 @@ const Lead = () => {
     if (!dateString) {
       return ""; // Handle cases where the date string is empty or undefined
     }
-
-
-
-
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -243,17 +237,6 @@ const Lead = () => {
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
-  const filteredContact = contacts.filter((contact) => {
-    const searchText = searchQuery?.toLowerCase();
-    return (
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact?.lastname?.toLowerCase()?.includes(searchText) ||
-      contact?.email?.toLowerCase().includes(searchText) ||
-      contact?.phone?.toLowerCase().includes(searchText)
-    );
-  });
-
-
   const filteredContacts = contacts.filter((contact) => {
     if (activeCategory == 0) {
       return !contact.category
@@ -274,57 +257,36 @@ const Lead = () => {
     currentPage * contactsPerPage
   );
 
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-  // const handlePageChange = (newPage) => {
-  //   setCurrentPage(newPage);
-  // };
-  const changeView = async (id, name) => {
-    localStorage.setItem("parent", name)
-    setParentName(name)
-    // setParentId(id)
-    //   setParentView(true)
-    navigate(`${id}`)
-    try {
-      const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-      // Set the filtered contacts in the state
-      setContacts(response.data);
-    } catch (error) {
-      console.error("error", error)
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
-    }
-  }
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
   };
 
   const [dataLoader, setDataLoader] = useState(false)
-
-
   let searchRef = useRef()
-
   const [leadCountData, setLeadCountData] = useState([])
   const [activeLeadCategory, setactiveLeadCategory] = useState([])
   const [totalPagess, settotalPagess] = useState()
   const getLeads = async () => {
     //setDataLoader(true)
     let currPage
+    let activeCat
     if (searchRef.current.value) {
       currPage = ''
-   //   setActiveCategory("")
+      activeCat = 'today'
+      //   setActiveCategory("")
     } else {
       currPage = currentPage
+      activeCat =activeCategory
     }
 
     try {
-      const response = await axios.get(`${url}api/leads?category=${activeCategory}&search=${searchRef.current.value}&page=${currPage}`, { headers })
+      const response = await axios.get(`${url}api/leads?category=${activeCat}&search=${searchRef.current.value}&page=${currPage}`, { headers })
       const responseData = await response?.data;
       setLeadCountData(responseData?.leadsCountWithCategory?.reverse())
       settotalPagess(responseData?.totalPages)
       setactiveLeadCategory(responseData?.leads)
       setDataLoader(false)
+      setActiveCategory(activeCat)
     } catch (error) {
       setDataLoader(false)
       console.log("error")

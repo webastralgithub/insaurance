@@ -513,7 +513,7 @@ const ShareMe = ({ role }) => {
 
           {dataLoader ?
             (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-              <Skeleton count={50} />
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
             </div>)
 
             : (

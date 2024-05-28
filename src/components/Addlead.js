@@ -11,18 +11,7 @@ import Places from "./Places";
 
 const AddLead = ({ user }) => {
 
-  const [contact, setContact] = useState({
-    firstname: "",
-    lastname: "",
-    createdBy: user,
-    address1: "",
-    isLead: true,
-    source: "",
-    phone: "",
-    parentId: null,
-    realtorId: null,
-    propertyId: null,
-  });
+
 
 
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -39,6 +28,23 @@ const AddLead = ({ user }) => {
   const [selectedProvince, setSelectedProvince] = useState({
     value: 2, // Set the value of "British Columbia"
     label: "British Columbia", // Set the label of "British Columbia"
+  });
+
+  const [contact, setContact] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    profession: "",
+    address1: "",
+    phone: "",
+    company: "",
+    //servceRequire :selectedServices,
+    category: seletedCategory,
+    notes: "",
+    source: "",
+    createdBy: user,
+    realtorId: null,
+    propertyId: null
   });
 
   // Define an array of province options
@@ -64,11 +70,7 @@ const AddLead = ({ user }) => {
     { value: 12, label: "Nunavut" },
     { value: 13, label: "Yukon" },
   ];
-  const validateEmail = (email) => {
-    // Define a regular expression pattern for email validation.
-    const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    return emailPattern.test(email);
-  };
+
   const sourceOptions = [
     { value: "Website", label: "Website" },
     { value: "Email Campaign", label: "Email Campaign" },
@@ -86,31 +88,48 @@ const AddLead = ({ user }) => {
     setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
   }
 
-
   const validateForm = () => {
     let isValid = true;
+    const { firstname, email, phone } = contact;
 
-    if (!contact.firstname) {
-      setFirstError("Name is required");
+    const trimmedFirstName = firstname.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    // Reset errors
+    setErrors({
+      firstname: "",
+      email: "",
+      phone: "",
+      category: ""
+    });
+
+    // Validate firstname
+    if (!trimmedFirstName) {
+      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
       isValid = false;
     }
-    if (contact.email) {
-      const emailval = validateEmail(contact.email)
-      if (!emailval) {
-        setEmailError("invalid email")
-        isValid = false;
-      }
+
+    // Validate email
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
+      isValid = false;
     }
-    if (contact.phone) {
-      if (contact.phone.length != 10) {
-        setPhoneError("Invalid phone number")
-        isValid = false;
-      }
+
+    // Validate phone number
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
+      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
+      isValid = false;
+    }
+    if (!contact.category) {
+      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+      isValid = false;
     }
 
     if (!isValid) {
-      window.scrollTo(0, 0)
+      window.scrollTo(0, 0);
     }
+
     return isValid;
   };
 
@@ -182,16 +201,13 @@ const AddLead = ({ user }) => {
         value: realtor.id,
         label: realtor.mls_no,
       }));
-
       setProperties(realtorOptions);
-
-
-
     } catch (error) {
-
+      console.error(error)
     }
-
   };
+
+
   const getRealtorOptions = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
@@ -207,9 +223,15 @@ const AddLead = ({ user }) => {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    const isValid = validateForm();
+
+    if (!isValid) {
+      return
+    }
+  
       try {
         const response = await axios.post(`${url}api/contacts/create`, contact, {
           headers,
@@ -226,14 +248,25 @@ const AddLead = ({ user }) => {
         console.error("An error occurred while adding a contact:", error);
       }
     }
-  };
+
   const handleAddressChange = (newAddress) => {
     setContact({ ...contact, address1: newAddress });
   };
+  const [errors, setErrors] = useState({
+    firstname: "",
+    email: "",
+    phone: "",
+    category: ""
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    clearErrors(name);
     setContact({ ...contact, [name]: value });
+
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: ""
+    }));
   };
 
   const handleRealtorSelectChange = (selectedOption) => {
@@ -267,7 +300,7 @@ const AddLead = ({ user }) => {
             onChange={handleChange}
 
           />
-          <span className="error-message">{firstError}</span>
+          <span className="error-message">{errors.firstname}</span>
         </div>
 
 
@@ -279,7 +312,7 @@ const AddLead = ({ user }) => {
             value={contact.email}
             onChange={handleChange}
           />
-          <span className="error-message">{emailError}</span>
+          <span className="error-message">{errors.email}</span>
         </div>
         {/* <div className="form-user-add-inner-wrap">
           <label>Birth Date</label>
@@ -339,7 +372,7 @@ const AddLead = ({ user }) => {
             placeholder="+1 (___) ___-____"
 
           />
-          <span className="error-message">{phoneError}</span>
+          <span className="error-message">{errors.phone}</span>
         </div>
 
 
@@ -418,6 +451,7 @@ const AddLead = ({ user }) => {
           />
         </div>
       </div>
+      <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
       <div className="form-user-add-inner-btm-btn-wrap">
 
         <button type="submit" >Save</button>
