@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
@@ -321,14 +321,14 @@ const Referral = ({ role }) => {
   useEffect(() => {
     getTasks();
   }, [currentPage, active]);
-  
+
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
-        setButtonActive(2)
-        getTasks();
-  
+      setButtonActive(2)
+      getTasks();
+
     }
-};
+  };
 
   const clearSearch = () => {
     setButtonActive(1)
@@ -408,11 +408,14 @@ const Referral = ({ role }) => {
           <input
             type="text"
             ref={searchRef}
-            onKeyDown={handleKeyDownEnter}
+            //onKeyDown={handleKeyDownEnter}
             placeholder="Search here"
           />
-          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
+          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>} */}
+        </div>
+        <div className="add_user_btn">
+          <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
         </div>
       </div>
 
@@ -444,111 +447,111 @@ const Referral = ({ role }) => {
       {/* Rest of your component remains the same... */}
 
       <div className="table-container share-ref-table-in">
-      {dataLoader ?  
-       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-         <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
-        </div>)
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+          </div>)
 
-        :(
-        <table>
-          <thead>
-            <tr>
-              {active == 1 && (
-                <>
-                  <th>Date</th>
-                  <th>Business Name</th>
-                  <th>Profession</th>
-                  <th>Sent By</th>
-                </>
-              )
-              }
-              {active == 2 && (
-                <>
-                  <th>Date</th>
-                  <th>Referral Name </th>
-                  <th>Profession</th>
-                  <th>Sent to</th>
-                </>
-              )
-              }
-            </tr>
-          </thead>
-          <Circles
-
-            height="100"
-            width="100%"
-            color="#004382"
-            ariaLabel="circles-loading"
-            wrapperStyle={{
-              height: "100%",
-              width: "100%",
-              position: "absolute",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 9,
-              background: "#00000082"
-            }}
-            wrapperClass=""
-            visible={dataLoader}
-          />
-          {active == 1 && userss?.length > 0 && (
-
-            userss.map((contact) => (
-              <tbody>
-
-                <tr key={contact?.id}>
-                  <td>{formatDate(contact?.created_at)}</td>
-                  <td
-                    className="property-link"
-                    onClick={() => openModal(contact?.send_contact?.id)}
-                  >
-                    {" "}
-                    {contact?.send_contact?.firstname ||
-                      contact?.referrer_contact?.firstname}
-                  </td>
-                  <td>
-                    {contact?.send_contact?.category?.name ||
-                      contact?.referrer_contact?.category?.name}
-                  </td>
-                  <td>
-                    {" "}
-                    {contact?.reciever_contact?.firstname ||
-                      contact?.reciever_contact?.firstname}
-                  </td>
+          : (
+            <table>
+              <thead>
+                <tr>
+                  {active == 1 && (
+                    <>
+                      <th>Date</th>
+                      <th>Business Name</th>
+                      <th>Profession</th>
+                      <th>Sent By</th>
+                    </>
+                  )
+                  }
+                  {active == 2 && (
+                    <>
+                      <th>Date</th>
+                      <th>Referral Name </th>
+                      <th>Profession</th>
+                      <th>Sent to</th>
+                    </>
+                  )
+                  }
                 </tr>
-              </tbody>
-            ))
-          )}
-          {active == 2 && userss?.length > 0 && (
+              </thead>
+              <Circles
 
-            userss.map((contact) => (
-              <tbody>
+                height="100"
+                width="100%"
+                color="#004382"
+                ariaLabel="circles-loading"
+                wrapperStyle={{
+                  height: "100%",
+                  width: "100%",
+                  position: "absolute",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 9,
+                  background: "#00000082"
+                }}
+                wrapperClass=""
+                visible={dataLoader}
+              />
+              {active == 1 && userss?.length > 0 && (
 
-                <tr key={contact?.id}>
-                  <td>{formatDate(contact?.created_at)}</td>
-                  <td
-                    className="property-link"
-                    onClick={() => openModal(contact?.send_contact?.id)}
-                  >
-                    {" "}
-                    {contact?.send_contact?.firstname ||
-                      contact?.referrer_contact?.firstname}
-                  </td>
-                  <td>
-                    {contact?.send_contact?.category?.name ||
-                      contact?.referrer_contact?.category?.name}
-                  </td>
-                  <td>
-                    {" "}
-                    {contact?.reciever_contact?.firstname ||
-                      contact?.reciever_contact?.firstname}
-                  </td>
-                </tr>
-              </tbody>
-            ))
-          )}
+                userss.map((contact) => (
+                  <tbody>
 
-        </table>)}
+                    <tr key={contact?.id}>
+                      <td>{formatDate(contact?.created_at)}</td>
+                      <td
+                        className="property-link"
+                        onClick={() => openModal(contact?.send_contact?.id)}
+                      >
+                        {" "}
+                        {contact?.send_contact?.firstname ||
+                          contact?.referrer_contact?.firstname}
+                      </td>
+                      <td>
+                        {contact?.send_contact?.category?.name ||
+                          contact?.referrer_contact?.category?.name}
+                      </td>
+                      <td>
+                        {" "}
+                        {contact?.reciever_contact?.firstname ||
+                          contact?.reciever_contact?.firstname}
+                      </td>
+                    </tr>
+                  </tbody>
+                ))
+              )}
+              {active == 2 && userss?.length > 0 && (
+
+                userss.map((contact) => (
+                  <tbody>
+
+                    <tr key={contact?.id}>
+                      <td>{formatDate(contact?.created_at)}</td>
+                      <td
+                        className="property-link"
+                        onClick={() => openModal(contact?.send_contact?.id)}
+                      >
+                        {" "}
+                        {contact?.send_contact?.firstname ||
+                          contact?.referrer_contact?.firstname}
+                      </td>
+                      <td>
+                        {contact?.send_contact?.category?.name ||
+                          contact?.referrer_contact?.category?.name}
+                      </td>
+                      <td>
+                        {" "}
+                        {contact?.reciever_contact?.firstname ||
+                          contact?.reciever_contact?.firstname}
+                      </td>
+                    </tr>
+                  </tbody>
+                ))
+              )}
+
+            </table>)}
         {userss?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}

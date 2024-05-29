@@ -31,7 +31,8 @@ const Sidebar = (props) => {
       setIsOpenSub(true)
   }
 
-  const { toggle, setToggle, auth, setAuth, tasklength, contactlength,
+
+  const { auth, setAuth, tasklength,setTasklength, contactlength,
     setConatctlength, leadlength, setLeadlength, activeID, roleId } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
@@ -76,6 +77,8 @@ const Sidebar = (props) => {
         setCount(userData)
         setConatctlength(userData.contact_count)
         setLeadlength(userData.leads_count);
+
+         setTasklength(userData?.todo_count)
       } catch (error) {
         handleLogout()
       }

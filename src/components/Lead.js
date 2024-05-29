@@ -16,14 +16,19 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const Lead = () => {
+  const { auth, contactlength, setConatctlength, leadlength, setLeadlength } = useContext(AuthContext);
+  const headers = {
+    Authorization: auth.token,
+  };
+  const url = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
+  let searchRef = useRef()
   const [contacts, setContacts] = useState([]);
   const [noCategoryContacts, setNoCategoryContacts] = useState([]);
   const [parentid, setParentId] = useState()
   const [todayContacs, setTodayContacts] = useState([]);
-  const navigate = useNavigate();
   const [parentView, setParentView] = useState(false)
   const [parentName, setParentName] = useState([])
-
   const [id, setId] = useState(0)
   const [modalIsOpen, setIsOpen] = useState(false);
   const [categoriesoptions, setCategoriesOptions] = useState([])
@@ -38,26 +43,15 @@ const Lead = () => {
   const [categories, setCategories] = useState([])
   const [activeCategory, setActiveCategory] = useState("today");
   const [buttonActive, setButtonActive] = useState(1)
+  const [dataLoader, setDataLoader] = useState(false)
+  const [leadCountData, setLeadCountData] = useState([])
+  const [activeLeadCategory, setactiveLeadCategory] = useState([])
+  const [totalPagess, settotalPagess] = useState()
 
-
-  const { auth, contactlength, setConatctlength, leadlength, setLeadlength } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
-  const url = process.env.REACT_APP_API_URL;
-  const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
-
-  const handleWindowSizeChange = () => {
-    setWidth(window.innerWidth);
-  };
-  const handleCategoryClick = (categoryId) => {
-    setActiveCategory(categoryId === activeCategory ? null : categoryId);
-  };
 
   useEffect(() => {
     getCategories()
   }, []);
-
 
   const getCategories = async () => {
     try {
@@ -74,7 +68,6 @@ const Lead = () => {
       console.error("User creation failed:", error);
     }
   };
-
 
   const handleDeleteClick = (propertyId) => {
     confirmAlert({
@@ -114,7 +107,6 @@ const Lead = () => {
     }
   };
 
-
   const customStyles = {
     content: {
       top: "50%",
@@ -131,7 +123,6 @@ const Lead = () => {
       backgroundColor: "rgb(0 0 0 / 5%)",
     }
   };
-
 
   const openModal = (mode, role) => {
     setModalMode(mode);
@@ -189,17 +180,6 @@ const Lead = () => {
       closeModal()
     }
   }
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return ""; // Handle cases where the date string is empty or undefined
-    }
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
 
   const getContacts = async () => {
     try {
@@ -237,35 +217,10 @@ const Lead = () => {
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
-  const filteredContacts = contacts.filter((contact) => {
-    if (activeCategory == 0) {
-      return !contact.category
-    }
-    if (activeCategory == -1) {
-      const contactDate = new Date(contact.updated_at);
-      return contactDate.getTime() >= today.getTime();
-    }
-    return (
-      contact?.category?.id == activeCategory
-    );
-  });
-
-
-  const contactsPerPage = 10;
-  const contactsToDisplay = filteredContacts.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
   };
 
-  const [dataLoader, setDataLoader] = useState(false)
-  let searchRef = useRef()
-  const [leadCountData, setLeadCountData] = useState([])
-  const [activeLeadCategory, setactiveLeadCategory] = useState([])
-  const [totalPagess, settotalPagess] = useState()
   const getLeads = async () => {
     //setDataLoader(true)
     let currPage
@@ -276,7 +231,7 @@ const Lead = () => {
       //   setActiveCategory("")
     } else {
       currPage = currentPage
-      activeCat =activeCategory
+      activeCat = activeCategory
     }
 
     try {
@@ -289,13 +244,13 @@ const Lead = () => {
       setActiveCategory(activeCat)
     } catch (error) {
       setDataLoader(false)
-      console.log("error")
+      console.error("error")
     }
   }
 
   useEffect(() => {
     getLeads()
-  }, [activeCategory, currentPage])
+  }, [activeCategory, currentPage, leadlength])
 
   const clearSearch = () => {
     searchRef.current.value = ""
@@ -391,18 +346,21 @@ const Lead = () => {
         <div className="search-group">
           <input type="text"
             ref={searchRef}
-            onKeyDown={handleKeyDownEnter}
+            //onKeyDown={handleKeyDownEnter}
             placeholder="Search here" />
-          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
+          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+
         </div>
+        <div className="add_user_btn">
+          <button onClick={handleKeyDown}>Search</button></div>
       </div>
 
       {/* Rest of your component remains the same... */}
       <div className="add_property_btn">
         {dataLoader ?
           (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-            <Skeleton count={50} />
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
           </div>) : (<>
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
@@ -412,7 +370,7 @@ const Lead = () => {
                 </div>
                 {activeCategory == category?.categoryId && <div>
                   <div className="table-container">
-                    <table style={{ marginBottom: contactsToDisplay.length > 0 ? "30px" : "0px" }}>
+                    <table style={{ marginBottom: "30px" }}>
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -445,12 +403,10 @@ const Lead = () => {
                                 }
                                 openModal("add")
                               }
-
                               }> Add to Contacts</button>       </td>
                             <td>
                               <button className="permissions"
                                 onClick={() => {
-
                                   navigate("/todo-list/add")
                                 }}       >Create Task</button>
                             </td>

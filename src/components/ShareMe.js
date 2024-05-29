@@ -165,7 +165,7 @@ const ShareMe = ({ role }) => {
     };
 
     try {
-      const response = await axios.post(`https://insuranceadmin.nvinfobase.com/api/klientale-contact-share-me`, combinedObject, { headers }
+      const response = await axios.post(`${url}api/klientale-contact-share-me`, combinedObject, { headers }
       );
 
       if (response.status === 200) {
@@ -434,11 +434,9 @@ const ShareMe = ({ role }) => {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
 
-      // Set the filtered contacts in the state
       setContacts(response.data);
-
-
     } catch (error) {
+      console.error(error)
       // localStorage.removeItem('token');
       // setAuth(null);
       // navigate('/');
@@ -454,27 +452,14 @@ const ShareMe = ({ role }) => {
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
-  // Rest of your component remains the same..
-
-
-
-
-
 
   return (
     <div>
-
       <div className="add_property_btn">
-
         <div className="inner-pages-top inner-pages-top-share-ref" style={{ "padding-bottom": "34px" }}>
-
-
           <h3> <button className="back-only-btn"
             onClick={() => {
-
-
               navigate("/contacts"); // Change the view state to "contacts"
-
             }}
           > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Share Me"} ({contactName?.firstname})</h3>
           <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
@@ -513,7 +498,7 @@ const ShareMe = ({ role }) => {
 
           {dataLoader ?
             (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+              <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
             </div>)
 
             : (
@@ -612,7 +597,7 @@ const ShareMe = ({ role }) => {
           )}
 
         </div>
-       
+
       </div>
       {active == "1" && KlientaleContacts.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {active == "0" && contactsToDisplay.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}

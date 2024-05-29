@@ -313,6 +313,8 @@
   margin-left: 0 !important;
 }
 
+
+
 @media (max-width:600px){
   .add_property_btn .inner-pages-top-contacts.inner-pages-top-contacts-duplicate span.share-text {
     width: 95%;
@@ -325,4 +327,11 @@
   margin: 0 20px 0px 0 !important;
 }
 
+}
+
+.custom-search-btn-btn-search{
+  background-color: #004686 !important;
+  border: 2px solid #004686 !important;
+  border-radius: 2px;
+  color: white !important;
 }

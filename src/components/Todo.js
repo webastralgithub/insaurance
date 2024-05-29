@@ -93,7 +93,7 @@ const TodoList = ({ role }) => {
   };
 
   const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/todo/delete/${propertyId}`, { headers });
+    await axios.delete(`${url}api/todo/${propertyId}`, { headers });
 
     toast.success('Todo deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setTasks(tasks.filter((p) => p.id !== propertyId));
@@ -106,11 +106,6 @@ const TodoList = ({ role }) => {
       contact?.phone?.toLowerCase().includes(searchText)
     )
   });
-
-
-
-
-
 
   const [dataLoader, setDataLoader] = useState(false)
   const [buttonActive, setButtonActive] = useState(1)
@@ -125,7 +120,7 @@ const TodoList = ({ role }) => {
     }
 
     try {
-      const response = await axios.get(`${url}api/todos/get?page=${currPage}&&search=${searchRef.current.value}`, { headers });
+      const response = await axios.get(`${url}api/todo?page=${currPage}&&search=${searchRef.current.value}`, { headers });
       const today = new Date();
       const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
       const todayMonthDay = (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
@@ -192,7 +187,7 @@ const TodoList = ({ role }) => {
 
   const changeStatus = async (status, id) => {
     try {
-      const response = await axios.put(`${url}api/todo/update/${id}`,
+      const response = await axios.put(`${url}api/todo/${id}`,
         { IsRead: status },
         { headers });
       getTasks()
@@ -240,16 +235,20 @@ const TodoList = ({ role }) => {
         <div className="search-group">
           <input type="text"
             ref={searchRef}
-            onKeyDown={handleKeyDownEnter}
+            //onKeyDown={handleKeyDownEnter}
             placeholder="Search here" />
-          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />}
+          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
         </div>
+        <div className="add_user_btn">
+          <button onClick={handleKeyDown}>Search</button>
+        </div>
+
       </div>
       <div className="table-container">
         {dataLoader ?
           (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-      <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
           </div>)
 
           : (

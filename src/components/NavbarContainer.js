@@ -308,7 +308,7 @@ const NavbarContainer = (props) => {
 
   const getTasks = async () => {
     try {
-      const response = await axios.get(`${url}api/todo/get`, { headers });
+      const response = await axios.get(`${url}api/todo`, { headers });
       const today = new Date();
       const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 

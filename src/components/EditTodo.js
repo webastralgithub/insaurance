@@ -147,7 +147,7 @@ const EditTodoForm = () => {
 
     if (validateForm()) {
 
-      const response = await axios.put(`${url}api/todo/update/${id}`,
+      const response = await axios.put(`${url}api/todo/${id}`,
         { ...editedTodo },
         { headers });
 
@@ -193,11 +193,12 @@ const EditTodoForm = () => {
   };
 
   const getTodos = async () => {
-    const response = await axios.get(`${url}api/todo/get`, { headers });
-    const filtered = response.data.find(x => x.id == id)
+    const response = await axios.get(`${url}api/todo`, { headers });
+    
+    const filtered = await response?.data?.todo?.find(x => x.id == id)
 
     const followupDateISO = filtered?.FollowupDate
-      ? new Date(filtered.FollowupDate).toISOString().slice(0, 16)
+      ? new Date(filtered?.FollowupDate).toISOString().slice(0, 16)
       : '';
     setEditedTodo(filtered);
     // setDefaultFollowupDate(filtered?.FollowupDate)
@@ -242,9 +243,9 @@ const EditTodoForm = () => {
       <div >
         <div className="property_header">
           <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Edit Task</h3>
-          <div className="top-bar-action-btns">
+          {/* <div className="top-bar-action-btns">
             <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="form-user-edit-inner-wrap form-user-add-wrapper">

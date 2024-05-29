@@ -10,9 +10,7 @@ import PlacesNew from "./PlacesNew";
 const ChildContact = (props) => {
   const { id } = useParams();
   const parentNameNew = localStorage.getItem("parent");
-
   const [notesErr, setNotesErr] = useState([])
-
   const [phoneerr, setPhoneErr] = useState([])
   const [errCont, setErrCont] = useState()
   const [emailError, setEmailError] = useState()
@@ -21,20 +19,7 @@ const ChildContact = (props) => {
   const [useGoogleAddress, setUseGoogleAddress] = useState(true);
 
   const navigate = useNavigate();
-  const [newContact, setNewContact] = useState({
-    firstname: "",
-    lastname: "",
-
-    address1: "",
-
-    phone: "",
-    parentId: "",
-    //createdAt: "",
-    //updatedAt: "",
-    realtorId: null,
-    propertyId: null,
-    // children: [],
-  });
+  
 
   const [users, setUsers] = useState([]);
 
@@ -75,9 +60,9 @@ const ChildContact = (props) => {
 
   const handlePhoneNumberChange = (event, contactIndex) => {
     // Extract the raw phone number from the input
+    setPhoneErr("")
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
     const updatedContacts = [...contacts];
-    setPhoneErr("")
     setErrCont(0)
     updatedContacts[contactIndex]['phone'] = rawPhoneNumber.slice(1, 11)
     setContacts(updatedContacts);
@@ -85,7 +70,9 @@ const ChildContact = (props) => {
 
   const handleInputChange = (event, contactIndex, fieldName) => {
     setEmailError("")
+    setNameError("")
     setNotesErr("")
+    setPhoneError("")
     setErrCont(0)
     const updatedContacts = [...contacts];
     updatedContacts[contactIndex][fieldName] = event.target.value;
@@ -97,56 +84,47 @@ const ChildContact = (props) => {
     updatedContacts[contactIndex].address1 = newAddress;
     setContacts(updatedContacts);
   };
-  const validateEmail = (email) => {
-    // Define a regular expression pattern for email validation.
-    const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    return emailPattern.test(email);
-  };
+
+
+  const [nameError, setNameError] = useState("")
+  const [phoneError, setPhoneError] = useState("")
+  //const [emailError, setEmailError]=useState("")
   const saveContactChanges = async (contact) => {
-
-
+    let isValid = true;
     if (!contact.firstname) {
-      setNotesErr(
-        "Name is Required"
+      setNameError("Name is required");
+      isValid = false;
+    }
 
-      )
-      setErrCont(contact.id)
+    if (!contact.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) {
+      setEmailError("Invalid email");
+      isValid = false;
+    }
+    if (!contact.phone  || contact.phone.length != 10) {
+      setPhoneError("Invalid phone number");
+      isValid = false;
+    }
+
+
+    if (isValid == false) {
       return
     }
-    if (contact.phone) {
-      if (contact.phone.length != 10) {
-
-        setErrCont(contact.id)
-        setPhoneErr("Invalid phone number")
-        return
-      }
-    }
-    if (contact.email) {
-      setErrCont(contact.id)
-      if (!validateEmail(contact.email)) {
-        setEmailError("Invalid email")
-        return
-      }
-
-
-    }
     try {
-      if (notesErr.length || phoneerr.length || emailError.length) {
 
-        return
-      }
       if (contact.id) {
         // If the contact has an id, send a PUT request to update the contact
         await axios.put(`${url}api/contacts/update/${contact.id}`, contact, { headers });
         toast.success('Contact updated successfully');
       } else {
-
         // If the contact doesn't have an id, send a POST request to add a new contact
         const response = await axios.post(`${url}api/contacts/create`, { ...contact, createdBy: id }, { headers });
         // Add the new contact to the contacts list
         getContacts()
         toast.success('Contact added successfully');
       }
+      setEmailError("")
+      setPhoneErr("")
+      setNameError("")
     } catch (error) {
       toast.error('Error saving contact');
     }
@@ -159,10 +137,7 @@ const ChildContact = (props) => {
     updatedContacts.push({
       firstname: "",
       lastname: "",
-
       address1: "",
-
-
       phone: "",
       parentId: id,
       //createdAt: "",
@@ -186,7 +161,6 @@ const ChildContact = (props) => {
       }} >
 
         <h4>
-
           Family Members ({contacts.length})
 
         </h4>
@@ -257,8 +231,7 @@ const ChildContact = (props) => {
                       value={contact.firstname}
                       onChange={(e) => handleInputChange(e, index, 'firstname')}
                     />
-                    {errCont == contact.id && notesErr && <span className="error-message">{notesErr}</span>}
-                    {errCont == 0 && notesErr && !contact.id && <span className="error-message">{notesErr}</span>}
+                    <span className="error-message">{nameError}</span>
                   </td>
                   <td>
                     <InputMask
@@ -270,8 +243,7 @@ const ChildContact = (props) => {
                       placeholder="+1 (___) ___-____"
                     />
 
-                    {errCont == contact.id && phoneerr && <span className="error-message">{phoneerr}</span>}
-                    {errCont == 0 && !phoneerr && contact.id && <span className="error-message">{phoneerr}</span>}
+                    {phoneError && <span className="error-message">{phoneError}</span>}
                   </td>
                   <td>
                     <input
@@ -279,8 +251,7 @@ const ChildContact = (props) => {
                       value={contact.email}
                       onChange={(e) => handleInputChange(e, index, 'email')}
                     />
-                    {errCont == contact.id && emailError && <span className="error-message">{emailError}</span>}
-                    {errCont == 0 && emailError && !contact.id && <span className="error-message">{emailError}</span>}
+                    <span className="error-message">{emailError}</span>
 
                   </td>
                   <td>

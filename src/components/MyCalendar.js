@@ -60,7 +60,7 @@ const MyCalendar = () => {
 
   const getTasks = async () => {
     try {
-      const response = await axios.get(`${url}api/todos/get`, { headers });
+      const response = await axios.get(`${url}api/todo`, { headers });
       setTasks(response.data);
       const eventsdata = response.data.todo.map((item, index) => ({
         key: item.id,

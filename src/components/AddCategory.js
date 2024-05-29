@@ -126,13 +126,14 @@ const clearErrors = (fieldName) => {
           
           <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Category</h3>
         
-          <div className="top-bar-action-btns"><button type="submit" style={{background:"#004686"}} >Save</button>
-          </div>
+          {/* <div className="top-bar-action-btns">
+            <button type="submit" style={{background:"#004686"}} >Save</button>
+          </div> */}
           </div> 
           <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">
         <div className="form-catagory-edit-sec-left">
           <div className="form-user-add-inner-wrap">
-            <label>Name</label>
+            <label>Name<span className="required-star">*</span></label>
 
             <div className="edit-new-input">
               <input

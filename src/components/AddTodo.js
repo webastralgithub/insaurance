@@ -183,7 +183,7 @@ const AddTodo = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.post(`${url}api/todo/create`, contact, {
+        const response = await axios.post(`${url}api/todo`, contact, {
           headers,
         });
 

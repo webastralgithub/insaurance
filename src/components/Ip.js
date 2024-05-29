@@ -125,13 +125,16 @@ const Ip = ({ role }) => {
         <div className="search-group">
           <input
             type="text"
-            onKeyDown={handleKeyDownEnter}
+            //onKeyDown={handleKeyDownEnter}
             ref={searchRef}
             placeholder="Search here"
           />
-          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>}
+          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>} */}
 
+        </div>
+        <div className="add_user_btn">
+          <button onClick={handleKeyDown}>Search</button>
         </div>
       </div>
       <div className="table-container">

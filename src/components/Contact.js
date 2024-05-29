@@ -94,7 +94,7 @@ const Contact = ({ role }) => {
 
 
 
-  const { auth, property, setProperty, setAuth, roleId } = useContext(AuthContext);
+  const { auth, leadlength, setLeadlength,roleId } = useContext(AuthContext);
 
   const headers = {
     Authorization: auth.token,
@@ -176,6 +176,8 @@ const Contact = ({ role }) => {
     window.URL.revokeObjectURL(url);
     closeModal()
   };
+
+
   const convert = async (e) => {
     e.preventDefault()
     if (!seletedCategory?.value) {
@@ -191,10 +193,12 @@ const Contact = ({ role }) => {
     });
     getContacts();
     if (response.status === 200) {
+      //setLeadlength(leadlength+1)
       toast.success("Contact Converted successfully", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
+      setLeadlength(leadlength + 1);
       setSelectedCategory()
       closeModal()
 
@@ -218,7 +222,6 @@ const Contact = ({ role }) => {
     } catch (error) {
       toast.error(error.response.data.error, { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       console.error('Error uploading file:', error);
-      // Handle error
     }
   };
 
@@ -256,7 +259,6 @@ const Contact = ({ role }) => {
       backgroundColor: "rgb(0 0 0 / 75%)",
     }
   };
-
 
   const openModal = (mode, role) => {
     setModalMode(mode);
@@ -365,9 +367,6 @@ const Contact = ({ role }) => {
 
   const [dataLoader, setDataLoader] = useState(false)
   const [buttonActive, setButtonActive] = useState(1)
-
-
-
   let searchRef = useRef()
   const [userss, setusers] = useState([])
   const [totalPagess, setTotalPages] = useState("");
@@ -392,7 +391,7 @@ const Contact = ({ role }) => {
   };
   useEffect(() => {
     getTasks();
-  }, [currentPage]);
+  }, [currentPage , leadlength]);
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
@@ -400,7 +399,6 @@ const Contact = ({ role }) => {
       getTasks()
     }
   };
-
 
   const clearSearch = () => {
     setButtonActive(1)
@@ -463,24 +461,6 @@ const Contact = ({ role }) => {
     return `${year}-${month}-${day}`;
   };
 
-
-  const filteredContacts = contacts.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.company?.toLowerCase().includes(searchText) ||
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact.lastname?.toLowerCase().includes(searchText) ||
-      formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
-      contact.email?.toLowerCase().includes(searchText) ||
-      (contact.address1 + ' ' + contact.address2).toLowerCase().includes(searchText) ||
-      contact.city?.toLowerCase().includes(searchText) ||
-      contact.provinceName?.toLowerCase().includes(searchText) ||
-      (contact.realtor?.name.toLowerCase().includes(searchText)) ||
-      contact.source?.toLowerCase().includes(searchText) ||
-      contact.phone?.toLowerCase().includes(searchText)
-    );
-  });
-
   const getContacts = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
@@ -503,16 +483,6 @@ const Contact = ({ role }) => {
       // navigate('/');
     }
   };
-
-  const contactsPerPage = 20; // Adjust the number of contacts per page as needed
-  const contactsToDisplay = filteredContacts.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-  // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-
-
 
   const changeView = async (id, name) => {
     localStorage.setItem("parent", name)
@@ -683,13 +653,15 @@ const Contact = ({ role }) => {
 
           <input type="text"
             ref={searchRef}
-            onKeyDown={handleKeyDownEnter}
+            //onKeyDown={handleKeyDownEnter}
             // value={searchQuery}
             // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
-          {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div>
-
+          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
+          <div className="add_user_btn">
+            <button onClick={handleKeyDown}>Search</button></div>
+        </div>
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>
           <button style={{ marginLeft: "30px" }} onClick={(e) => {
             e.preventDefault()
@@ -756,6 +728,7 @@ const Contact = ({ role }) => {
                         onClick={() => {
                           setId(contact.id)
                           if (contact?.category) {
+                           
                             setSelectedCategory({
                               value: contact.category.id,
                               label: contact.category.name,

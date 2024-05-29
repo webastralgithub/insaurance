@@ -167,7 +167,7 @@ const AddVendor = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        console.log("contact add vendor", contact)
+        
         const response = await axios.post(`${url}api/contacts/create`, contact, {
           headers,
         });

@@ -38,6 +38,7 @@ const AddLead = ({ user }) => {
     address1: "",
     phone: "",
     company: "",
+    isLead :true ,
     //servceRequire :selectedServices,
     category: seletedCategory,
     notes: "",
