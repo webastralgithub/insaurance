@@ -75,7 +75,7 @@ const AddContact = ({ user }) => {
 
   const navigate = useNavigate();
 
-  const { auth } = useContext(AuthContext);
+  const { auth,setConatctlength, contactlength } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -227,8 +227,6 @@ const AddContact = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
-
-
     if (!isValid) {
       return
     }
@@ -240,6 +238,7 @@ const AddContact = ({ user }) => {
 
       if (response.status === 201) {
         // Contact added successfully
+        setConatctlength(contactlength + 1);
         navigate("/contacts");
         toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
       } else if (response.data.status === false) {
@@ -462,7 +461,7 @@ const AddContact = ({ user }) => {
 
               </div>
               <div className="form-user-add-inner-wrap">
-                <label>Category</label>
+                <label>Category<span className="required-star">*</span></label>
                 <img src="/icons-form/Group30055.svg" />
                 <Select
                   placeholder="Select Category.."

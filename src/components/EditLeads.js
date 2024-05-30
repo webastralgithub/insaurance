@@ -376,7 +376,7 @@ const EditLeads = () => {
 
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-email">
-          <label>Email</label>
+          <label>Email<span className="required-star">*</span></label>
           {editingField === "email" || editingField === "all" ? (
             <div className="edit-new-input">
               <input
@@ -465,7 +465,7 @@ const EditLeads = () => {
         </div> */}
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-phone">
-          <label>Phone</label>
+          <label>Phone<span className="required-star">*</span></label>
           {editingField === "phone" || editingField === "all" ? (
             <div className="edit-new-input">
               <InputMask
@@ -571,7 +571,7 @@ const EditLeads = () => {
           />
         </div> */}
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-category">
-          <label>Category</label>
+          <label>Category<span className="required-star">*</span></label>
 
           <Select
             placeholder="Select Category.."

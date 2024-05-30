@@ -448,7 +448,7 @@ const KlientaleContacts = ({ role }) => {
         <div className="search-group">
           <input
             type="text"
-            //onKeyDown={handleKeyDownEnter}
+            onKeyDown={handleKeyDownEnter}
             ref={searchRef}
             placeholder="Search here"
           />

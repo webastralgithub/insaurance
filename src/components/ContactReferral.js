@@ -79,7 +79,7 @@ const ContactReferral = ({ role }) => {
 
     try {
       const response = await axios.post(`${url}api/contacts/share`,
-        { sendTo:contact, selectedContacts: [id], type: 2 }, {
+        { sendTo: contact, selectedContacts: [id], type: 2 }, {
         headers,
       });
       if (response.status === 200) {
@@ -449,6 +449,76 @@ const ContactReferral = ({ role }) => {
   };
   // Rest of your component remains the same...
 
+  const [buttonActive, setButtonActive] = useState(1)
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
+
+  const getTaskss = async () => {
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+    try {
+      if (active === 0) {
+        setDataLoader(true)
+        const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
+        setusers(response?.data?.contacts)
+        setTotalPages(response?.data?.totalPages)
+        setDataLoader(false)
+      }
+      if (active === 1) {
+        setDataLoader(true)
+        setusers("")
+        setDataLoader(false)
+      }
+
+    } catch (error) {
+      setDataLoader(false)
+      console.error("Server is busy");
+    }
+  };
+  useEffect(() => {
+    getTaskss();
+  }, [currentPage, active]);
+
+  // console.log("userssss", userss)
+  console.log("active", active)
+
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+      // setButtonActive(2)
+      getTaskss()
+    }
+  };
+
+  const clearSearch = () => {
+    // setButtonActive(1)
+    searchRef.current.value = ""
+    getTaskss();
+  };
+  const handleKeyDown = () => {
+    // setButtonActive(2)
+    getTaskss();
+  };
+
+  const handlePageChangee = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
+
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top inner-pages-top-share-ref" style={{ "padding-bottom": "30px" }}>
@@ -465,22 +535,28 @@ const ContactReferral = ({ role }) => {
           </svg>
           Send me referrals from your following contacts</span>
         <div className="search-group">
-
           <input type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            ref={searchRef}
+            onKeyDown={handleKeyDownEnter}
+            // value={searchQuery}
+            // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
-          <img src="/search.svg" />
+          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+{buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
+          <div className="add_user_btn">
+            <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+          </div>
+
         </div>
       </div>
 
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
 
         <div className="add_user_btn">
-          <button className={!active ? 'active' : ''} onClick={() => setActive(0)}>
+          <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0) }}>
             Personal Contacts</button>
 
-          <button className={active ? 'active' : ''} onClick={() => setActive(1)}>
+          <button className={active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(1) }}>
             Klientale Contacts</button>
         </div>
       </div>
@@ -489,53 +565,53 @@ const ContactReferral = ({ role }) => {
 
       <div className="table-container share-ref-table-in">
 
-      {dataLoader ?
-    (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-      <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
-    </div>)
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+          </div>)
 
-    : (
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Phone</th>
-              <th>Email Id</th>
+          : (
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Email Id</th>
 
-              {/* <th>Services Require</th> */}
+                  {/* <th>Services Require</th> */}
 
-              <th>Category</th>
+                  <th>Category</th>
 
-              {/* <th></th>
+                  {/* <th></th>
               <th></th> */}
 
 
 
 
-            </tr>
-          </thead>
-          {active == "0" && <>
-            {contacts.length > 0 &&
-              contactsToDisplay.map((contact) => (contact.id != id && <tbody>
+                </tr>
+              </thead>
+              {active === 0 && <>
+                {userss.length > 0 &&
+                  userss.map((contact) => (contact.id != id && <tbody>
 
-                <tr key={contact.id}>
-                  {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                  <td>  <button className="permissions share-ref-button-tb"
-                    onClick={() => {
-                      handleDeleteClick(contact)
-                    }}>Send</button>       </td>
-                  <td>{contact.firstname}</td>
+                    <tr key={contact.id}>
+                      {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
+                      <td>  <button className="permissions share-ref-button-tb"
+                        onClick={() => {
+                          handleDeleteClick(contact)
+                        }}>Send</button>       </td>
+                      <td>{contact.firstname}</td>
 
-                  <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                  <td>{contact.email}</td>
+                      <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                      <td>{contact.email}</td>
 
-                  {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
+                      {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
 
-                  <td>{contact.category?.name}</td>
+                      <td>{contact.category?.name}</td>
 
 
-                  {/* <td> 
+                      {/* <td> 
                     
                   <button className="permissions"
                     onClick={() => {changeView(Number(contact.id),contact.firstname)
@@ -544,49 +620,41 @@ const ContactReferral = ({ role }) => {
                      
           
           </td> */}
-                </tr>
-              </tbody>))}
-          </>
-          }
+                    </tr>
+                  </tbody>))}
+              </>
+              }
 
-          {/* {  klintale contacts} */}
-          {active == "1" && <>
-            {KlientaleContacts.length > 0 &&
-              KlientaleContacts.map((contact) => (contact.id != id && <tbody>
+              {/* {  klintale contacts} */}
+              {active === 1 && <>
+                {userss.length > 0 &&
+                  userss.map((contact) => (contact.id != id && <tbody>
 
-                <tr key={contact.id}>
-                  {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                  <td>  <button className="permissions share-ref-button-tb"
-                    onClick={() => {
-                      handleDeleteKlintaleClick(contact)
-                    }} >Send</button>       </td>
-                  <td>{contact.name}</td>
-                  <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                  <td>{contact.email}</td>
-                  <td>{contact.category_name}</td>
-                </tr>
-              </tbody>))
-            }
-          </>
-          }
-        </table>)}
-        {totalPages > 1 && !active && (
+                    <tr key={contact.id}>
+                      {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
+                      <td>  <button className="permissions share-ref-button-tb"
+                        onClick={() => {
+                          handleDeleteKlintaleClick(contact)
+                        }} >Send</button>       </td>
+                      <td>{contact.name}</td>
+                      <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                      <td>{contact.email}</td>
+                      <td>{contact.category_name}</td>
+                    </tr>
+                  </tbody>))
+                }
+              </>
+              }
+            </table>)}
+        {userss?.length > 0 && (
           <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? 'active' : ''}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {renderPageNumbers()}
           </div>
         )}
 
       </div>
-      {active == "1" && KlientaleContacts.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
-      {active == "0" && contactsToDisplay.length == 0 && !dataLoader && <p className="no-data">No Data Found</p> }
+      {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
+      {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}
     </div>
   );

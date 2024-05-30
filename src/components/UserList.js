@@ -90,7 +90,7 @@ const UserList = () => {
                 <h3>Users List</h3>
                 <div className="search-group">
                     <input type="text"
-                        //onKeyDown={handleKeyDownEnter}
+                        onKeyDown={handleKeyDownEnter}
                         ref={searchRef}
                         placeholder="Search here" />
                     {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}

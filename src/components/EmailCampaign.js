@@ -370,7 +370,7 @@ const EmailCampaign = () => {
     const handleUserContentChange = (event) => {
 
       setUserEditedContent(event.target.innerHTML);
-      
+
       // setIsEditMode(true);
     };
 
@@ -408,15 +408,15 @@ const EmailCampaign = () => {
   };
 
   const openUserPreviewModal = (templateUserId, templateUserContent) => {
- 
+
     setUserIsPreviewModalOpen(true);
     setUserPreviewContent(templateUserContent);
     setUserPreviewContentId(templateUserId);
-    
+
   };
   const closeUserPreviewModal = () => {
     setUserIsPreviewModalOpen(false);
-   // setUserPreviewContent("");
+    // setUserPreviewContent("");
     setUserPreviewContentId(null);
   };
   const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
@@ -640,7 +640,7 @@ const EmailCampaign = () => {
           //   }}
           // > <img src="/back.svg" /></button> </h3>
         }
-        
+
 
         {chooseTemplate == true ? <div className="add_user_btn buttons-with-returb-btn">
           <button className={active == "2" ? 'active' : ''} onClick={() => setActive(2)}>
@@ -676,43 +676,44 @@ const EmailCampaign = () => {
               <div className="new-email-tem-set">
                 <ul className="image-list">
 
-                {dataLoader ?  
-       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-         <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
-        </div>)
+                  {dataLoader ?
+                    (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+                      <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+                    </div>)
 
-        :( <>
-                  {userTemplates.map((userTemplate, index) => (
-                   
-                      <li key={index}>
-                        <input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
-                        <label htmlFor={userTemplate.id}>
-                          <div key={userTemplate.id} className="template-item">
-                            {/* Add div for preview */}
+                    : (<>
+                      {userTemplates.map((userTemplate, index) => (
 
-                            <div
-                              className="email-template-box"
-                              style={{
-                                width: "100%",
-                                height: "100px",
-                                border: "1px solid #ccc",
-                                overflow: "hidden",
-                              }}
-                            >
-                              <div dangerouslySetInnerHTML={{ __html: userTemplate.text }} />
+                        <li key={index}>
+                          <input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
+                          <label htmlFor={userTemplate.id}>
+                            <div key={userTemplate.id} className="template-item">
+                              {/* Add div for preview */}
+
+                              <div
+                                className="email-template-box"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  border: "1px solid #ccc",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <div dangerouslySetInnerHTML={{ __html: userTemplate.text }} />
+                              </div>
+                              <div className="email-template-name"> {userTemplate.name}
+                              </div>
                             </div>
-                            <div className="email-template-name"> {userTemplate.name}
-                            </div>
-                          </div>
-                          <button onClick={() => openUserPreviewModal(userTemplate.id, userTemplate.text)}>
-                            Edit
-                          </button>
-                        </label>
-                      </li>
-                   
-                  ))} </>)}
+                            <button onClick={() => openUserPreviewModal(userTemplate.id, userTemplate.text)}>
+                              Edit
+                            </button>
+                          </label>
+                        </li>
+
+                      ))} </>)}
                 </ul>
               </div>
+              {userTemplates.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
             </div>
           </div>
         </>}

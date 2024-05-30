@@ -94,7 +94,7 @@ const Contact = ({ role }) => {
 
 
 
-  const { auth, leadlength, setLeadlength,roleId } = useContext(AuthContext);
+  const { auth, leadlength, setLeadlength, roleId } = useContext(AuthContext);
 
   const headers = {
     Authorization: auth.token,
@@ -391,7 +391,7 @@ const Contact = ({ role }) => {
   };
   useEffect(() => {
     getTasks();
-  }, [currentPage , leadlength]);
+  }, [currentPage, leadlength]);
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
@@ -426,11 +426,14 @@ const Contact = ({ role }) => {
   };
 
   const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
-
-    toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setContacts(contacts.filter((p) => p.id !== propertyId));
-
+    try {
+      await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
+      toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+      setContacts(contacts.filter((p) => p.id !== propertyId));
+      getTasks()
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   useEffect(() => {
@@ -447,18 +450,6 @@ const Contact = ({ role }) => {
     } catch (error) {
 
     }
-  };
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return ""; // Handle cases where the date string is empty or undefined
-    }
-
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
   };
 
   const getContacts = async () => {
@@ -649,11 +640,12 @@ const Contact = ({ role }) => {
               Add Contact</button>
           }
         </div>
+        
         <div className="search-group">
 
           <input type="text"
             ref={searchRef}
-            //onKeyDown={handleKeyDownEnter}
+            onKeyDown={handleKeyDownEnter}
             // value={searchQuery}
             // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
@@ -662,6 +654,8 @@ const Contact = ({ role }) => {
           <div className="add_user_btn">
             <button onClick={handleKeyDown}>Search</button></div>
         </div>
+
+
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>
           <button style={{ marginLeft: "30px" }} onClick={(e) => {
             e.preventDefault()
@@ -728,7 +722,7 @@ const Contact = ({ role }) => {
                         onClick={() => {
                           setId(contact.id)
                           if (contact?.category) {
-                           
+
                             setSelectedCategory({
                               value: contact.category.id,
                               label: contact.category.name,

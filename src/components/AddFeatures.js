@@ -54,14 +54,14 @@ const AddFeatures = () => {
         }
 
         const sendformData = {
-            name :formData.title,
-            set_limit :formData.limit,
-            short_description : formData.short_description ,
-            page : formData.page
+            name: formData.title,
+            set_limit: formData.limit,
+            short_description: formData.short_description,
+            page: formData.page
 
         }
         try {
-       
+
             const response = await axios.post(`${url}api/limit`, sendformData, { headers });
             const responseData = response.data;
             setFormdata({
@@ -80,7 +80,13 @@ const AddFeatures = () => {
     return (
         <div className="manage-configr-table ">
             <div className="manage-cross-btn">
-                <h3 className="heading-category-group-contacts">Add Configuration
+                <h3 className="heading-category-group-contacts">
+                    <button className="back-only-btn"
+                        onClick={() => {
+                            navigate(-1);
+                        }}
+                    > <img src="/back.svg" />
+                    </button> Add Configuration
                     <img
                         className="close-modal-share"
 

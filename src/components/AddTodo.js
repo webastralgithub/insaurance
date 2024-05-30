@@ -256,11 +256,19 @@ const AddTodo = () => {
               <Datetime
                 value={dateTime}
                 onChange={handleDateTimeChange}
+                renderInput={(props, openCalendar) => (
+                  <input
+                    {...props}
+                    readOnly
+                    onClick={openCalendar}
+                    style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                  />
+                )}
               />
               <span className="error-message">{propertyTypeError}</span>
             </div>
             <div className="form-user-add-inner-wrap">
-              <label>Phone Number</label>
+              <label>Phone Number<span className="required-star">*</span></label>
               <InputMask
                 mask="+1 (999) 999-9999"
                 type="text"

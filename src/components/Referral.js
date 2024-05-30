@@ -408,7 +408,7 @@ const Referral = ({ role }) => {
           <input
             type="text"
             ref={searchRef}
-            //onKeyDown={handleKeyDownEnter}
+            onKeyDown={handleKeyDownEnter}
             placeholder="Search here"
           />
           {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}

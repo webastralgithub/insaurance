@@ -306,7 +306,7 @@ const AddLead = ({ user }) => {
 
 
         <div className="form-user-add-inner-wrap">
-          <label>Email Id</label>
+          <label>Email Id<span className="required-star">*</span></label>
           <input
             type="email"
             name="email"
@@ -363,7 +363,7 @@ const AddLead = ({ user }) => {
 
 
         <div className="form-user-add-inner-wrap">
-          <label>Phone</label>
+          <label>Phone<span className="required-star">*</span></label>
           <InputMask
             mask="+1 (999) 999-9999"
             type="text"
@@ -436,7 +436,7 @@ const AddLead = ({ user }) => {
 
         </div>
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category">
-          <label>My Category</label>
+          <label>My Category<span className="required-star">*</span></label>
           <img src="/icons-form/Group30055.svg" />
           <Select
             placeholder="Select Category.."

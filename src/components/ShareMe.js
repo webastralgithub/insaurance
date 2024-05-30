@@ -369,6 +369,7 @@ const ShareMe = ({ role }) => {
 
     return `${year}-${month}-${day}`;
   };
+
   const filteredContacts = contacts.filter((contact) => {
     const searchText = searchQuery.toLowerCase();
     return (
@@ -433,7 +434,6 @@ const ShareMe = ({ role }) => {
     try {
       const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-
       setContacts(response.data);
     } catch (error) {
       console.error(error)
@@ -443,15 +443,82 @@ const ShareMe = ({ role }) => {
     }
   }
 
-  const PlaceholderWithIcon = (props) => (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
-      {/* Adjust icon and styling */}
-      <span>{props.children}</span>  <img style={{ width: "17px", filter: "brightness(4.5)" }} src="/search.svg" />
-    </div>
-  );
+    ;
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
+
+
+  const [buttonActive, setButtonActive] = useState(1)
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
+
+  const getTaskss = async () => {
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+    try {
+      if (active === 0) {
+        setDataLoader(true)
+        const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
+        setusers(response?.data?.contacts)
+        setTotalPages(response?.data?.totalPages)
+        setDataLoader(false)
+      }
+      if (active === 1) {
+        setDataLoader(true)
+        setusers("")
+        setDataLoader(false)
+      }
+
+    } catch (error) {
+      setDataLoader(false)
+      console.error("Server is busy");
+    }
+  };
+  useEffect(() => {
+    getTaskss();
+  }, [currentPage, active]);
+
+  // console.log("userssss", userss)
+  console.log("active", active)
+
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+     // setButtonActive(2)
+      getTaskss()
+    }
+  };
+
+  const clearSearch = () => {
+   // setButtonActive(1)
+    searchRef.current.value = ""
+    getTaskss();
+  };
+  const handleKeyDown = () => {
+   // setButtonActive(2)
+    getTaskss();
+  };
+
+  const handlePageChangee = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
+
 
   return (
     <div>
@@ -469,11 +536,20 @@ const ShareMe = ({ role }) => {
             Share my info to your following contacts</span>
           <div className="search-group">
 
-            <input type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search here" />
-            <img src="/search.svg" />
+  
+
+              <input type="text"
+                ref={searchRef}
+                onKeyDown={handleKeyDownEnter}
+                // value={searchQuery}
+                // onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search here" />
+              {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+             {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
+              <div className="add_user_btn">
+                <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+                </div>
+          
           </div>
         </div>
 
@@ -523,9 +599,9 @@ const ShareMe = ({ role }) => {
                   </tr>
                 </thead>
 
-                {active == "0" && <>
-                  {contacts.length > 0 &&
-                    contactsToDisplay.map((contact) => (contact.id != id && <tbody>
+                {active == 0 && <>
+                  {userss.length > 0 &&
+                    userss.map((contact) => (contact.id != id && <tbody>
 
                       <tr key={contact.id}>
                         {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
@@ -553,14 +629,13 @@ const ShareMe = ({ role }) => {
          </td> */}
                       </tr>
                     </tbody>))}
-
                 </>
                 }
 
                 {/* {  klintale contacts} */}
-                {active == "1" && <>
-                  {KlientaleContacts.length > 0 &&
-                    KlientaleContacts.map((contact) => (contact.id != id && <tbody>
+                {active == 1 && <>
+                  {userss.length > 0 &&
+                    userss?.map((contact) => (contact.id != id && <tbody>
 
                       <tr key={contact.id}>
                         {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
@@ -568,10 +643,10 @@ const ShareMe = ({ role }) => {
                           onClick={() => {
                             handleShareKlintaleClick(contact)
                           }} >Share</button>       </td>
-                        <td>{contact.name}</td>
-                        <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                        <td>{contact.email}</td>
-                        <td>{contact.category_name}</td>
+                        <td>{contact?.name}</td>
+                        <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
+                        <td>{contact?.email}</td>
+                        <td>{contact?.category_name}</td>
                       </tr>
 
 
@@ -582,25 +657,17 @@ const ShareMe = ({ role }) => {
 
               </table>)}
 
-          {totalPages > 1 && !active && (
+          {userss?.length > 0 && (
             <div className="pagination">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => handlePageChange(index + 1)}
-                  className={currentPage === index + 1 ? 'active' : ''}
-                >
-                  {index + 1}
-                </button>
-              ))}
+              {renderPageNumbers()}
             </div>
           )}
 
         </div>
 
       </div>
-      {active == "1" && KlientaleContacts.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
-      {active == "0" && contactsToDisplay.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
+      {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
+      {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
     </div>
 
   );

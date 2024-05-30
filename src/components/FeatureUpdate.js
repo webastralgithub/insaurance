@@ -90,7 +90,15 @@ const FeatureUpdate = (props) => {
     return (
         <div className="manage-configr-table ">
             <div className="manage-cross-btn">
-                <h3 className="heading-category-group-contacts">Update configuration
+           
+          <h3 className="heading-category-group-contacts">
+          <button className="back-only-btn"
+            onClick={() => {
+              navigate(-1); 
+            }}
+          > <img src="/back.svg" />
+          </button> 
+            Update configuration
                     <img
                         className="close-modal-share"
                         src="/plus.svg"
@@ -102,7 +110,7 @@ const FeatureUpdate = (props) => {
                 <div className="form-user-add-wrapper">
 
                     <div className="form-user-add-inner-wrap">
-                        <label>Title <span className="required-star">*</span></label>
+                        <label>Title <span className="required-star" style={{ color: 'red' }}>*</span></label>
                         <input
                             type="text"
                             name="name"

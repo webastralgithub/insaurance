@@ -430,7 +430,7 @@ const SendMessage = ({ role }) => {
 
   const groupDelete = (postid) => {
     setGroupNames(groupNames.filter((p) => p.id !== postid))
-     
+
   }
 
   const getGroupContacts = async (id) => {

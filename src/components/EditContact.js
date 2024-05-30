@@ -535,7 +535,7 @@ const EditContact = ({ nameofuser }) => {
               </div>
 
               <div className="form-user-add-inner-wrap  form-user-category-edit-contact">
-                <label>Category</label>
+                <label>Category<span className="required-star">*</span></label>
 
                 <Select
                   placeholder="Select Category.."

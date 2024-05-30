@@ -346,7 +346,7 @@ const Lead = () => {
         <div className="search-group">
           <input type="text"
             ref={searchRef}
-            //onKeyDown={handleKeyDownEnter}
+            onKeyDown={handleKeyDownEnter}
             placeholder="Search here" />
           {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
           {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
