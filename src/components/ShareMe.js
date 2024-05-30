@@ -477,23 +477,19 @@ const ShareMe = ({ role }) => {
               <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
             </svg>
             Share my info to your following contacts</span>
-          <div className="search-group">
-
-
-
-            <input type="text"
-              ref={searchRef}
-              onKeyDown={handleKeyDownEnter}
-              // value={searchQuery}
-              // onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search here" />
-            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-             {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
-            <div className="add_user_btn">
-              <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
-            </div>
-
-          </div>
+            <div className="search-grp-with-btn">
+                    <div className="search-group">
+                        <input type="text"
+                            onKeyDown={handleKeyDownEnter}
+                            ref={searchRef}
+                            placeholder="Search here" />
+                        {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+                        {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+                    </div>
+                    <div className="add_user_btn ">
+                        <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+                    </div>
+                </div>
         </div>
 
         <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">

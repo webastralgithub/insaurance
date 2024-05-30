@@ -40,7 +40,7 @@ const ImageUploader = (props) => {
 
   const deleteImage = () => {
     URL.revokeObjectURL(images);
-    setImages(null);
+    setImages("");
   };
 
   return (

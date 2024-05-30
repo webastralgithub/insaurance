@@ -18,8 +18,10 @@ const AddPost = () => {
     instagram: false,
   });
   const navigate = useNavigate();
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState();
   const [mainImage, setMainImage] = useState(null);
+  const [nameError, setnameError] = useState("")
+  const [imageError, setimageError] = useState("")
   const url = process.env.REACT_APP_API_URL;
   const { auth } = useContext(AuthContext);
   const headers = {
@@ -60,11 +62,20 @@ const AddPost = () => {
     }
   };
 
+
+  
+
   const handleSaveClick = async (e) => {
     e.preventDefault();
 
-    if (!post.name.trim() || images.length === 0) {
-      toast.error("name and image is required")
+    if (!post.name.trim()) {
+      setnameError("name is required")
+      toast.error("name is required")
+      return;
+    }
+    if (images.length === 0) {
+    //  setimageError("image is required")
+      toast.error("image is required")
       return;
     }
     const updateData = { ...post, images: images[0] }
@@ -88,6 +99,8 @@ const AddPost = () => {
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setnameError("")
+    setimageError("")
     setPost({ ...post, [name]: value });
   };
 
@@ -146,10 +159,12 @@ const AddPost = () => {
                     onChange={handleChange}
 
                   />
-
+                  <span style={{ color: 'red' }}>{nameError}</span>
                 </div>
               </div>
-              {/* <label>Image<span className="required-star">*</span></label> */}
+
+
+              <label>Image<span className="required-star">*</span></label>
               <ImageUploader
                 images={images}
                 setImages={setImages}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState, createContext } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import Modal from "react-modal";
 //import { Modal, Button } from 'react-bootstrap';
 import axios from "axios";
@@ -12,7 +12,34 @@ import { type } from "@testing-library/user-event/dist/type";
 import { useNavigate } from "react-router-dom";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserGroup, faUser } from '@fortawesome/free-solid-svg-icons';
 
+const CustomOption = ({ data, isSelected, selectOption, selectedContacts, ...props }) => {
+
+  const handleButtonClick = async (event) => {
+    event.stopPropagation();
+
+  };
+
+  return (
+    <>
+
+      <div>
+        <components.Option {...props}>
+          <div className="select-check-line" style={{ display: 'flex' }}>
+
+            <span onClick={handleButtonClick}> {data.label}</span>
+            <label className="container-chk ">
+              <input type="checkbox" defaultChecked={isSelected} />
+              <span className="checkmark"></span>
+            </label>
+          </div>
+        </components.Option>
+      </div>
+    </>
+  );
+};
 
 const CustomDropdown = ({ children, searchText, ...props }) => {
   const selectedOptions = props.getValue();
@@ -98,6 +125,7 @@ const EmailCampaign = () => {
   const [contactOptions, setContactoptions] = useState([]);
   const [templateSendEmailContent, setTemplateSendEmailContent] = useState("template");
   const [active, setActive] = useState(2)
+  const [contactOptionunique , setcontactOptionunique] = useState([])
   const ref = useRef()
 
   useEffect(() => {
@@ -446,6 +474,8 @@ const EmailCampaign = () => {
       const response = await axios.get(`${url}api/get/contacts/email`, {
         headers,
       });
+      setcontactOptionunique(response.data)
+
       const contactsWithoutParentId = response.data.filter(
         (contact) => contact.parentId === null
       );
@@ -459,7 +489,7 @@ const EmailCampaign = () => {
 
       // Set the filtered contacts in the state
 
-      const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
+      const realtorOptions = response?.data?.map((realtor) => ({
         value: realtor.id,
         label: realtor.firstname,
       }));
@@ -469,6 +499,8 @@ const EmailCampaign = () => {
       // Handle error
     }
   };
+
+  console.log("contactOptionunique" ,contactOptionunique)
   const colourStyles = {
     valueContainer: (styles) => ({
       ...styles,
@@ -823,18 +855,34 @@ const EmailCampaign = () => {
               ref={selectRef}
               value={selectedContacts}
               menuIsOpen={true}
+              hideSelectedOptions={false}
               onChange={(selectedOptions) => {
                 setSelectedContacts(selectedOptions);
               }}
               onInputChange={(input) => setSearchText(input)}
-              options={contactOptions}
+              options={contactOptionunique?.map((user) => ({
+                value: user.id,
+                label: user.firstname + user.lastname
+              }))}
+
               components={{
                 DropdownIndicator: () => null,
                 IndicatorSeparator: () => null,
-                Menu: (props) => (
-                  <CustomDropdown searchText={searchText} {...props} />
-                ),
+                Option: (props) => (
+                  <CustomOption {...props}
+                  selectedContacts={contactOptionunique}
+                    selectOption={props.selectOption}
+                  />
+                )
               }}
+
+              // components={{
+              //   DropdownIndicator: () => null,
+              //   IndicatorSeparator: () => null,
+              //   Menu: (props) => (
+              //     <CustomDropdown searchText={searchText} {...props} />
+              //   ),
+              // }}
               styles={colourStyles}
               className="select-new"
               isMulti
