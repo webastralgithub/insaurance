@@ -404,6 +404,8 @@ const Referral = ({ role }) => {
           {parentView ? `${parentName} Family ` : "Referrals"}
         </h3>
 
+        <div className="search-grp-with-btn">
+
         <div className="search-group">
           <input
             type="text"
@@ -417,6 +419,7 @@ const Referral = ({ role }) => {
         <div className="add_user_btn">
           <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
         </div>
+      </div>
       </div>
 
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">

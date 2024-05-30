@@ -232,16 +232,19 @@ const TodoList = ({ role }) => {
             Create Task
           </button>
         </div>
-        <div className="search-group">
-          <input type="text"
-            ref={searchRef}
-            onKeyDown={handleKeyDownEnter}
-            placeholder="Search here" />
-          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
-        </div>
-        <div className="add_user_btn">
-          <button onClick={handleKeyDown}>Search</button>
+
+        <div className="search-grp-with-btn">
+          <div className="search-group">
+            <input type="text"
+              ref={searchRef}
+              onKeyDown={handleKeyDownEnter}
+              placeholder="Search here" />
+            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+            {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+          </div>
+          <div className="add_user_btn">
+            <button onClick={handleKeyDown}>Search</button>
+          </div>
         </div>
 
       </div>

@@ -88,17 +88,22 @@ const UserList = () => {
         <div className="add_property_btn">
             <div className="inner-pages-top">
                 <h3>Users List</h3>
-                <div className="search-group">
-                    <input type="text"
-                        onKeyDown={handleKeyDownEnter}
-                        ref={searchRef}
-                        placeholder="Search here" />
-                    {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-                    {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+
+                <div className="search-grp-with-btn">
+                    <div className="search-group">
+                        <input type="text"
+                            onKeyDown={handleKeyDownEnter}
+                            ref={searchRef}
+                            placeholder="Search here" />
+                        {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+                        {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+                    </div>
+                    <div className="add_user_btn ">
+                        <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+                    </div>
                 </div>
-                <div className="add_user_btn ">
-          <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
-        </div>
+
+
             </div>
             <div className="table-container share-ref-table-in">
                 {dataLoader ?

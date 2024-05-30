@@ -51,13 +51,14 @@ z-index: unset;
     height: 15px;
 }
 
+
 .form-user-add-inner-wrap .error-message {
-    position: absolute;
-    bottom: 16px;
+    bottom: 13px;
     color: red;
     font-size: 12px;
-    right: 13px;
     font-weight: 500;
+    position: absolute;
+    right: 28px;
 }
 
 .required-star{
@@ -1002,4 +1003,81 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
 
 .todo-main-section.todo-notes-section-new-left .sms-list-form form .css-yqrvhi-menu .select-check-line svg {
     margin-right: 5px;
+}
+
+.leads-category-popup {
+    position: absolute;
+}
+
+.leads-category-popup .css-yqrvhi-menu {
+    overflow: hidden;
+    max-height: 272px;
+}
+
+.leads-category-popup .css-yqrvhi-menu div#react-select-3-listbox {
+    overflow: auto;
+}
+
+
+.inner-pages-top-share-ref .search-grp-with-btn .add_user_btn {
+    height: 48px;
+}
+
+.leads-category-popup .modal-roles-add div button {
+    width: 40%;
+}
+
+.search-grp-with-btn {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    column-gap: 10px;
+}
+
+.search-grp-with-btn .search-group {
+    margin: unset !important;
+    width: 60% !important;
+    height: 46px !important;
+    top: 0;
+}
+
+.search-grp-with-btn .add_user_btn {
+    margin: 0 !important;
+}
+
+.search-grp-with-btn .add_user_btn button {
+    margin: 0 !important;
+    height: 46px !important;
+}
+
+.search-grp-with-btn input {
+    border: 1px solid #00000038 !important;
+    height: 100% !important;
+}
+
+.search-grp-with-btn .add_user_btn button {
+    height: 100%;
+}
+
+
+@media (max-width:600px){
+    .search-grp-with-btn {
+        margin-top: 20px;
+        width: 100%;
+    }
+    .add_property_btn .inner-pages-top span.share-text {
+        position: static !important;
+        padding-bottom: 10px;
+    }
+
+    .inner-pages-top-share-ref .search-grp-with-btn .add_user_btn button {
+        padding: 0 30px !important;
+    }
+
+    .inner-pages-top-contacts-duplicate .search-grp-with-btn {
+        margin-bottom: 20px;
+    }
+    .table-container.family_meber_contact table {
+        width: 800px;
+    }
 }

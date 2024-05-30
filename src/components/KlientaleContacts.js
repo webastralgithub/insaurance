@@ -445,19 +445,23 @@ const KlientaleContacts = ({ role }) => {
             <p>Select Profession</p>
           </button>
         </div>
-        <div className="search-group">
-          <input
-            type="text"
-            onKeyDown={handleKeyDownEnter}
-            ref={searchRef}
-            placeholder="Search here"
-          />
-          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+
+        <div className="search-grp-with-btn">
+          <div className="search-group">
+            <input
+              type="text"
+              onKeyDown={handleKeyDownEnter}
+              ref={searchRef}
+              placeholder="Search here"
+            />
+            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+            {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+          </div>
+          <div className="add_user_btn">
+            <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+          </div>
         </div>
-        <div className="add_user_btn">
-          <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
-        </div>
+
       </div>
 
 

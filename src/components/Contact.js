@@ -641,6 +641,7 @@ const Contact = ({ role }) => {
           }
         </div>
         
+        <div className="search-grp-with-btn">
         <div className="search-group">
 
           <input type="text"
@@ -651,9 +652,12 @@ const Contact = ({ role }) => {
             placeholder="Search here" />
           {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
           {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
+           </div>
           <div className="add_user_btn">
-            <button onClick={handleKeyDown}>Search</button></div>
-        </div>
+            <button onClick={handleKeyDown}>Search</button>
+            </div>
+            </div>
+       
 
 
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>
