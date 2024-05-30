@@ -51,7 +51,7 @@ const ShareMe = ({ role }) => {
 
 
 
-  const { auth, email, property, setProperty, setAuth, setActiveID } = useContext(AuthContext);
+  const { auth, email } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -354,37 +354,6 @@ const ShareMe = ({ role }) => {
       setDataLoader(false)
     }
   };
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return ""; // Handle cases where the date string is empty or undefined
-    }
-
-
-
-
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
-
-  const filteredContacts = contacts.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact.lastname?.toLowerCase().includes(searchText) ||
-      formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
-      contact.email?.toLowerCase().includes(searchText) ||
-      (contact.address1 + ' ' + contact.address2).toLowerCase().includes(searchText) ||
-      contact.city?.toLowerCase().includes(searchText) ||
-      contact.provinceName?.toLowerCase().includes(searchText) ||
-      (contact.realtor?.name.toLowerCase().includes(searchText)) ||
-      contact.source?.toLowerCase().includes(searchText) ||
-      contact.phone?.toLowerCase().includes(searchText)
-    );
-  });
 
   const getContacts = async () => {
     try {
@@ -411,39 +380,11 @@ const ShareMe = ({ role }) => {
     }
 
   };
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
 
-  const contactsToDisplay = filteredContacts.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-  // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  const changeView = async (id, name) => {
 
-    localStorage.setItem("parent", name)
-
-    setParentName(name)
-    // setParentId(id)
-    //   setParentView(true)
-    navigate(`${id}`)
-
-    try {
-      const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-      setContacts(response.data);
-    } catch (error) {
-      console.error(error)
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
-    }
-  }
-
-    ;
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
@@ -462,16 +403,18 @@ const ShareMe = ({ role }) => {
       currPage = currentPage
     }
     try {
-      if (active === 0) {
+      if (active == 0) {
         setDataLoader(true)
         const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
         setusers(response?.data?.contacts)
         setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
       }
-      if (active === 1) {
+      if (active == 1) {
         setDataLoader(true)
-        setusers("")
+        const response = await axios.get(`${klintaleUrl}listing/${email.email}?page=${currPage}&search=${searchRef.current.value}`, { headers })
+        setusers(response?.data?.user)
+        setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
       }
 
@@ -489,18 +432,18 @@ const ShareMe = ({ role }) => {
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
-     // setButtonActive(2)
+      // setButtonActive(2)
       getTaskss()
     }
   };
 
   const clearSearch = () => {
-   // setButtonActive(1)
+    // setButtonActive(1)
     searchRef.current.value = ""
     getTaskss();
   };
   const handleKeyDown = () => {
-   // setButtonActive(2)
+    // setButtonActive(2)
     getTaskss();
   };
 
@@ -536,36 +479,31 @@ const ShareMe = ({ role }) => {
             Share my info to your following contacts</span>
           <div className="search-group">
 
-  
 
-              <input type="text"
-                ref={searchRef}
-                onKeyDown={handleKeyDownEnter}
-                // value={searchQuery}
-                // onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search here" />
-              {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+
+            <input type="text"
+              ref={searchRef}
+              onKeyDown={handleKeyDownEnter}
+              // value={searchQuery}
+              // onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search here" />
+            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
              {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
-              <div className="add_user_btn">
-                <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
-                </div>
-          
+            <div className="add_user_btn">
+              <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+            </div>
+
           </div>
         </div>
 
         <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
-
           <div className="add_user_btn">
-
-            <button className={!active ? 'active' : ''} onClick={() => setActive(0)}>
+            <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0) }}>
               Personal Contacts</button>
 
-            <button className={active ? 'active' : ''} onClick={() => setActive(1)}>
+            <button className={active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(1) }}>
               Klientale Contacts</button>
-
-
           </div>
-
         </div>
 
         {/* Rest of your component remains the same... */}
@@ -585,21 +523,11 @@ const ShareMe = ({ role }) => {
                     <th>Name</th>
                     <th>Phone</th>
                     <th>Email Id</th>
-
-                    {/* <th>Services Require</th> */}
-
                     <th>Profession</th>
-
-                    {/* <th></th>
-             <th></th> */}
-
-
-
-
                   </tr>
                 </thead>
 
-                {active == 0 && <>
+                {active === 0 && <>
                   {userss.length > 0 &&
                     userss.map((contact) => (contact.id != id && <tbody>
 
@@ -633,7 +561,7 @@ const ShareMe = ({ role }) => {
                 }
 
                 {/* {  klintale contacts} */}
-                {active == 1 && <>
+                {active === 1 && <>
                   {userss.length > 0 &&
                     userss?.map((contact) => (contact.id != id && <tbody>
 
@@ -662,9 +590,7 @@ const ShareMe = ({ role }) => {
               {renderPageNumbers()}
             </div>
           )}
-
         </div>
-
       </div>
       {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}

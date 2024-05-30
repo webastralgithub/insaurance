@@ -228,7 +228,6 @@ const Lead = () => {
     if (searchRef.current.value) {
       currPage = ''
       activeCat = 'today'
-      //   setActiveCategory("")
     } else {
       currPage = currentPage
       activeCat = activeCategory
@@ -271,6 +270,7 @@ const Lead = () => {
   };
 
   const handleCategoryChange = (id) => {
+    searchRef.current.value = ""
     setActiveCategory(id === activeCategory ? "today" : id);
   }
 
@@ -366,7 +366,7 @@ const Lead = () => {
               <div key={category.categoryId}>
                 <div className="add_user_btn family_meber" onClick={() => handleCategoryChange(category.categoryId)} >
                   <h4>{category?.categoryName} (<>{category.totalLeads})</></h4>
-                  <button style={{ padding: "12px 18px" }} >{activeCategory == category.categoryId ? "-" : "+"}</button>
+                  <button style={{ padding: "12px 18px" }}  >{activeCategory == category.categoryId ? "-" : "+"}</button>
                 </div>
                 {activeCategory == category?.categoryId && <div>
                   <div className="table-container">

@@ -471,7 +471,10 @@ const ContactReferral = ({ role }) => {
       }
       if (active === 1) {
         setDataLoader(true)
-        setusers("")
+        const response = await axios.get(`${klintaleUrl}listing/${email.email}?page=${currPage}&search=${searchRef.current.value}`, { headers })
+        setusers(response?.data?.user)
+        setTotalPages(response?.data?.totalPages)
+        setDataLoader(false)
         setDataLoader(false)
       }
 
@@ -542,7 +545,7 @@ const ContactReferral = ({ role }) => {
             // onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search here" />
           {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
-{buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
+          {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
           <div className="add_user_btn">
             <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
           </div>
@@ -578,18 +581,8 @@ const ContactReferral = ({ role }) => {
                   <th>Name</th>
                   <th>Phone</th>
                   <th>Email Id</th>
-
-                  {/* <th>Services Require</th> */}
-
                   <th>Category</th>
-
-                  {/* <th></th>
-              <th></th> */}
-
-
-
-
-                </tr>
+                    </tr>
               </thead>
               {active === 0 && <>
                 {userss.length > 0 &&
