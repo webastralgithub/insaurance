@@ -158,6 +158,9 @@ const AddLead = ({ user }) => {
     valueContainer: (provided, state) => ({
       ...provided,
       paddingLeft: "0px",
+      fontSize: "14px",
+      fontWeight: '550',
+      color: '#000000e8',
 
     }),
     control: styles => ({ ...styles, border: 'unset', boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
@@ -173,6 +176,14 @@ const AddLead = ({ user }) => {
 
       };
     },
+    placeholder: (provided, state) => ({
+      ...provided,
+      color: '#000000e8',
+      marginLeft : "25px" ,
+      fontSize: "14px",
+      fontWeight: '500'
+
+    })
 
   };
   const url = process.env.REACT_APP_API_URL;
@@ -435,7 +446,7 @@ const AddLead = ({ user }) => {
           />
 
         </div>
-        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category">
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category ">
           <label>My Category<span className="required-star">*</span></label>
           <img src="/icons-form/Group30055.svg" />
           <Select

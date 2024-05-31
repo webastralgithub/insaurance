@@ -500,7 +500,7 @@ const EmailCampaign = () => {
     }
   };
 
-  console.log("contactOptionunique" ,contactOptionunique)
+  
   const colourStyles = {
     valueContainer: (styles) => ({
       ...styles,
@@ -862,7 +862,7 @@ const EmailCampaign = () => {
               onInputChange={(input) => setSearchText(input)}
               options={contactOptionunique?.map((user) => ({
                 value: user.id,
-                label: user.firstname + user.lastname
+                label: user.firstname
               }))}
 
               components={{

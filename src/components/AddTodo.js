@@ -42,12 +42,12 @@ const AddTodo = () => {
       setMlsNoError("Task Title is required");
       isValid = false;
     }
-    if (contact.phone) {
+    // if (contact.phone) {
       if (contact.phone.length != 10) {
         setPhoneError("Invalid phone number")
         isValid = false;
       }
-    }
+    // }
     if (!contact.FollowupDate) {
       setPropertyTypeError("Follow up Date is required");
       isValid = false;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
-import { faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPencil} from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,15 +18,13 @@ import ChildNotes from "./ChildNotes";
 const EditContact = ({ nameofuser }) => {
   const { id } = useParams();
   const { auth } = useContext(AuthContext);
-  const [show, setShow] = useState(false)
   const navigate = useNavigate();
   const url = process.env.REACT_APP_API_URL;
   const headers = {
     Authorization: auth.token,
   };
-  
+
   const [editedContact, setEditedContact] = useState({});
-  const [newEditedContact, setnewEditedContact] = useState({})
   const [birth, setBirth] = useState("")
   const [ann, setAnn] = useState()
   const [emailError, setEmailError] = useState("")
@@ -55,16 +53,10 @@ const EditContact = ({ nameofuser }) => {
     }
   };
 
-  const childref = useRef()
   const handleEditClick = (field) => {
     setEditingField(field);
   };
 
-  const validateEmail = (email) => {
-    // Define a regular expression pattern for email validation.
-    const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    return emailPattern.test(email);
-  };
 
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
@@ -82,16 +74,32 @@ const EditContact = ({ nameofuser }) => {
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
-      paddingLeft: "0px"
+      paddingLeft: "10px",
+      fontSize: "14px",
+      fontWeight: '550',
+      color: '#000000e8',
     }),
     control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
-    input: (styles) => ({ ...styles, margin: "0px" }),
+    input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
     listbox: (styles) => ({ ...styles, zIndex: "99999" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
+        backGround: "#fff",
+        color: "#000",
+        position: "relative",
+        zIndex: "99",
+        fontSize: "14px"
       };
     },
+    placeholder: (provided, state) => ({
+      ...provided,
+      color: '#000000e8',
+      marginLeft: "10px",
+      fontSize: "14px",
+      fontWeight: '500'
+
+    })
   };
 
   const clearErrors = (fieldName) => {
@@ -265,28 +273,6 @@ const EditContact = ({ nameofuser }) => {
     }
   };
 
-  // const handleSaveAdditional = async () => {
-  //   if(validateForm()){
-  //   try {
-  //     const response = await axios.put(`${url}api/contacts/update/${id}`, {birthday:editedContact.birthday,anniversary:editedContact.anniversary}, {
-  //       headers,
-  //     });
-
-  //     if (response.status === 200) {
-  //       toast.success("Additional Info updated successfully", {
-  //         autoClose: 3000,
-  //         position: toast.POSITION.TOP_RIGHT,
-  //       });
-  //       // setEditingField(null);
-  //       // goBack()
-  //     } else {
-  //       console.error("Failed to update contact");
-  //     }
-  //   } catch (error) {
-  //     console.error("An error occurred while updating the contact:", error);
-  //   }
-  // }
-  // };
 
   const handleSaveNotes = async () => {
     if (validateForm()) {
@@ -488,7 +474,8 @@ const EditContact = ({ nameofuser }) => {
             </div>
           )}
         </div> */}
-              <div className="form-user-add-inner-wrap   form-user-agent-edit-contact">
+
+              {/* <div className="form-user-add-inner-wrap   form-user-agent-edit-contact">
                 <label>Active Agent</label>
                 {editingField === "agentId" || editingField === "all" ? (
                   <Select
@@ -509,14 +496,14 @@ const EditContact = ({ nameofuser }) => {
                     <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("agentId")} />
                   </div>
                 )}
-              </div>
+              </div> */}
 
               <div className="form-user-add-inner-wrap  form-user-service-edit-contact">
                 <label>Service Require</label>
 
 
                 <Select
-                  placeholder="Select Service(s) Required..."
+                  placeholder="   Select Service(s) Required..."
                   value={selectedServices}
                   onChange={(selectedOptions) => {
                     setSelectedServices(selectedOptions);

@@ -1832,7 +1832,7 @@ form.add-vendor-form .form-user-add-wrapper .form-user-add-inner-wrap input {
 }
 
 body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input, body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap textarea, body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap select {
-  background: #fff !important;
+  background: #fff;
   padding: 14px 7px !important;
 }
 

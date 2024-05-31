@@ -30,6 +30,7 @@ table tr td, table tr th{
     border-radius: 20px;
     border: solid 1px transparent;
 } */
+
  .form-user-add .form-user-add-wrapper.birthday-section{
 z-index: unset;
 }
@@ -71,7 +72,7 @@ z-index: unset;
 
 .parent .error-message {
     position: absolute;
-    bottom: 26px;
+    bottom: 14px;
     color: red;
     font-size: 12px;
     right: 10%;
@@ -83,11 +84,14 @@ z-index: unset;
     margin: 38px 104px;
     font-size: 12px;
 }
+
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap label {
     width: 100%;
     color: #000;
     font-weight: 700;
     font-size: 15px;
+    margin-top: 26px !important;
+    margin-bottom: -10px !important;
 }
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input, .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .select-new {
@@ -616,6 +620,18 @@ z-index: unset;
     border-bottom: 1px solid #ebebeb;
 }
 
+.ReactModal__Overlay{
+    background-color: rgba(0, 0, 0, 0.34) !important;
+}
+
+.custon-convert-select .css-1dimb5e-singleValue{
+     color: #fff !important;
+}
+
+.leads-category-popup .custon-convert-select .css-yqrvhi-menu {
+    max-height: 254px;
+}
+
 @media (max-width:1000px){
     .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap {
         width: 45%;
@@ -1080,4 +1096,7 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
     .table-container.family_meber_contact table {
         width: 800px;
     }
+}
+.react-confirm-alert-body {
+    width: 400px !important;
 }

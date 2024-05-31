@@ -135,7 +135,31 @@ const Lead = () => {
     setError("")
     setIsOpen(false);
   };
+
+
+
   const colourStyles = {
+    valueContainer: (styles) => ({
+      ...styles,
+      overflowX: "auto",
+      flex: "unset",
+      flexWrap: "no-wrap",
+      padding: "2px 0",
+      "&::-webkit-scrollbar-track": {
+        "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.3)",
+        "border-radius": "10px",
+        "background-color": "rgb(0 70 134)",
+      },
+      "&::-webkit-scrollbar": {
+        height: "8px",
+        "background-color": "rgb(0 70 134)",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        "border-radius": "10px",
+        "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,.3)",
+        "background-color": "#373a47",
+      },
+    }),
     menu: (styles) => ({
       ...styles,
       maxHeight: "242px",
@@ -143,19 +167,35 @@ const Lead = () => {
       overflowY: "auto",
       boxShadow: "none",
     }),
-    control: styles => ({
-      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
-      border: "1px solid #000000bf"
-    }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    menuList: (styles) => ({ ...styles, overflowY: "none" }),
+    multiValue: (styles) => ({ ...styles, minWidth: "unset" }),
+    input: (styles) => ({ ...styles, color: "#fff" }),
+    placeholder: (styles, state) => ({
+      ...styles,
+      color: '#fff',
+      fontSize: "14px",
+      fontWeight: '500'
 
+    }),
+
+     placeholder: (styles) => ({  color: " color: #fff"}),
+    control: (styles) => ({
+      ...styles,
+      boxShadow: "unset",
+      borderColor: "unset",
+      minHeight: "0",
+      border: "none",
+      borderRadius: "0",
+      background:
+        "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
+      padding: "10px 5px",
+    }),
+
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
-
-
       };
     },
-
   };
 
   const convert = async (e) => {
@@ -198,19 +238,17 @@ const Lead = () => {
       const today = new Date();
       today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
-      // Filter contacts created today
+   
       const contactsCreatedToday = contactsWithoutParentId.filter(contact => {
         const contactDate = new Date(contact.updated_at);
         return contactDate.getTime() >= today.getTime();
       });
       setTodayContacts(contactsCreatedToday)
-      // Set the filtered contacts in the state
+
       setContacts(contactsWithoutParentId);
     } catch (error) {
       console.error(error)
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
+    
     }
   };
 
@@ -222,25 +260,25 @@ const Lead = () => {
   };
 
   const getLeads = async () => {
-    //setDataLoader(true)
+    setDataLoader(true)
     let currPage
     let activeCat
     if (searchRef.current.value) {
       currPage = ''
-      activeCat = 'today'
+      //activeCat = activeCategory
     } else {
       currPage = currentPage
-      activeCat = activeCategory
+      //activeCat = activeCategory
     }
 
     try {
-      const response = await axios.get(`${url}api/leads?category=${activeCat}&search=${searchRef.current.value}&page=${currPage}`, { headers })
+      const response = await axios.get(`${url}api/leads?category=${activeCategory}&search=${searchRef.current.value}&page=${currPage}`, { headers })
       const responseData = await response?.data;
       setLeadCountData(responseData?.leadsCountWithCategory?.reverse())
       settotalPagess(responseData?.totalPages)
       setactiveLeadCategory(responseData?.leads)
       setDataLoader(false)
-      setActiveCategory(activeCat)
+      setActiveCategory(activeCategory)
     } catch (error) {
       setDataLoader(false)
       console.error("error")
@@ -270,7 +308,7 @@ const Lead = () => {
   };
 
   const handleCategoryChange = (id) => {
-    searchRef.current.value = ""
+  //  searchRef.current.value = ""
     setActiveCategory(id === activeCategory ? "today" : id);
   }
 
@@ -299,8 +337,14 @@ const Lead = () => {
           className={"leads-category-popup"}
         >
           {modalMode === "add" && (
-            <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+
+            <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category custon-convert-select">
               <form onSubmit={convert}>
+                <img
+                  className="close-modal-share"
+                  onClick={() => setIsOpen(false)}
+                  src="/plus.svg"
+                />
                 <h3 className="heading-category">Select Category</h3>
 
                 <Select
@@ -324,7 +368,6 @@ const Lead = () => {
               </form>
             </div>
           )}
-
         </Modal>
         <h3>  {parentView && <button className="back-only-btn"
           onClick={() => {
@@ -363,7 +406,24 @@ const Lead = () => {
       <div className="add_property_btn">
         {dataLoader ?
           (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+            <Circles
+
+              height="100"
+              width="100%"
+              color="#004382"
+              ariaLabel="circles-loading"
+              wrapperStyle={{
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9,
+                background: "transparent"
+              }}
+              wrapperClass=""
+              visible={dataLoader}
+            />
           </div>) : (<>
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
@@ -414,7 +474,7 @@ const Lead = () => {
                                 }}       >Create Task</button>
                             </td>
                             {/* <td> <button className="permissions"
-          onClick={()=>handleDeleteClick(contact.id)}       >Delete</button></td>  */}
+                      onClick={()=>handleDeleteClick(contact.id)}       >Delete</button></td>  */}
 
                           </tr>
 

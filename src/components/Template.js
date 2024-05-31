@@ -6,9 +6,37 @@ import Modal from "react-modal";
 import { AuthContext } from "./context/AuthContext";
 import { useNavigate, useLocation } from 'react-router-dom';
 import "./EmailCamp.css";
-import Select from "react-select";
+import Select, { components } from "react-select";
 
 
+const CustomOption = ({ data, isSelected, selectOption, selectedContacts, ...props }) => {
+
+    const handleButtonClick = async (event) => {
+      event.stopPropagation();
+  
+    };
+  
+    return (
+      <>
+  
+        <div>
+          <components.Option {...props}>
+            <div className="select-check-line" style={{ display: 'flex' }}>
+  
+              <span onClick={handleButtonClick}> {data.label}</span>
+              <label className="container-chk ">
+                <input type="checkbox" defaultChecked={isSelected} />
+                <span className="checkmark"></span>
+              </label>
+            </div>
+          </components.Option>
+        </div>
+      </>
+    );
+  };
+
+
+  
 const CustomDropdown = ({ children, searchText, ...props }) => {
     const selectedOptions = props.getValue();
 
@@ -357,10 +385,20 @@ const Templates = () => {
                                 components={{
                                     DropdownIndicator: () => null,
                                     IndicatorSeparator: () => null,
-                                    Menu: (props) => (
-                                        <CustomDropdown searchText={searchText} selectedContacts={selectedContacts} {...props} />
-                                    ),
-                                }}
+                                    Option: (props) => (
+                                      <CustomOption {...props}
+                                      searchText={searchText} selectedContacts={selectedContacts} {...props}
+                                      />
+                                    )
+                                  }}
+
+                                // components={{
+                                //     DropdownIndicator: () => null,
+                                //     IndicatorSeparator: () => null,
+                                //     Menu: (props) => (
+                                //         <CustomDropdown searchText={searchText} selectedContacts={selectedContacts} {...props} />
+                                //     ),
+                                // }}
 
                             />
 
