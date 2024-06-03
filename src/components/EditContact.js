@@ -71,6 +71,7 @@ const EditContact = ({ nameofuser }) => {
     { value: 'Insurance', label: 'Insurance' },
     { value: 'Immigration', label: 'Immigration' }
   ];
+  
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,

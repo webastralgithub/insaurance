@@ -65,6 +65,21 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
   );
 };
 
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+};
+
+
 
 const Contact = ({ role }) => {
   const selectRef = useRef(null);
@@ -115,6 +130,8 @@ const Contact = ({ role }) => {
     };
 
   }, []);
+
+
   useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
     if (selectRef.current) {
       const valueContainer = selectRef?.current?.controlRef.firstChild;
@@ -123,6 +140,7 @@ const Contact = ({ role }) => {
       }
     }
   }, [selectedContacts]);
+
   const sendRefferal = async () => {
     const response = await axios.post(`${url}api/contacts/share`,
       { sendTo: id, selectedContacts: selectedContacts.map(option => option.value) }, {
@@ -371,16 +389,28 @@ const Contact = ({ role }) => {
   const [userss, setusers] = useState([])
   const [totalPagess, setTotalPages] = useState("");
 
+  const debouncedSearchQuery = useDebounce(searchQuery, 1500);
+
   const getTasks = async () => {
     setDataLoader(true)
     let currPage
-    if (searchRef.current.value) {
-      currPage = ''
+    let seachData
+    // if (searchRef.current.value) {
+    //   currPage = ''
+    // } else {
+    //   currPage = currentPage
+    // }
+
+    if (debouncedSearchQuery) {
+      seachData = debouncedSearchQuery
+      currPage = 1
     } else {
+      seachData = ''
       currPage = currentPage
     }
+
     try {
-      const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
+      const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${seachData}`, { headers });
       setusers(response?.data?.contacts)
       setTotalPages(response?.data?.totalPages)
       setDataLoader(false)
@@ -391,7 +421,7 @@ const Contact = ({ role }) => {
   };
   useEffect(() => {
     getTasks();
-  }, [currentPage, leadlength]);
+  }, [currentPage, leadlength, debouncedSearchQuery]);
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
@@ -445,10 +475,10 @@ const Contact = ({ role }) => {
   const getUsers = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      setUsers(res.data);
+      setUsers(res?.data);
 
     } catch (error) {
-
+      console.error(error)
     }
   };
 
@@ -617,6 +647,7 @@ const Contact = ({ role }) => {
           )}
 
         </Modal>
+
         <h3>  {parentView && <button className="back-only-btn"
           onClick={() => {
             if (parentView) {
@@ -625,10 +656,10 @@ const Contact = ({ role }) => {
               setViewState("contacts"); // Change the view state to "contacts"
             }
           }}
-        > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Your contacts/leads"}</h3>
+        > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Contacts"}</h3>
         <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
 
-          Your contacts are fully encrypted and cannot be seen or accessed by anybody else.</span>
+          Your Contacts and Leads are fully encrypted and cannot be seen or accessed by anybody else.</span>
         <div className="add_user_btn">
 
           {parentView ? <button onClick={() => navigate(`/contacts/add/${parentid}`)}>
@@ -640,24 +671,24 @@ const Contact = ({ role }) => {
               Add Contact</button>
           }
         </div>
-        
-        <div className="search-grp-with-btn">
-        <div className="search-group">
 
-          <input type="text"
-            ref={searchRef}
-            onKeyDown={handleKeyDownEnter}
-            // value={searchQuery}
-            // onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search here" />
-          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+        <div className="search-grp-with-btn">
+          <div className="search-group">
+
+            <input type="text"
+              //ref={searchRef}
+              //  onKeyDown={handleKeyDownEnter}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search here" />
+            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
           {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
-           </div>
-          <div className="add_user_btn">
+          </div>
+          {/* <div className="add_user_btn">
             <button onClick={handleKeyDown}>Search</button>
-            </div>
-            </div>
-       
+          </div> */}
+        </div>
+
 
 
         {roleId == 1 && <div className="add_user_btn" style={{ display: "flex" }}>

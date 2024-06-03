@@ -431,7 +431,7 @@ const App = () => {
             />
 
             <Route
-              path="/todo-list/add" exact
+              path="//todo-list/add-task" exact
               element={
                 <PrivateRoute>
                   <AddTodo />
@@ -439,7 +439,7 @@ const App = () => {
               }
             />
             <Route
-              path="/todo-list/add/new/:date" exact
+              path="/todo-list/add/new-dashboard/:date" exact
               element={
                 <PrivateRoute>
                   <AddTodo />
@@ -455,7 +455,15 @@ const App = () => {
               }
             />
             <Route
-              path="/todo-list/edit/:id" exact
+              path="/todo-list-dashboard/edit/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditTodo />
+                </PrivateRoute>
+              }
+            />
+              <Route
+              path="/todo-list-todo/edit/:id" exact
               element={
                 <PrivateRoute>
                   <EditTodo />

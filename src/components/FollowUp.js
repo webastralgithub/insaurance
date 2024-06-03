@@ -108,7 +108,7 @@ const Followup = () => {
   useEffect(() => {
     getTodos()
     getUsers()
-    getContacts()
+    //getContacts()
   }, []);
 
 
@@ -131,255 +131,265 @@ const Followup = () => {
       isValid = false;
     }
 
-  
-
-  if (!isValid) {
-    window.scrollTo(0, 0)
-  }
-  return isValid;
-};
-useEffect(() => {
-  // Fetch Realtor and Lawyer options and populate the select inputs
-
-  const realtors = users.filter((user) => user.roleId === 4);
-
-  // Map the users into an array of options with 'label' and 'value' properties
-  const realtorOptions = realtors.map((realtor) => ({
-    value: realtor.id,
-    label: realtor.name,
-  }));
 
 
-  setRealtorOptions([noSelectionOption, ...realtorOptions]);
+    if (!isValid) {
+      window.scrollTo(0, 0)
+    }
+    return isValid;
+  };
+  useEffect(() => {
+    // Fetch Realtor and Lawyer options and populate the select inputs
+    const realtors = users.filter((user) => user.roleId === 4);
 
-}, [users]);
-
-const handleSaveClick = async () => {
-  const isValid = validateForm()
-  // const response = await axios.post(`${url}api/todo/create`, contact, {
-  //     headers,
-  //   });
-  if (!isValid) {
-    return
-  }
-
-  const { id, ...restOfEditedTodo } = editedTodo;
-
-
-  const response = await axios.post(`${url}api/todo/create`,
-    { ...restOfEditedTodo, Followup: editedTodo.Followup, taskId: id },
-    { headers });
-  navigate(-1)
-  toast.success("Followup updated successfully", {
-    autoClose: 3000,
-    position: toast.POSITION.TOP_RIGHT,
-  });
-  setEditingField(null);
-
-};
-const goBack = () => {
-  navigate(-1); // This function takes you back one step in the navigation stack
-};
-const getUsers = async () => {
-  try {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-    setUsers(res.data)
-
-  } catch (error) {
-
-  }
-};
-const handleCancelClick = () => {
-  setEditingField(null);
-  // Reset the editedTodo to the original values
-  // setEditedTodo({ ...todo });
-};
-const formatDate = (dateTimeString) => {
-  if (!dateTimeString) {
-    return ""; // Handle cases where the date-time string is empty or undefined
-  }
-
-  const dateTime = new Date(dateTimeString);
-  const year = dateTime.getFullYear();
-  const month = String(dateTime.getMonth() + 1).padStart(2, "0");
-  const day = String(dateTime.getDate()).padStart(2, "0");
-  const hours = String(dateTime.getHours()).padStart(2, "0");
-  const minutes = String(dateTime.getMinutes()).padStart(2, "0");
-
-  // Return date in "YYYY-MM-DDTHH:MM" format
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
-
-const getTodos = async () => {
-  const response = await axios.get(`${url}api/todo/get`, { headers });
-  const filtered = response.data.find(x => x.id == id)
-
-  const followupDateISO = filtered?.FollowupDate
-    ? new Date(filtered.FollowupDate).toISOString().slice(0, 16)
-    : '';
-
-  setEditedTodo({ ...filtered, FollowupDate: "" });
-  setDefaultFollowupDate(formatDate(""))
-  //setDefaultFollowupDate(followupDateISO);
-
-}
-const getContacts = async () => {
-  try {
-    const response = await axios.get(`${url}api/contacts/get`, { headers });
-    const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
+    // Map the users into an array of options with 'label' and 'value' properties
+    const realtorOptions = realtors.map((realtor) => ({
       value: realtor.id,
-      label: realtor.firstname,
-      children: realtor.children || []
+      label: realtor.name,
     }));
-    // Set the filtered contacts in the state
-    setContactOptions(contactsWithoutParentId);
+    setRealtorOptions([noSelectionOption, ...realtorOptions]);
+
+  }, [users]);
+
+  const handleSaveClick = async () => {
+    const isValid = validateForm()
+    if (!isValid) {
+      return
+    }
+    try {
+      const { id, ...restOfEditedTodo } = editedTodo;
+      const response = await axios.post(`${url}api/todo`,
+        { ...restOfEditedTodo, Followup: editedTodo.Followup, taskId: id },
+        { headers });
+      navigate(-1)
+      toast.success("Followup updated successfully", {
+        autoClose: 3000,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setEditingField(null);
+    } catch (error) {
+      toast.error("Server is Busy")
+      console.error(error)
+    }
+  };
 
 
-  } catch (error) {
-    console.error(error)
+  const goBack = () => {
+    navigate(-1); // This function takes you back one step in the navigation stack
+  };
+
+
+
+  const getUsers = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
+      setUsers(res.data)
+
+    } catch (error) {
+
+    }
+  };
+
+
+  const handleCancelClick = () => {
+    setEditingField(null);
+    // Reset the editedTodo to the original values
+    // setEditedTodo({ ...todo });
+  };
+  const formatDate = (dateTimeString) => {
+    if (!dateTimeString) {
+      return ""; // Handle cases where the date-time string is empty or undefined
+    }
+
+    const dateTime = new Date(dateTimeString);
+    const year = dateTime.getFullYear();
+    const month = String(dateTime.getMonth() + 1).padStart(2, "0");
+    const day = String(dateTime.getDate()).padStart(2, "0");
+    const hours = String(dateTime.getHours()).padStart(2, "0");
+    const minutes = String(dateTime.getMinutes()).padStart(2, "0");
+
+    // Return date in "YYYY-MM-DDTHH:MM" format
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const getTodos = async () => {
+    try {
+      const response = await axios.get(`${url}api/todo`, { headers });
+      const responseData = response?.data
+      const filtered = responseData.todo.find((x) => x.id == id)
+
+      const followupDateISO = filtered?.FollowupDate
+        ? new Date(filtered.FollowupDate).toISOString().slice(0, 16)
+        : '';
+
+      // setEditedTodo({ ...filtered, FollowupDate: "" });
+      setEditedTodo(filtered)
+      setDefaultFollowupDate(formatDate(""))
+      //setDefaultFollowupDate(followupDateISO);
+    } catch (error) {
+      console.error(error)
+    }
   }
-};
 
-const editAll = () => {
-  setEditingField('all');
-}
-const handlePhoneNumberChange = (event) => {
-  // Extract the raw phone number from the input
-  const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-  setPhoneError("")
 
-  // Update the phone number state with the raw input
-  setEditedTodo({ ...editedTodo, phone: rawPhoneNumber.slice(1, 11) });
-};
+  // const getContacts = async () => {
+  //   try {
+  //     const response = await axios.get(`${url}api/contacts/get`, { headers });
+  //     const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
+  //       value: realtor.id,
+  //       label: realtor.firstname,
+  //       children: realtor.children || []
+  //     }));
+  //     // Set the filtered contacts in the state
+  //     setContactOptions(contactsWithoutParentId);
 
-return (
 
-  <div className="form-user-add">
-    <div >
-      <div className="property_header">
-        <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button> Task</h3>
-        {/* <div className="top-bar-action-btns">
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // };
+
+  const editAll = () => {
+    setEditingField('all');
+  }
+  const handlePhoneNumberChange = (event) => {
+    // Extract the raw phone number from the input
+    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
+    setPhoneError("")
+
+    // Update the phone number state with the raw input
+    setEditedTodo({ ...editedTodo, phone: rawPhoneNumber.slice(1, 11) });
+  };
+
+  return (
+
+    <div className="form-user-add">
+      <div >
+        <div className="property_header">
+          <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button> Task</h3>
+          {/* <div className="top-bar-action-btns">
       <button   style={{background:"#004686"}}  onClick={handleSaveClick}>Save</button>
             </div> */}
+        </div>
       </div>
-    </div>
-    <div className="form-user-edit-inner-wrap form-user-add-wrapper">
-      <div className="todo-section">
-        <div className="todo-main-section">
-          <div className="form-user-add-inner-wrap">
-            <label>Task Title</label>
-            {editingField === "Followup" || editingField === "all" ? (
-              <div className="edit-new-input">
-                <input
-                  name="Followup"
-                  value={editedTodo?.Followup}
-                  onChange={handleChange}
-                  readOnly
-                />
-                <span className="error-message">{mlsNoError}</span>
-              </div>
-            ) : (
-              <div className="edit-new-input">
-                {editedTodo?.Followup}
-                <FontAwesomeIcon
-                  icon={faPencil}
-                  onClick={() => handleEditClick("Followup")}
-                />
-              </div>
-            )}
-          </div>
+      <div className="form-user-edit-inner-wrap form-user-add-wrapper">
+        <div className="todo-section">
+          <div className="todo-main-section">
+            <div className="form-user-add-inner-wrap">
+              <label>Task Title</label>
+              {editingField === "Followup" || editingField === "all" ? (
+                <div className="edit-new-input">
+                  <input
+                    name="Followup"
+                    value={editedTodo?.Followup}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                  <span className="error-message">{mlsNoError}</span>
+                </div>
+              ) : (
+                <div className="edit-new-input">
+                  {editedTodo?.Followup}
+                  <FontAwesomeIcon
+                    icon={faPencil}
+                    onClick={() => handleEditClick("Followup")}
+                  />
+                </div>
+              )}
+            </div>
 
-          <div className="form-user-add-inner-wrap">
-            <label>Follow Up Date<span className="required-star">*</span></label>
-            {editingField === "FollowupDate" || editingField === "all" ? (
-              <div className="edit-new-input">
-                <input
-                  name="FollowupDate"
-                  type="datetime-local"
-                  defaultValue={defaultFollowupDate}
-                  onChange={handleChange}
-                />
-                <span className="error-message">{propertyTypeError}</span>
-              </div>
-            ) : (
-              <div className="edit-new-input">
-                {formatDate(editedTodo?.FollowupDate)}
-                <FontAwesomeIcon
-                  icon={faPencil}
-                  onClick={() => handleEditClick("FollowupDate")}
-                />
-              </div>
-            )}
-          </div>
-          <div className="form-user-add-inner-wrap">
-            <label>Phone Number<span className="required-star">*</span></label>
-            {editingField === "phone" || editingField === "all" ? (
-              <div className="edit-new-input">
-                <InputMask
-                  mask="+1 (999) 999-9999"
-                  type="text"
-                  name="phone"
-                  value={editedTodo?.phone}
-                  onChange={handlePhoneNumberChange}
-                  placeholder="+1 (___) ___-____"
+            <div className="form-user-add-inner-wrap">
+              <label>Follow Up Date<span className="required-star">*</span></label>
+              {editingField === "FollowupDate" || editingField === "all" ? (
+                <div className="edit-new-input">
+                  <input
+                    value={formatDate(editedTodo?.FollowupDate)}
+                    name="FollowupDate"
+                    type="datetime-local"
+                    // defaultValue={ }
+                    onChange={handleChange}
+                  />
+                  <span className="error-message">{propertyTypeError}</span>
+                </div>
+              ) : (
+                <div className="edit-new-input">
+                  {formatDate(editedTodo?.FollowupDate)}
+                  <FontAwesomeIcon
+                    icon={faPencil}
+                    onClick={() => handleEditClick("FollowupDate")}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="form-user-add-inner-wrap">
+              <label>Phone Number<span className="required-star">*</span></label>
+              {editingField === "phone" || editingField === "all" ? (
+                <div className="edit-new-input">
+                  <InputMask
+                    mask="+1 (999) 999-9999"
+                    type="text"
+                    name="phone"
+                    value={editedTodo?.phone}
+                    onChange={handlePhoneNumberChange}
+                    placeholder="+1 (___) ___-____"
 
-                />
-                <span className="error-message">{phoneError}</span>
-              </div>
-            ) : (
-              <div className="edit-new-input">
-                {editedTodo.phone != undefined ? formatPhoneNumber(editedTodo.phone) : ""}
+                  />
+                  <span className="error-message">{phoneError}</span>
+                </div>
+              ) : (
+                <div className="edit-new-input">
+                  {editedTodo.phone != undefined ? formatPhoneNumber(editedTodo.phone) : ""}
 
-                <FontAwesomeIcon
-                  icon={faPencil}
-                  onClick={() => handleEditClick("phone")}
-                />
-              </div>
-            )}
-          </div>
+                  <FontAwesomeIcon
+                    icon={faPencil}
+                    onClick={() => handleEditClick("phone")}
+                  />
+                </div>
+              )}
+            </div>
 
-          <div className="form-user-add-inner-wrap">
-            <label>Task description</label>
-            {editingField === "description" || editingField === "all" ? (
-              <div className="edit-new-input">
-                <textarea
-                  name="description"
-                  value={editedTodo?.description}
-                  onChange={handleChange}
-                  placeholder="description"
-                />
-              </div>
-            ) : (
-              <div className="edit-new-input">
-                {editedTodo?.description}
-                <FontAwesomeIcon
-                  icon={faPencil}
-                  onClick={() => handleEditClick("description")}
-                />
-              </div>
-            )}
+            <div className="form-user-add-inner-wrap">
+              <label>Task description</label>
+              {editingField === "description" || editingField === "all" ? (
+                <div className="edit-new-input">
+                  <textarea
+                    name="description"
+                    value={editedTodo?.description}
+                    onChange={handleChange}
+                    placeholder="description"
+                  />
+                </div>
+              ) : (
+                <div className="edit-new-input">
+                  {editedTodo?.description}
+                  <FontAwesomeIcon
+                    icon={faPencil}
+                    onClick={() => handleEditClick("description")}
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="todo-notes-section">
-          <div className="form-user-add-inner-wrap">
-            <label>Notes</label>
+          <div className="todo-notes-section">
+            <div className="form-user-add-inner-wrap">
+              <label>Notes</label>
 
-            <CKEditor
-              editor={ClassicEditor}
-              data={editedTodo?.Comments || ""}
-              onChange={(event, editor) => {
-                const data = editor.getData();
-                setEditedTodo({ ...editedTodo, Comments: data });
-              }}
-              config={{
-                toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-              }}
-              className="custom-ckeditor" // Add a custom class for CKEditor container
-              style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-            />
+              <CKEditor
+                editor={ClassicEditor}
+                data={editedTodo?.Comments || ""}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setEditedTodo({ ...editedTodo, Comments: data });
+                }}
+                config={{
+                  toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                }}
+                className="custom-ckeditor" // Add a custom class for CKEditor container
+                style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+              />
+            </div>
           </div>
-        </div>
-        {/* <div className="form-user-add-inner-wrap">
+          {/* <div className="form-user-add-inner-wrap">
           <label>Owners</label>
           {editingField === "realtorId" || editingField === "all" ? (
           
@@ -410,7 +420,7 @@ return (
             </div>
           )}
         </div> */}
-        {/* <div className="form-user-add-inner-wrap">
+          {/* <div className="form-user-add-inner-wrap">
           <label>Contacts</label>
           {editingField === "clientId" || editingField === "all" ? (
           
@@ -446,7 +456,7 @@ return (
           )}
         </div> */}
 
-        {/* <div className="form-user-add-inner-wrap">
+          {/* <div className="form-user-add-inner-wrap">
           <label>Family Member Name</label>
           {editingField === "ContactID" || editingField === "all" ? (
           
@@ -477,17 +487,17 @@ return (
             </div>
           )}
         </div> */}
+        </div>
+        <div className="form-user-add-inner-btm-btn-wrap">
+
+          <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
+        </div>
+        {/* Add more fields as needed */}
+
+
       </div>
-      <div className="form-user-add-inner-btm-btn-wrap">
-
-        <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
-      </div>
-      {/* Add more fields as needed */}
-
-
     </div>
-  </div>
-);
+  );
 };
 
 export default Followup;

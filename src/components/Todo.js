@@ -17,16 +17,14 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const TodoList = ({ role }) => {
-  const [tasks, setTasks] = useState([]); // Replace 'users' with 'tasks'
-  const [width, setWidth] = useState(window.innerWidth);
-  const [currentPageData, setCurrentPageData] = useState(1);
-  const [perPage, setPerPage] = useState(20);
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
+  const [tasks, setTasks] = useState([]); 
+  const[taskCount , setTaskCount] = useState()
   const [totalPagess, setTotalPagess] = useState();
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1)
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("");
-  const [editingTask, setEditingTask] = useState(null); // Replace 'editingUser' with 'editingTask'
+  const [searchQuery, setSearchQuery] = useState("")
+  const [type, setType] = useState("")
   let searchRef = useRef()
   const navigate = useNavigate();
   const { auth, setAuth, todo, setTodo, tasklength, setTasklength } = useContext(AuthContext);
@@ -98,17 +96,9 @@ const TodoList = ({ role }) => {
     toast.success('Todo deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setTasks(tasks.filter((p) => p.id !== propertyId));
   };
-  const filteredContacts = tasks.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.Followup?.toLowerCase().includes(searchText) ||
-      contact?.Comments?.toLowerCase().includes(searchText) ||
-      contact?.phone?.toLowerCase().includes(searchText)
-    )
-  });
+ 
 
-  const [dataLoader, setDataLoader] = useState(false)
-  const [buttonActive, setButtonActive] = useState(1)
+
 
   const getTasks = async () => {
     setDataLoader(true)
@@ -120,7 +110,7 @@ const TodoList = ({ role }) => {
     }
 
     try {
-      const response = await axios.get(`${url}api/todo?page=${currPage}&&search=${searchRef.current.value}`, { headers });
+      const response = await axios.get(`${url}api/todo?page=${currPage}&&search=${searchRef.current.value}&&type=${type}`, { headers });
       const today = new Date();
       const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
       const todayMonthDay = (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
@@ -133,6 +123,7 @@ const TodoList = ({ role }) => {
         return todo
       });
       setTasks(birthdayTodos);
+      setTaskCount(response?.data)
       setTotalPagess(response.data.totalPages);
       setCurrentPage(response.data?.currentPage)
       setDataLoader(false)
@@ -144,7 +135,7 @@ const TodoList = ({ role }) => {
 
   useEffect(() => {
     getTasks();
-  }, [currentPage]);
+  }, [currentPage, type, setType]);
 
   const handleKeyDown = () => {
     setButtonActive(2)
@@ -166,11 +157,11 @@ const TodoList = ({ role }) => {
     ));
   };
 
-
+  const [active, setActive] = useState("")
   const handleMarkAsread = (status, id) => {
     confirmAlert({
-      title: 'Confirm mark as read',
-      message: 'Are you sure you want to mark as Read?',
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to Delete Task?',
       buttons: [
         {
           label: 'Yes',
@@ -192,7 +183,7 @@ const TodoList = ({ role }) => {
         { headers });
       getTasks()
       setTasklength(tasklength - 1)
-      toast.success("Mark as read sucessfully")
+      toast.success("Task Deleted sucessfully")
     } catch (error) {
       console.error("error")
     }
@@ -227,7 +218,7 @@ const TodoList = ({ role }) => {
         <h3>To-Do List</h3>
 
         <div className="add_user_btn">
-          <button onClick={() => navigate("/todo-list/add")}>
+          <button onClick={() => navigate("/todo-list/add-task")}>
             <img src="/plus.svg" />
             Create Task
           </button>
@@ -247,6 +238,17 @@ const TodoList = ({ role }) => {
           </div>
         </div>
 
+      </div>
+      <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
+        <div className="add_user_btn">
+          <button className={type == "previous" ? 'active' : ''} onClick={() => { setCurrentPage(1); setType("previous") }}>
+            Previous ({taskCount?.previouscount})</button>
+
+          <button className={type == "" ? 'active' : ''} onClick={() => { setCurrentPage(1); setType("") }}>
+            Today ({taskCount?.todaycount})</button>
+          <button className={type == "future" ? 'active' : ''} onClick={() => { setCurrentPage(1); setType("future") }}>
+            Future ({taskCount?.futurecount})</button>
+        </div>
       </div>
       <div className="table-container">
         {dataLoader ?
@@ -275,7 +277,7 @@ const TodoList = ({ role }) => {
                         className="property-link"
                         onClick={() => {
                           setTodo(task)
-                          navigate(`/todo-list/edit/${task.id}`);
+                          navigate(`/todo-list-todo/edit/${task.id}`);
                         }}
                       >
                         {task.Followup}
@@ -303,7 +305,8 @@ const TodoList = ({ role }) => {
                       <td>
                         <button className="permissions"
                           onClick={() => { handleMarkAsread(!task.IsRead, task.id) }}
-                        > Mark as {task.IsRead ? "unread" : "read"}</button>
+                        > Delete</button>
+                        {/* Mark as {task.IsRead ? "unread" : "read"} */}
                       </td>
                       <td> <button className="permissions"
                         onClick={() => navigate(`/todo-list/followup/${task.id}`)} >Create Follow-Up</button></td>
@@ -324,7 +327,9 @@ const TodoList = ({ role }) => {
 
 
       </div>
-      {tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+      {type == "previous" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+      {type == "" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+      {type == "future" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
     </div>
   );
 };

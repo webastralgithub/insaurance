@@ -377,10 +377,10 @@ const Lead = () => {
               setViewState("contacts"); // Change the view state to "contacts"
             }
           }}
-        > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Your leads/contacts"}</h3>
+        > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Leads"}</h3>
         <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
 
-          Your Leads are fully encrypted and cannot be seen or accessed by anybody else.</span>
+          Your Leads and Contacts are fully encrypted and cannot be seen or accessed by anybody else.</span>
         <div className="add_user_btn">
           <button onClick={() => navigate("/leads/add")}>
             <img src="/plus.svg" />

@@ -5,10 +5,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import './Navbar.css';
 import { AuthContext } from './context/AuthContext';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { useParams } from "react-router-dom";
+
 
 const Sidebar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +18,6 @@ const Sidebar = (props) => {
   const location = useLocation();
   const [count, setCount] = useState({})
   const [menuOpen, setMenuOpen] = useState(false);
-
   const closeMenu = () => {
     setMenuOpen(false);
   };
@@ -26,13 +25,11 @@ const Sidebar = (props) => {
   const isOpenSub = () => {
     if (IsOpenSub == true)
       setIsOpenSub(false)
-
     else
       setIsOpenSub(true)
   }
 
-
-  const { auth, setAuth, tasklength,setTasklength, contactlength,
+  const { auth, setAuth, tasklength, setTasklength, contactlength,
     setConatctlength, leadlength, setLeadlength, activeID, roleId } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
@@ -78,7 +75,7 @@ const Sidebar = (props) => {
         setConatctlength(userData.contact_count)
         setLeadlength(userData.leads_count);
 
-         setTasklength(userData?.todo_count)
+        setTasklength(userData?.todo_count)
       } catch (error) {
         handleLogout()
       }
@@ -97,7 +94,7 @@ const Sidebar = (props) => {
   const handleInnerOptionClick = (e) => {
     e.stopPropagation();
     setSub("camp");
-     isOpenSub();  
+    isOpenSub();
   };
 
   return (
@@ -111,7 +108,7 @@ const Sidebar = (props) => {
             </Link>
             <div className="side-menu-child" />
             <div className="menu">
-              <Link to="/" className={location.pathname === "/" ? "active" : ""}>
+              <Link to="/" className={location.pathname === "/" || location.pathname.includes("/todo-list/add/new-dashboard/") || location.pathname.includes("/todo-list-dashboard/edit/") ? "active" : ""}>
                 <div className="dashboard">
                   <img className="icon" alt="" src="/icon.svg" />
                   <div className="daily-events">Dashboard </div>
@@ -119,13 +116,15 @@ const Sidebar = (props) => {
                 </div>
               </Link>
 
-              <Link to="/todo-list" className={location.pathname === "/todo-list" ? "active" : ""}>
+              <Link to="/todo-list" className={location.pathname === "/todo-list" || location.pathname.includes("/todo-list/add-task")
+                || location.pathname.includes("/todo-list-todo/edit/")
+                ? "active" : ""}>
                 <div className="order-list">
                   <img className="group-icon" alt="" src="/group.svg" />
                   <div className="daily-events">To-Do List ({tasklength})</div>
                 </div>
               </Link>
-              <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
+              <Link to="/leads" className={location.pathname === "/leads" || location.pathname.includes("/leads/edit/") || location.pathname === "/leads/add" ? "active" : ""}>
                 <div className="order-detail">
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
                   <div className="daily-events">Leads ({leadlength})</div>
@@ -335,7 +334,7 @@ to multiply the revenue. </h6>
               </Link>
               <div className="side-menu-child" />
               <div className="menu">
-                <Link to="/" className={location.pathname === "/" ? "active" : ""}>
+                <Link to="/" className={location.pathname === "/" || location.pathname.includes("/todo-list/add/new-dashboard/") || location.pathname.includes("/todo-list-dashboard/edit/") ? "active" : ""}>
                   <div className="dashboard">
 
                     <img className="icon" alt="" src="/icon.svg" />
@@ -345,13 +344,15 @@ to multiply the revenue. </h6>
                   </div>
                 </Link>
 
-                <Link to="/todo-list" className={location.pathname === "/todo-list" ? "active" : ""}>
+                <Link to="/todo-list" className={location.pathname === "/todo-list" || location.pathname.includes("/todo-list/add-task")
+                  || location.pathname.includes("/todo-list-todo/edit/")
+                  ? "active" : ""}>
                   <div className="order-list">
                     <img className="group-icon" alt="" src="/group.svg" />
                     <div className="daily-events">To-Do List ({tasklength})</div>
                   </div>
                 </Link>
-                <Link to="/leads" className={location.pathname === "/leads" ? "active" : ""}>
+                <Link to="/leads" className={location.pathname === "/leads" || location.pathname.includes("/leads/edit/") || location.pathname === "/leads/add" ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -450,7 +451,7 @@ to multiply the revenue. </h6>
                 <div className="properties daily-events" >Campaigns</div>
               </div>} */}
 
-                <div onClick={ handleInnerOptionClick} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
+                <div onClick={handleInnerOptionClick} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                   <img className="vector-icon" alt="" src="/vector.svg" />
                   <div className="properties daily-events" >Campaigns</div>
                 </div>

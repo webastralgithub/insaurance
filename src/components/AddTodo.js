@@ -25,7 +25,8 @@ const AddTodo = () => {
       FollowupDate: dateTime,
       Comments: "",
       IsRead: false,
-      phone:"",
+      phone: "",
+
     }
 
   );
@@ -43,10 +44,10 @@ const AddTodo = () => {
       isValid = false;
     }
     // if (contact.phone) {
-      if (contact.phone.length != 10) {
-        setPhoneError("Invalid phone number")
-        isValid = false;
-      }
+    if (contact.phone.length != 10) {
+      setPhoneError("Invalid phone number")
+      isValid = false;
+    }
     // }
     if (!contact.FollowupDate) {
       setPropertyTypeError("Follow up Date is required");
@@ -73,7 +74,8 @@ const AddTodo = () => {
         break;
     }
   };
-  const [selectedContact, setSelectedContact] = useState(null);
+  const [selectedContact, setSelectedContact] = useState({});
+  const [selectedContactData, setSelectedContactData] = useState({});
   const [realtorOptions, setRealtorOptions] = useState([]);
   const [selectedFamilyMember, setSelectedFamilyMember] = useState(null);
   const [selectedChildren, setSelectedChildren] = useState(null);
@@ -85,7 +87,7 @@ const AddTodo = () => {
     label: "British Columbia", // Set the label of "British Columbia"
   });
 
-  // Define an array of province options
+
 
   const navigate = useNavigate();
   const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
@@ -121,19 +123,36 @@ const AddTodo = () => {
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
-      paddingLeft: "0px"
+      paddingLeft: "10px",
+      fontSize: "14px",
+      fontWeight: '550',
+      //color: '#000000e8',
     }),
-    control: styles => ({ ...styles, border: 'unset', boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
+    control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
+    input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
+    listbox: (styles) => ({ ...styles, zIndex: "99999" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-
       return {
         ...styles,
-
-
+        backGround: "#fff",
+        color: "#000",
+        position: "relative",
+        zIndex: "99",
+        fontSize: "14px"
       };
     },
+    placeholder: (provided, state) => ({
+      ...provided,
+      color: 'black',
+      backGround : 'white' ,
+      marginLeft: "10px",
+      fontSize: "14px",
+      fontWeight: '500'
 
+    })
   };
+
+
   const url = process.env.REACT_APP_API_URL;
   const childOptions = childrenOptions.map((child) => ({
     value: child.id,
@@ -144,6 +163,7 @@ const AddTodo = () => {
     getRealtorOptions();
     getContacts()
   }, []);
+
   const getContacts = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
@@ -151,7 +171,7 @@ const AddTodo = () => {
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
         value: realtor.id,
         label: realtor.firstname,
-        children: realtor.children || []
+        // children: realtor.children || []
       }));
       // Set the filtered contacts in the state
       setContactOptions(contactsWithoutParentId);
@@ -162,8 +182,31 @@ const AddTodo = () => {
       setAuth(null);
       navigate('/');
     }
-
   };
+
+  const handleAllChange = (selectedOptions) => {
+    setSelectedContact(selectedOptions);
+
+    if (selectedContact?.value) {
+      getContactDetails()
+    }
+  }
+
+  const getContactDetails = async () => {
+    if (selectedContact?.value)
+      try {
+        const response = await axios.get(`${url}api/contacts/get/${selectedContact?.value}`, { headers, });
+        const responseData = response?.data
+        setSelectedContactData(responseData)
+      } catch (error) {
+        console.error(error)
+      }
+  }
+
+  useEffect(() => {
+    getContactDetails()
+  }, [selectedContact])
+
   const getRealtorOptions = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
@@ -191,7 +234,7 @@ const AddTodo = () => {
           setTasklength(tasklength + 1)
           toast.success('Todo added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
           // Contact added successfully
-          navigate("/todo-list"); // Redirect to the contacts list page
+          navigate(-1); // Redirect to the contacts list page
         } else {
           console.error("Failed to add contact");
         }
@@ -291,17 +334,72 @@ const AddTodo = () => {
               />
             </div>
 
+            <div className="form-user-add-inner-wrap form-user-category-edit-contact">
+              <label>Contact</label>
+              <Select
+                placeholder='Select Contact'
+                onChange={handleAllChange}
+                options={contactOption}
+                styles={colourStyles}
+                className="select-new"
+                isMulti={false}
+                value={selectedContact}
+                closeMenuOnSelect={true}
+                hideSelectedOptions={false}
+                components={{
+                  DropdownIndicator: () => null
+                }}
+              />
+            </div>
+
+            <div className="form-user-add-inner-wrap">
+              <label>Email</label>
+              <input
+                type="text"
+                value={selectedContactData.email}
+                readOnly
+              />
+            </div>
+
+            <div className="form-user-add-inner-wrap">
+              <label>Business Name</label>
+              <input
+                type="text"
+                value={selectedContactData.businessname}
+                readOnly
+              />
+            </div>
+
+            <div className="form-user-add-inner-wrap">
+              <label>Profession</label>
+              <input
+                type="text"
+
+                value={selectedContactData.profession}
+                readOnly
+              />
+            </div>
+
+            <div className="form-user-add-inner-wrap">
+              <label>Address</label>
+              <input
+                type="text"
+
+                value={selectedContactData.address1}
+                readOnly
+              />
+            </div>
+            <div className="form-user-add-inner-wrap">
+              <label>Website</label>
+              <input
+                type="text"
+                value={selectedContactData.website}
+                readOnly
+              />
+            </div>
           </div>
 
           <div className="todo-notes-section">
-
-
-
-
-
-
-
-
             <div className="form-user-add-inner-wrap">
               <label>Add Notes</label>
 

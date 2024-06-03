@@ -39,13 +39,13 @@ const MyCalendar = () => {
     //   toast.error('Invalid date selection', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     //   return;
     // }
-    navigate("todo-list/add/new/" + time)
+    navigate("/todo-list/add/new-dashboard/" + time)
   }
 
   const eventClick = (selected) => {
-    const newtask = tasks.find((option) => option.id === selected.event.id)
+    const newtask = tasks?.find((option) => option?.id === selected?.event.id)
     setTodo(newtask)
-    navigate(`/todo-list/edit/${selected.event.id}`)
+    navigate(`/todo-list-dashboard/edit/${selected.event.id}`)
   }
 
 
@@ -61,8 +61,8 @@ const MyCalendar = () => {
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo`, { headers });
-      setTasks(response.data);
-      const eventsdata = response.data.todo.map((item, index) => ({
+      setTasks(response?.data?.todo);
+      const eventsdata = response?.data?.todo.map((item, index) => ({
         key: item.id,
         id: item.id,
         title: item.Followup, // Use the desired property as the event title

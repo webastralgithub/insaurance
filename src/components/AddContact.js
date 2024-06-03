@@ -47,7 +47,7 @@ const AddContact = ({ user }) => {
     lastname: "",
     email: "",
     profession: "",
-    address1: "",
+    address: "",
     phone: "",
     company: "",
     servceRequire: selectedServices,
