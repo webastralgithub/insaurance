@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AuthContext } from "./context/AuthContext";
@@ -14,27 +14,30 @@ import 'react-datetime/css/react-datetime.css';
 
 const AddTodo = () => {
   const { date } = useParams()
-
   const [dateTime, setDateTime] = useState(date ? new Date(date) : new Date());
+  const url = process.env.REACT_APP_API_URL;
+  const [realtorOptions, setRealtorOptions] = useState([]);
+  const [contactOption, setContactOptions] = useState([])
+  const [mlsNoError, setMlsNoError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [propertyTypeError, setPropertyTypeError] = useState("");
+  const noSelectionOption = { value: null, label: 'No Selection' };
+  const [selectedContact, setSelectedContact] = useState({});
+  const [selectedContactData, setSelectedContactData] = useState({});
   const handleDateTimeChange = (newDateTime) => {
     setDateTime(newDateTime);
   };
   const [contact, setContact] = useState(
     {
+
       Followup: "",
       FollowupDate: dateTime,
       Comments: "",
       IsRead: false,
       phone: "",
-
+      ContactID: "",
     }
-
   );
-  const [mlsNoError, setMlsNoError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [propertyTypeError, setPropertyTypeError] = useState("");
-  const noSelectionOption = { value: null, label: 'No Selection' };
-  // Validate the form fields and set validation errors
 
   const validateForm = () => {
     let isValid = true;
@@ -60,7 +63,6 @@ const AddTodo = () => {
     return isValid;
   };
 
-
   const clearErrors = (fieldName) => {
     switch (fieldName) {
       case "Followup":
@@ -74,62 +76,23 @@ const AddTodo = () => {
         break;
     }
   };
-  const [selectedContact, setSelectedContact] = useState({});
-  const [selectedContactData, setSelectedContactData] = useState({});
-  const [realtorOptions, setRealtorOptions] = useState([]);
-  const [selectedFamilyMember, setSelectedFamilyMember] = useState(null);
-  const [selectedChildren, setSelectedChildren] = useState(null);
-  const [childrenOptions, setChildrenOptions] = useState([])
-  const [contactOption, setContactOptions] = useState([])
-  const [selectedRealtor, setSelectedRealtor] = useState(null);
-  const [selectedProvince, setSelectedProvince] = useState({
-    value: 2, // Set the value of "British Columbia"
-    label: "British Columbia", // Set the label of "British Columbia"
-  });
-
-
 
   const navigate = useNavigate();
   const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
-  const provinceOptions = [
-    { value: 1, label: "Alberta" },
-    { value: 2, label: "British Columbia" },
-    { value: 3, label: "Manitoba" },
-    { value: 4, label: "New Brunswick" },
-    { value: 5, label: "Newfoundland and Labrador" },
-    { value: 6, label: "Nova Scotia" },
-    { value: 7, label: "Ontario" },
-    { value: 8, label: "Prince Edward Island" },
-    { value: 9, label: "Quebec" },
-    { value: 10, label: "Saskatchewan" },
-    { value: 11, label: "Northwest Territories" },
-    { value: 12, label: "Nunavut" },
-    { value: 13, label: "Yukon" },
-  ];
-  const sourceOptions = [
-    { value: "Website", label: "Website" },
-    { value: "Website", label: "Phone" },
-    { value: "Others", label: "Others" },
-  ]
-
-  const handleProvinceSelectChange = (selectedOption) => {
-    setSelectedProvince(selectedOption);
-    setContact({ ...contact, provinceId: selectedOption.value });
-  };
 
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
-      paddingLeft: "10px",
+      // paddingLeft: "10px",
       fontSize: "14px",
       fontWeight: '550',
       //color: '#000000e8',
     }),
     control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
-    input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
+    input: (styles) => ({ ...styles, margin: "0px", }),
     listbox: (styles) => ({ ...styles, zIndex: "99999" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
@@ -141,23 +104,14 @@ const AddTodo = () => {
         fontSize: "14px"
       };
     },
-    placeholder: (provided, state) => ({
-      ...provided,
-      color: 'black',
-      backGround : 'white' ,
-      marginLeft: "10px",
-      fontSize: "14px",
-      fontWeight: '500'
-
+    placeholder: (styles, state) => ({
+      ...styles,
+      backGroundColor: "white",
+      color: "black",
     })
   };
 
 
-  const url = process.env.REACT_APP_API_URL;
-  const childOptions = childrenOptions.map((child) => ({
-    value: child.id,
-    label: child.firstname,
-  }));
 
   useEffect(() => {
     getRealtorOptions();
@@ -165,6 +119,8 @@ const AddTodo = () => {
   }, []);
 
   const getContacts = async () => {
+
+
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
 
@@ -175,8 +131,6 @@ const AddTodo = () => {
       }));
       // Set the filtered contacts in the state
       setContactOptions(contactsWithoutParentId);
-
-
     } catch (error) {
       localStorage.removeItem('token');
       setAuth(null);
@@ -184,19 +138,20 @@ const AddTodo = () => {
     }
   };
 
-  const handleAllChange = (selectedOptions) => {
+  const handleAllChange = useCallback((selectedOptions) => {
     setSelectedContact(selectedOptions);
 
     if (selectedContact?.value) {
       getContactDetails()
     }
-  }
+  }, [selectedContactData])
 
   const getContactDetails = async () => {
     if (selectedContact?.value)
+      
       try {
         const response = await axios.get(`${url}api/contacts/get/${selectedContact?.value}`, { headers, });
-        const responseData = response?.data
+        const responseData = await response?.data
         setSelectedContactData(responseData)
       } catch (error) {
         console.error(error)
@@ -205,7 +160,7 @@ const AddTodo = () => {
 
   useEffect(() => {
     getContactDetails()
-  }, [selectedContact])
+  }, [selectedContact.value])
 
   const getRealtorOptions = async () => {
     try {
@@ -224,9 +179,11 @@ const AddTodo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const updatedContact = { ...contact, ContactID: selectedContactData.id };
+
     if (validateForm()) {
       try {
-        const response = await axios.post(`${url}api/todo`, contact, {
+        const response = await axios.post(`${url}api/todo`, updatedContact, {
           headers,
         });
 
@@ -257,175 +214,177 @@ const AddTodo = () => {
     setContact({ ...contact, [name]: value });
   };
 
-  const handleRealtorSelectChange = (selectedOption) => {
-    setSelectedRealtor(selectedOption);
-    setContact({ ...contact, realtorId: selectedOption.value });
-  };
-
   const goBack = () => {
     navigate(-1); // This function takes you back one step in the navigation stack
   };
+
   return (
 
+    <>
+      <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form">
+        <div className="property_header header-with-back-btn">
 
-    <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form">
-      <div className="property_header header-with-back-btn">
+          <h3> <button type="button" className="back-only-btn" onClick={
+            goBack}> <img src="/back.svg" /></button>Add Task</h3>
 
-        <h3> <button type="button" className="back-only-btn" onClick={
-          goBack}> <img src="/back.svg" /></button>Add Task</h3>
+          <div className="top-bar-action-btns">
+            {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
 
-        <div className="top-bar-action-btns">
-          {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
+          </div>   </div>
+        <div className="form-user-add-wrapper">
+          <div className="todo-section">
+            <div className="todo-main-section">
+              <div className="form-user-add-inner-wrap">
 
-        </div>   </div>
-      <div className="form-user-add-wrapper">
-        <div className="todo-section">
-          <div className="todo-main-section">
-            <div className="form-user-add-inner-wrap">
+                <label>Task Title <span className="required-star">*</span></label>
+                <input
+                  type="text"
+                  name="Followup"
+                  value={contact.Followup}
+                  onChange={handleChange}
 
-              <label>Task Title <span className="required-star">*</span></label>
-              <input
-                type="text"
-                name="Followup"
-                value={contact.Followup}
-                onChange={handleChange}
+                />
+                <span className="error-message">{mlsNoError}</span>
+              </div>
 
-              />
-              <span className="error-message">{mlsNoError}</span>
-            </div>
+              <div className="form-user-add-inner-wrap">
+                <label>Follow Up Date <span className="required-star">*</span></label>
+                <Datetime
+                  value={dateTime}
+                  onChange={handleDateTimeChange}
+                  renderInput={(props, openCalendar) => (
+                    <input
+                      {...props}
+                      readOnly
+                      onClick={openCalendar}
+                      style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                    />
+                  )}
+                />
+                <span className="error-message">{propertyTypeError}</span>
+              </div>
+              <div className="form-user-add-inner-wrap">
+                <label>Phone Number<span className="required-star">*</span></label>
+                <InputMask
+                  mask="+1 (999) 999-9999"
+                  type="text"
+                  name="phone"
+                  value={contact.phone}
+                  onChange={handlePhoneNumberChange}
+                  placeholder="+1 (___) ___-____"
 
-            <div className="form-user-add-inner-wrap">
-              <label>Follow Up Date <span className="required-star">*</span></label>
-              <Datetime
-                value={dateTime}
-                onChange={handleDateTimeChange}
-                renderInput={(props, openCalendar) => (
-                  <input
-                    {...props}
-                    readOnly
-                    onClick={openCalendar}
-                    style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                />
+                <span className="error-message">{phoneError}</span>
+              </div>
+
+              <div className="form-user-add-inner-wrap">
+                <label>Task description</label>
+                <input
+                  type="text"
+                  name="description"
+                  value={contact.description}
+                  onChange={handleChange}
+                />
+              </div>
+              {contactOption.length > 0 ? <>
+                <div className="form-user-add-inner-wrap ">
+                  <label>Contact</label>
+                  <Select
+                    placeholder="Select Contact"
+                    onChange={handleAllChange}
+                    options={contactOption}
+                    styles={colourStyles}
+                    className="select-new"
+                    isMulti={false}
+                    value={selectedContact}
+                    closeMenuOnSelect={true}
+                    hideSelectedOptions={false}
+                    components={{ DropdownIndicator: () => null }}
                   />
-                )}
-              />
-              <span className="error-message">{propertyTypeError}</span>
-            </div>
-            <div className="form-user-add-inner-wrap">
-              <label>Phone Number<span className="required-star">*</span></label>
-              <InputMask
-                mask="+1 (999) 999-9999"
-                type="text"
-                name="phone"
-                value={contact.phone}
-                onChange={handlePhoneNumberChange}
-                placeholder="+1 (___) ___-____"
+                </div>
 
-              />
-              <span className="error-message">{phoneError}</span>
-            </div>
+                {selectedContactData.id && <>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Email</label>
+                    <input
+                      type="text"
+                      value={(selectedContactData?.email ? selectedContactData?.email : " ")}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Business Name</label>
+                    <input
+                      type="text"
+                      value={selectedContactData?.company}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Profession</label>
+                    <input
+                      type="text"
 
-            <div className="form-user-add-inner-wrap">
-              <label>Task description</label>
-              <input
-                type="text"
-                name="description"
-                value={contact.description}
-                onChange={handleChange}
-              />
-            </div>
+                      value={selectedContactData?.profession}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Address</label>
+                    <input
+                      type="text"
 
-            <div className="form-user-add-inner-wrap form-user-category-edit-contact">
-              <label>Contact</label>
-              <Select
-                placeholder='Select Contact'
-                onChange={handleAllChange}
-                options={contactOption}
-                styles={colourStyles}
-                className="select-new"
-                isMulti={false}
-                value={selectedContact}
-                closeMenuOnSelect={true}
-                hideSelectedOptions={false}
-                components={{
-                  DropdownIndicator: () => null
-                }}
-              />
-            </div>
+                      value={selectedContactData?.address1 ? selectedContactData?.address1 : ""}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Website</label>
+                    <input
+                      type="text"
+                      value={selectedContactData?.website ?? ""}
+                      readOnly
+                    />
+                  </div>
+                </>}
 
-            <div className="form-user-add-inner-wrap">
-              <label>Email</label>
-              <input
-                type="text"
-                value={selectedContactData.email}
-                readOnly
-              />
-            </div>
+              </> : <div className="add_user_btn">
+                <button onClick={() => navigate("/contacts/add")}>
+                  <img src="/plus.svg" />
+                  Add Contact</button>
+              </div>}
 
-            <div className="form-user-add-inner-wrap">
-              <label>Business Name</label>
-              <input
-                type="text"
-                value={selectedContactData.businessname}
-                readOnly
-              />
+
             </div>
 
-            <div className="form-user-add-inner-wrap">
-              <label>Profession</label>
-              <input
-                type="text"
+            <div className="todo-notes-section">
+              <div className="form-user-add-inner-wrap">
+                <label>Add Notes</label>
 
-                value={selectedContactData.profession}
-                readOnly
-              />
-            </div>
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={contact.Comments}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setContact({ ...contact, Comments: data });
+                  }}
+                  config={{
+                    toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                  }}
+                  className="custom-ckeditor" // Add a custom class for CKEditor container
+                  style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                />
 
-            <div className="form-user-add-inner-wrap">
-              <label>Address</label>
-              <input
-                type="text"
-
-                value={selectedContactData.address1}
-                readOnly
-              />
-            </div>
-            <div className="form-user-add-inner-wrap">
-              <label>Website</label>
-              <input
-                type="text"
-                value={selectedContactData.website}
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div className="todo-notes-section">
-            <div className="form-user-add-inner-wrap">
-              <label>Add Notes</label>
-
-              <CKEditor
-                editor={ClassicEditor}
-                data={contact.Comments}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setContact({ ...contact, Comments: data });
-                }}
-                config={{
-                  toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-                }}
-                className="custom-ckeditor" // Add a custom class for CKEditor container
-                style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-              />
-
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="form-user-add-inner-btm-btn-wrap">
+        <div className="form-user-add-inner-btm-btn-wrap">
 
-        <button type="submit" >Save</button>
-      </div>
-    </form>
+          <button type="submit" >Save</button>
+        </div>
+      </form>
+    </>
 
   );
 };

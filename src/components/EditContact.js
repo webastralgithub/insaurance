@@ -413,6 +413,18 @@ const EditContact = ({ nameofuser }) => {
               />
             </div>
           </div>
+          <div className="form-user-add-inner-wrap">
+            <label>Website</label>
+            <div className="edit-new-input">
+              <input
+                type="text"
+                name="profession"
+                value={editedContact.website}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
 
 
           <Places value={editedContact.address1} onChange={handleAddressChange} />

@@ -175,7 +175,7 @@ const TodoList = ({ role }) => {
       ],
     });
   }
-
+  
   const changeStatus = async (status, id) => {
     try {
       const response = await axios.put(`${url}api/todo/${id}`,
@@ -260,6 +260,9 @@ const TodoList = ({ role }) => {
             <table>
               <thead>
                 <tr>
+                  <th>Contact Name</th>
+                  <th>Business Name</th>
+                  <th>Profession</th>
                   <th>Phone</th>
                   <th>Task Title</th>
                   <th>Follow Up Date</th>
@@ -270,6 +273,9 @@ const TodoList = ({ role }) => {
                 {tasks && tasks?.map((task, index) => (
                   <>
                     {!task.IsRead && <tr key={task.id}>
+                      <td>{task?.contact?.firstname}</td>
+                      <td>{task?.contact?.company}</td>
+                      <td>{task?.contact?.profession}</td>
                       <td>
                         {task.phone != undefined || task.phone != "null" ? formatPhoneNumber(task.phone) : ""}
                       </td>

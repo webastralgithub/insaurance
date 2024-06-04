@@ -31,6 +31,7 @@ const EditTodoForm = () => {
   const [users, setUsers] = useState([])
   const [editingField, setEditingField] = useState('all');
 
+  console.log("selectedContact", editedTodo);
 
   const [mlsNoError, setMlsNoError] = useState("");
   const [propertyTypeError, setPropertyTypeError] = useState("");
@@ -51,6 +52,8 @@ const EditTodoForm = () => {
   };
   const navigate = useNavigate()
   const noSelectionOption = { value: null, label: 'No Selection' };
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     clearErrors(name)
@@ -73,21 +76,28 @@ const EditTodoForm = () => {
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
-      paddingLeft: "0px"
+      paddingLeft: "0px",
+      fontSize: "14px",
+      fontWeight: '550',
+      //color: '#000000e8',
+
     }),
+
     control: styles => ({ ...styles, border: 'unset', boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
     input: styles => ({ ...styles, margin: "0px" }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    option: (styles) => {
 
       return {
         ...styles,
+        backGround: "#fff",
+        color: "#000",
+        position: "relative",
+        zIndex: "99",
+        fontSize: "14px"
       };
     },
   };
-  const childOptions = childrenOptions.map((child) => ({
-    value: child.id,
-    label: child.firstname,
-  }));
+
 
   useEffect(() => {
     getTodos()
@@ -168,14 +178,10 @@ const EditTodoForm = () => {
       setUsers(res.data)
 
     } catch (error) {
-
+      console.error(error)
     }
   };
-  const handleCancelClick = () => {
-    setEditingField(null);
-    // Reset the editedTodo to the original values
-    // setEditedTodo({ ...todo });
-  };
+
   const formatDate = (dateTimeString) => {
     if (!dateTimeString) {
       return ""; // Handle cases where the date-time string is empty or undefined
@@ -193,18 +199,19 @@ const EditTodoForm = () => {
   };
 
   const getTodos = async () => {
-    const response = await axios.get(`${url}api/todo`, { headers });
-    
-    const filtered = await response?.data?.todo?.find(x => x.id == id)
-
-    const followupDateISO = filtered?.FollowupDate
-      ? new Date(filtered?.FollowupDate).toISOString().slice(0, 16)
-      : '';
-    setEditedTodo(filtered);
-    // setDefaultFollowupDate(filtered?.FollowupDate)
-    setDefaultFollowupDate(followupDateISO);
-
+    try {
+      const response = await axios.get(`${url}api/todo`, { headers });
+      const filtered = await response?.data?.todo?.find(x => x.id == id)
+      const followupDateISO = filtered?.FollowupDate
+        ? new Date(filtered?.FollowupDate).toISOString().slice(0, 16)
+        : '';
+      setEditedTodo(filtered);
+      setDefaultFollowupDate(followupDateISO);
+    } catch (error) {
+      console.error(error)
+    }
   }
+
   const getContacts = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/get`, { headers });
@@ -213,22 +220,11 @@ const EditTodoForm = () => {
         label: realtor.firstname,
         children: realtor.children || []
       }));
-      // Set the filtered contacts in the state
       setContactOptions(contactsWithoutParentId);
-
-
     } catch (error) {
-
+      console.error(error)
     }
-
   };
-
-
-  const editAll = () => {
-    setEditingField('all');
-  }
-
-
 
   const handlePhoneNumberChange = (event) => {
     // Extract the raw phone number from the input
@@ -236,6 +232,7 @@ const EditTodoForm = () => {
     // Update the phone number state with the raw input
     setEditedTodo({ ...editedTodo, phone: rawPhoneNumber.slice(1, 11) });
   };
+
 
   return (
 
@@ -281,7 +278,7 @@ const EditTodoForm = () => {
                   <input
                     name="FollowupDate"
                     type="datetime-local"
-                    defaultValue={defaultFollowupDate}
+                    defaultValue={formatDate(defaultFollowupDate)}
                     onChange={handleChange}
                   />
                   <span className="error-message">{propertyTypeError}</span>
@@ -345,6 +342,27 @@ const EditTodoForm = () => {
                 </div>
               )}
             </div>
+
+            <div className="form-user-add-inner-wrap ">
+              <label>Contact</label>
+              <Select
+                defaultInputValue={editedTodo?.contact?.firstname}
+                placeholder="Select Contact"
+                onChange={(selectedOption) => {
+                  setSelectedContact(selectedOption)
+                  setEditedTodo({ ...editedTodo, ContactID: selectedOption.value })
+                }
+                }
+                options={contactOption}
+                styles={colourStyles}
+                className="select-new"
+                isMulti={false}
+                value={selectedContact}
+                closeMenuOnSelect={true}
+                hideSelectedOptions={false}
+                components={{ DropdownIndicator: () => null,IndicatorSeparator:() => null }}
+              />
+            </div>
           </div>
           <div className="todo-notes-section">
             <div className="form-user-add-inner-wrap">
@@ -381,12 +399,7 @@ const EditTodoForm = () => {
             styles={colourStyles}
             className="select-new"
             
-          />
-           
-         
-            
-           
-              
+          />        
          
           ) : (
           <div className="edit-new-input">
@@ -449,12 +462,6 @@ const EditTodoForm = () => {
           styles={colourStyles}
          className="select-new"
         />
-           
-         
-            
-           
-              
-         
           ) : (
           <div className="edit-new-input">
 

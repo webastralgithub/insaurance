@@ -441,7 +441,7 @@ const Lead = () => {
                           <th>Email</th>
                           <th>Source</th>
                           <th>Date</th>
-                          <th>My Category</th>
+                          {/* <th>My Category</th> */}
                         </tr>
                       </thead>
                       {activeLeadCategory.length > 0 &&
@@ -454,7 +454,7 @@ const Lead = () => {
                             <td>{contact.email}</td>
                             <td>{contact.source}</td>
                             <td>{contact.created_at.slice(0, 10)}</td>
-                            <td>{contact.category?.name}</td>
+                            {/* <td>{contact.category}</td> */}
                             <td>  <button className="permissions"
                               onClick={() => {
                                 setId(contact.id)

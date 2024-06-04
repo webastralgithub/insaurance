@@ -12,9 +12,6 @@ import { toast } from "react-toastify";
 
 const AddContact = ({ user }) => {
 
-
-
-
   const [errors, setErrors] = useState({
     firstname: "",
     email: "",
@@ -26,17 +23,14 @@ const AddContact = ({ user }) => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [realtorOptions, setRealtorOptions] = useState([]);
   const [emailError, setEmailError] = useState("")
-  const [selectedSource, setSelectedSource] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [firstError, setFirstError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [propertyTypeError, setPropertyTypeError] = useState("");
-  const [priceError, setPriceError] = useState("");
   const [properties, setProperties] = useState([])
   const [categories, setCategories] = useState([])
   const [seletedCategory, setSelectedCategory] = useState(null);
-  const [selectedRealtor, setSelectedRealtor] = useState(null);
-  const [selectedAgent, setSelectedAgent] = useState(null);
+
+
   const [selectedProvince, setSelectedProvince] = useState({
     value: 2, // Set the value of "British Columbia"
     label: "British Columbia", // Set the label of "British Columbia"
@@ -47,9 +41,10 @@ const AddContact = ({ user }) => {
     lastname: "",
     email: "",
     profession: "",
-    address: "",
+    address1: "",
     phone: "",
     company: "",
+    website : "",
     servceRequire: selectedServices,
     category: seletedCategory,
     notes: "",
@@ -272,13 +267,16 @@ const AddContact = ({ user }) => {
   };
 
   const handleChange = (e) => {
+    setErrors({
+      firstname: "",
+      email: "",
+      phone: "",
+      category: ""
+    })
     const { name, value } = e.target;
     setContact({ ...contact, [name]: value });
 
-    setErrors(prevErrors => ({
-      ...prevErrors,
-      [name]: ""
-    }));
+   
   };
 
   // const handleRealtorSelectChange = (selectedOption) => {
@@ -340,6 +338,17 @@ const AddContact = ({ user }) => {
                 type="text"
                 name="profession"
                 value={contact.profession}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="form-user-add-inner-wrap">
+            <label>Website</label>
+            <div className="edit-new-input">
+              <input
+                type="text"
+                name="website"
+                value={contact.website}
                 onChange={handleChange}
               />
             </div>
