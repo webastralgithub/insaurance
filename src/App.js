@@ -163,6 +163,14 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+              <Route
+              path="/referral-sent/:id" exact
+              element={
+                <PrivateRoute>
+                  <Referral role={role} />
+                </PrivateRoute>
+              }
+            />
 
             <Route
               path="/contacts/send/:id" exact
@@ -503,7 +511,7 @@ const App = () => {
               }
             />
           
-          {subscriptionStatus !== "active" && <Route
+          {subscriptionStatus !== "active"  &&  roleId != 1 && <Route
             path="/upgrade-plan" exact
             element={
               <PrivateRoute>

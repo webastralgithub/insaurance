@@ -41,19 +41,12 @@ const ManageSubscription = () => {
     } else {
       status = 'active'
     }
-  
+
     try {
-      const res = await axios.get(`${url}api/cancel-subscription/${id}/${status}`, { headers });
+      const res = await axios.delete(`${url}api/cancel-subscription/${id}/${status}`, { headers });
       getSubscription()
       setSubscriptionStatus("canceled")
       toast.success(res.data.message);
-      // if (activeSubscriptionStatus == "active") {
-      //   setPlan(1)
-      //   getSubscription()
-      // } else {
-      //   setPlan(2)
-      //   getSubscription()
-      // }
     } catch (error) {
       toast.error("error");
     }

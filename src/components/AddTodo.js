@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback,useRef } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AuthContext } from "./context/AuthContext";
@@ -9,7 +9,21 @@ import InputMask from 'react-input-mask';
 import { toast } from "react-toastify";
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
+import { Search } from "semantic-ui-react";
 
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+};
 
 
 const AddTodo = () => {
@@ -24,9 +38,13 @@ const AddTodo = () => {
   const noSelectionOption = { value: null, label: 'No Selection' };
   const [selectedContact, setSelectedContact] = useState({});
   const [selectedContactData, setSelectedContactData] = useState({});
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchContact, setSearchContact] = useState([])
   const handleDateTimeChange = (newDateTime) => {
     setDateTime(newDateTime);
   };
+
+  // console.log("searchContact searchContact" , searchContact);
   const [contact, setContact] = useState(
     {
 
@@ -34,7 +52,7 @@ const AddTodo = () => {
       FollowupDate: dateTime,
       Comments: "",
       IsRead: false,
-      phone: "",
+      // phone: "",
       ContactID: "",
     }
   );
@@ -47,10 +65,10 @@ const AddTodo = () => {
       isValid = false;
     }
     // if (contact.phone) {
-    if (contact.phone.length != 10) {
-      setPhoneError("Invalid phone number")
-      isValid = false;
-    }
+    // if (contact.phone.length != 10) {
+    //   setPhoneError("Invalid phone number")
+    //   isValid = false;
+    // }
     // }
     if (!contact.FollowupDate) {
       setPropertyTypeError("Follow up Date is required");
@@ -114,8 +132,8 @@ const AddTodo = () => {
 
 
   useEffect(() => {
-    getRealtorOptions();
-    getContacts()
+    // getRealtorOptions();
+    //  getContacts()
   }, []);
 
   const getContacts = async () => {
@@ -131,6 +149,7 @@ const AddTodo = () => {
       }));
       // Set the filtered contacts in the state
       setContactOptions(contactsWithoutParentId);
+
     } catch (error) {
       localStorage.removeItem('token');
       setAuth(null);
@@ -148,7 +167,7 @@ const AddTodo = () => {
 
   const getContactDetails = async () => {
     if (selectedContact?.value)
-      
+
       try {
         const response = await axios.get(`${url}api/contacts/get/${selectedContact?.value}`, { headers, });
         const responseData = await response?.data
@@ -159,7 +178,7 @@ const AddTodo = () => {
   }
 
   useEffect(() => {
-    getContactDetails()
+    // getContactDetails()
   }, [selectedContact.value])
 
   const getRealtorOptions = async () => {
@@ -179,7 +198,7 @@ const AddTodo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedContact = { ...contact, ContactID: selectedContactData.id };
+    const updatedContact = { ...contact, ContactID: newSelected.id };
 
     if (validateForm()) {
       try {
@@ -200,13 +219,8 @@ const AddTodo = () => {
       }
     }
   };
-  const handlePhoneNumberChange = (event) => {
-    // Extract the raw phone number from the input
-    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-    setPhoneError("")
-    // Update the phone number state with the raw input
-    setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
-  };
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -215,9 +229,69 @@ const AddTodo = () => {
   };
 
   const goBack = () => {
-    navigate(-1); // This function takes you back one step in the navigation stack
+    navigate(-1);
   };
 
+  //new component
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchContacts, setSearchContacts] = useState([])
+  const [newSelected, setNewSelected] = useState([])
+  const debouncedSearchQuery = useDebounce(searchQuery, 1500);
+  const containerRef = useRef(null);
+  
+  // const handleScroll = () => {
+  //   const { scrollTop, clientHeight, scrollHeight } = containerRef.current;
+  //   if (scrollHeight - scrollTop === clientHeight) {
+  //     setCurrentPage(prevPage => prevPage + 1);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const container = containerRef.current;
+
+  //   if (container) {
+  //     // Add scroll event listener when component mounts
+  //     container.addEventListener('scroll', handleScroll);
+  //     // Remove event listener when component unmounts
+  //     return () => {
+  //       container.removeEventListener('scroll', handleScroll);
+  //     };
+  //   }
+  // }, [containerRef.current]);
+
+  // useEffect(() => {
+  //   if()
+  //   getSearchContact();
+  // }, [currentPage])
+  
+  const getSearchContact = async () => {
+    try {
+      const response = await axios.get(`${url}api/contacts-list?page=${currentPage}&search=${debouncedSearchQuery}`, { headers });
+      setSearchContacts(response?.data?.contacts)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  const [ssearch, setssearch] = useState(1)
+  useEffect(() => {
+    if (searchQuery && ssearch === 1) {
+      getSearchContact()
+    }
+
+  }, [debouncedSearchQuery , currentPage])
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setNewSelected([])
+    setssearch(1)
+  }
+  const handleSelect = (contact) => {
+    setssearch(2)
+    setSearchQuery(contact.name)
+    setNewSelected(contact)
+    setSearchContacts([])
+  }
+ 
   return (
 
     <>
@@ -263,7 +337,7 @@ const AddTodo = () => {
                 />
                 <span className="error-message">{propertyTypeError}</span>
               </div>
-              <div className="form-user-add-inner-wrap">
+              {/* <div className="form-user-add-inner-wrap">
                 <label>Phone Number<span className="required-star">*</span></label>
                 <InputMask
                   mask="+1 (999) 999-9999"
@@ -275,7 +349,7 @@ const AddTodo = () => {
 
                 />
                 <span className="error-message">{phoneError}</span>
-              </div>
+              </div> */}
 
               <div className="form-user-add-inner-wrap">
                 <label>Task description</label>
@@ -286,7 +360,79 @@ const AddTodo = () => {
                   onChange={handleChange}
                 />
               </div>
-              {contactOption.length > 0 ? <>
+
+              {/* dbouncing and select contact */}
+
+              <div className="form-user-add-inner-wrap ">
+                <label>Contact</label>
+                <input
+                  type="text"
+                  placeholder="Search Contact"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+
+                {searchContacts.length ?
+                  <div style={{ height: "200px", overflow: 'scroll' }}  ref={containerRef}>
+
+                    {searchContacts && searchContacts?.map((contact) => (
+                      <div key={contact.id} >
+                        <p onClick={() => handleSelect(contact)}>{contact.firstname}</p>
+                      </div>
+                    ))}
+                  </div>
+                  : ""}
+              </div>
+
+              {newSelected.id &&
+                <>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Email</label>
+                    <input
+                      type="text"
+                      value={(newSelected?.email ? newSelected?.email : " ")}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Business Name</label>
+                    <input
+                      type="text"
+                      value={newSelected?.company}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Profession</label>
+                    <input
+                      type="text"
+
+                      value={newSelected?.profession}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Address</label>
+                    <input
+                      type="text"
+
+                      value={newSelected?.address1 ? newSelected?.address1 : ""}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Website</label>
+                    <input
+                      type="text"
+                      value={newSelected?.website ?? ""}
+                      readOnly
+                    />
+                  </div>
+                </>}
+
+
+
+              {/* {contactOption.length > 0 ? <>
                 <div className="form-user-add-inner-wrap ">
                   <label>Contact</label>
                   <Select
@@ -352,7 +498,7 @@ const AddTodo = () => {
                 <button onClick={() => navigate("/contacts/add")}>
                   <img src="/plus.svg" />
                   Add Contact</button>
-              </div>}
+              </div>} */}
 
 
             </div>

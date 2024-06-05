@@ -19,14 +19,18 @@ const Referral = ({ role }) => {
   const { id } = useParams();
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
-  const [active, setActive] = useState(1);
-  const [parentid, setParentId] = useState();
+  const [active, setActive] = useState(() => id ? Number(id) : 1)
+  useEffect(() => {
+    if (id) {
+      setActive(Number(id));
+    }
+  }, [id]);
+
   const navigate = useNavigate();
   const [parentView, setParentView] = useState(false);
   const [parentName, setParentName] = useState([]);
   const [bussinessDetail, serBussinessDetail] = useState();
-  const [contactOptions, setContactoptions] = useState(false);
-  const [searchText, setSearchText] = useState("");
+
   const [selectedContacts, setSelectedContacts] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);

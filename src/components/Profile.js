@@ -441,8 +441,6 @@ export default function Profile(props) {
                       onChange={handleInput}
                     />
                   </label>
-
-
                   <div className="profile-btm-cnt-last-line">
                     {user.isPay == 0 && <span className="for-bussiness" style={{ "color": "red" }}>For business profiles only</span>}
                     <div className="add-contact-user-custom-right">
@@ -462,9 +460,8 @@ export default function Profile(props) {
                           className="custom-ckeditor"
                           style={{ width: "100%", maxWidth: "800px", height: "200px" }}
                         />
-
-
-                      </div></div>
+                      </div>
+                      </div>
 
                     <div className="profile-btm-cnt-last-line-right">
                       <label>Referral Amount
@@ -479,7 +476,6 @@ export default function Profile(props) {
                         />
                         <span style={{ color: "red" }} className="error-message">{phoneError}</span>
                       </label>
-
                       <div style={{ textAlign: 'center' }} className="custom_profile_btn">
                         <button className="btn-save" type="submit">Save</button>
                       </div>
@@ -516,14 +512,21 @@ export default function Profile(props) {
           className={active == 4 ? "active" : ""}
           onClick={() => getContacts(4)}
         >
-         My Categories <span>{active == 4 ? "-" : "+"}</span>
+          My Categories <span>{active == 4 ? "-" : "+"}</span>
         </button>
-      </div>
-
-
-      {active == 4 &&
+        {active == 4 &&
         <Category />
       }
+        <button
+          className={active == 5 ? "active" : ""}
+          onClick={() => getContacts(5)}
+        >
+          Profession <span>{active == 5 ? "-" : "+"}</span>
+        </button>
+        {active == 5 &&
+        "Profession"
+      }
+      </div>
     </div>
   );
 }

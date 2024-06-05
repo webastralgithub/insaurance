@@ -118,12 +118,12 @@ const EditTodoForm = () => {
         isValid = false;
       }
     }
-    if (editedTodo.phone) {
-      if (editedTodo.phone.length != 10) {
-        setPhoneError("Invalid phone number")
-        isValid = false;
-      }
-    }
+    // if (editedTodo.phone) {
+    //   if (editedTodo.phone.length != 10) {
+    //     setPhoneError("Invalid phone number")
+    //     isValid = false;
+    //   }
+    // }
 
     // if (!editedTodo.FollowupDate) {
     //   setPropertyTypeError("Follow up Date is required");
@@ -294,7 +294,7 @@ const EditTodoForm = () => {
               )}
             </div>
 
-            <div className="form-user-add-inner-wrap">
+            {/* <div className="form-user-add-inner-wrap">
               <label>Phone Number<span className="required-star">*</span></label>
               {editingField === "phone" || editingField === "all" ? (
                 <div className="edit-new-input">
@@ -319,7 +319,7 @@ const EditTodoForm = () => {
                   />
                 </div>
               )}
-            </div>
+            </div> */}
 
             <div className="form-user-add-inner-wrap">
               <label>Task description</label>

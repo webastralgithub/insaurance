@@ -19,12 +19,12 @@ import 'react-loading-skeleton/dist/skeleton.css'
 const TodoList = ({ role }) => {
   const [dataLoader, setDataLoader] = useState(false)
   const [buttonActive, setButtonActive] = useState(1)
-  const [tasks, setTasks] = useState([]); 
-  const[taskCount , setTaskCount] = useState()
+  const [tasks, setTasks] = useState([]);
+  const [taskCount, setTaskCount] = useState()
   const [totalPagess, setTotalPagess] = useState();
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
-  const [type, setType] = useState("")
+  const [type, setType] = useState("today")
   let searchRef = useRef()
   const navigate = useNavigate();
   const { auth, setAuth, todo, setTodo, tasklength, setTasklength } = useContext(AuthContext);
@@ -96,8 +96,6 @@ const TodoList = ({ role }) => {
     toast.success('Todo deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setTasks(tasks.filter((p) => p.id !== propertyId));
   };
- 
-
 
 
   const getTasks = async () => {
@@ -175,7 +173,7 @@ const TodoList = ({ role }) => {
       ],
     });
   }
-  
+
   const changeStatus = async (status, id) => {
     try {
       const response = await axios.put(`${url}api/todo/${id}`,
@@ -244,7 +242,7 @@ const TodoList = ({ role }) => {
           <button className={type == "previous" ? 'active' : ''} onClick={() => { setCurrentPage(1); setType("previous") }}>
             Previous ({taskCount?.previouscount})</button>
 
-          <button className={type == "" ? 'active' : ''} onClick={() => { setCurrentPage(1); setType("") }}>
+          <button className={type == "today" ? 'active' : ''} onClick={() => { setCurrentPage(1); setType("today") }}>
             Today ({taskCount?.todaycount})</button>
           <button className={type == "future" ? 'active' : ''} onClick={() => { setCurrentPage(1); setType("future") }}>
             Future ({taskCount?.futurecount})</button>
@@ -260,12 +258,13 @@ const TodoList = ({ role }) => {
             <table>
               <thead>
                 <tr>
+                  <th>Task Title</th>
+                  <th>Follow Up Date</th>
                   <th>Contact Name</th>
                   <th>Business Name</th>
                   <th>Profession</th>
                   <th>Phone</th>
-                  <th>Task Title</th>
-                  <th>Follow Up Date</th>
+
                 </tr>
               </thead>
               <tbody>
@@ -273,12 +272,7 @@ const TodoList = ({ role }) => {
                 {tasks && tasks?.map((task, index) => (
                   <>
                     {!task.IsRead && <tr key={task.id}>
-                      <td>{task?.contact?.firstname}</td>
-                      <td>{task?.contact?.company}</td>
-                      <td>{task?.contact?.profession}</td>
-                      <td>
-                        {task.phone != undefined || task.phone != "null" ? formatPhoneNumber(task.phone) : ""}
-                      </td>
+
                       <td
                         className="property-link"
                         onClick={() => {
@@ -292,7 +286,10 @@ const TodoList = ({ role }) => {
                       <td>
                         {formatDate(task.FollowupDate)}
                       </td>
-
+                      <td>{task?.contact?.firstname}</td>
+                      <td>{task?.contact?.company}</td>
+                      <td>{task?.contact?.profession}</td>
+                      <td>{formatPhoneNumber(task?.contact?.phone)}</td>
 
                       {/* <td>
                 {task.client?.firstname}
@@ -308,15 +305,16 @@ const TodoList = ({ role }) => {
                 { task.contact.firstname}
               </td>:<td></td>} */}
 
+
+                      <td> <button className="permissions"
+                        onClick={() => navigate(`/todo-list/followup/${task.id}`)} >Create Follow-Up</button>
+                      </td>
                       <td>
-                        <button className="permissions"
+                        <img className="delete-btn-ico" src="/delete.svg"
                           onClick={() => { handleMarkAsread(!task.IsRead, task.id) }}
-                        > Delete</button>
+                        ></img>
                         {/* Mark as {task.IsRead ? "unread" : "read"} */}
                       </td>
-                      <td> <button className="permissions"
-                        onClick={() => navigate(`/todo-list/followup/${task.id}`)} >Create Follow-Up</button></td>
-
                     </tr>}
                   </>
                 ))}
@@ -334,7 +332,7 @@ const TodoList = ({ role }) => {
 
       </div>
       {type == "previous" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
-      {type == "" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+      {type == "today" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
       {type == "future" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
     </div>
   );

@@ -303,6 +303,7 @@ const Groups = ({ setGroupId, setGroupName, setIsOpen, setSelectedContacts, grou
                 </tr>
               </tbody>))}
           </table>
+          
           {totalPages > 1 && (
             <div className="pagination">
               {Array.from({ length: totalPages }, (_, index) => (

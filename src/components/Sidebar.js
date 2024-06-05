@@ -131,7 +131,9 @@ const Sidebar = (props) => {
 
                 </div>
               </Link>
-              <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ? "active" : ""}>
+              <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname ==="/contacts/add" 
+              || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ||
+               location.pathname.includes('/contact/edit/') ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -139,7 +141,7 @@ const Sidebar = (props) => {
 
                 </div>
               </Link>
-              <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
+              <Link to="/referral" className={location.pathname.includes('/referral-sent') || location.pathname === "/referral" ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -361,7 +363,9 @@ to multiply the revenue. </h6>
                   </div>
                 </Link>
 
-                <Link to="/contacts" className={location.pathname === "/contacts" ? "active" : ""}>
+                <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname ==="/contacts/add" 
+              || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ||
+               location.pathname.includes('/contact/edit/') ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -369,7 +373,7 @@ to multiply the revenue. </h6>
 
                   </div>
                 </Link>
-                <Link to="/referral" className={location.pathname === "/referral" ? "active" : ""}>
+                <Link to="/referral" className={ location.pathname.includes('/referral-sent') || location.pathname === "/referral" ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />

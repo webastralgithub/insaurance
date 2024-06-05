@@ -389,28 +389,28 @@ const Contact = ({ role }) => {
   const [userss, setusers] = useState([])
   const [totalPagess, setTotalPages] = useState("");
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 1500);
+ // const debouncedSearchQuery = useDebounce(searchQuery, 1500);
 
   const getTasks = async () => {
     setDataLoader(true)
     let currPage
     let seachData
-    // if (searchRef.current.value) {
-    //   currPage = ''
-    // } else {
-    //   currPage = currentPage
-    // }
-
-    if (debouncedSearchQuery) {
-      seachData = debouncedSearchQuery
-      currPage = 1
+    if (searchRef.current.value) {
+      currPage = ''
     } else {
-      seachData = ''
       currPage = currentPage
     }
 
+    // if (debouncedSearchQuery) {
+    //   seachData = debouncedSearchQuery
+    //   currPage = 1
+    // } else {
+    //   seachData = ''
+    //   currPage = currentPage
+    // }
+
     try {
-      const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${seachData}`, { headers });
+      const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setusers(response?.data?.contacts)
       setTotalPages(response?.data?.totalPages)
       setDataLoader(false)
@@ -421,7 +421,7 @@ const Contact = ({ role }) => {
   };
   useEffect(() => {
     getTasks();
-  }, [currentPage, leadlength, debouncedSearchQuery]);
+  }, [currentPage, leadlength]);
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
@@ -676,17 +676,17 @@ const Contact = ({ role }) => {
           <div className="search-group">
 
             <input type="text"
-              //ref={searchRef}
-              //  onKeyDown={handleKeyDownEnter}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              ref={searchRef}
+              onKeyDown={handleKeyDownEnter}
+             // value={searchQuery}
+             // onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search here" />
             {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
           {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}
           </div>
-          {/* <div className="add_user_btn">
+          <div className="add_user_btn">
             <button onClick={handleKeyDown}>Search</button>
-          </div> */}
+          </div>
         </div>
 
 

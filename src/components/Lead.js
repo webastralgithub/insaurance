@@ -427,7 +427,7 @@ const Lead = () => {
           </div>) : (<>
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
-                <div className="add_user_btn family_meber" onClick={() => handleCategoryChange(category.categoryId)} >
+                <div className={`add_user_btn family_meber ${searchRef.current.value && category.totalLeads >0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.categoryId)} >
                   <h4>{category?.categoryName} (<>{category.totalLeads})</></h4>
                   <button style={{ padding: "12px 18px" }}  >{activeCategory == category.categoryId ? "-" : "+"}</button>
                 </div>
@@ -435,6 +435,7 @@ const Lead = () => {
                   <div className="table-container">
                     <table style={{ marginBottom: "30px" }}>
                       <thead>
+                        
                         <tr>
                           <th>Name</th>
                           <th>Phone</th>

@@ -1100,3 +1100,7 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
 .react-confirm-alert-body {
     width: 400px !important;
 }
+
+.search-yellow-highlight{
+    background-color: yellow;
+}

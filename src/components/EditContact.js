@@ -418,7 +418,7 @@ const EditContact = ({ nameofuser }) => {
             <div className="edit-new-input">
               <input
                 type="text"
-                name="profession"
+                name="website"
                 value={editedContact.website}
                 onChange={handleChange}
               />
