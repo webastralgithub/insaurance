@@ -132,7 +132,7 @@ const sourceOptions = [
   }, []);
   const getContacts = async () => {
     try {
-      const response = await axios.get(`${url}api/contacts/get`, { headers });
+      const response = await axios.get(`${url}api/contacts`, { headers });
      
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
         value: realtor.id,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback,useRef } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AuthContext } from "./context/AuthContext";
@@ -9,7 +9,7 @@ import InputMask from 'react-input-mask';
 import { toast } from "react-toastify";
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
-import { Search } from "semantic-ui-react";
+import Places from "./Places";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -26,7 +26,7 @@ const useDebounce = (value, delay) => {
 };
 
 
-const AddTodo = () => {
+const AddTodo = ({ user }) => {
   const { date } = useParams()
   const [dateTime, setDateTime] = useState(date ? new Date(date) : new Date());
   const url = process.env.REACT_APP_API_URL;
@@ -34,25 +34,24 @@ const AddTodo = () => {
   const [contactOption, setContactOptions] = useState([])
   const [mlsNoError, setMlsNoError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [contactError, setContactError] = useState("")
   const [propertyTypeError, setPropertyTypeError] = useState("");
   const noSelectionOption = { value: null, label: 'No Selection' };
   const [selectedContact, setSelectedContact] = useState({});
   const [selectedContactData, setSelectedContactData] = useState({});
   const [searchQuery, setSearchQuery] = useState("")
-  const [searchContact, setSearchContact] = useState([])
+  const [isContact, setIsContact] = useState(true)
   const handleDateTimeChange = (newDateTime) => {
     setDateTime(newDateTime);
   };
 
-  // console.log("searchContact searchContact" , searchContact);
+
   const [contact, setContact] = useState(
     {
-
       Followup: "",
       FollowupDate: dateTime,
       Comments: "",
       IsRead: false,
-      // phone: "",
       ContactID: "",
     }
   );
@@ -64,16 +63,20 @@ const AddTodo = () => {
       setMlsNoError("Task Title is required");
       isValid = false;
     }
+    if (newSelected?.length == 0) {
+      setContactError("Select atleast one contat")
+      isValid = false;
+    }
     // if (contact.phone) {
     // if (contact.phone.length != 10) {
     //   setPhoneError("Invalid phone number")
     //   isValid = false;
     // }
     // }
-    if (!contact.FollowupDate) {
-      setPropertyTypeError("Follow up Date is required");
-      isValid = false;
-    }
+    // if (!contact.FollowupDate) {
+    //   setPropertyTypeError("Follow up Date is required");
+    //   isValid = false;
+    // }
 
     if (!isValid) {
       window.scrollTo(0, 0)
@@ -96,7 +99,7 @@ const AddTodo = () => {
   };
 
   const navigate = useNavigate();
-  const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
+  const { auth, setAuth, tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -129,54 +132,6 @@ const AddTodo = () => {
     })
   };
 
-
-
-  useEffect(() => {
-    // getRealtorOptions();
-    //  getContacts()
-  }, []);
-
-  const getContacts = async () => {
-
-
-    try {
-      const response = await axios.get(`${url}api/contacts/get`, { headers });
-
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
-        value: realtor.id,
-        label: realtor.firstname,
-        // children: realtor.children || []
-      }));
-      // Set the filtered contacts in the state
-      setContactOptions(contactsWithoutParentId);
-
-    } catch (error) {
-      localStorage.removeItem('token');
-      setAuth(null);
-      navigate('/');
-    }
-  };
-
-  const handleAllChange = useCallback((selectedOptions) => {
-    setSelectedContact(selectedOptions);
-
-    if (selectedContact?.value) {
-      getContactDetails()
-    }
-  }, [selectedContactData])
-
-  const getContactDetails = async () => {
-    if (selectedContact?.value)
-
-      try {
-        const response = await axios.get(`${url}api/contacts/get/${selectedContact?.value}`, { headers, });
-        const responseData = await response?.data
-        setSelectedContactData(responseData)
-      } catch (error) {
-        console.error(error)
-      }
-  }
-
   useEffect(() => {
     // getContactDetails()
   }, [selectedContact.value])
@@ -187,6 +142,7 @@ const AddTodo = () => {
       const realtorOptions = res.data
         .filter((user) => user.roleId === 4 && user.isActivate)
         .map((realtor) => ({
+          key: realtor.id,
           value: realtor.id,
           label: realtor.name,
         }));
@@ -196,7 +152,10 @@ const AddTodo = () => {
     }
   };
 
+  const [newSelected, setNewSelected] = useState([])
+
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     const updatedContact = { ...contact, ContactID: newSelected.id };
 
@@ -205,6 +164,7 @@ const AddTodo = () => {
         const response = await axios.post(`${url}api/todo`, updatedContact, {
           headers,
         });
+
 
         if (response.status === 201) {
           setTasklength(tasklength + 1)
@@ -235,109 +195,251 @@ const AddTodo = () => {
   //new component
   const [currentPage, setCurrentPage] = useState(1)
   const [searchContacts, setSearchContacts] = useState([])
-  const [newSelected, setNewSelected] = useState([])
+
   const debouncedSearchQuery = useDebounce(searchQuery, 1500);
   const containerRef = useRef(null);
-  
-  // const handleScroll = () => {
-  //   const { scrollTop, clientHeight, scrollHeight } = containerRef.current;
-  //   if (scrollHeight - scrollTop === clientHeight) {
-  //     setCurrentPage(prevPage => prevPage + 1);
-  //   }
-  // };
 
-  // useEffect(() => {
-  //   const container = containerRef.current;
+  const getCategories = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
+      const options = res.data.map((realtor) => ({
+        key: realtor.id,
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setCategories(options)
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
 
-  //   if (container) {
-  //     // Add scroll event listener when component mounts
-  //     container.addEventListener('scroll', handleScroll);
-  //     // Remove event listener when component unmounts
-  //     return () => {
-  //       container.removeEventListener('scroll', handleScroll);
-  //     };
-  //   }
-  // }, [containerRef.current]);
+  useEffect(() => {
+    getCategories()
+  }, [])
 
-  // useEffect(() => {
-  //   if()
-  //   getSearchContact();
-  // }, [currentPage])
-  
+
+  const [loading, setLoading] = useState(false)
   const getSearchContact = async () => {
+    setLoading(true)
     try {
       const response = await axios.get(`${url}api/contacts-list?page=${currentPage}&search=${debouncedSearchQuery}`, { headers });
       setSearchContacts(response?.data?.contacts)
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.error(error)
     }
   }
   const [ssearch, setssearch] = useState(1)
   useEffect(() => {
-    if (searchQuery && ssearch === 1) {
+    if (ssearch === 1 && searchQuery) {
       getSearchContact()
+    } else {
+      setSearchContacts([])
     }
 
-  }, [debouncedSearchQuery , currentPage])
+  }, [debouncedSearchQuery, currentPage])
 
   const handleSearchChange = (e) => {
+    setLoading(true)
     setSearchQuery(e.target.value);
     setNewSelected([])
     setssearch(1)
+    setButtonOn(0)
+    setContactError("")
   }
-  const handleSelect = (contact) => {
+  const handleSelect = (item) => {
+    setSearchQuery(item.firstname)
+    setButtonOn(2)
     setssearch(2)
-    setSearchQuery(contact.name)
-    setNewSelected(contact)
+    setNewSelected(item)
     setSearchContacts([])
+    setContactError("")
   }
- 
+
+  // Add contact Data
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [categories, setCategories] = useState([])
+  const [seletedCategory, setSelectedCategory] = useState(null);
+
+  const [contactNew, setContactNew] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    profession: "",
+    address1: "",
+    phone: "",
+    company: "",
+    website: "",
+    servceRequire: selectedServices,
+    category: seletedCategory,
+    notes: "",
+    source: "",
+    createdBy: user,
+    realtorId: null,
+    propertyId: null
+  });
+
+  const [errors, setErrors] = useState({
+    firstname: "",
+    email: "",
+    phone: "",
+    category: ""
+  });
+
+
+  const validateFormNewPhone = () => {
+    let isValid = true;
+    const { firstname, email, phone } = contactNew;
+
+    const trimmedFirstName = firstname.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    // Reset errors
+    setErrors({
+      firstname: "",
+      email: "",
+      phone: "",
+      category: ""
+    });
+
+    // Validate firstname
+    if (!trimmedFirstName) {
+      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
+      isValid = false;
+    }
+
+    // Validate email
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
+      isValid = false;
+    }
+
+    // Validate phone number
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
+      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
+      isValid = false;
+    }
+    if (!contactNew.category) {
+      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+      isValid = false;
+    }
+
+    if (!isValid) {
+      window.scrollTo(0, 0);
+    }
+
+    return isValid;
+  };
+
+  const handleSubmitNewPhone = async (e) => {
+    e.preventDefault();
+    const isValid = validateFormNewPhone();
+    if (!isValid) {
+      return
+    }
+    try {
+      const response = await axios.post(`${url}api/contacts`, contactNew, {
+        headers,
+      });
+
+      if (response.status === 201) {
+        setConatctlength(contactlength + 1);
+        setNewSelected(response.data)
+        setSearchQuery(response.data.firstname)
+        setSearchContacts(response.data)
+        setssearch(2)
+        setIsContact(true)
+        setContactError("")
+        toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
+      } else if (response.data.status === false) {
+        toast.error(response.data.message)
+      } else {
+        toast.error("Failed to add contact");
+      }
+    } catch (error) {
+      console.error("An error occurred while adding a contact:", error);
+    }
+  }
+
+  const handleAddressChange = (newAddress) => {
+    setContactNew({ ...contactNew, address1: newAddress });
+  };
+
+
+
+  const handlePhoneNumberChange = (event) => {
+    setPhoneError("")
+    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
+    setContactNew({ ...contactNew, phone: rawPhoneNumber.slice(1, 11) });
+  }
+
+  const handleChangeAddPhone = (e) => {
+    setErrors({
+      firstname: "",
+      email: "",
+      phone: "",
+      category: ""
+    })
+    const { name, value } = e.target;
+    setContactNew({ ...contactNew, [name]: value });
+  };
+
+  const serviceOptions = [
+    { value: 'Real Estate', label: 'Real Estate' },
+    { value: 'Mortgage', label: 'Mortgage' },
+    { value: 'Insurance', label: 'Insurance' },
+    { value: 'Immigration', label: 'Immigration' }
+  ];
+  const [buttonOn, setButtonOn] = useState(0)
   return (
 
     <>
-      <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form">
-        <div className="property_header header-with-back-btn">
+      {isContact == true &&
+        <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form">
+          <div className="property_header header-with-back-btn">
 
-          <h3> <button type="button" className="back-only-btn" onClick={
-            goBack}> <img src="/back.svg" /></button>Add Task</h3>
+            <h3> <button type="button" className="back-only-btn" onClick={
+              goBack}> <img src="/back.svg" /></button>Add Task</h3>
 
-          <div className="top-bar-action-btns">
-            {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
+            <div className="top-bar-action-btns">
+              {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
 
-          </div>   </div>
-        <div className="form-user-add-wrapper">
-          <div className="todo-section">
-            <div className="todo-main-section">
-              <div className="form-user-add-inner-wrap">
+            </div>   </div>
+          <div className="form-user-add-wrapper">
+            <div className="todo-section">
+              <div className="todo-main-section">
+                <div className="form-user-add-inner-wrap">
 
-                <label>Task Title <span className="required-star">*</span></label>
-                <input
-                  type="text"
-                  name="Followup"
-                  value={contact.Followup}
-                  onChange={handleChange}
+                  <label>Task Title <span className="required-star">*</span></label>
+                  <input
+                    type="text"
+                    name="Followup"
+                    value={contact.Followup}
+                    onChange={handleChange}
 
-                />
-                <span className="error-message">{mlsNoError}</span>
-              </div>
+                  />
+                  <span className="error-message">{mlsNoError}</span>
+                </div>
 
-              <div className="form-user-add-inner-wrap">
-                <label>Follow Up Date <span className="required-star">*</span></label>
-                <Datetime
-                  value={dateTime}
-                  onChange={handleDateTimeChange}
-                  renderInput={(props, openCalendar) => (
-                    <input
-                      {...props}
-                      readOnly
-                      onClick={openCalendar}
-                      style={{ cursor: 'pointer', backgroundColor: 'white' }}
-                    />
-                  )}
-                />
-                <span className="error-message">{propertyTypeError}</span>
-              </div>
-              {/* <div className="form-user-add-inner-wrap">
+                <div className="form-user-add-inner-wrap">
+                  <label>Follow Up Date <span className="required-star">*</span></label>
+                  <Datetime
+                    value={dateTime}
+                    onChange={handleDateTimeChange}
+                    renderInput={(props, openCalendar) => (
+                      <input
+                        {...props}
+                        readOnly
+                        onClick={openCalendar}
+                        style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                      />
+                    )}
+                  />
+                  <span className="error-message">{propertyTypeError}</span>
+                </div>
+                {/* <div className="form-user-add-inner-wrap">
                 <label>Phone Number<span className="required-star">*</span></label>
                 <InputMask
                   mask="+1 (999) 999-9999"
@@ -351,185 +453,276 @@ const AddTodo = () => {
                 <span className="error-message">{phoneError}</span>
               </div> */}
 
-              <div className="form-user-add-inner-wrap">
-                <label>Task description</label>
-                <input
-                  type="text"
-                  name="description"
-                  value={contact.description}
-                  onChange={handleChange}
-                />
-              </div>
-
-              {/* dbouncing and select contact */}
-
-              <div className="form-user-add-inner-wrap ">
-                <label>Contact</label>
-                <input
-                  type="text"
-                  placeholder="Search Contact"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                />
-
-                {searchContacts.length ?
-                  <div style={{ height: "200px", overflow: 'scroll' }}  ref={containerRef}>
-
-                    {searchContacts && searchContacts?.map((contact) => (
-                      <div key={contact.id} >
-                        <p onClick={() => handleSelect(contact)}>{contact.firstname}</p>
-                      </div>
-                    ))}
-                  </div>
-                  : ""}
-              </div>
-
-              {newSelected.id &&
-                <>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Email</label>
-                    <input
-                      type="text"
-                      value={(newSelected?.email ? newSelected?.email : " ")}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Business Name</label>
-                    <input
-                      type="text"
-                      value={newSelected?.company}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Profession</label>
-                    <input
-                      type="text"
-
-                      value={newSelected?.profession}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Address</label>
-                    <input
-                      type="text"
-
-                      value={newSelected?.address1 ? newSelected?.address1 : ""}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Website</label>
-                    <input
-                      type="text"
-                      value={newSelected?.website ?? ""}
-                      readOnly
-                    />
-                  </div>
-                </>}
-
-
-
-              {/* {contactOption.length > 0 ? <>
-                <div className="form-user-add-inner-wrap ">
-                  <label>Contact</label>
-                  <Select
-                    placeholder="Select Contact"
-                    onChange={handleAllChange}
-                    options={contactOption}
-                    styles={colourStyles}
-                    className="select-new"
-                    isMulti={false}
-                    value={selectedContact}
-                    closeMenuOnSelect={true}
-                    hideSelectedOptions={false}
-                    components={{ DropdownIndicator: () => null }}
+                <div className="form-user-add-inner-wrap">
+                  <label>Task description</label>
+                  <input
+                    type="text"
+                    name="description"
+                    value={contact.description}
+                    onChange={handleChange}
                   />
                 </div>
 
-                {selectedContactData.id && <>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Email</label>
-                    <input
-                      type="text"
-                      value={(selectedContactData?.email ? selectedContactData?.email : " ")}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Business Name</label>
-                    <input
-                      type="text"
-                      value={selectedContactData?.company}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Profession</label>
-                    <input
-                      type="text"
+                {/* dbouncing and select contact */}
 
-                      value={selectedContactData?.profession}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Address</label>
-                    <input
-                      type="text"
+                <div className="form-user-add-inner-wrap ">
+                  <label>Contact<span className="required-star">*</span> <span className="error-message">{contactError}</span></label>
+                  <input
+                    type="text"
+                    placeholder="Search Contact"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                  {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && <div>
+                    <h1> No Contacts Found</h1>
+                    <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
+                  </div>}
+                  {searchContacts.length ?
+                    <div style={{ height: "200px", overflow: 'scroll' }} ref={containerRef}>
 
-                      value={selectedContactData?.address1 ? selectedContactData?.address1 : ""}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap">
-                    <label>Website</label>
-                    <input
-                      type="text"
-                      value={selectedContactData?.website ?? ""}
-                      readOnly
-                    />
-                  </div>
-                </>}
+                      {searchContacts && searchContacts?.map((item) => (
+                        <div key={contact.id} >
+                          <p onClick={() => handleSelect(item)}>{item.firstname}</p>
+                        </div>
+                      ))}
+                    </div>
+                    : ""}
+                </div>
 
-              </> : <div className="add_user_btn">
-                <button onClick={() => navigate("/contacts/add")}>
-                  <img src="/plus.svg" />
-                  Add Contact</button>
-              </div>} */}
+                {newSelected.id &&
+                  <>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Email</label>
+                      <input
+                        type="text"
+                        value={(newSelected?.email ? newSelected?.email : " ")}
+                        readOnly
+                      />
+                    </div>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Business Name</label>
+                      <input
+                        type="text"
+                        value={newSelected?.company}
+                        readOnly
+                      />
+                    </div>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Profession</label>
+                      <input
+                        type="text"
 
+                        value={newSelected?.profession}
+                        readOnly
+                      />
+                    </div>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Address</label>
+                      <input
+                        type="text"
 
-            </div>
+                        value={newSelected?.address1 ? newSelected?.address1 : ""}
+                        readOnly
+                      />
+                    </div>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Website</label>
+                      <input
+                        type="text"
+                        value={newSelected?.website ?? ""}
+                        readOnly
+                      />
+                    </div>
+                  </>
+                }
+              </div>
 
-            <div className="todo-notes-section">
-              <div className="form-user-add-inner-wrap">
-                <label>Add Notes</label>
+              <div className="todo-notes-section">
+                <div className="form-user-add-inner-wrap">
+                  <label>Add Notes</label>
 
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={contact.Comments}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setContact({ ...contact, Comments: data });
-                  }}
-                  config={{
-                    toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-                  }}
-                  className="custom-ckeditor" // Add a custom class for CKEditor container
-                  style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-                />
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={contact.Comments}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setContact({ ...contact, Comments: data });
+                    }}
+                    config={{
+                      toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                    }}
+                    className="custom-ckeditor" // Add a custom class for CKEditor container
+                    style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                  />
 
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="form-user-add-inner-btm-btn-wrap">
+          <div className="form-user-add-inner-btm-btn-wrap">
 
-          <button type="submit" >Save</button>
-        </div>
-      </form>
+            <button type="submit" >Save</button>
+          </div>
+        </form>
+      }
+
+
+      {/* Add Contact Form */}
+      {isContact == false &&
+        <>
+          <form onSubmit={handleSubmitNewPhone} className="form-user-add add-contact-from-adst add-contact-form">
+            <div className="property_header header-with-back-btn">
+
+              <h3> <button type="button" className="back-only-btn" onClick={() => setIsContact(true)}> <img src="/back.svg" /></button>Add Contact</h3>
+
+            </div>
+
+            <div className="add-cnt-form-desc">
+              <div className="form-user-add-wrapper">
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Name<span className="required-star">*</span></label>
+                  <input
+                    type="text"
+                    name="firstname"
+                    value={contactNew.firstname}
+                    onChange={handleChangeAddPhone}
+
+                  />
+                  <span className="error-message">{errors.firstname}</span>
+                </div>
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Email Id<span className="required-star">*</span></label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={contactNew.email}
+                    onChange={handleChangeAddPhone}
+                  />
+                  <span className="error-message">{errors.email}</span>
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Profession</label>
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="profession"
+                      value={contactNew.profession}
+                      onChange={handleChangeAddPhone}
+                    />
+                  </div>
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Website</label>
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="website"
+                      value={contactNew.website}
+                      onChange={handleChangeAddPhone}
+                    />
+                  </div>
+                </div>
+
+                <Places value={contactNew.address1} onChange={handleAddressChange} />
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Phone<span className="required-star">*</span></label>
+                  <InputMask
+                    mask="+1 (999) 999-9999"
+                    type="text"
+                    name="phone"
+                    value={contactNew.phone}
+                    onChange={handlePhoneNumberChange}
+                    placeholder="+1 (___) ___-____"
+
+                  />
+                  <span className="error-message">{errors.phone}</span>
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Company Name</label>
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="company"
+                      value={contactNew.company}
+                      onChange={handleChangeAddPhone}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="add-contact-user-custom-right">
+                <div className="add-contact-user-custom-wrapper">
+                  <div className="add-contact-user-custom-left">
+
+                    <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
+                      <label>Service Require</label>
+                      <Select
+                        placeholder="Select Service(s) Required..."
+                        value={selectedServices}
+                        onChange={(selectedOptions) => {
+                          setSelectedServices(selectedOptions);
+                          // You can also extract the values into an array if needed
+                          const selectedValues = selectedOptions.map(option => option.value);
+                          setContactNew({ ...contactNew, servceRequire: selectedValues });
+                        }}
+                        options={serviceOptions}
+                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                        styles={colourStyles}
+                        className="select-new"
+                        isMulti // This is what enables multiple selections
+                      />
+
+                    </div>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Category<span className="required-star">*</span></label>
+                      <img src="/icons-form/Group30055.svg" />
+                      <Select
+                        placeholder="Select Category.."
+                        value={seletedCategory}
+                        onChange={(selectedOption) => {
+                          setContactNew({ ...contactNew, category: selectedOption.value })
+                          setSelectedCategory(selectedOption)
+                        }}
+                        options={categories}
+                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                        styles={colourStyles}
+                        className="select-new"
+
+                      />
+                    </div>
+                    <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
+                  </div>
+
+                </div>
+
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Description</label>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={contactNew.notes}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setContactNew({ ...contactNew, notes: data });
+                    }}
+                    config={{
+                      toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                    }}
+                    className="custom-ckeditor" // Add a custom class for CKEditor container
+                    style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="form-user-add-inner-btm-btn-wrap">
+              <button type="submit" >Save</button>
+            </div>
+          </form>
+        </>
+      }
     </>
 
   );

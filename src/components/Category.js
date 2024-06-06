@@ -83,7 +83,7 @@ const Category = () => {
     },
   };
   const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/categories/delete/${propertyId}`, { headers });
+    await axios.delete(`${url}api/categories/${propertyId}`, { headers });
 
     toast.success('Category deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setUsers(users.filter((p) => p.id !== propertyId));
@@ -141,7 +141,7 @@ const Category = () => {
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
       setUsers(res.data)
 
     } catch (error) {

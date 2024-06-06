@@ -1843,3 +1843,24 @@ body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input{
 body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-input{
   padding: 0;
 }
+.add-new-contact-btn{
+  background-color: #004686;
+  color: #fff;
+  height: 48px;
+  width: 145px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  padding : 5px ;
+}
+
+.add-new-contact-btn:hover {
+  background-color: #004686;
+  color: #fff;
+  height: 48px;
+  width: 145px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  padding : 5px ;
+}

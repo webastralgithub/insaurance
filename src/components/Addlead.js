@@ -11,9 +11,6 @@ import Places from "./Places";
 
 const AddLead = ({ user }) => {
 
-
-
-
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("")
@@ -196,7 +193,7 @@ const AddLead = ({ user }) => {
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -245,7 +242,7 @@ const AddLead = ({ user }) => {
     }
   
       try {
-        const response = await axios.post(`${url}api/contacts/create`, contact, {
+        const response = await axios.post(`${url}api/contacts`, contact, {
           headers,
         });
 
@@ -442,7 +439,6 @@ const AddLead = ({ user }) => {
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
             styles={colourStyles}
             className="select-new"
-
           />
 
         </div>

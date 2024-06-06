@@ -196,7 +196,7 @@ overflow:"unset"
   
   const getCategories = async () => {
     try {
-     const res= await axios.get(`${url}api/categories/get`, { headers });
+     const res= await axios.get(`${url}api/categories`, { headers });
      const options=res.data.map((realtor) => ({
       value: realtor.id,
       label: realtor.name,
@@ -209,7 +209,7 @@ overflow:"unset"
   };
 
   const handleDelete = async (postid) => {
-    await axios.delete(`${url}api/post/delete/${postid}`, { headers });
+    await axios.delete(`${url}api/post/${postid}`, { headers });
 
     toast.success('Post deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setContacts(contacts.filter((p) => p.id !== postid));

@@ -82,7 +82,7 @@ const [searchText, setSearchText] = useState('');
     setError("Please select a Category")
     return
    }
-    const response = await axios.put(`${url}api/contacts/update/${id}`, {isLead:true,category:seletedCategory
+    const response = await axios.put(`${url}api/contacts/${id}`, {isLead:true,category:seletedCategory
 .value}, {
       headers,
     });
@@ -229,7 +229,7 @@ overflow:"unset"
   }; 
   const getCategories = async () => {
     try {
-     const res= await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+     const res= await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
      const options=res.data.map((realtor) => ({
       value: realtor.id,
       label: realtor.name,
@@ -242,7 +242,7 @@ overflow:"unset"
   };
 
   const handleDelete = async (postid) => {
-    await axios.delete(`${url}api/post/delete/${postid}`, { headers });
+    await axios.delete(`${url}api/post/${postid}`, { headers });
 
     toast.success('Post deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setContacts(contacts.filter((p) => p.id !== postid));
@@ -285,7 +285,7 @@ overflow:"unset"
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`${url}api/post/get`, { headers });
+      const response = await axios.get(`${url}api/post`, { headers });
       // Set the filtered contacts in the state
      
       setContacts(response.data);

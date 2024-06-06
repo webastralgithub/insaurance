@@ -115,7 +115,7 @@ const KlientaleShareMe = ({ role }) => {
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/update/${id}`, {
+    const response = await axios.put(`${url}api/contacts/${id}`, {
       isLead: true, category: seletedCategory
         .value
     }, {
@@ -250,7 +250,7 @@ const KlientaleShareMe = ({ role }) => {
   };
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${url}api/categories/get`, { headers });
+      const res = await axios.get(`${url}api/categories`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -263,7 +263,7 @@ const KlientaleShareMe = ({ role }) => {
   };
 
   const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
+    await axios.delete(`${url}api/contacts/${propertyId}`, { headers });
 
     toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setContacts(contacts.filter((p) => p.id !== propertyId));
@@ -362,7 +362,7 @@ const KlientaleShareMe = ({ role }) => {
     navigate(`${id}`)
 
     try {
-      const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
+      const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
 
       // Set the filtered contacts in the state

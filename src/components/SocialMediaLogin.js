@@ -121,7 +121,7 @@ const SocialMediaLogin = () => {
   // }
 
   const getPostById = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}api/post/get/${id}`, { headers });
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}api/post/${id}`, { headers });
     const responseData = await res.data
     setEditedContact({
       created_at: responseData.created_at,

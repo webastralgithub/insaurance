@@ -142,7 +142,7 @@ const handlePhoneNumberChange = (event) => {
     e.preventDefault();
     if (validateForm()) {
     try {
-      const response = await axios.post(`${url}api/contacts/create`, contact, {
+      const response = await axios.post(`${url}api/contacts`, contact, {
         headers,
       });
 

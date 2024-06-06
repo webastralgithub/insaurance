@@ -65,21 +65,6 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
   );
 };
 
-const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-  return debouncedValue;
-};
-
-
 
 const Contact = ({ role }) => {
   const selectRef = useRef(null);
@@ -203,7 +188,7 @@ const Contact = ({ role }) => {
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/update/${id}`, {
+    const response = await axios.put(`${url}api/contacts/${id}`, {
       isLead: true, category: seletedCategory
         .value
     }, {
@@ -371,7 +356,7 @@ const Contact = ({ role }) => {
   };
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -389,7 +374,7 @@ const Contact = ({ role }) => {
   const [userss, setusers] = useState([])
   const [totalPagess, setTotalPages] = useState("");
 
- // const debouncedSearchQuery = useDebounce(searchQuery, 1500);
+ 
 
   const getTasks = async () => {
     setDataLoader(true)
@@ -400,14 +385,6 @@ const Contact = ({ role }) => {
     } else {
       currPage = currentPage
     }
-
-    // if (debouncedSearchQuery) {
-    //   seachData = debouncedSearchQuery
-    //   currPage = 1
-    // } else {
-    //   seachData = ''
-    //   currPage = currentPage
-    // }
 
     try {
       const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
@@ -456,12 +433,15 @@ const Contact = ({ role }) => {
   };
 
   const handleDelete = async (propertyId) => {
+    setDataLoader(true)
     try {
-      await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
+      await axios.delete(`${url}api/contacts/${propertyId}`, { headers });
       toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       setContacts(contacts.filter((p) => p.id !== propertyId));
       getTasks()
+      setDataLoader(false)
     } catch (error) {
+      setDataLoader(false)
       console.error(error)
     }
   };
@@ -484,7 +464,7 @@ const Contact = ({ role }) => {
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`${url}api/contacts/get`, { headers });
+      const response = await axios.get(`${url}api/contacts`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
       const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false);
@@ -505,25 +485,7 @@ const Contact = ({ role }) => {
     }
   };
 
-  const changeView = async (id, name) => {
-    localStorage.setItem("parent", name)
-    setParentName(name)
-    navigate(`${id}`)
 
-    try {
-      const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-
-      // Set the filtered contacts in the state
-      setContacts(response.data);
-
-
-    } catch (error) {
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
-    }
-  }
 
   const PlaceholderWithIcon = (props) => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
@@ -678,8 +640,8 @@ const Contact = ({ role }) => {
             <input type="text"
               ref={searchRef}
               onKeyDown={handleKeyDownEnter}
-             // value={searchQuery}
-             // onChange={(e) => setSearchQuery(e.target.value)}
+              // value={searchQuery}
+              // onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search here" />
             {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
           {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} </div> */}

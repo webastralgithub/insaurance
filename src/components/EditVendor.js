@@ -62,7 +62,7 @@ const EditVendor = () => {
   };  
   const getContactDetails = async () => {
     try {
-      const response = await axios.get(`${url}api/contacts/get/${id}`, {
+      const response = await axios.get(`${url}api/contacts/${id}`, {
         headers,
       });
       const contactDetails = response.data;
@@ -107,7 +107,7 @@ const EditVendor = () => {
       return
     }
     try {
-      const response = await axios.put(`${url}api/contacts/update/${id}`, editedVendor, {
+      const response = await axios.put(`${url}api/contacts/${id}`, editedVendor, {
         headers,
       });
 

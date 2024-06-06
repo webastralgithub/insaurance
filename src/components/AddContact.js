@@ -20,7 +20,6 @@ const AddContact = ({ user }) => {
   });
   const noSelectionOption = { value: null, label: 'No Selection' };
 
-  const [selectedProperty, setSelectedProperty] = useState(null);
   const [realtorOptions, setRealtorOptions] = useState([]);
   const [emailError, setEmailError] = useState("")
   const [selectedServices, setSelectedServices] = useState([]);
@@ -44,13 +43,14 @@ const AddContact = ({ user }) => {
     address1: "",
     phone: "",
     company: "",
-    website : "",
+    website: "",
     servceRequire: selectedServices,
     category: seletedCategory,
     notes: "",
     source: "",
     createdBy: user,
     realtorId: null,
+    isContact : true,
     propertyId: null
   });
   // Define an array of province options
@@ -61,34 +61,16 @@ const AddContact = ({ user }) => {
     { value: 'Insurance', label: 'Insurance' },
     { value: 'Immigration', label: 'Immigration' }
   ];
-  const validateEmail = (email) => {
-    // Define a regular expression pattern for email validation.
-    const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    return emailPattern.test(email);
-  };
+
 
 
   const navigate = useNavigate();
 
-  const { auth,setConatctlength, contactlength } = useContext(AuthContext);
+  const { auth, setConatctlength, contactlength } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
-  const provinceOptions = [
-    { value: 1, label: "Alberta" },
-    { value: 2, label: "British Columbia" },
-    { value: 3, label: "Manitoba" },
-    { value: 4, label: "New Brunswick" },
-    { value: 5, label: "Newfoundland and Labrador" },
-    { value: 6, label: "Nova Scotia" },
-    { value: 7, label: "Ontario" },
-    { value: 8, label: "Prince Edward Island" },
-    { value: 9, label: "Quebec" },
-    { value: 10, label: "Saskatchewan" },
-    { value: 11, label: "Northwest Territories" },
-    { value: 12, label: "Nunavut" },
-    { value: 13, label: "Yukon" },
-  ];
+
   const sourceOptions = [
     { value: "Website", label: "Website" },
     { value: "Website", label: "Phone" },
@@ -126,14 +108,14 @@ const AddContact = ({ user }) => {
   const url = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    getRealtorOptions();
+   // getRealtorOptions();
     getCategories()
-    getProperties()
+    //getProperties()
   }, []);
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -143,6 +125,7 @@ const AddContact = ({ user }) => {
       console.error("User creation failed:", error);
     }
   };
+
   const getProperties = async () => {
     try {
       const res = await axios.get(`${url}api/property`, { headers });
@@ -157,6 +140,7 @@ const AddContact = ({ user }) => {
     }
 
   };
+
   const getRealtorOptions = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
@@ -227,7 +211,7 @@ const AddContact = ({ user }) => {
     }
 
     try {
-      const response = await axios.post(`${url}api/contacts/create`, contact, {
+      const response = await axios.post(`${url}api/contacts`, contact, {
         headers,
       });
 
@@ -276,7 +260,6 @@ const AddContact = ({ user }) => {
     const { name, value } = e.target;
     setContact({ ...contact, [name]: value });
 
-   
   };
 
   // const handleRealtorSelectChange = (selectedOption) => {
@@ -289,28 +272,29 @@ const AddContact = ({ user }) => {
   };
 
   return (
-    <>    <form onSubmit={handleSubmit} className="form-user-add add-contact-from-adst add-contact-form">
-      <div className="property_header header-with-back-btn">
+    <>
+      <form onSubmit={handleSubmit} className="form-user-add add-contact-from-adst add-contact-form">
+        <div className="property_header header-with-back-btn">
 
-        <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Contact</h3>
+          <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Contact</h3>
 
-      </div>
+        </div>
 
-      <div className="add-cnt-form-desc">
-        <div className="form-user-add-wrapper">
+        <div className="add-cnt-form-desc">
+          <div className="form-user-add-wrapper">
 
-          <div className="form-user-add-inner-wrap">
-            <label>Name<span className="required-star">*</span></label>
-            <input
-              type="text"
-              name="firstname"
-              value={contact.firstname}
-              onChange={handleChange}
+            <div className="form-user-add-inner-wrap">
+              <label>Name<span className="required-star">*</span></label>
+              <input
+                type="text"
+                name="firstname"
+                value={contact.firstname}
+                onChange={handleChange}
 
-            />
-            <span className="error-message">{errors.firstname}</span>
-          </div>
-          {/* <div className="form-user-add-inner-wrap">
+              />
+              <span className="error-message">{errors.firstname}</span>
+            </div>
+            {/* <div className="form-user-add-inner-wrap">
           <label>Last Name</label>
           <input
             type="text"
@@ -321,39 +305,39 @@ const AddContact = ({ user }) => {
           />
         </div>
       */}
-          <div className="form-user-add-inner-wrap">
-            <label>Email Id<span className="required-star">*</span></label>
-            <input
-              type="text"
-              name="email"
-              value={contact.email}
-              onChange={handleChange}
-            />
-            <span className="error-message">{errors.email}</span>
-          </div>
-          <div className="form-user-add-inner-wrap">
-            <label>Profession</label>
-            <div className="edit-new-input">
+            <div className="form-user-add-inner-wrap">
+              <label>Email Id<span className="required-star">*</span></label>
               <input
                 type="text"
-                name="profession"
-                value={contact.profession}
+                name="email"
+                value={contact.email}
                 onChange={handleChange}
               />
+              <span className="error-message">{errors.email}</span>
             </div>
-          </div>
-          <div className="form-user-add-inner-wrap">
-            <label>Website</label>
-            <div className="edit-new-input">
-              <input
-                type="text"
-                name="website"
-                value={contact.website}
-                onChange={handleChange}
-              />
+            <div className="form-user-add-inner-wrap">
+              <label>Profession</label>
+              <div className="edit-new-input">
+                <input
+                  type="text"
+                  name="profession"
+                  value={contact.profession}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-          </div>
-          {/* <div className="form-user-add-inner-wrap">
+            <div className="form-user-add-inner-wrap">
+              <label>Website</label>
+              <div className="edit-new-input">
+                <input
+                  type="text"
+                  name="website"
+                  value={contact.website}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            {/* <div className="form-user-add-inner-wrap">
           <label>Birth Date</label>
           <input
             type="date"
@@ -362,12 +346,12 @@ const AddContact = ({ user }) => {
             onChange={handleChange}
           /> 
         </div>*/}
-          <Places value={contact.address1} onChange={handleAddressChange} />
+            <Places value={contact.address1} onChange={handleAddressChange} />
 
 
 
 
-          {/* <div className="form-user-add-inner-wrap">
+            {/* <div className="form-user-add-inner-wrap">
           <label>City</label>
           <input
             type="text"
@@ -378,41 +362,41 @@ const AddContact = ({ user }) => {
         </div> */}
 
 
-          <div className="form-user-add-inner-wrap">
-            <label>Phone<span className="required-star">*</span></label>
-            <InputMask
-              mask="+1 (999) 999-9999"
-              type="text"
-              name="phone"
-              value={contact.phone}
-              onChange={handlePhoneNumberChange}
-              placeholder="+1 (___) ___-____"
-
-            />
-            <span className="error-message">{errors.phone}</span>
-          </div>
-
-
-          <div className="form-user-add-inner-wrap">
-            <label>Company Name</label>
-            <div className="edit-new-input">
-              <input
+            <div className="form-user-add-inner-wrap">
+              <label>Phone<span className="required-star">*</span></label>
+              <InputMask
+                mask="+1 (999) 999-9999"
                 type="text"
-                name="company"
-                value={contact.company}
-                onChange={handleChange}
+                name="phone"
+                value={contact.phone}
+                onChange={handlePhoneNumberChange}
+                placeholder="+1 (___) ___-____"
+
               />
+              <span className="error-message">{errors.phone}</span>
+            </div>
+
+
+            <div className="form-user-add-inner-wrap">
+              <label>Company Name</label>
+              <div className="edit-new-input">
+                <input
+                  type="text"
+                  name="company"
+                  value={contact.company}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
 
-        <div className="add-contact-user-custom-right">
+          <div className="add-contact-user-custom-right">
 
-          <div className="add-contact-user-custom-wrapper">
-            <div className="add-contact-user-custom-left">
+            <div className="add-contact-user-custom-wrapper">
+              <div className="add-contact-user-custom-left">
 
-              {/* <div className="form-user-add-inner-wrap">
+                {/* <div className="form-user-add-inner-wrap">
           <label>User</label>
           <img src="/icons-form/Group30055.svg"/>
           <Select
@@ -430,7 +414,7 @@ const AddContact = ({ user }) => {
           />
   
         </div> */}
-              {/* <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
+                {/* <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
                 <label>Active Agent</label>
                 <img src="/icons-form/Group30055.svg" />
                 <Select
@@ -450,70 +434,70 @@ const AddContact = ({ user }) => {
 
               </div> */}
 
-              <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
-                <label>Service Require</label>
-                <Select
-                  placeholder="Select Service(s) Required..."
-                  value={selectedServices}
-                  onChange={(selectedOptions) => {
-                    setSelectedServices(selectedOptions);
-                    // You can also extract the values into an array if needed
-                    const selectedValues = selectedOptions.map(option => option.value);
-                    setContact({ ...contact, servceRequire: selectedValues });
-                  }}
-                  options={serviceOptions}
-                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                  styles={colourStyles}
-                  className="select-new"
-                  isMulti // This is what enables multiple selections
-                />
+                <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
+                  <label>Service Require</label>
+                  <Select
+                    placeholder="Select Service(s) Required..."
+                    value={selectedServices}
+                    onChange={(selectedOptions) => {
+                      setSelectedServices(selectedOptions);
+                      // You can also extract the values into an array if needed
+                      const selectedValues = selectedOptions.map(option => option.value);
+                      setContact({ ...contact, servceRequire: selectedValues });
+                    }}
+                    options={serviceOptions}
+                    components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                    styles={colourStyles}
+                    className="select-new"
+                    isMulti // This is what enables multiple selections
+                  />
 
-              </div>
-              <div className="form-user-add-inner-wrap">
-                <label>Category<span className="required-star">*</span></label>
-                <img src="/icons-form/Group30055.svg" />
-                <Select
-                  placeholder="Select Category.."
-                  value={seletedCategory}
-                  onChange={(selectedOption) => {
-                    setContact({ ...contact, category: selectedOption.value })
-                    setSelectedCategory(selectedOption)
-                  }}
-                  options={categories}
-                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                  styles={colourStyles}
-                  className="select-new"
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Category<span className="required-star">*</span></label>
+                  <img src="/icons-form/Group30055.svg" />
+                  <Select
+                    placeholder="Select Category.."
+                    value={seletedCategory}
+                    onChange={(selectedOption) => {
+                      setContact({ ...contact, category: selectedOption.value })
+                      setSelectedCategory(selectedOption)
+                    }}
+                    options={categories}
+                    components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                    styles={colourStyles}
+                    className="select-new"
 
-                />
+                  />
+                </div>
+                <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
               </div>
-              <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
+
             </div>
 
-          </div>
 
-
-          <div className="form-user-add-inner-wrap">
-            <label>Description</label>
-            <CKEditor
-              editor={ClassicEditor}
-              data={contact.notes}
-              onChange={(event, editor) => {
-                const data = editor.getData();
-                setContact({ ...contact, notes: data });
-              }}
-              config={{
-                toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-              }}
-              className="custom-ckeditor" // Add a custom class for CKEditor container
-              style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-            />
+            <div className="form-user-add-inner-wrap">
+              <label>Description</label>
+              <CKEditor
+                editor={ClassicEditor}
+                data={contact.notes}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setContact({ ...contact, notes: data });
+                }}
+                config={{
+                  toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                }}
+                className="custom-ckeditor" // Add a custom class for CKEditor container
+                style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="form-user-add-inner-btm-btn-wrap">
-        <button type="submit" >Save</button>
-      </div>
-    </form>
+        <div className="form-user-add-inner-btm-btn-wrap">
+          <button type="submit" >Save</button>
+        </div>
+      </form>
     </>
 
   );

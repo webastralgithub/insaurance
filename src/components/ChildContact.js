@@ -61,7 +61,7 @@ const ChildContact = (props) => {
   const getContacts = async () => {
     try {
       if (id) {
-        const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
+        const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
         const newData = response.data.filter(res => res.isNote == 0)
         setContacts(newData);
       }
@@ -126,12 +126,12 @@ let isValid = true;
     try {
       if (contact.id) {
         // If the contact has an id, send a PUT request to update the contact
-        await axios.put(`${url}api/contacts/update/${contact.id}`, contact, { headers });
+        await axios.put(`${url}api/contacts/${contact.id}`, contact, { headers });
         toast.success('Contact updated successfully');
       } else {
 
         // If the contact doesn't have an id, send a POST request to add a new contact
-        const response = await axios.post(`${url}api/contacts/create`, { ...contact, createdBy: id }, { headers });
+        const response = await axios.post(`${url}api/contacts`, { ...contact, createdBy: id }, { headers });
         // Add the new contact to the contacts list
         getContacts()
         toast.success('Contact added successfully');

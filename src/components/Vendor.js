@@ -67,7 +67,7 @@ const Vendor = () => {
 
   const convert = async (id) => {
 
-      const response = await axios.put(`${url}api/contacts/update/${id}`, {isLead:false}, {
+      const response = await axios.put(`${url}api/contacts/${id}`, {isLead:false}, {
         headers,
       });
       getContacts();
@@ -80,7 +80,7 @@ const Vendor = () => {
       }
     }
     const handleDelete = async (propertyId) => {
-      await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
+      await axios.delete(`${url}api/contacts${propertyId}`, { headers });
   
       toast.success('Vendort deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       setContacts(contacts.filter((p) => p.id !== propertyId));
@@ -136,7 +136,7 @@ const Vendor = () => {
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`${url}api/contacts/get`, { headers });
+      const response = await axios.get(`${url}api/contacts`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.isVendor === true);
     //   const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
 
@@ -172,7 +172,7 @@ localStorage.setItem("parent",name)
   //   setParentView(true)
    navigate(`${id}`)
     try {
-        const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
+        const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null && contact.isVendor==true);
   
         // Set the filtered contacts in the state

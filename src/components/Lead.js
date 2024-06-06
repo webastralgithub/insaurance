@@ -87,7 +87,7 @@ const Lead = () => {
   };
 
   const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
+    await axios.delete(`${url}api/contacts${propertyId}`, { headers });
 
     toast.success('Lead deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setContacts(contacts.filter((p) => p.id !== propertyId));
@@ -205,7 +205,7 @@ const Lead = () => {
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/update/${id}`, { isLead: false, category: seletedCategory.value }, {
+    const response = await axios.put(`${url}api/contacts/${id}`, { isLead: false, isContact : true, category: seletedCategory.value }, {
       headers,
     });
     getContacts();
@@ -223,7 +223,7 @@ const Lead = () => {
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`${url}api/contacts/get`, { headers });
+      const response = await axios.get(`${url}api/contacts`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.isLead === true);
       //   const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
       contactsWithoutParentId.sort((a, b) => {

@@ -94,7 +94,7 @@ const Referral = ({ role }) => {
 
   const openModal = async (id) => {
     setIsOpen(true);
-    const response = await axios.get(`${url}api/contacts/get/${id}`, {
+    const response = await axios.get(`${url}api/contacts/${id}`, {
       headers,
     });
     serBussinessDetail(response.data)
@@ -195,7 +195,7 @@ const Referral = ({ role }) => {
   const getCategories = async () => {
     try {
       const res = await axios.get(
-        `${url}api/categories/get`,
+        `${url}api/categories`,
         { headers }
       );
       const options = res.data.map((realtor) => ({
@@ -210,7 +210,7 @@ const Referral = ({ role }) => {
   };
 
   const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts/delete/${propertyId}`, { headers });
+    await axios.delete(`${url}api/contacts/${propertyId}`, { headers });
 
     toast.success("Contact deleted successfully", {
       autoClose: 3000,

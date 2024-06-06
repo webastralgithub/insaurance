@@ -18,7 +18,7 @@ const EditTodoForm = () => {
   const headers = {
     Authorization: auth.token,
   };
-  const [editedTodo, setEditedTodo] = useState({ ...todo });
+  const [editedTodo, setEditedTodo] = useState(todo);
   const [realtorOptions, setRealtorOptions] = useState([]);
   const [defaultFollowupDate, setDefaultFollowupDate] = useState('');
   const [phoneError, setPhoneError] = useState("")
@@ -154,9 +154,7 @@ const EditTodoForm = () => {
   }, [users]);
 
   const handleSaveClick = async () => {
-
     if (validateForm()) {
-
       const response = await axios.put(`${url}api/todo/${id}`,
         { ...editedTodo },
         { headers });
@@ -214,7 +212,7 @@ const EditTodoForm = () => {
 
   const getContacts = async () => {
     try {
-      const response = await axios.get(`${url}api/contacts/get`, { headers });
+      const response = await axios.get(`${url}api/contacts`, { headers });
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
         value: realtor.id,
         label: realtor.firstname,
@@ -345,6 +343,7 @@ const EditTodoForm = () => {
 
             <div className="form-user-add-inner-wrap ">
               <label>Contact</label>
+
               <Select
                 defaultInputValue={editedTodo?.contact?.firstname}
                 placeholder="Select Contact"
@@ -364,6 +363,10 @@ const EditTodoForm = () => {
               />
             </div>
           </div>
+
+
+
+
           <div className="todo-notes-section">
             <div className="form-user-add-inner-wrap">
               <label>Notes</label>

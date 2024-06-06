@@ -80,7 +80,7 @@ const AddPost = () => {
     }
     const updateData = { ...post, images: images[0] }
     try {
-      const response = await axios.post(`${url}api/post/save`, updateData, {
+      const response = await axios.post(`${url}api/post`, updateData, {
         headers,
       });
 

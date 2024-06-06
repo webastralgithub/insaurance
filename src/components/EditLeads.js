@@ -168,7 +168,7 @@ const EditLeads = () => {
   }, [id]);
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -182,7 +182,7 @@ const EditLeads = () => {
   };
   const getContactDetails = async () => {
     try {
-      const response = await axios.get(`${url}api/contacts/get/${id}`, {
+      const response = await axios.get(`${url}api/contacts/${id}`, {
         headers,
       });
       const contactDetails = response.data;
@@ -319,7 +319,7 @@ const EditLeads = () => {
         }
 
 
-        const response = await axios.put(`${url}api/contacts/update/${id}`, contact, {
+        const response = await axios.put(`${url}api/contacts/${id}`, contact, {
           headers,
         });
 

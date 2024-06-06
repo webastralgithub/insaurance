@@ -126,7 +126,7 @@ const EditContact = ({ nameofuser }) => {
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/get`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -171,7 +171,7 @@ const EditContact = ({ nameofuser }) => {
       if (editedContact.firstname) {
         return
       }
-      const response = await axios.get(`${url}api/contacts/get/${id}`, {
+      const response = await axios.get(`${url}api/contacts/${id}`, {
         headers,
       });
       const contactDetails = response.data;
@@ -256,7 +256,7 @@ const EditContact = ({ nameofuser }) => {
           contact = editedContact
         }
       }
-      const response = await axios.put(`${url}api/contacts/update/${id}`, editedContact, {
+      const response = await axios.put(`${url}api/contacts/${id}`, editedContact, {
         headers,
       });
       if (response.status === 200) {
@@ -278,7 +278,7 @@ const EditContact = ({ nameofuser }) => {
   const handleSaveNotes = async () => {
     if (validateForm()) {
       try {
-        const response = await axios.put(`${url}api/contacts/update/${id}`, { notenew: editedContact.notenew, datenew: editedContact.datenew, addedBy: editedContact.addedBy }, {
+        const response = await axios.put(`${url}api/contacts/${id}`, { notenew: editedContact.notenew, datenew: editedContact.datenew, addedBy: editedContact.addedBy }, {
           headers,
         });
 
@@ -636,6 +636,7 @@ const EditContact = ({ nameofuser }) => {
       <div className="parent">
 
         <ChildNotes nameofuser={nameofuser} id={editedContact.id} />
+
         {/* <div className="add_property_btn">
         <div className="add_user_btn family_meber" >
           

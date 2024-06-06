@@ -89,7 +89,7 @@ const EditCategory = () => {
 
   const getContactDetails = async () => {
     try {
-      const response = await axios.get(`${url}api/categories/get/${id}`, {
+      const response = await axios.get(`${url}api/categories/${id}`, {
         headers,
       });
       const contactDetails = response.data;
@@ -104,7 +104,7 @@ const EditCategory = () => {
   const handleSaveClick = async () => {
     try {
       const response = await axios.put(
-        `${url}api/categories/update/${id}`,
+        `${url}api/categories/${id}`,
         { ...editedContact, images: images },
         {
           headers,

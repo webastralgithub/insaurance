@@ -93,7 +93,7 @@ const ChildContactChild = () => {
 
   const getContacts = async () => {
     try {
-        const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
+        const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
 
       // Set the filtered contacts in the state
       setContacts(response.data);
@@ -131,7 +131,7 @@ localStorage.setItem("parent",name)
    
   
     try {
-        const response = await axios.get(`${url}api/contacts/get-children/${id}`, { headers });
+        const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
         const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
   
         // Set the filtered contacts in the state
