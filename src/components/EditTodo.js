@@ -326,7 +326,8 @@ const EditTodoForm = ({ user }) => {
     source: "",
     createdBy: user,
     realtorId: null,
-    propertyId: null
+    propertyId: null,
+    isContact :1
   });
 
   const [errors, setErrors] = useState({
@@ -389,15 +390,13 @@ const EditTodoForm = ({ user }) => {
       return
     }
     try {
-      const response = await axios.post(`${url}api/contacts`, contactNew, {
-        headers,
-      });
-
+      const response = await axios.post(`${url}api/contacts`, contactNew, {headers,});
       if (response.status === 201) {
+        let getContact =await axios.get(`${url}api/contacts/${response.data.id}`,{ headers });
         setConatctlength(contactlength + 1);
-        setNewSelected(response.data)
-        setSearchQuery(response.data.firstname)
-        setSearchContacts(response.data)
+        setNewSelected(getContact.data)
+        setSearchQuery(getContact.data.firstname)
+        setSearchContacts(getContact.data)
         setssearch(2)
         setIsContact(true)
         setContactError("")
@@ -563,12 +562,13 @@ const EditTodoForm = ({ user }) => {
                   value={searchQuery}
                   onChange={handleSearchChange}
                 />
-                {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && ssearch == 1 && <div>
+                {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && ssearch == 1 &&
+                 <div className='no-contact-found-div'>
                   <h1> No Contacts Found</h1>
                   <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
                 </div>}
                 {searchContacts.length ?
-                  <div style={{ height: "200px", overflow: 'scroll' }} ref={containerRef}>
+                  <div className="scroll-for-contacts-search" style={{ height: "200px", overflow: 'scroll' , cursor: 'pointer'}} ref={containerRef}>
 
                     {searchContacts && searchContacts?.map((item) => (
                       <div key={item.id} >

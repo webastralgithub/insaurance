@@ -471,8 +471,8 @@ const Lead = () => {
                             <td>
                               <button className="permissions"
                                 onClick={() => {
-                                  navigate("/todo-list/add")
-                                }}       >Create Task</button>
+                                  navigate(`/todo-list/add/${contact.id}`)
+                                }}>Create Task</button>
                             </td>
                             {/* <td> <button className="permissions"
                       onClick={()=>handleDeleteClick(contact.id)}       >Delete</button></td>  */}

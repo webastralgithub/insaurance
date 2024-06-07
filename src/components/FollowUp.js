@@ -11,7 +11,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const Followup = () => {
   const { id } = useParams()
-  const { auth } = useContext(AuthContext)
+  const { auth,setLeadlength,leadlength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
   const navigate = useNavigate()
   const headers = { Authorization: auth.token };
@@ -32,7 +32,7 @@ const Followup = () => {
         break;
     }
   };
- 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     clearErrors(name)
@@ -79,6 +79,10 @@ const Followup = () => {
       const response = await axios.post(`${url}api/todo`,
         { ...restOfEditedTodo, Followup: editedTodo.Followup, taskId: id },
         { headers });
+      if (response.status === 200) {
+        setLeadlength(leadlength + 1)
+      }
+
       navigate(-1)
       toast.success("Followup updated successfully", {
         autoClose: 2000,
@@ -90,7 +94,7 @@ const Followup = () => {
       console.error(error)
     }
   };
- 
+
   const formatDate = (dateTimeString) => {
     if (!dateTimeString) {
       return ""; // Handle cases where the date-time string is empty or undefined
@@ -123,7 +127,7 @@ const Followup = () => {
     <div className="form-user-add">
       <div >
         <div className="property_header">
-          <h3> <button type="button" className="back-only-btn" onClick={()=> navigate(-1)}> <img src="/back.svg" /></button> Task</h3>
+          <h3> <button type="button" className="back-only-btn" onClick={() => navigate(-1)}> <img src="/back.svg" /></button> Task</h3>
         </div>
       </div>
       <div className="form-user-edit-inner-wrap form-user-add-wrapper">

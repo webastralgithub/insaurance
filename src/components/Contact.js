@@ -4,8 +4,6 @@ import "./admin.css"
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -188,15 +186,11 @@ const Contact = ({ role }) => {
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/${id}`, {isContact :1,
-      isLead: true, category: seletedCategory
-        .value
-    }, {
-      headers,
-    });
+    const response = await axios.put(`${url}api/contacts/${id}`,
+      { isContact: 1, isLead: true, category: seletedCategory.value }, { headers });
     getContacts();
     if (response.status === 200) {
-      //setLeadlength(leadlength+1)
+      setLeadlength(leadlength + 1)
       toast.success("Contact Converted successfully", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
@@ -207,6 +201,7 @@ const Contact = ({ role }) => {
 
     }
   }
+
   const handleUpload = async () => {
     if (!selectedFile) {
       toast.error(" Please select a file");
@@ -374,7 +369,7 @@ const Contact = ({ role }) => {
   const [userss, setusers] = useState([])
   const [totalPagess, setTotalPages] = useState("");
 
- 
+
 
   const getTasks = async () => {
     setDataLoader(true)

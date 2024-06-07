@@ -1846,8 +1846,8 @@ body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-i
 .add-new-contact-btn{
   background-color: #004686;
   color: #fff;
-  height: 48px;
-  width: 145px;
+  height: 40px;
+  width: 135px;
   border-radius: 5px;
   font-size: 14px;
   font-weight: bold;
@@ -1857,10 +1857,30 @@ body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-i
 .add-new-contact-btn:hover {
   background-color: #004686;
   color: #fff;
-  height: 48px;
-  width: 145px;
+  height: 40px;
+  width: 135px;
   border-radius: 5px;
   font-size: 14px;
   font-weight: bold;
   padding : 5px ;
 }
+
+.no-contact-found-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .scroll-for-contacts-search {
+  background: #fff !important;
+  padding: 0px 15px 15px 15px;
+  overflow-x: unset !important;
+}
+
+.form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .scroll-for-contacts-search div {
+  border-bottom: 1px solid #a7a2a2;
+}
+
+
+
+

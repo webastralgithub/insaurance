@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import Select from "react-select";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import InputMask from 'react-input-mask';
 
 const AddTaskContact = () => {
 
@@ -23,7 +21,7 @@ const AddTaskContact = () => {
   const [propertyTypeError, setPropertyTypeError] = useState("");
   const [FollowupError, setFollowupError] = useState("")
   const navigate = useNavigate();
-  const { auth } = useContext(AuthContext);
+  const { auth, tasklength, setTasklength } = useContext(AuthContext);
   const headers = { Authorization: auth.token };
 
   const validateForm = () => {
@@ -54,6 +52,7 @@ const AddTaskContact = () => {
       });
 
       if (response.status === 201) {
+        setTasklength(tasklength + 1)
         navigate(-1); // Redirect to the contacts list page
       } else {
         console.error("Failed to add contact");

@@ -141,23 +141,7 @@ const AddContact = ({ user }) => {
 
   };
 
-  const getRealtorOptions = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      const realtorOptions = res.data
-        .filter((user) => user.roleId === 4 && user.isActivate)
-        .map((realtor) => ({
-          value: realtor.id,
-          label: realtor.name,
-        }));
-      setRealtorOptions([noSelectionOption, ...realtorOptions]);
-    } catch (error) {
-      console.error("Error fetching realtors: ", error);
-    }
-  };
-
-
-
+ 
   const validateForm = () => {
     let isValid = true;
     const { firstname, email, phone } = contact;
