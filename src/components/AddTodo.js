@@ -41,10 +41,19 @@ const AddTodo = ({ user }) => {
   const [selectedContactData, setSelectedContactData] = useState({});
   const [searchQuery, setSearchQuery] = useState("")
   const [isContact, setIsContact] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchContacts, setSearchContacts] = useState([])
+  const [newSelected, setNewSelected] = useState([])
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
+  const containerRef = useRef(null);
   const handleDateTimeChange = (newDateTime) => {
     setDateTime(newDateTime);
   };
-
+  const navigate = useNavigate();
+  const { auth, setAuth, tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext);
+  const headers = {
+    Authorization: auth.token,
+  };
 
   const [contact, setContact] = useState(
     {
@@ -98,12 +107,6 @@ const AddTodo = ({ user }) => {
     }
   };
 
-  const navigate = useNavigate();
-  const { auth, setAuth, tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
-
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
@@ -132,30 +135,7 @@ const AddTodo = ({ user }) => {
     })
   };
 
-  useEffect(() => {
-    // getContactDetails()
-  }, [selectedContact.value])
-
-  const getRealtorOptions = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      const realtorOptions = res.data
-        .filter((user) => user.roleId === 4 && user.isActivate)
-        .map((realtor) => ({
-          key: realtor.id,
-          value: realtor.id,
-          label: realtor.name,
-        }));
-      setRealtorOptions([noSelectionOption, ...realtorOptions]);
-    } catch (error) {
-      console.error("Error fetching realtors: ", error);
-    }
-  };
-
-  const [newSelected, setNewSelected] = useState([])
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
     const updatedContact = { ...contact, ContactID: newSelected.id };
 
@@ -164,13 +144,10 @@ const AddTodo = ({ user }) => {
         const response = await axios.post(`${url}api/todo`, updatedContact, {
           headers,
         });
-
-
         if (response.status === 201) {
           setTasklength(tasklength + 1)
-          toast.success('Todo added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
-          // Contact added successfully
-          navigate(-1); // Redirect to the contacts list page
+          toast.success('Todo added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+          navigate(-1);
         } else {
           console.error("Failed to add contact");
         }
@@ -180,25 +157,16 @@ const AddTodo = ({ user }) => {
     }
   };
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     clearErrors(name)
     setContact({ ...contact, [name]: value });
   };
-
   const goBack = () => {
     navigate(-1);
   };
 
   //new component
-  const [currentPage, setCurrentPage] = useState(1)
-  const [searchContacts, setSearchContacts] = useState([])
-
-  const debouncedSearchQuery = useDebounce(searchQuery, 1500);
-  const containerRef = useRef(null);
-
   const getCategories = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
@@ -216,7 +184,6 @@ const AddTodo = ({ user }) => {
   useEffect(() => {
     getCategories()
   }, [])
-
 
   const [loading, setLoading] = useState(false)
   const getSearchContact = async () => {
@@ -287,7 +254,6 @@ const AddTodo = ({ user }) => {
     category: ""
   });
 
-
   const validateFormNewPhone = () => {
     let isValid = true;
     const { firstname, email, phone } = contactNew;
@@ -329,7 +295,6 @@ const AddTodo = ({ user }) => {
     if (!isValid) {
       window.scrollTo(0, 0);
     }
-
     return isValid;
   };
 
@@ -366,8 +331,6 @@ const AddTodo = ({ user }) => {
   const handleAddressChange = (newAddress) => {
     setContactNew({ ...contactNew, address1: newAddress });
   };
-
-
 
   const handlePhoneNumberChange = (event) => {
     setPhoneError("")
@@ -481,7 +444,7 @@ const AddTodo = ({ user }) => {
                     <div style={{ height: "200px", overflow: 'scroll' }} ref={containerRef}>
 
                       {searchContacts && searchContacts?.map((item) => (
-                        <div key={contact.id} >
+                        <div key={item.id} >
                           <p onClick={() => handleSelect(item)}>{item.firstname}</p>
                         </div>
                       ))}
@@ -491,6 +454,15 @@ const AddTodo = ({ user }) => {
 
                 {newSelected.id &&
                   <>
+                    <div className="form-user-add-inner-wrap">
+
+                      <label>Phone Number</label>
+                      <input
+                        type="phone"
+                        value={(newSelected?.phone ? newSelected?.phone : " ")}
+                        readOnly
+                      />
+                    </div>
                     <div className="form-user-add-inner-wrap">
                       <label>Email</label>
                       <input
@@ -565,7 +537,6 @@ const AddTodo = ({ user }) => {
           </div>
         </form>
       }
-
 
       {/* Add Contact Form */}
       {isContact == false &&

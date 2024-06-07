@@ -91,7 +91,7 @@ z-index: unset;
     font-weight: 700;
     font-size: 15px;
     margin-top: 26px !important;
-    margin-bottom: -10px !important;
+    margin-bottom: -5px !important;
 }
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input, .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .select-new {

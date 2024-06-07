@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from 'react-select';
 import { faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -9,16 +9,41 @@ import { AuthContext } from "./context/AuthContext";
 import InputMask from 'react-input-mask';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import Places from "./Places";
 
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
-const EditTodoForm = () => {
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+};
+
+const EditTodoForm = ({ user }) => {
   const { id } = useParams()
-  const { auth, todo } = useContext(AuthContext)
+  const { auth, todo, tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
+  const [newSelected, setNewSelected] = useState([])
+  const [ssearch, setssearch] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchContacts, setSearchContacts] = useState([])
+  const [contactError, setContactError] = useState("")
+  const [isContact, setIsContact] = useState(true)
+  const [selectedContactData, setSelectedContactData] = useState({});
+
+  const [searchQuery, setSearchQuery] = useState("")
+  const containerRef = useRef(null);
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const headers = {
     Authorization: auth.token,
   };
-  const [editedTodo, setEditedTodo] = useState(todo);
+  const [editedTodo, setEditedTodo] = useState([]);
   const [realtorOptions, setRealtorOptions] = useState([]);
   const [defaultFollowupDate, setDefaultFollowupDate] = useState('');
   const [phoneError, setPhoneError] = useState("")
@@ -30,9 +55,6 @@ const EditTodoForm = () => {
   const [contactOption, setContactOptions] = useState([])
   const [users, setUsers] = useState([])
   const [editingField, setEditingField] = useState('all');
-
-  console.log("selectedContact", editedTodo);
-
   const [mlsNoError, setMlsNoError] = useState("");
   const [propertyTypeError, setPropertyTypeError] = useState("");
 
@@ -70,9 +92,7 @@ const EditTodoForm = () => {
   const handleEditClick = (field) => {
     setEditingField(field);
   };
-  const formatPhoneNumber = (phoneNumber) => {
-    return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
-  };
+
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
@@ -98,11 +118,24 @@ const EditTodoForm = () => {
     },
   };
 
-
+  const getCategories = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
+      const options = res.data.map((realtor) => ({
+        key: realtor.id,
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setCategories(options)
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
   useEffect(() => {
     getTodos()
     getUsers()
-    getContacts()
+    //getContacts()
+    getCategories()
   }, []);
 
 
@@ -154,11 +187,12 @@ const EditTodoForm = () => {
   }, [users]);
 
   const handleSaveClick = async () => {
+    console.log("editedTodo", editedTodo)
+    const updatedContact = { ...editedTodo, ContactID: newSelected.id };
     if (validateForm()) {
       const response = await axios.put(`${url}api/todo/${id}`,
-        { ...editedTodo },
+        { ...updatedContact },
         { headers });
-
       navigate(-1)
       toast.success("FolowUp Created successfully", {
         autoClose: 3000,
@@ -204,6 +238,9 @@ const EditTodoForm = () => {
         ? new Date(filtered?.FollowupDate).toISOString().slice(0, 16)
         : '';
       setEditedTodo(filtered);
+      setSearchQuery(filtered?.contact?.firstname)
+      setNewSelected(filtered?.contact)
+      setssearch(2)
       setDefaultFollowupDate(followupDateISO);
     } catch (error) {
       console.error(error)
@@ -224,14 +261,187 @@ const EditTodoForm = () => {
     }
   };
 
-  const handlePhoneNumberChange = (event) => {
-    // Extract the raw phone number from the input
-    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-    // Update the phone number state with the raw input
-    setEditedTodo({ ...editedTodo, phone: rawPhoneNumber.slice(1, 11) });
+  // const handlePhoneNumberChange = (event) => {
+  //   // Extract the raw phone number from the input
+  //   const rawPhoneNumber = event.target.value.replace(/\D/g, "");
+  //   // Update the phone number state with the raw input
+  //   setEditedTodo({ ...editedTodo, phone: rawPhoneNumber.slice(1, 11) });
+  // };
+  const [loading, setLoading] = useState(false)
+  const getSearchContact = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${url}api/contacts-list?page=${currentPage}&search=${debouncedSearchQuery}`, { headers });
+      setSearchContacts(response?.data?.contacts)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    if (ssearch === 1 && searchQuery) {
+      getSearchContact()
+    } else {
+      setSearchContacts([])
+    }
+
+  }, [debouncedSearchQuery, currentPage])
+
+  const handleSearchChange = (e) => {
+    setLoading(true)
+    setSearchQuery(e.target.value);
+    setNewSelected([])
+    setssearch(1)
+    setButtonOn(0)
+    setContactError("")
+  }
+  const handleSelect = (item) => {
+    setSearchQuery(item.firstname)
+    setButtonOn(2)
+    setssearch(2)
+    setNewSelected(item)
+    setSearchContacts([])
+    setContactError("")
+  }
+
+  // Add contact Data
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [categories, setCategories] = useState([])
+  const [seletedCategory, setSelectedCategory] = useState(null);
+
+  const [contactNew, setContactNew] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    profession: "",
+    address1: "",
+    phone: "",
+    company: "",
+    website: "",
+    servceRequire: selectedServices,
+    category: seletedCategory,
+    notes: "",
+    source: "",
+    createdBy: user,
+    realtorId: null,
+    propertyId: null
+  });
+
+  const [errors, setErrors] = useState({
+    firstname: "",
+    email: "",
+    phone: "",
+    category: ""
+  });
+
+
+  const validateFormNewPhone = () => {
+    let isValid = true;
+    const { firstname, email, phone } = contactNew;
+
+    const trimmedFirstName = firstname.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    // Reset errors
+    setErrors({
+      firstname: "",
+      email: "",
+      phone: "",
+      category: ""
+    });
+
+    // Validate firstname
+    if (!trimmedFirstName) {
+      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
+      isValid = false;
+    }
+
+    // Validate email
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
+      isValid = false;
+    }
+
+    // Validate phone number
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
+      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
+      isValid = false;
+    }
+    if (!contactNew.category) {
+      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+      isValid = false;
+    }
+
+    if (!isValid) {
+      window.scrollTo(0, 0);
+    }
+
+    return isValid;
+  };
+
+  const handleSubmitNewPhone = async (e) => {
+    e.preventDefault();
+    const isValid = validateFormNewPhone();
+    if (!isValid) {
+      return
+    }
+    try {
+      const response = await axios.post(`${url}api/contacts`, contactNew, {
+        headers,
+      });
+
+      if (response.status === 201) {
+        setConatctlength(contactlength + 1);
+        setNewSelected(response.data)
+        setSearchQuery(response.data.firstname)
+        setSearchContacts(response.data)
+        setssearch(2)
+        setIsContact(true)
+        setContactError("")
+        toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
+      } else if (response.data.status === false) {
+        toast.error(response.data.message)
+      } else {
+        toast.error("Failed to add contact");
+      }
+    } catch (error) {
+      console.error("An error occurred while adding a contact:", error);
+    }
+  }
+
+  const handleAddressChange = (newAddress) => {
+    setContactNew({ ...contactNew, address1: newAddress });
   };
 
 
+
+  const handlePhoneNumberChange = (event) => {
+    setPhoneError("")
+    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
+    setContactNew({ ...contactNew, phone: rawPhoneNumber.slice(1, 11) });
+  }
+
+  const handleChangeAddPhone = (e) => {
+    setErrors({
+      firstname: "",
+      email: "",
+      phone: "",
+      category: ""
+    })
+    const { name, value } = e.target;
+    setContactNew({ ...contactNew, [name]: value });
+  };
+
+  const serviceOptions = [
+    { value: 'Real Estate', label: 'Real Estate' },
+    { value: 'Mortgage', label: 'Mortgage' },
+    { value: 'Insurance', label: 'Insurance' },
+    { value: 'Immigration', label: 'Immigration' }
+  ];
+  const [buttonOn, setButtonOn] = useState(0)
   return (
 
     <div className="form-user-add">
@@ -243,56 +453,57 @@ const EditTodoForm = () => {
           </div> */}
         </div>
       </div>
-      <div className="form-user-edit-inner-wrap form-user-add-wrapper">
-        <div className="todo-section">
-          <div className="todo-main-section">
-            <div className="form-user-add-inner-wrap">
-              <label>Task Title<span className="required-star">*</span></label>
-              {editingField === "Followup" || editingField === "all" ? (
-                <div className="edit-new-input">
-                  <input
-                    name="Followup"
-                    value={editedTodo?.Followup}
-                    onChange={handleChange}
+      {isContact == true &&
+        <div className="form-user-edit-inner-wrap form-user-add-wrapper">
+          <div className="todo-section">
+            <div className="todo-main-section">
+              <div className="form-user-add-inner-wrap">
+                <label>Task Title<span className="required-star">*</span></label>
+                {editingField === "Followup" || editingField === "all" ? (
+                  <div className="edit-new-input">
+                    <input
+                      name="Followup"
+                      value={editedTodo?.Followup}
+                      onChange={handleChange}
 
-                  />
-                  <span className="error-message">{mlsNoError}</span>
-                </div>
-              ) : (
-                <div className="edit-new-input">
-                  {editedTodo?.Followup}
-                  <FontAwesomeIcon
-                    icon={faPencil}
-                    onClick={() => handleEditClick("Followup")}
-                  />
-                </div>
-              )}
-            </div>
+                    />
+                    <span className="error-message">{mlsNoError}</span>
+                  </div>
+                ) : (
+                  <div className="edit-new-input">
+                    {editedTodo?.Followup}
+                    <FontAwesomeIcon
+                      icon={faPencil}
+                      onClick={() => handleEditClick("Followup")}
+                    />
+                  </div>
+                )}
+              </div>
 
-            <div className="form-user-add-inner-wrap">
-              <label>Follow Up Date<span className="required-star">*</span></label>
-              {editingField === "FollowupDate" || editingField === "all" ? (
-                <div className="edit-new-input">
-                  <input
-                    name="FollowupDate"
-                    type="datetime-local"
-                    defaultValue={formatDate(defaultFollowupDate)}
-                    onChange={handleChange}
-                  />
-                  <span className="error-message">{propertyTypeError}</span>
-                </div>
-              ) : (
-                <div className="edit-new-input">
-                  {formatDate(editedTodo?.FollowupDate)}
-                  <FontAwesomeIcon
-                    icon={faPencil}
-                    onClick={() => handleEditClick("FollowupDate")}
-                  />
-                </div>
-              )}
-            </div>
+              <div className="form-user-add-inner-wrap">
+                <label>Follow Up Date<span className="required-star">*</span></label>
+                {editingField === "FollowupDate" || editingField === "all" ? (
+                  <div className="edit-new-input">
+                    <input
+                      name="FollowupDate"
+                      type="datetime-local"
+                      defaultValue={formatDate(defaultFollowupDate)}
+                      onChange={handleChange}
+                    />
+                    <span className="error-message">{propertyTypeError}</span>
+                  </div>
+                ) : (
+                  <div className="edit-new-input">
+                    {formatDate(editedTodo?.FollowupDate)}
+                    <FontAwesomeIcon
+                      icon={faPencil}
+                      onClick={() => handleEditClick("FollowupDate")}
+                    />
+                  </div>
+                )}
+              </div>
 
-            {/* <div className="form-user-add-inner-wrap">
+              {/* <div className="form-user-add-inner-wrap">
               <label>Phone Number<span className="required-star">*</span></label>
               {editingField === "phone" || editingField === "all" ? (
                 <div className="edit-new-input">
@@ -319,29 +530,110 @@ const EditTodoForm = () => {
               )}
             </div> */}
 
-            <div className="form-user-add-inner-wrap">
-              <label>Task description</label>
-              {editingField === "description" || editingField === "all" ? (
-                <div className="edit-new-input">
-                  <textarea
-                    name="description"
-                    value={editedTodo?.description}
-                    onChange={handleChange}
-                    placeholder="description"
-                  />
-                </div>
-              ) : (
-                <div className="edit-new-input">
-                  {editedTodo?.description}
-                  <FontAwesomeIcon
-                    icon={faPencil}
-                    onClick={() => handleEditClick("description")}
-                  />
-                </div>
-              )}
-            </div>
+              <div className="form-user-add-inner-wrap">
+                <label>Task description</label>
+                {editingField === "description" || editingField === "all" ? (
+                  <div className="edit-new-input">
+                    <textarea
+                      name="description"
+                      value={editedTodo?.description}
+                      onChange={handleChange}
+                      placeholder="description"
+                    />
+                  </div>
+                ) : (
+                  <div className="edit-new-input">
+                    {editedTodo?.description}
+                    <FontAwesomeIcon
+                      icon={faPencil}
+                      onClick={() => handleEditClick("description")}
+                    />
+                  </div>
+                )}
+              </div>
 
-            <div className="form-user-add-inner-wrap ">
+              {/* dbouncing and select contact */}
+
+              <div className="form-user-add-inner-wrap ">
+                <label>Contact<span className="required-star">*</span> <span className="error-message">{contactError}</span></label>
+                <input
+                  //defaultValue={editedTodo?.contact?.firstname}
+                  type="text"
+                  placeholder="Search Contact"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && ssearch == 1 && <div>
+                  <h1> No Contacts Found</h1>
+                  <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
+                </div>}
+                {searchContacts.length ?
+                  <div style={{ height: "200px", overflow: 'scroll' }} ref={containerRef}>
+
+                    {searchContacts && searchContacts?.map((item) => (
+                      <div key={item.id} >
+                        <p onClick={() => handleSelect(item)}>{item.firstname}</p>
+                      </div>
+                    ))}
+                  </div>
+                  : ""}
+              </div>
+              {newSelected.id &&
+                <>
+                  <div className="form-user-add-inner-wrap">
+
+                    <label>Phone Number</label>
+                    <input
+                      type="phone"
+                      value={(newSelected?.phone ? newSelected?.phone : " ")}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Email</label>
+                    <input
+                      type="text"
+                      value={(newSelected?.email ? newSelected?.email : " ")}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Business Name</label>
+                    <input
+                      type="text"
+                      value={newSelected?.company}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Profession</label>
+                    <input
+                      type="text"
+
+                      value={newSelected?.profession}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Address</label>
+                    <input
+                      type="text"
+
+                      value={newSelected?.address1 ? newSelected?.address1 : ""}
+                      readOnly
+                    />
+                  </div>
+                  <div className="form-user-add-inner-wrap">
+                    <label>Website</label>
+                    <input
+                      type="text"
+                      value={newSelected?.website ?? ""}
+                      readOnly
+                    />
+                  </div>
+                </>
+              }
+              {/* <div className="form-user-add-inner-wrap ">
               <label>Contact</label>
 
               <Select
@@ -361,32 +653,32 @@ const EditTodoForm = () => {
                 hideSelectedOptions={false}
                 components={{ DropdownIndicator: () => null,IndicatorSeparator:() => null }}
               />
+            </div> */}
             </div>
-          </div>
 
 
 
 
-          <div className="todo-notes-section">
-            <div className="form-user-add-inner-wrap">
-              <label>Notes</label>
+            <div className="todo-notes-section">
+              <div className="form-user-add-inner-wrap">
+                <label>Notes</label>
 
-              <CKEditor
-                editor={ClassicEditor}
-                data={editedTodo?.Comments || ''}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setEditedTodo({ ...editedTodo, Comments: data });
-                }}
-                config={{
-                  toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-                }}
-                className="custom-ckeditor" // Add a custom class for CKEditor container
-                style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-              />
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={editedTodo?.Comments || ''}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setEditedTodo({ ...editedTodo, Comments: data });
+                  }}
+                  config={{
+                    toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                  }}
+                  className="custom-ckeditor" // Add a custom class for CKEditor container
+                  style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                />
+              </div>
             </div>
-          </div>
-          {/* <div className="form-user-add-inner-wrap">
+            {/* <div className="form-user-add-inner-wrap">
           <label>Owners</label>
           {editingField === "realtorId" || editingField === "all" ? (
           
@@ -412,7 +704,7 @@ const EditTodoForm = () => {
             </div>
           )}
         </div> */}
-          {/* <div className="form-user-add-inner-wrap">
+            {/* <div className="form-user-add-inner-wrap">
           <label>Contacts</label>
           {editingField === "clientId" || editingField === "all" ? (
           
@@ -448,7 +740,7 @@ const EditTodoForm = () => {
           )}
         </div> */}
 
-          {/* <div className="form-user-add-inner-wrap">
+            {/* <div className="form-user-add-inner-wrap">
           <label>Family Member Name</label>
           {editingField === "ContactID" || editingField === "all" ? (
           
@@ -473,15 +765,171 @@ const EditTodoForm = () => {
             </div>
           )}
         </div> */}
-        </div>
-        <div className="form-user-add-inner-btm-btn-wrap">
+          </div>
+          <div className="form-user-add-inner-btm-btn-wrap">
 
-          <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
-        </div>
-        {/* Add more fields as needed */}
+            <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
+          </div>
+          {/* Add more fields as needed */}
 
 
-      </div>
+        </div>}
+      {/* Add Contact Form */}
+      {isContact == false &&
+        <>
+          <form onSubmit={handleSubmitNewPhone} className="form-user-add add-contact-from-adst add-contact-form">
+            <div className="property_header header-with-back-btn">
+
+              <h3> <button type="button" className="back-only-btn" onClick={() => setIsContact(true)}> <img src="/back.svg" /></button>Add Contact</h3>
+
+            </div>
+
+            <div className="add-cnt-form-desc">
+              <div className="form-user-add-wrapper">
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Name<span className="required-star">*</span></label>
+                  <input
+                    type="text"
+                    name="firstname"
+                    value={contactNew.firstname}
+                    onChange={handleChangeAddPhone}
+
+                  />
+                  <span className="error-message">{errors.firstname}</span>
+                </div>
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Email Id<span className="required-star">*</span></label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={contactNew.email}
+                    onChange={handleChangeAddPhone}
+                  />
+                  <span className="error-message">{errors.email}</span>
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Profession</label>
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="profession"
+                      value={contactNew.profession}
+                      onChange={handleChangeAddPhone}
+                    />
+                  </div>
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Website</label>
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="website"
+                      value={contactNew.website}
+                      onChange={handleChangeAddPhone}
+                    />
+                  </div>
+                </div>
+
+                <Places value={contactNew.address1} onChange={handleAddressChange} />
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Phone<span className="required-star">*</span></label>
+                  <InputMask
+                    mask="+1 (999) 999-9999"
+                    type="text"
+                    name="phone"
+                    value={contactNew.phone}
+                    onChange={handlePhoneNumberChange}
+                    placeholder="+1 (___) ___-____"
+
+                  />
+                  <span className="error-message">{errors.phone}</span>
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Company Name</label>
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="company"
+                      value={contactNew.company}
+                      onChange={handleChangeAddPhone}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="add-contact-user-custom-right">
+                <div className="add-contact-user-custom-wrapper">
+                  <div className="add-contact-user-custom-left">
+
+                    <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
+                      <label>Service Require</label>
+                      <Select
+                        placeholder="Select Service(s) Required..."
+                        value={selectedServices}
+                        onChange={(selectedOptions) => {
+                          setSelectedServices(selectedOptions);
+                          // You can also extract the values into an array if needed
+                          const selectedValues = selectedOptions.map(option => option.value);
+                          setContactNew({ ...contactNew, servceRequire: selectedValues });
+                        }}
+                        options={serviceOptions}
+                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                        styles={colourStyles}
+                        className="select-new"
+                        isMulti // This is what enables multiple selections
+                      />
+
+                    </div>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Category<span className="required-star">*</span></label>
+                      <img src="/icons-form/Group30055.svg" />
+                      <Select
+                        placeholder="Select Category.."
+                        value={seletedCategory}
+                        onChange={(selectedOption) => {
+                          setContactNew({ ...contactNew, category: selectedOption.value })
+                          setSelectedCategory(selectedOption)
+                        }}
+                        options={categories}
+                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                        styles={colourStyles}
+                        className="select-new"
+
+                      />
+                    </div>
+                    <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
+                  </div>
+
+                </div>
+
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Description</label>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={contactNew.notes}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setContactNew({ ...contactNew, notes: data });
+                    }}
+                    config={{
+                      toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                    }}
+                    className="custom-ckeditor" // Add a custom class for CKEditor container
+                    style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="form-user-add-inner-btm-btn-wrap">
+              <button type="submit" >Save</button>
+            </div>
+          </form>
+        </>
+      }
     </div>
   );
 };

@@ -188,7 +188,7 @@ const Contact = ({ role }) => {
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/${id}`, {
+    const response = await axios.put(`${url}api/contacts/${id}`, {isContact :1,
       isLead: true, category: seletedCategory
         .value
     }, {
