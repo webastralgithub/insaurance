@@ -531,6 +531,10 @@ td.manage-configr-table-btn buttton {
   cursor: pointer;
 }
 
+.add_property_btn-leads-page .add_property_btn .table-container table {
+  margin-bottom: 0 !important;
+}
+
 @media (max-width:600px){
   .manage-configr-table table {
     width: 900px;

@@ -200,7 +200,7 @@ button.edit-box img,
 .preview-modal-overlay .preview-modal {
   height: 500px;
   overflow-y: scroll;
-  max-width: 600px;
+  max-width: 945px;
   width: 100%;
 }
 
@@ -626,6 +626,12 @@ button.edit-box img,
   margin: auto;
   column-gap: 30px;
   margin-top: 40px;
+}
+
+.ReactModal__Overlay.ReactModal__Overlay--after-open.email-campaign-popup {
+  width: 82%;
+  left: unset;
+  right: 0;
 }
 
 @media (max-width:600px) {

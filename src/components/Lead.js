@@ -328,7 +328,7 @@ const Lead = () => {
   };
 
   return (
-    <div className="add_property_btn">
+    <div className="add_property_btn add_property_btn-leads-page">
       <div className="inner-pages-top">
         <Modal
           isOpen={modalIsOpen}

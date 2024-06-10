@@ -408,7 +408,7 @@ const EmailCampaign = () => {
           isOpen={isOpen}
           onRequestClose={closeModal}
           className="preview-modal handleUserEdit"
-          overlayClassName="preview-modal-overlay"
+          overlayClassName="preview-modal-overlay email-campaign-popup"
         >
           <div
             className="preview-content handleUserEdit"
