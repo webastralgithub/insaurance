@@ -117,6 +117,7 @@ const AddFeatures = () => {
                             name="limit"
                             value={formData.limit}
                             onChange={handleChange}
+                         
                         /> {errors.limit && <span style={{ color: 'red' }}>{errors.limit}</span>}
                     </div>
 

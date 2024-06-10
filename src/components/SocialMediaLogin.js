@@ -131,7 +131,6 @@ const SocialMediaLogin = () => {
       name: responseData.name,
       updated_at: responseData.updated_at,
       user_id: responseData.user_id
-    
     })
 
     // setEditedContact(res.data)
@@ -153,7 +152,6 @@ const SocialMediaLogin = () => {
 
   const handleDisconnect = async (platform) => {
     const success = await disconnectAccount(platform); // Function to disconnect account on the backend
-
     if (success) {
       setConnectedAccounts({ ...connectedAccounts, [platform]: false });
     }
@@ -165,9 +163,9 @@ const SocialMediaLogin = () => {
         <div style={{ marginBottom: "20px" }} className='inner-pages-top'>
           <h3>Social Media Share</h3>
           <div className="new-social" style={{ display: "flex" }} >
-            <div className='facebook-share-btn'>             
-            <FacebookLoginButton editedContact={editedContact} connectedAccounts={connectedAccounts} setConnectedAccounts={setConnectedAccounts} />
-            </div>  
+            <div className='facebook-share-btn'>
+              <FacebookLoginButton editedContact={editedContact} connectedAccounts={connectedAccounts} setConnectedAccounts={setConnectedAccounts} />
+            </div>
             <LinkedIn editedContact={editedContact} />
             <button onClick={shareOnInstagram}> Instagram</button>
             <Instagram editedContact={editedContact} />
@@ -178,15 +176,13 @@ const SocialMediaLogin = () => {
           <div className="form-catagory-edit-sec-left">
             <div className="form-user-add-inner-wrap">
               <label>Name</label>
-
               <div className="edit-new-input">
                 <input
                   name="name"
                   value={editedContact.name}
                   onChange={handleInputChange}
-                  //disabled
+                //disabled
                 />
-
               </div>
             </div>
 

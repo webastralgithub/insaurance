@@ -10,23 +10,14 @@ import Places from "./Places";
 
 
 const AddLead = ({ user }) => {
-
-  const [selectedProperty, setSelectedProperty] = useState(null);
+  const navigate = useNavigate();
+  const url = process.env.REACT_APP_API_URL;
+  const { auth, leadlength, setLeadlength } = useContext(AuthContext);
+  const headers = { Authorization: auth.token };
   const [phoneError, setPhoneError] = useState("");
-  const [emailError, setEmailError] = useState("")
-  const [realtorOptions, setRealtorOptions] = useState([]);
   const [selectedSource, setSelectedSource] = useState(null);
-  const [firstError, setFirstError] = useState("");
-  const [properties, setProperties] = useState([])
-  const [selectedRealtor, setSelectedRealtor] = useState(null);
-  const [selectedAgent, setSelectedAgent] = useState(null);
   const [categories, setCategories] = useState([])
   const [seletedCategory, setSelectedCategory] = useState(null);
-  const [selectedProvince, setSelectedProvince] = useState({
-    value: 2, // Set the value of "British Columbia"
-    label: "British Columbia", // Set the label of "British Columbia"
-  });
-
   const [contact, setContact] = useState({
     firstname: "",
     lastname: "",
@@ -44,30 +35,6 @@ const AddLead = ({ user }) => {
     realtorId: null,
     propertyId: null
   });
-
-  // Define an array of province options
-
-  const navigate = useNavigate();
-
-  const { auth, leadlength, setLeadlength } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
-  const provinceOptions = [
-    { value: 1, label: "Alberta" },
-    { value: 2, label: "British Columbia" },
-    { value: 3, label: "Manitoba" },
-    { value: 4, label: "New Brunswick" },
-    { value: 5, label: "Newfoundland and Labrador" },
-    { value: 6, label: "Nova Scotia" },
-    { value: 7, label: "Ontario" },
-    { value: 8, label: "Prince Edward Island" },
-    { value: 9, label: "Quebec" },
-    { value: 10, label: "Saskatchewan" },
-    { value: 11, label: "Northwest Territories" },
-    { value: 12, label: "Nunavut" },
-    { value: 13, label: "Yukon" },
-  ];
 
   const sourceOptions = [
     { value: "Website", label: "Website" },
@@ -102,19 +69,14 @@ const AddLead = ({ user }) => {
       category: ""
     });
 
-    // Validate firstname
     if (!trimmedFirstName) {
       setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
       isValid = false;
     }
-
-    // Validate email
     if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
       isValid = false;
     }
-
-    // Validate phone number
     if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
@@ -123,32 +85,10 @@ const AddLead = ({ user }) => {
       setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
       isValid = false;
     }
-
     if (!isValid) {
       window.scrollTo(0, 0);
     }
-
     return isValid;
-  };
-
-  const clearErrors = (fieldName) => {
-    switch (fieldName) {
-      case "firstname":
-        setFirstError("");
-        break;
-      case "phone":
-        setPhoneError("");
-        break;
-      case "email":
-        setEmailError("")
-        break;
-      default:
-        break;
-    }
-  };
-  const handleProvinceSelectChange = (selectedOption) => {
-    setSelectedProvince(selectedOption);
-    setContact({ ...contact, provinceId: selectedOption.value });
   };
 
   const colourStyles = {
@@ -158,19 +98,17 @@ const AddLead = ({ user }) => {
       fontSize: "14px",
       fontWeight: '550',
       color: '#000000e8',
-
     }),
     control: styles => ({ ...styles, border: 'unset', boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-
       return {
         ...styles,
+        cursor: "pointer",
         backGround: "#fff",
         color: "#000",
         position: "relative",
         zIndex: "99",
         fontSize: "14px"
-
       };
     },
     placeholder: (provided, state) => ({
@@ -179,16 +117,12 @@ const AddLead = ({ user }) => {
       marginLeft : "25px" ,
       fontSize: "14px",
       fontWeight: '500'
-
     })
-
   };
-  const url = process.env.REACT_APP_API_URL;
+  
 
   useEffect(() => {
-    getRealtorOptions();
     getCategories()
-    getProperties()
   }, []);
 
   const getCategories = async () => {
@@ -203,35 +137,6 @@ const AddLead = ({ user }) => {
       console.error("User creation failed:", error);
     }
   };
-  const getProperties = async () => {
-    try {
-      const res = await axios.get(`${url}api/property`, { headers });
-      const realtorOptions = res.data.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.mls_no,
-      }));
-      setProperties(realtorOptions);
-    } catch (error) {
-      console.error(error)
-    }
-  };
-
-
-  const getRealtorOptions = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      const realtorOptions = res.data
-        .filter((user) => user.roleId === 4 && user.isActivate)
-        .map((realtor) => ({
-          value: realtor.id,
-          label: realtor.name,
-        }));
-      setRealtorOptions(realtorOptions);
-    } catch (error) {
-      console.error("Error fetching realtors: ", error);
-    }
-  };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -278,14 +183,10 @@ const AddLead = ({ user }) => {
     }));
   };
 
-  const handleRealtorSelectChange = (selectedOption) => {
-    setSelectedRealtor(selectedOption);
-    setContact({ ...contact, realtorId: selectedOption.value });
-  };
 
   const goBack = (e) => {
     e.preventDefault()
-    navigate(-1); // This function takes you back one step in the navigation stack
+    navigate(-1); 
   };
 
   return (

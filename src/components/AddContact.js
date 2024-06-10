@@ -50,8 +50,8 @@ const AddContact = ({ user }) => {
     source: "",
     createdBy: user,
     realtorId: null,
-    isContact : true,
-    propertyId: null
+    isContact: true,
+    propertyId: null,
   });
   // Define an array of province options
 
@@ -95,7 +95,7 @@ const AddContact = ({ user }) => {
 
       return {
         ...styles,
-
+        cursor: "pointer",
         backGround: "#fff",
         color: "#000",
         position: "relative",
@@ -108,7 +108,7 @@ const AddContact = ({ user }) => {
   const url = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-   // getRealtorOptions();
+    // getRealtorOptions();
     getCategories()
     //getProperties()
   }, []);
@@ -141,7 +141,7 @@ const AddContact = ({ user }) => {
 
   };
 
- 
+
   const validateForm = () => {
     let isValid = true;
     const { firstname, email, phone } = contact;
@@ -413,9 +413,7 @@ const AddContact = ({ user }) => {
                   components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                   styles={colourStyles}
                   className="select-new"
-
                 />
-
               </div> */}
 
                 <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">

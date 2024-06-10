@@ -35,7 +35,7 @@ const AddTodo = ({ user }) => {
   const [contactError, setContactError] = useState("")
   const [propertyTypeError, setPropertyTypeError] = useState("");
   const [searchQuery, setSearchQuery] = useState("")
-  const [isContact, setIsContact] = useState(true)
+  const [isContacts, setIsContacts] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchContacts, setSearchContacts] = useState([])
   const [newSelected, setNewSelected] = useState([])
@@ -111,6 +111,7 @@ const AddTodo = ({ user }) => {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
+        cursor: "pointer",
         backGround: "#fff",
         color: "#000",
         position: "relative",
@@ -235,7 +236,7 @@ const AddTodo = ({ user }) => {
     createdBy: user,
     realtorId: null,
     propertyId: null,
-    isContact :1
+    isContact :true
   });
 
   const [errors, setErrors] = useState({
@@ -304,7 +305,7 @@ const AddTodo = ({ user }) => {
         setSearchQuery(getContact.data.firstname)
         setSearchContacts(getContact.data)
         setssearch(2)
-        setIsContact(true)
+        setIsContacts(true)
         setContactError("")
         toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
       } else if (response.data.status === false) {
@@ -348,7 +349,7 @@ const AddTodo = ({ user }) => {
   return (
 
     <>
-      {isContact == true &&
+      {isContacts == true &&
         <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form">
           <div className="property_header header-with-back-btn">
 
@@ -428,7 +429,7 @@ const AddTodo = ({ user }) => {
                   {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && 
                   <div className='no-contact-found-div'>
                     <h1> No Contacts Found</h1>
-                    <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
+                    <button className="add-new-contact-btn" onClick={() => { setIsContacts(false); setButtonOn(1) }}>Add New Contact</button>
                   </div>
                   }
 
@@ -531,12 +532,12 @@ const AddTodo = ({ user }) => {
       }
 
       {/* Add Contact Form */}
-      {isContact == false &&
+      {isContacts == false &&
         <>
           <form onSubmit={handleSubmitNewPhone} className="form-user-add add-contact-from-adst add-contact-form">
             <div className="property_header header-with-back-btn">
 
-              <h3> <button type="button" className="back-only-btn" onClick={() => setIsContact(true)}> <img src="/back.svg" /></button>Add Contact</h3>
+              <h3> <button type="button" className="back-only-btn" onClick={() => setIsContacts(true)}> <img src="/back.svg" /></button>Add Contact</h3>
 
             </div>
 

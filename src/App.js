@@ -74,7 +74,7 @@ import UserList from "./components/UserList";
 const App = () => {
 
 
-  const { toggle, setToggle, auth, roleId,subscriptionStatus } = useContext(AuthContext)
+  const { toggle, setToggle, auth, roleId, subscriptionStatus } = useContext(AuthContext)
   const [role, setRole] = useState(0)
   const [id, setId] = useState(0)
   const [nameofuser, setnameofUser] = useState("")
@@ -163,7 +163,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-              <Route
+            <Route
               path="/referral-sent/:id" exact
               element={
                 <PrivateRoute>
@@ -442,7 +442,7 @@ const App = () => {
               path="//todo-list/add-task" exact
               element={
                 <PrivateRoute>
-                  <AddTodo user={id}  />
+                  <AddTodo user={id} />
                 </PrivateRoute>
               }
             />
@@ -450,7 +450,7 @@ const App = () => {
               path="/todo-list/add/new-dashboard/:date" exact
               element={
                 <PrivateRoute>
-                  <AddTodo user={id}  />
+                  <AddTodo user={id} />
                 </PrivateRoute>
               }
             />
@@ -470,7 +470,7 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-              <Route
+            <Route
               path="/todo-list-todo/edit/:id" exact
               element={
                 <PrivateRoute>
@@ -510,26 +510,28 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-          
-          {subscriptionStatus !== "active"  &&  roleId != 1 && <Route
-            path="/upgrade-plan" exact
-            element={
-              <PrivateRoute>
-                <UpgradePlan />
-              </PrivateRoute>
-            }
-          />
-      }
 
-            <Route
-              path="/manage-subscription" exact
+            {subscriptionStatus !== "active" && roleId != 1 && <Route
+              path="/upgrade-plan" exact
               element={
                 <PrivateRoute>
-                  <ManageSubscription />
+                  <UpgradePlan />
                 </PrivateRoute>
               }
             />
+            }
+            {roleId != 1 &&
+              <Route
+                path="/manage-subscription" exact
+                element={
+                  <PrivateRoute>
+                    <ManageSubscription />
+                  </PrivateRoute>
+                }
+              />
+            }
 
+            
             {roleId == 1 &&
               <>              <Route
                 path="/manage-configure" exact

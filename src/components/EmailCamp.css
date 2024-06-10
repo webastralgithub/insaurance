@@ -200,7 +200,7 @@ button.edit-box img,
 .preview-modal-overlay .preview-modal {
   height: 500px;
   overflow-y: scroll;
-  max-width: 945px;
+  max-width: 845px;
   width: 100%;
 }
 

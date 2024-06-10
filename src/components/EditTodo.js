@@ -27,7 +27,7 @@ const useDebounce = (value, delay) => {
 
 const EditTodoForm = ({ user }) => {
   const { id } = useParams()
-  const { auth, todo, tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext)
+  const { auth, setConatctlength, contactlength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
   const [newSelected, setNewSelected] = useState([])
   const [ssearch, setssearch] = useState(1)
@@ -35,8 +35,6 @@ const EditTodoForm = ({ user }) => {
   const [searchContacts, setSearchContacts] = useState([])
   const [contactError, setContactError] = useState("")
   const [isContact, setIsContact] = useState(true)
-  const [selectedContactData, setSelectedContactData] = useState({});
-
   const [searchQuery, setSearchQuery] = useState("")
   const containerRef = useRef(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
@@ -44,21 +42,11 @@ const EditTodoForm = ({ user }) => {
     Authorization: auth.token,
   };
   const [editedTodo, setEditedTodo] = useState([]);
-  const [realtorOptions, setRealtorOptions] = useState([]);
   const [defaultFollowupDate, setDefaultFollowupDate] = useState('');
   const [phoneError, setPhoneError] = useState("")
-  const [selectedRealtor, setSelectedRealtor] = useState(null);
-  const [selectedContact, setSelectedContact] = useState(null);
-  const [selectedChildren, setSelectedChildren] = useState(null);
-  const [selectedFamilyMember, setSelectedFamilyMember] = useState(null);
-  const [childrenOptions, setChildrenOptions] = useState([])
-  const [contactOption, setContactOptions] = useState([])
-  const [users, setUsers] = useState([])
   const [editingField, setEditingField] = useState('all');
   const [mlsNoError, setMlsNoError] = useState("");
   const [propertyTypeError, setPropertyTypeError] = useState("");
-
-  // Validate the form fields and set validation errors
 
   const clearErrors = (fieldName) => {
     switch (fieldName) {
@@ -100,15 +88,14 @@ const EditTodoForm = ({ user }) => {
       fontSize: "14px",
       fontWeight: '550',
       //color: '#000000e8',
-
     }),
-
     control: styles => ({ ...styles, border: 'unset', boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
     input: styles => ({ ...styles, margin: "0px" }),
     option: (styles) => {
 
       return {
         ...styles,
+        cursor: "pointer",
         backGround: "#fff",
         color: "#000",
         position: "relative",
@@ -133,8 +120,6 @@ const EditTodoForm = ({ user }) => {
   };
   useEffect(() => {
     getTodos()
-    getUsers()
-    //getContacts()
     getCategories()
   }, []);
 
@@ -170,21 +155,6 @@ const EditTodoForm = ({ user }) => {
     }
     return isValid;
   };
-  useEffect(() => {
-    // Fetch Realtor and Lawyer options and populate the select inputs
-
-    const realtors = users.filter((user) => user.roleId === 4);
-
-    // Map the users into an array of options with 'label' and 'value' properties
-    const realtorOptions = realtors.map((realtor) => ({
-      value: realtor.id,
-      label: realtor.name,
-    }));
-
-
-    setRealtorOptions([noSelectionOption, ...realtorOptions]);
-
-  }, [users]);
 
   const handleSaveClick = async () => {
     console.log("editedTodo", editedTodo)
@@ -204,15 +174,7 @@ const EditTodoForm = ({ user }) => {
   const goBack = () => {
     navigate(-1); // This function takes you back one step in the navigation stack
   };
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      setUsers(res.data)
 
-    } catch (error) {
-      console.error(error)
-    }
-  };
 
   const formatDate = (dateTimeString) => {
     if (!dateTimeString) {
@@ -247,19 +209,7 @@ const EditTodoForm = ({ user }) => {
     }
   }
 
-  const getContacts = async () => {
-    try {
-      const response = await axios.get(`${url}api/contacts`, { headers });
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null).map((realtor) => ({
-        value: realtor.id,
-        label: realtor.firstname,
-        children: realtor.children || []
-      }));
-      setContactOptions(contactsWithoutParentId);
-    } catch (error) {
-      console.error(error)
-    }
-  };
+
 
   // const handlePhoneNumberChange = (event) => {
   //   // Extract the raw phone number from the input
@@ -327,7 +277,7 @@ const EditTodoForm = ({ user }) => {
     createdBy: user,
     realtorId: null,
     propertyId: null,
-    isContact :1
+    isContact :true
   });
 
   const [errors, setErrors] = useState({

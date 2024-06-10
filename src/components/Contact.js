@@ -83,7 +83,7 @@ const Contact = ({ role }) => {
   const [error, setError] = useState("")
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [modalMode, setModalMode] = useState("");
-  const [users, setUsers] = useState([]);
+
 
   const [searchQuery, setSearchQuery] = useState("");
   const [viewState, setViewState] = useState("contacts")
@@ -442,20 +442,12 @@ const Contact = ({ role }) => {
   };
 
   useEffect(() => {
-    getContacts();
     getCategories()
-    getUsers();
+    if (roleId == 1) {
+      getContacts();
+    }
   }, []);
 
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      setUsers(res?.data);
-
-    } catch (error) {
-      console.error(error)
-    }
-  };
 
   const getContacts = async () => {
     try {
@@ -567,7 +559,7 @@ const Contact = ({ role }) => {
             </div>
           )}
 
-          {modalMode === "share" && (
+          {/* {modalMode === "share" && (
             <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category" >
               <img className="close-modal-share" onClick={closeModal} src="plus.svg" />
               <form onSubmit={(e) => {
@@ -601,7 +593,7 @@ const Contact = ({ role }) => {
                 </div>
               </form>
             </div>
-          )}
+          )} */}
 
         </Modal>
 

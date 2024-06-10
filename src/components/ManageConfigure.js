@@ -19,13 +19,6 @@ const ManageConfigure = () => {
 
 
 
-  // Update : https://insuranceadmin.nvinfobase.com/api/update-limit
-  // method :patch 
-  // payload {
-  // name : 
-  // set_limit:
-  // }
-  // get : https://insuranceadmin.nvinfobase.com/api/list-limits
 
   const getData = async () => {
     try {
@@ -52,7 +45,7 @@ const ManageConfigure = () => {
 
           <button onClick={() => navigate("/manage-configure/add-features")}>
             <img src="/plus.svg" />
-            Add Plan</button>
+            Add Features</button>
         </div>
 
         <div className="table-container manage-configr-table">

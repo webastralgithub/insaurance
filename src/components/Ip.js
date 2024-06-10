@@ -37,7 +37,7 @@ const Ip = ({ role }) => {
       const response = await axios.get(`${url}api/admin/getip?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setuserIps(response?.data?.userIps)
       setTotalPages(response?.data?.totalPages)
-      setuniqueIpCount(response?.data?.uniqueIpCount)
+      setuniqueIpCount(response?.data?.totalIps)
       setDataLoader(false)
     } catch (error) {
       setDataLoader(false)
