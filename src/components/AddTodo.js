@@ -45,16 +45,16 @@ const AddTodo = ({ user }) => {
     setDateTime(newDateTime);
   };
   const navigate = useNavigate();
-  const { auth,tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext);
+  const { auth, tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext);
   const headers = { Authorization: auth.token };
 
   const [contact, setContact] = useState({
-      Followup: "",
-      FollowupDate: dateTime,
-      Comments: "",
-      IsRead: false,
-      ContactID: "",
-    });
+    Followup: "",
+    FollowupDate: dateTime,
+    Comments: "",
+    IsRead: false,
+    ContactID: "",
+  });
 
   const validateForm = () => {
     let isValid = true;
@@ -129,7 +129,10 @@ const AddTodo = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedContact = { ...contact, ContactID: newSelected.id };
-
+    if (!updatedContact.ContactID) {
+      setContactError("Select  Contact")
+      return
+    }
     if (validateForm()) {
       try {
         const response = await axios.post(`${url}api/todo`, updatedContact, {
@@ -236,7 +239,7 @@ const AddTodo = ({ user }) => {
     createdBy: user,
     realtorId: null,
     propertyId: null,
-    isContact :true
+    isContact: true
   });
 
   const [errors, setErrors] = useState({
@@ -299,7 +302,7 @@ const AddTodo = ({ user }) => {
     try {
       const response = await axios.post(`${url}api/contacts`, contactNew, { headers });
       if (response.status === 201) {
-        let getContact =await axios.get(`${url}api/contacts/${response.data.id}`,{ headers });
+        let getContact = await axios.get(`${url}api/contacts/${response.data.id}`, { headers });
         setConatctlength(contactlength + 1);
         setNewSelected(getContact.data)
         setSearchQuery(getContact.data.firstname)
@@ -426,11 +429,11 @@ const AddTodo = ({ user }) => {
                     value={searchQuery}
                     onChange={handleSearchChange}
                   />
-                  {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && 
-                  <div className='no-contact-found-div'>
-                    <h1> No Contacts Found</h1>
-                    <button className="add-new-contact-btn" onClick={() => { setIsContacts(false); setButtonOn(1) }}>Add New Contact</button>
-                  </div>
+                  {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 &&
+                    <div className='no-contact-found-div'>
+                      <h1> No Contacts Found</h1>
+                      <button className="add-new-contact-btn" onClick={() => { setIsContacts(false); setButtonOn(1) }}>Add New Contact</button>
+                    </div>
                   }
 
                   {searchContacts.length ?

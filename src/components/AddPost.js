@@ -207,8 +207,6 @@ const AddPost = () => {
                 </div>
               </div>
             </div>
-
-
             <div className="form-user-add-inner-btm-btn-wrap">
               <button type='submit' style={{ background: "#004686" }}>
                 Save

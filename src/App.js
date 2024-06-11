@@ -1,16 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import Login from "./components/Login";
-import Admin from "./components/Admin";
-import Roles from "./components/Roles";
-import { StandaloneSearchBox, LoadScript } from "@react-google-maps/api";
+import { LoadScript } from "@react-google-maps/api";
 import Navbar from "./components/Navbar";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthContext } from "./components/context/AuthContext";
-import Footer from "./components/Footer";
-import Property from "./components/Property";
 import NavbarContainer from "./components/NavbarContainer";
 import Sidebar from "./components/Sidebar";
 import Realtor from "./components/Realtor";
@@ -18,7 +14,6 @@ import AddProperty from "./components/AddProperty";
 import EditPropertyForm from "./components/EditProperty";
 import KlientaleContacts from "./components/KlientaleContacts";
 import SendMessages from "./components/SendMessages";
-import Permission from "./components/Permission";
 import Profile from "./components/Profile";
 import RealtorProperty from "./components/Realtorproperty";
 import Contact from "./components/Contact";
@@ -69,21 +64,19 @@ import ManageConfigure from "./components/ManageConfigure";
 import AddFeatures from "./components/AddFeatures";
 import FeatureUpdate from "./components/FeatureUpdate";
 import UserList from "./components/UserList";
+import AddProfession from "./components/AddProfession";
+import EditProfession from "./components/EditProfession";
 
 
 const App = () => {
-
-
   const { toggle, setToggle, auth, roleId, subscriptionStatus } = useContext(AuthContext)
   const [role, setRole] = useState(0)
   const [id, setId] = useState(0)
   const [nameofuser, setnameofUser] = useState("")
-
   function parseJwt(token) {
     if (!token) {
       return 0
     }
-
     const name = localStorage.getItem("name")
     const roleId = localStorage.getItem("roleId")
     const id = localStorage.getItem("id")
@@ -120,8 +113,6 @@ const App = () => {
         </div>
 
         {auth && <>
-
-
           {!toggle && <div className="main-sidenav-wrapper">
             <Sidebar role={role} />
           </div>}
@@ -336,14 +327,16 @@ const App = () => {
                 </PrivateRoute>
               }
             />}
-            <Route
-              path="/analytics" exact
-              element={
-                <PrivateRoute>
-                  <Ip role={role} />
-                </PrivateRoute>
-              }
-            />
+            {roleId == 1 &&
+              <Route
+                path="/analytics" exact
+                element={
+                  <PrivateRoute>
+                    <Ip role={role} />
+                  </PrivateRoute>
+                }
+              />
+            }
             <Route
               path="/listing/edit/:id" exact
               element={
@@ -388,23 +381,43 @@ const App = () => {
               }
             />
 
+            {roleId == 1 &&
+              <>
+                <Route
+                  path="/categories/add" exact
+                  element={
+                    <PrivateRoute>
+                      <AddCategory />
+                    </PrivateRoute>
+                  }
+                />
 
-            <Route
-              path="/categories/add" exact
-              element={
-                <PrivateRoute>
-                  <AddCategory />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/categories/:id" exact
-              element={
-                <PrivateRoute>
-                  <EditCategory />
-                </PrivateRoute>
-              }
-            />
+                <Route
+                  path="/categories/:id" exact
+                  element={
+                    <PrivateRoute>
+                      <EditCategory />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/profession/add" exact
+                  element={
+                    <PrivateRoute>
+                      <AddProfession />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/profession/:id" exact
+                  element={
+                    <PrivateRoute>
+                      <EditProfession />
+                    </PrivateRoute>
+                  }
+                />
+              </>
+            }
             <Route
               path="/suppliers" exact
               element={
@@ -531,7 +544,7 @@ const App = () => {
               />
             }
 
-            
+
             {roleId == 1 &&
               <>              <Route
                 path="/manage-configure" exact
@@ -688,14 +701,16 @@ const App = () => {
                 </PrivateRoute>
               }
             />}
-            <Route
-              path="/analytics" exact
-              element={
-                <PrivateRoute>
-                  <Ip role={role} />
-                </PrivateRoute>
-              }
-            />
+            {roleId == 1 &&
+              <Route
+                path="/analytics" exact
+                element={
+                  <PrivateRoute>
+                    <Ip role={role} />
+                  </PrivateRoute>
+                }
+              />
+            }
             <Route
               path="/listing/edit/:id" exact
               element={

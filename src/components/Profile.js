@@ -12,9 +12,9 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Realtor from "./Realtor";
 import Vendor from "./Vendor";
 import Category from "./Category";
+import Profession from "./Profession";
 
 const INITIAL_STATE = {
-
   username: "",
   email: "",
   name: '',
@@ -25,13 +25,9 @@ const INITIAL_STATE = {
 
 const AddRoleForm = ({ onAdd, onCancel }) => {
   const [newPassword, setNewPassword] = useState("");
-
   const handleSubmit = (e) => {
-
     e.preventDefault();
     onAdd({ newPassword });
-
-
   };
 
 
@@ -524,7 +520,7 @@ export default function Profile(props) {
           Profession <span>{active == 5 ? "-" : "+"}</span>
         </button>
         {active == 5 &&
-        "Profession"
+       <Profession/>
       }
       </div>
     </div>

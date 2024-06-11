@@ -15,11 +15,6 @@ const ManageConfigure = () => {
   const navigate = useNavigate()
 
   const [configData, setconfigData] = useState([])
-
-
-
-
-
   const getData = async () => {
     try {
       const response = await axios.get(`${url}api/list-limits`, { headers });

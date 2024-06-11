@@ -1,44 +1,26 @@
-// src/components/Admin.js
 import React, { useContext, useEffect, useState } from "react";
 import "./admin.css"
 import axios from "axios";
-
 import { AuthContext } from "./context/AuthContext";
-
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Fbnew from "./Fbnew";
-import Instanew from "./Instanew";
+import { confirmAlert } from "react-confirm-alert";
 
-const SocialMedia = () => {
+const Profession = () => {
+  const { auth, roleId } = useContext(AuthContext)
+  const headers = {
+    Authorization: auth.token
+  }
   const [users, setUsers] = useState([])
   const [width, setWidth] = useState(window.innerWidth);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-
-  function formatPhoneNumber(phoneNumber) {
-    // Check if the phoneNumber is valid (you can add more validation)
-    if (/^\+?[0-9\s]+$/.test(phoneNumber)) {
-      phoneNumber = phoneNumber.slice(0, 10)
-      return phoneNumber.replace(/\s/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '+1 ($1) $2-$3').replace(/ /g, '\u00a0');
-    } else {
-      return 'Invalid phone number';
-    }
-  }
   const navigate = useNavigate()
-  const { auth } = useContext(AuthContext)
-
-  const headers = {
-    Authorization: auth.token
-  }
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
   };
-  const handleFacebookLogin = (response) => {
-    // Handle the response from Facebook login
 
-  };
   useEffect(() => {
     window.addEventListener('resize', handleWindowSizeChange);
     return () => {
@@ -49,9 +31,8 @@ const SocialMedia = () => {
   const [roles, setRoles] = useState([])
   useEffect(() => {
     getUsers()
-    getRoles()
-  }, [])
 
+  }, [])
 
   const styles = {
     overlay: {
@@ -90,9 +71,33 @@ const SocialMedia = () => {
 
     },
   };
+  const handleDelete = async (propertyId) => {
+    try {
+      await axios.delete(`${url}api/profession/${propertyId}`, { headers });
+      toast.success('Category deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+      setUsers(users.filter((p) => p.id !== propertyId));
+    } catch (error) {
+      console.error("error in server")
+    }
+  };
 
 
-
+  const handleDeleteClick = (propertyId) => {
+    confirmAlert({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this category?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleDelete(propertyId),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
 
   const mediaQuery = window.matchMedia("(max-width: 768px)");
   const mediaQueryMobile = window.matchMedia("(max-width: 480px)");
@@ -110,36 +115,23 @@ const SocialMedia = () => {
 
     },
   };
-  const filteredUsersNew = users?.filter((user) =>
+  const filteredUsersNew = users.filter((user) =>
 
-  (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase()))
+    (user.name.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const ITEMS_PER_PAGE = 10;
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  const totalPages = Math.ceil(filteredUsersNew?.length / ITEMS_PER_PAGE);
-
+  const totalPages = Math.ceil(filteredUsersNew.length / ITEMS_PER_PAGE);
   // Calculate the start and end indices for the current page
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const filteredUsers = filteredUsersNew?.slice(startIndex, endIndex);
-
-  const getRoles = async () => {
-    try {
-      //  const res= await axios.get(`${process.env.REACT_APP_API_URL}api/role`);
-      //  setRoles(res.data.roles)
-
-    } catch (error) {
-      console.error("User creation failed:", error);
-    }
-  };
+  const filteredUsers = filteredUsersNew.slice(startIndex, endIndex);
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/social/get`, { headers });
-
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
       setUsers(res.data)
 
     } catch (error) {
@@ -147,40 +139,20 @@ const SocialMedia = () => {
     }
   };
 
-  const activate = async (status, id) => {
-    try {
-      //       var form_data = new FormData();
-      // for ( var key in user ) {
-      //     form_data.append(key, user[key]);
-      // }
 
-      const response = await axios.put(`${url}api/admin/admin/change-realtor/${id}`, {
-        isActivate: status
-      }, { headers });
-      getUsers()
-      toast.success("User data updated successfully", {
-        autoClose: 3000,
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
 
   return (
     <div className="add_property_btn">
-
-
-
-
       <div className="inner-pages-top">
-        <h3>Social Media Users</h3>
-
-
-        <div className="add_user_btn">
-          <Fbnew url={url} headers={headers} />
-          {/* <Instanew /> */}
-        </div>
+        <h3>Profession</h3>
+        {roleId == 1 &&
+          <div className="add_user_btn">
+            <button onClick={() => navigate("/profession/add")}>
+              <img src="/plus.svg" />
+              Add Profession</button>
+          </div>
+        }
         <div className="search-group">
           <input type="text"
             value={searchQuery}
@@ -195,22 +167,28 @@ const SocialMedia = () => {
         <table>
           <thead>
             <tr>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th></th>
+              <th>Name</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
             {filteredUsers?.map((user) => (
               <>
-                {<tr key={user.id}>
+                <tr key={user.id}>
                   <td className="property-link" onClick={() => {
+                    navigate(`/profession/${user.id}`)
                   }}>{user?.name}</td>
-                  <td>{user.email}</td>
-
-                  <td></td>
-                </tr>}
-
+                  <td >{user?.notes?.replace(/(<([^>]+)>)/gi, '').slice(0, 100).replace(/(?<=\s)\S*$/i, '')}</td>
+                  {roleId == 1 &&
+                    <td>
+                      <img className="delete-btn-ico" src="/delete.svg"
+                        onClick={() => handleDeleteClick(user.id)}>
+                      </img>
+                    </td>}
+                  {/* <td><button className="permissions"
+        onClick={()=>activate(!user.isActivate,user.id)
+        }       > {user.isActivate?"Deactivate":"Activate"}</button>  </td> */}
+                </tr>
               </>
             ))}
           </tbody>
@@ -229,14 +207,9 @@ const SocialMedia = () => {
           </div>
         )}
       </div>
-      {filteredUsers?.length == 0 && <p className="no-data">No data Found</p>}
-
-
+      {filteredUsers.length == 0 && <p className="no-data">No data Found</p>}
     </div>
-  );
-};
+  )
+}
 
-
-
-
-export default SocialMedia;
+export default Profession

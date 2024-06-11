@@ -28,9 +28,9 @@ const MyCalendar = () => {
     Authorization: auth.token,
   };
   const handleDateClick = (selected) => {
-    const clickedDate = selected.date;
 
-    const currentDate = new Date(); // Get the current date
+
+  
     const currentTime = new Date();
     let time = selected?.dateStr + ' ' + currentTime.toLocaleTimeString();
     // Check if the clicked date is before the current date

@@ -10,22 +10,15 @@ import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
 
 const Category = () => {
-
-
-  const [users, setUsers] = useState([])
-
-  const [width, setWidth] = useState(window.innerWidth);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-
-
-  const navigate = useNavigate()
-  const { auth } = useContext(AuthContext)
-
+  const { auth, roleId } = useContext(AuthContext)
   const headers = {
     Authorization: auth.token
   }
+  const [users, setUsers] = useState([])
+  const [width, setWidth] = useState(window.innerWidth);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate()
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -43,7 +36,6 @@ const Category = () => {
     getUsers()
 
   }, [])
-
 
   const styles = {
     overlay: {
@@ -151,19 +143,16 @@ const Category = () => {
 
   return (
     <div className="add_property_btn">
-
-
-
-
       <div className="inner-pages-top">
         <h3>Categories</h3>
+        {roleId == 1 &&
+          <div className="add_user_btn">
+            <button onClick={() => navigate("/categories/add")}>
+              <img src="/plus.svg" />
+              Add Category</button>
+          </div>
+        }
 
-
-        <div className="add_user_btn">
-          <button onClick={() => navigate("/categories/add")}>
-            <img src="/plus.svg" />
-            Add Category</button>
-        </div>
         <div className="search-group">
           <input type="text"
             value={searchQuery}
@@ -178,8 +167,6 @@ const Category = () => {
         <table>
           <thead>
             <tr>
-
-
               <th>Name</th>
               <th>Description</th>
             </tr>
@@ -192,8 +179,13 @@ const Category = () => {
                     navigate(`/categories/${user.id}`)
                   }}>{user?.name}</td>
                   <td >{user?.notes?.replace(/(<([^>]+)>)/gi, '').slice(0, 100).replace(/(?<=\s)\S*$/i, '')}</td>
-                  <td> <img className="delete-btn-ico" src="/delete.svg"
-                    onClick={() => handleDeleteClick(user.id)}       ></img></td>
+                  {roleId == 1 &&
+                    <td>
+                      <img className="delete-btn-ico" src="/delete.svg"
+                        onClick={() => handleDeleteClick(user.id)}>
+                      </img>
+                    </td>
+                  }
                   {/* <td><button className="permissions"
           onClick={()=>activate(!user.isActivate,user.id)
           }       > {user.isActivate?"Deactivate":"Activate"}</button>  </td> */}

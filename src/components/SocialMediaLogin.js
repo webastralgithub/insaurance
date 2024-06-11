@@ -7,8 +7,13 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import { AuthContext } from './context/AuthContext';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import {
+  WhatsappShareButton,
+  WhatsappIcon
+} from 'react-share';
+import { images } from 'react-creditcard-validator';
 // Functions for connecting/disconnecting accounts
 
 const SocialMediaLogin = () => {
@@ -18,25 +23,17 @@ const SocialMediaLogin = () => {
     linkedin: false,
     instagram: false,
   });
+
+  const url = process.env.REACT_APP_API_URL
   const { id } = useParams();
-
-  const [editedContact, setEditedContact] = useState({
-    created_at: " ",
-    description: "",
-    id: "",
-    images: "",
-    name: "",
-    updated_at: "",
-    user_id: ""
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedContact(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+  const { auth } = useContext(AuthContext);
+  const headers = {
+    Authorization: auth.token,
   };
+  const navigate = useNavigate()
+  const [editedContact, setEditedContact] = useState({});
+
+
 
   const fetchConnectedAccounts = () => {
 
@@ -50,10 +47,7 @@ const SocialMediaLogin = () => {
   const disconnectAccount = () => {
 
   }
-  const { auth, setAuth, tasklength, setTasklength } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
+
 
   // Function to check currently connected accounts
   const checkConnectedAccounts = async () => {
@@ -121,22 +115,21 @@ const SocialMediaLogin = () => {
   // }
 
   const getPostById = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}api/post/${id}`, { headers });
-    const responseData = await res.data
-    setEditedContact({
-      created_at: responseData.created_at,
-      description: responseData.description,
-      id: responseData.id,
-      images: responseData.images,
-      name: responseData.name,
-      updated_at: responseData.updated_at,
-      user_id: responseData.user_id
-    })
-
-    // setEditedContact(res.data)
-
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/post/${id}`, { headers });
+      const responseData = await res.data
+      setEditedContact(responseData)
+    } catch (error) {
+      console.error(error)
+    }
   }
-
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedContact(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
   useEffect(() => {
     checkConnectedAccounts();
     getPostById() // Check connected accounts on component mount
@@ -156,6 +149,25 @@ const SocialMediaLogin = () => {
       setConnectedAccounts({ ...connectedAccounts, [platform]: false });
     }
   };
+  const handleSave = async () => {
+    const newData = {
+      name: editedContact.name,
+      description: postdescription,
+      images: editedContact.images
+    }
+    try {
+      const response = axios.put(`${url}api/post/${editedContact.id}`, newData, { headers })
+
+      if ((await response).status === 200) {
+        navigate("/posts")
+      } else {
+        toast.error("Can't Update the Data Server is Busy")
+      }
+    } catch (error) {
+      toast.error("Server is Busy")
+    }
+  }
+
 
   return (
     <div className="form-user-add">
@@ -167,7 +179,13 @@ const SocialMediaLogin = () => {
               <FacebookLoginButton editedContact={editedContact} connectedAccounts={connectedAccounts} setConnectedAccounts={setConnectedAccounts} />
             </div>
             <LinkedIn editedContact={editedContact} />
-            <button onClick={shareOnInstagram}> Instagram</button>
+            <WhatsappShareButton
+              url={editedContact.images}
+              title={editedContact.name}
+              separator=":: "
+            >What`s app
+            </WhatsappShareButton>
+            {/* <button onClick={shareOnInstagram}> Instagram</button> */}
             <Instagram editedContact={editedContact} />
           </div>
 
@@ -185,8 +203,9 @@ const SocialMediaLogin = () => {
                 />
               </div>
             </div>
-
-            {editedContact?.images && <img src={editedContact?.images} style={{ height: "300px", width: "400px" }}></img>}
+            <div>
+              {editedContact.images ? <img src={editedContact?.images} style={{ height: "300px", width: "400px" }}></img> : "no image found"}
+            </div>
           </div>
 
           <div className="form-catagory-edit-sec-right">
@@ -196,7 +215,6 @@ const SocialMediaLogin = () => {
                 <CKEditor
                   editor={ClassicEditor}
                   data={editedContact?.description ? editedContact.description : ""}
-
                   config={{
                     toolbar: [
                       "heading",
@@ -214,10 +232,14 @@ const SocialMediaLogin = () => {
                   }}
                   className="custom-ckeditor" // Add a custom class for CKEditor container
                   style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setpostdescription(data);
-                  }}
+                  // onChange={(event, editor) => {
+                  //   const data = editor.getData();
+                  //   setEditedContact({ ...editedContact, description: data });
+                  // }}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setpostdescription(data);
+                }}
                 />
               </div>
             </div>
@@ -225,9 +247,9 @@ const SocialMediaLogin = () => {
 
 
           <div className="form-user-add-inner-btm-btn-wrap">
-            {/* <button style={{ background: "#004686" }} onClick={handleSaveClick}>
-            Save
-          </button> */}
+            <button style={{ background: "#004686" }} onClick={handleSave}>
+              Save
+            </button>
           </div>
         </div>
       </div>

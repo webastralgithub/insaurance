@@ -157,8 +157,11 @@ const EditTodoForm = ({ user }) => {
   };
 
   const handleSaveClick = async () => {
-    console.log("editedTodo", editedTodo)
     const updatedContact = { ...editedTodo, ContactID: newSelected.id };
+    if (!updatedContact.ContactID) {
+      setContactError("Select Contact")
+      return
+    }
     if (validateForm()) {
       const response = await axios.put(`${url}api/todo/${id}`,
         { ...updatedContact },

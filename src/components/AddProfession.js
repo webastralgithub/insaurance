@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import ImageUploader from "./ImageUploader";
 
 
-const AddCategory = () => {
+const AddProfession = () => {
   const [contact, setContact] = useState({name:""});
   const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
@@ -107,7 +107,7 @@ const clearErrors = (fieldName) => {
     <form onSubmit={handleSubmit} className="form-user-add">
            <div className="property_header header-with-back-btn">
           
-          <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Category</h3>
+          <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Profession</h3>
         
           {/* <div className="top-bar-action-btns">
             <button type="submit" style={{background:"#004686"}} >Save</button>
@@ -181,4 +181,4 @@ const clearErrors = (fieldName) => {
   );
 };
 
-export default AddCategory;
+export default AddProfession;

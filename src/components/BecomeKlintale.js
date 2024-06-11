@@ -96,6 +96,7 @@ const BecomeKlintale = () => {
         setIsOpen(true)
         setPlanData(id)
     }
+    
     useEffect(() => {
         getCategories()
     }, [])
