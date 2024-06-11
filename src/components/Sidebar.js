@@ -142,7 +142,7 @@ const Sidebar = (props) => {
               <Link to="/referral" className={location.pathname.includes('/referral-sent') || location.pathname === "/referral" ? "active" : ""}>
                 <div className="order-detail">
 
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                  <img className="order-detail-child" alt="" src="/referral.svg" />
                   <div className="daily-events">Referrals</div>
 
                 </div>
@@ -151,7 +151,7 @@ const Sidebar = (props) => {
               <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
                 <div className="order-detail">
 
-                  <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                  <img className="order-detail-child" alt="" src="/analytic.svg" />
                   <div className="daily-events">Analytics</div>
 
                 </div>
@@ -200,7 +200,7 @@ const Sidebar = (props) => {
                 {IsOpenSub && sub == "camp" && <Link to="/email-campaign" className={location.pathname === "/email-campaign" || location.pathname === '/templates' ? "active" : ""}>
                   <div className="order-detail">
 
-                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <img className="order-detail-child" alt="" src="campaign.svg" />
                     <div className="daily-events">Email Campaigns</div>
                   </div>
                 </Link>}
@@ -208,7 +208,7 @@ const Sidebar = (props) => {
                 {IsOpenSub && sub == "camp" && <Link to="/send-messages" className={location.pathname === "/send-messages" ? "active" : ""}>
                   <div className="order-detail">
 
-                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <img className="order-detail-child" alt="" src="/email-campaign.svg" />
                     <div className="daily-events">Send SMS</div>
 
                   </div>
@@ -228,7 +228,7 @@ const Sidebar = (props) => {
                   <Link to="/posts" className={location.pathname === "/posts" ? "active" : ""}>
                     <div className="order-detail">
 
-                      <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                      <img className="order-detail-child" alt="" src="/social-media.svg" />
                       <div className="daily-events">Social Media Campaigns</div>
 
                     </div>
@@ -238,7 +238,7 @@ const Sidebar = (props) => {
                   <Link to="/unsubscribe" className={location.pathname === "/unsubscribe" ? "active" : ""}>
                     <div className="order-detail">
 
-                      <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                      <img className="order-detail-child" alt="" src="/unsubscribe.svg" />
                       <div className="daily-events">Unsubscribed Users</div>
 
                     </div>
@@ -374,7 +374,7 @@ to multiply the revenue. </h6>
                 <Link to="/referral" className={ location.pathname.includes('/referral-sent') || location.pathname === "/referral" ? "active" : ""}>
                   <div className="order-detail">
 
-                    <img className="order-detail-child" alt="" src="/group-30036.svg" />
+                    <img className="order-detail-child" alt="" src="/referral.svg" />
                     <div className="daily-events">Referrals</div>
 
                   </div>
