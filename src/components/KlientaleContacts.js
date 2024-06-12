@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useNavigate, useParams, useRouter } from "react-router-dom";
@@ -63,10 +63,10 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
           style={{
             backgroundColor: isOptionSelected(option)
               ? "rgb(0 70 134 / 8%)"
-              : "",
+              : "", cursor: "pointer"
           }}
         >
-          <label htmlFor={option?.value}>{option?.label}</label>
+          <label htmlFor={option?.value} style={{ cursor: "pointer" }}>{option?.label}</label>
           <div className="circle"></div>
           {/* <input
             type="radio"
@@ -101,7 +101,7 @@ const KlientaleContacts = ({ role }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
-  const [seletedCategory, setSelectedCategory] = useState(null);
+  const [seletedCategory, setSelectedCategory] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filtered, setfilteredUsers] = useState(null);
 
@@ -264,40 +264,48 @@ const KlientaleContacts = ({ role }) => {
   }, []);
 
 
+
+
+
   const handleSelectChange = async (event) => {
     event.preventDefault();
-    setCurrentPage(1)
-    const filteredUsers = users.filter(user => {
-      return seletedCategory.some(option => option.label === user.category_name);
-    });
-    if (seletedCategory.length > 0) {
-      setfilteredUsers(filteredUsers)
-    }
-    else {
-      setfilteredUsers(users)
-    }
-    const obj = {
-      email: email?.email,
-      category: seletedCategory
-    }
-    try {
-      const response = await axios.post(`${klintaleUrl}create-preference-category`, obj);
+    getKlientaleContacts();
+    
+    // setCurrentPage(1)
+    // const filteredUsers = users.filter(user => {
+    //   return seletedCategory.some(option => option.label === user.category_name);
+    // });
+    // if (seletedCategory.length > 0) {
+    //   setfilteredUsers(filteredUsers)
+    // }
+    // else {
+    //   setfilteredUsers(users)
+    // }
+    // const obj = {
+    //   email: email?.email,
+    //   category: seletedCategory
+    // }
+    // try {
+    //   const response = await axios.post(`${klintaleUrl}create-preference-category`, obj);
 
-      if (response.status === 200) {
-        toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-        // Redirect to the contacts list page
-      } else {
-        console.error("Failed to add contact");
-      }
-    } catch (error) {
-      console.error("An error occurred while adding a contact:", error);
-    }
+    //   if (response.status === 200) {
+    //     toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+    //     // Redirect to the contacts list page
+    //   } else {
+    //     console.error("Failed to add contact");
+    //   }
+    // } catch (error) {
+    //   console.error("An error occurred while adding a contact:", error);
+    // }
     closeModal();
   }
+
+
   const closeModal = () => {
     setSelectedContacts(null);
     setIsOpen(false);
   };
+
   const PlaceholderWithIcon = (props) => (
     <div
       style={{
@@ -317,19 +325,17 @@ const KlientaleContacts = ({ role }) => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
-
-  useEffect(() => {
     fetchCategotires();
   }, []);
-
 
   let searchRef = useRef()
   const [userss, setusers] = useState([])
   const [totalPages, setTotalPages] = useState("");
 
+
   const getKlientaleContacts = async () => {
     setDataLoader(true)
+    let categoriesData = seletedCategory.map((item) => item.label)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
@@ -337,8 +343,8 @@ const KlientaleContacts = ({ role }) => {
       currPage = currentPage
     }
     try {
-
-      const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}`, { headers });
+      //user_pref_cat=
+      const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&${categoriesData}`, { headers });
       setusers(response?.data?.users)
       setTotalPages(response?.data?.totalPages)
       setDataLoader(false)
@@ -347,22 +353,23 @@ const KlientaleContacts = ({ role }) => {
       console.error("Server is busy");
     }
   };
+
   useEffect(() => {
     getKlientaleContacts();
   }, [currentPage]);
-
 
   const clearSearch = () => {
     searchRef.current.value = ""
     setButtonActive(1)
     getKlientaleContacts();
   };
+
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
-        setButtonActive(2)
-        getKlientaleContacts()
+      setButtonActive(2)
+      getKlientaleContacts()
     }
-};
+  };
 
   const handleKeyDown = () => {
     setButtonActive(2)
@@ -412,8 +419,6 @@ const KlientaleContacts = ({ role }) => {
                 menuIsOpen={true}
                 onChange={(selectedOptions) => {
                   setSelectedCategory(selectedOptions);
-
-                  // You can also extract the values into an array if needed
                 }}
 
                 onInputChange={(input) => setSearchText(input)}
@@ -427,13 +432,12 @@ const KlientaleContacts = ({ role }) => {
                 }}
                 styles={colourStyles}
                 className="select-new"
-                isMulti // This is what enables multiple selections
+                isMulti
               />
               <div className="modal-convert-btns" style={{ padding: "20px 0px" }}>
                 <button onClick={handleSelectChange}>Save</button>
               </div>
             </form>
-
           </div>
         </Modal>
 
@@ -461,44 +465,38 @@ const KlientaleContacts = ({ role }) => {
             <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
           </div>
         </div>
-
       </div>
 
 
       <div className="table-container share-ref-table-in">
-        {dataLoader ?  
-       ( <div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-         <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
-        </div>)
-
-        :(<table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Category</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-            {userss && userss?.map((user) => (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.phone}</td>
-                <td>{user.category_name}</td>
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+          </div>)
+          : (<table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Category</th>
               </tr>
-            ))}
-          </tbody>
-        </table>)}
-
+            </thead>
+            <tbody>
+              {userss && userss?.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.phone}</td>
+                  <td>{user.category_name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>)}
         {userss?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}
-          </div>
-        )}
-
+          </div>)}
       </div>
       {!dataLoader && !userss && <p className="no-data">No data Found</p>}
     </div>

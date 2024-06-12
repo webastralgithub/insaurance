@@ -13,7 +13,6 @@ import Places from "./Places";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
@@ -45,7 +44,8 @@ const AddTodo = ({ user }) => {
     setDateTime(newDateTime);
   };
   const navigate = useNavigate();
-  const { auth, tasklength, setTasklength, setConatctlength, contactlength } = useContext(AuthContext);
+  const { auth, tasklength, setTasklength, 
+    setConatctlength, contactlength } = useContext(AuthContext);
   const headers = { Authorization: auth.token };
 
   const [contact, setContact] = useState({
@@ -140,9 +140,12 @@ const AddTodo = ({ user }) => {
         });
         if (response.status === 201) {
           setTasklength(tasklength + 1)
-          toast.success('Todo added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+          toast.success('Todo added successfully', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
           navigate(-1);
-        } else {
+        }else if (response.data.status === false) {
+          toast.error(response.data.message)
+        }  
+        else {
           console.error("Failed to add contact");
         }
       } catch (error) {

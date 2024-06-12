@@ -134,7 +134,7 @@ let isValid = true;
         const response = await axios.post(`${url}api/contacts`, { ...contact, createdBy: id }, { headers });
         // Add the new contact to the contacts list
         getContacts()
-        toast.success('Contact added successfully');
+        toast.success('Family Member added successfully');
       }
     } catch (error) {
       toast.error('Error saving contact');

@@ -7,8 +7,6 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import InputMask from "react-input-mask";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Places from "./Places";
 
 const EditLeads = () => {
@@ -21,7 +19,6 @@ const EditLeads = () => {
   };
 
   const [editedContact, setEditedContact] = useState({});
-  const [realtorOptions, setRealtorOptions] = useState([]);
   const [selectedRealtor, setSelectedRealtor] = useState(null);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [phoneError, setPhoneError] = useState("");
@@ -159,13 +156,11 @@ const EditLeads = () => {
     },
   };
 
-
-  
   useEffect(() => {
     getContactDetails();
-    getRealtorOptions();
     getCategories()
   }, [id]);
+
   const getCategories = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/`, { headers });
@@ -180,6 +175,8 @@ const EditLeads = () => {
       console.error("User creation failed:", error);
     }
   };
+
+  
   const getContactDetails = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/${id}`, {
@@ -273,9 +270,6 @@ const EditLeads = () => {
         })
       }
 
-
-
-
     } catch (error) {
       console.error("Error fetching contact details: ", error);
     }
@@ -288,25 +282,9 @@ const EditLeads = () => {
     setEditedContact({ ...editedContact, phone: rawPhoneNumber.slice(1, 11) });
   };
 
-  const getRealtorOptions = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      const realtorOptions = res.data
-        .filter((user) => user.roleId === 4 && user.isActivate)
-        .map((realtor) => ({
-          value: realtor.id,
-          label: realtor.name,
-        }));
-      setRealtorOptions([noSelectionOption, ...realtorOptions]);
-    } catch (error) {
-      console.error("Error fetching realtors: ", error);
-    }
-  };
 
   const handleSaveClick = async () => {
     if (validateForm()) {
-
-
       try {
         let contact = {}
         if (editedContact?.category) {
@@ -317,8 +295,6 @@ const EditLeads = () => {
             contact = { ...editedContact }
           }
         }
-
-
         const response = await axios.put(`${url}api/contacts/${id}`, contact, {
           headers,
         });
@@ -570,6 +546,7 @@ const EditLeads = () => {
             className="select-new"
           />
         </div> */}
+
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-category">
           <label>Category<span className="required-star">*</span></label>
 

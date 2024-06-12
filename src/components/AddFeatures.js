@@ -33,10 +33,13 @@ const AddFeatures = () => {
             ...prevState,
             [name]: value
         }));
-        setErrors(prevErrors => ({
-            ...prevErrors,
-            [name]: ""
-        }));
+        setErrors({
+            id: "",
+            name: "",
+            set_limit: "",
+            short_description: "",
+            page: ""
+        });
     };
 
     const createPlan = async (e) => {
@@ -58,7 +61,6 @@ const AddFeatures = () => {
             set_limit: formData.limit,
             short_description: formData.short_description,
             page: formData.page
-
         }
         try {
 
@@ -106,32 +108,32 @@ const AddFeatures = () => {
                             value={formData.title}
                             onChange={handleChange}
                         />
-                        {errors.title && <span style={{ color: 'red' }}>{errors.title}</span>}
+                        {errors.title && <span className="error-message"  style={{ color: 'red' }}>{errors.title}</span>}
                     </div>
 
 
                     <div className="form-user-add-inner-wrap">
-                        <label>Limit</label>
+                        <label>Limit<span style={{ color: 'red' }} className="required-star">*</span></label>
                         <input
                             type="text"
                             name="limit"
                             value={formData.limit}
                             onChange={handleChange}
                          
-                        /> {errors.limit && <span style={{ color: 'red' }}>{errors.limit}</span>}
+                        /> {errors.limit && <span className="error-message" style={{ color: 'red' }}>{errors.limit}</span>}
                     </div>
 
                     <div className="form-user-add-inner-wrap">
-                        <label>Description</label>
+                        <label>Description<span style={{ color: 'red' }} className="required-star">*</span></label>
                         <input
                             type="text"
                             name="short_description"
                             value={formData.short_description}
                             onChange={handleChange}
-                        /> {errors.short_description && <span style={{ color: 'red' }}>{errors.short_description}</span>}
+                        /> {errors.short_description && <span className="error-message"  style={{ color: 'red' }}>{errors.short_description}</span>}
                     </div>
                     <div className="form-user-add-inner-wrap">
-                        <label>Page</label>
+                        <label>Page<span style={{ color: 'red' }} className="required-star">*</span></label>
                         <select
                             name="page"
                             value={formData.page}
@@ -142,7 +144,7 @@ const AddFeatures = () => {
                             <option value="leads">Leads</option>
                             <option value="contacts">Contacts</option>
                             <option value="referrals">Referrals</option>
-                        </select>{errors.page && <span style={{ color: 'red' }}>{errors.page}</span>}
+                        </select>{errors.page && <span className="error-message"  style={{ color: 'red' }}>{errors.page}</span>}
 
                     </div>
 

@@ -7,6 +7,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import InputMask from 'react-input-mask';
 import Places from "./Places";
+import { toast } from "react-toastify";
 
 
 const AddLead = ({ user }) => {
@@ -26,7 +27,7 @@ const AddLead = ({ user }) => {
     address1: "",
     phone: "",
     company: "",
-    isLead :true ,
+    isLead: true,
     //servceRequire :selectedServices,
     category: seletedCategory,
     notes: "",
@@ -114,13 +115,11 @@ const AddLead = ({ user }) => {
     placeholder: (provided, state) => ({
       ...provided,
       color: '#000000e8',
-      marginLeft : "25px" ,
+      marginLeft: "25px",
       fontSize: "14px",
       fontWeight: '500'
     })
   };
-  
-
   useEffect(() => {
     getCategories()
   }, []);
@@ -141,27 +140,28 @@ const AddLead = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
-
     if (!isValid) {
       return
     }
-  
-      try {
-        const response = await axios.post(`${url}api/contacts`, contact, {
-          headers,
-        });
+    try {
+      const response = await axios.post(`${url}api/contacts`, contact, {
+        headers,
+      });
 
-        if (response.status === 201) {
-          // Contact added successfully
-          setLeadlength(leadlength + 1)
-          navigate("/leads"); // Redirect to the contacts list page
-        } else {
-          console.error("Failed to add contact");
-        }
-      } catch (error) {
-        console.error("An error occurred while adding a contact:", error);
+      if (response.status === 201) {
+        toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
+        setLeadlength(leadlength + 1)
+        navigate("/leads"); // Redirect to the contacts list page
+      }else if (response.data.status === false) {
+        toast.error(response.data.message)
+      }  
+      else {
+        console.error("Failed to add contact");
       }
+    } catch (error) {
+      console.error("An error occurred while adding a contact:", error);
     }
+  }
 
   const handleAddressChange = (newAddress) => {
     setContact({ ...contact, address1: newAddress });
@@ -182,11 +182,9 @@ const AddLead = ({ user }) => {
       [name]: ""
     }));
   };
-
-
   const goBack = (e) => {
     e.preventDefault()
-    navigate(-1); 
+    navigate(-1);
   };
 
   return (

@@ -29,7 +29,6 @@ const EditContact = ({ nameofuser }) => {
   const [ann, setAnn] = useState()
   const [emailError, setEmailError] = useState("")
   const [phoneError, setPhoneError] = useState("");
-  const [realtorOptions, setRealtorOptions] = useState([]);
   const [selectedRealtor, setSelectedRealtor] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [firstError, setFirstError] = useState("");
@@ -120,7 +119,6 @@ const EditContact = ({ nameofuser }) => {
   };
   useEffect(() => {
     getContactDetails();
-    getRealtorOptions();
     getCategories()
   }, []);
 
@@ -139,21 +137,19 @@ const EditContact = ({ nameofuser }) => {
     }
   };
   const validateForm = () => {
-    const { firstname, phone, email } = editedContact
     let isValid = true;
 
-
-    if (!firstname) {
+    if (!editedContact?.firstname) {
       setFirstError("Name is required");
       isValid = false;
     }
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!editedContact?.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editedContact?.email)) {
       setEmailError("invalid email")
       isValid = false;
     }
 
-    if (!phone || !/^\d+$/.test(phone) || phone.length != 10) {
+    if (!editedContact?.phone || !/^\d+$/.test(editedContact?.phone) || editedContact?.phone?.length != 10) {
       setPhoneError("Invalid phone number")
       isValid = false;
     }
@@ -162,7 +158,6 @@ const EditContact = ({ nameofuser }) => {
     }
     return isValid;
   };
-
 
 
   const getContactDetails = async () => {
@@ -219,26 +214,11 @@ const EditContact = ({ nameofuser }) => {
           label: contactDetails.activeAgent.name,
         })
       }
-
     } catch (error) {
       console.error("Error fetching contact details: ", error);
     }
   };
 
-  const getRealtorOptions = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      const realtorOptions = res.data
-        .filter((user) => user.roleId === 4 && user.isActivate)
-        .map((realtor) => ({
-          value: realtor.id,
-          label: realtor.name,
-        }));
-      setRealtorOptions([noSelectionOption, ...realtorOptions]);
-    } catch (error) {
-      console.error("Error fetching realtors: ", error);
-    }
-  };
 
   const handleSaveClick = async () => {
     let isValid = validateForm()
@@ -297,6 +277,7 @@ const EditContact = ({ nameofuser }) => {
       }
     }
   };
+
   const formatDate = (dateString) => {
 
     if (!dateString) {
@@ -323,6 +304,7 @@ const EditContact = ({ nameofuser }) => {
     navigate(`/contacts`);
   };
 
+  
   return (
     <div className="form-user-add">
       <div>
@@ -355,7 +337,7 @@ const EditContact = ({ nameofuser }) => {
             <label>Name<span className="required-star">*</span></label>
             {editingField === "firstname" || editingField === "all" ? (
               <div className="edit-new-input">
-                <input name="firstname" value={editedContact.firstname} onChange={handleChange} placeholder="First Name" />
+                <input name="firstname" value={editedContact?.firstname} onChange={handleChange} placeholder="First Name" />
                 <span className="error-message">{firstError}</span>
               </div>
             ) : (
@@ -389,7 +371,7 @@ const EditContact = ({ nameofuser }) => {
                 <input
                   name="email"
                   type="email"
-                  value={editedContact.email}
+                  value={editedContact?.email}
                   onChange={handleChange}
                   placeholder="Email"
                 />
@@ -397,7 +379,7 @@ const EditContact = ({ nameofuser }) => {
               </div>
             ) : (
               <div className="edit-new-input">
-                {editedContact.email}
+                {editedContact?.email}
                 <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("email")} />
               </div>
             )}
@@ -408,7 +390,7 @@ const EditContact = ({ nameofuser }) => {
               <input
                 type="text"
                 name="profession"
-                value={editedContact.profession}
+                value={editedContact?.profession}
                 onChange={handleChange}
               />
             </div>
@@ -419,7 +401,7 @@ const EditContact = ({ nameofuser }) => {
               <input
                 type="text"
                 name="website"
-                value={editedContact.website}
+                value={editedContact?.website}
                 onChange={handleChange}
               />
             </div>
@@ -446,7 +428,7 @@ const EditContact = ({ nameofuser }) => {
                   </div>
                 ) : (
                   <div className="edit-new-input">
-                    {editedContact.phone != undefined ? formatPhoneNumber(editedContact.phone) : ""}
+                    {editedContact?.phone != undefined ? formatPhoneNumber(editedContact.phone) : ""}
                     <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("phone")} />
                   </div>
                 )}
@@ -457,7 +439,7 @@ const EditContact = ({ nameofuser }) => {
                   <input
                     type="text"
                     name="company"
-                    value={editedContact.company}
+                    value={editedContact?.company}
                     onChange={handleChange}
                   />
                 </div>

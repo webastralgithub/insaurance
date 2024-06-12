@@ -14,6 +14,7 @@ const Category = () => {
   const headers = {
     Authorization: auth.token
   }
+  const url = process.env.REACT_APP_API_URL
   const [users, setUsers] = useState([])
   const [width, setWidth] = useState(window.innerWidth);
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,11 +31,10 @@ const Category = () => {
       window.removeEventListener('resize', handleWindowSizeChange);
     };
   }, []);
-  const url = process.env.REACT_APP_API_URL
-  const [roles, setRoles] = useState([])
+
+
   useEffect(() => {
     getUsers()
-
   }, [])
 
   const styles = {
@@ -140,7 +140,9 @@ const Category = () => {
       console.error("User creation failed:", error);
     }
   };
-
+  const handleClick = (userId) => {
+    navigate(`/categories/${userId}`)
+  }
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top">
@@ -175,9 +177,7 @@ const Category = () => {
             {filteredUsers?.map((user) => (
               <>
                 <tr key={user.id}>
-                  <td className="property-link" onClick={() => {
-                    navigate(`/categories/${user.id}`)
-                  }}>{user?.name}</td>
+                  <td className="property-link"  onClick={()=>roleId == 1 ? handleClick(user.id) : null}>{user?.name}</td>
                   <td >{user?.notes?.replace(/(<([^>]+)>)/gi, '').slice(0, 100).replace(/(?<=\s)\S*$/i, '')}</td>
                   {roleId == 1 &&
                     <td>

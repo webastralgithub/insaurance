@@ -725,8 +725,8 @@ const Contact = ({ role }) => {
                         }}       >Create Task</button>
                     </td>
                     <td>
-                      {role == 1 && <img className="delete-btn-ico" src="/delete.svg"
-                        onClick={() => handleDeleteClick(contact.id)} alt="" ></img>}
+                    <img className="delete-btn-ico" src="/delete.svg"
+                        onClick={() => handleDeleteClick(contact.id)} alt="" ></img>
                     </td>
                   </tr>
                 </tbody>))}

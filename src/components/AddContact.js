@@ -18,23 +18,12 @@ const AddContact = ({ user }) => {
     phone: "",
     category: ""
   });
-  const noSelectionOption = { value: null, label: 'No Selection' };
-
-  const [realtorOptions, setRealtorOptions] = useState([]);
   const [emailError, setEmailError] = useState("")
   const [selectedServices, setSelectedServices] = useState([]);
   const [firstError, setFirstError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [properties, setProperties] = useState([])
   const [categories, setCategories] = useState([])
   const [seletedCategory, setSelectedCategory] = useState(null);
-
-
-  const [selectedProvince, setSelectedProvince] = useState({
-    value: 2, // Set the value of "British Columbia"
-    label: "British Columbia", // Set the label of "British Columbia"
-  });
-
   const [contact, setContact] = useState({
     firstname: "",
     lastname: "",
@@ -53,7 +42,6 @@ const AddContact = ({ user }) => {
     isContact: true,
     propertyId: null,
   });
-  // Define an array of province options
 
   const serviceOptions = [
     { value: 'Real Estate', label: 'Real Estate' },
@@ -62,20 +50,11 @@ const AddContact = ({ user }) => {
     { value: 'Immigration', label: 'Immigration' }
   ];
 
-
-
   const navigate = useNavigate();
-
   const { auth, setConatctlength, contactlength } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
+  const headers = { Authorization: auth.token };
 
-  const sourceOptions = [
-    { value: "Website", label: "Website" },
-    { value: "Website", label: "Phone" },
-    { value: "Others", label: "Others" },
-  ]
+
   const handlePhoneNumberChange = (event) => {
     // Extract the raw phone number from the input
     setPhoneError("")
@@ -84,15 +63,10 @@ const AddContact = ({ user }) => {
     // Update the phone number state with the raw input
     setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
   }
-  const handleProvinceSelectChange = (selectedOption) => {
-    setSelectedProvince(selectedOption);
-    setContact({ ...contact, provinceId: selectedOption.value });
-  };
 
   const colourStyles = {
     control: styles => ({ ...styles, border: 'unset', boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-
       return {
         ...styles,
         cursor: "pointer",
@@ -108,9 +82,7 @@ const AddContact = ({ user }) => {
   const url = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    // getRealtorOptions();
     getCategories()
-    //getProperties()
   }, []);
 
   const getCategories = async () => {
@@ -125,23 +97,6 @@ const AddContact = ({ user }) => {
       console.error("User creation failed:", error);
     }
   };
-
-  const getProperties = async () => {
-    try {
-      const res = await axios.get(`${url}api/property`, { headers });
-      const realtorOptions = res.data.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.mls_no,
-      }));
-
-      setProperties([noSelectionOption, ...realtorOptions]);
-    } catch (error) {
-      console.error(error)
-    }
-
-  };
-
-
   const validateForm = () => {
     let isValid = true;
     const { firstname, email, phone } = contact;
@@ -200,10 +155,12 @@ const AddContact = ({ user }) => {
       });
 
       if (response.status === 201) {
-        // Contact added successfully
         setConatctlength(contactlength + 1);
         navigate("/contacts");
-        toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
+        toast.success(' Contact added successfully', {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        });
       } else if (response.data.status === false) {
         toast.error(response.data.message)
       } else {
@@ -218,22 +175,6 @@ const AddContact = ({ user }) => {
     setContact({ ...contact, address1: newAddress });
   };
 
-  const clearErrors = (fieldName) => {
-    switch (fieldName) {
-      case "firstname":
-        setFirstError("");
-        break;
-      case "phone":
-        setPhoneError("");
-        break;
-      case "email":
-        setEmailError("")
-        break;
-      default:
-        break;
-    }
-  };
-
   const handleChange = (e) => {
     setErrors({
       firstname: "",
@@ -243,30 +184,21 @@ const AddContact = ({ user }) => {
     })
     const { name, value } = e.target;
     setContact({ ...contact, [name]: value });
-
   };
 
-  // const handleRealtorSelectChange = (selectedOption) => {
-  //   setSelectedRealtor(selectedOption);
-  //   setContact({ ...contact, realtorId: selectedOption.value });
-  // };
-
   const goBack = () => {
-    navigate(-1); // This function takes you back one step in the navigation stack
+    navigate(-1);
   };
 
   return (
     <>
       <form onSubmit={handleSubmit} className="form-user-add add-contact-from-adst add-contact-form">
         <div className="property_header header-with-back-btn">
-
           <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Contact</h3>
-
         </div>
 
         <div className="add-cnt-form-desc">
           <div className="form-user-add-wrapper">
-
             <div className="form-user-add-inner-wrap">
               <label>Name<span className="required-star">*</span></label>
               <input
@@ -274,7 +206,6 @@ const AddContact = ({ user }) => {
                 name="firstname"
                 value={contact.firstname}
                 onChange={handleChange}
-
               />
               <span className="error-message">{errors.firstname}</span>
             </div>
@@ -355,12 +286,9 @@ const AddContact = ({ user }) => {
                 value={contact.phone}
                 onChange={handlePhoneNumberChange}
                 placeholder="+1 (___) ___-____"
-
               />
               <span className="error-message">{errors.phone}</span>
             </div>
-
-
             <div className="form-user-add-inner-wrap">
               <label>Company Name</label>
               <div className="edit-new-input">
@@ -373,49 +301,9 @@ const AddContact = ({ user }) => {
               </div>
             </div>
           </div>
-
-
           <div className="add-contact-user-custom-right">
-
             <div className="add-contact-user-custom-wrapper">
               <div className="add-contact-user-custom-left">
-
-                {/* <div className="form-user-add-inner-wrap">
-          <label>User</label>
-          <img src="/icons-form/Group30055.svg"/>
-          <Select
-            placeholder="Select Users..."
-            value={selectedRealtor}
-            onChange={(selectedOption) => 
-                {
-                    setContact({ ...contact, realtorId: selectedOption.value })
-                    setSelectedRealtor(selectedOption)}}
-            options={realtorOptions}
-            components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
-            styles={colourStyles}
-            className="select-new"
-            
-          />
-  
-        </div> */}
-                {/* <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-agent">
-                <label>Active Agent</label>
-                <img src="/icons-form/Group30055.svg" />
-                <Select
-                  placeholder="Select Active Agent..."
-                  value={selectedAgent}
-
-                  onChange={(selectedOption) => {
-                    setContact({ ...contact, agentId: selectedOption.value })
-                    setSelectedAgent(selectedOption)
-                  }}
-                  options={realtorOptions}
-                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                  styles={colourStyles}
-                  className="select-new"
-                />
-              </div> */}
-
                 <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
                   <label>Service Require</label>
                   <Select
@@ -423,7 +311,6 @@ const AddContact = ({ user }) => {
                     value={selectedServices}
                     onChange={(selectedOptions) => {
                       setSelectedServices(selectedOptions);
-                      // You can also extract the values into an array if needed
                       const selectedValues = selectedOptions.map(option => option.value);
                       setContact({ ...contact, servceRequire: selectedValues });
                     }}
@@ -431,7 +318,7 @@ const AddContact = ({ user }) => {
                     components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     styles={colourStyles}
                     className="select-new"
-                    isMulti // This is what enables multiple selections
+                    isMulti
                   />
 
                 </div>
@@ -449,14 +336,11 @@ const AddContact = ({ user }) => {
                     components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     styles={colourStyles}
                     className="select-new"
-
                   />
                 </div>
                 <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
               </div>
-
             </div>
-
 
             <div className="form-user-add-inner-wrap">
               <label>Description</label>
@@ -481,7 +365,6 @@ const AddContact = ({ user }) => {
         </div>
       </form>
     </>
-
   );
 };
 

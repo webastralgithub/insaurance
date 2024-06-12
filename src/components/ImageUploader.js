@@ -1,10 +1,11 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef} from "react";
 
 const ImageUploader = (props) => {
   const { images, setImages, headers, url } = props;
   const fileRef = useRef(null);
+
 
   const handleImageChange = async (e) => {
     const selectedImage = e.target.files[0];
@@ -67,7 +68,6 @@ const ImageUploader = (props) => {
               clipRule="evenodd"
             />
           </svg>
-
           <span>Upload Image</span>
         </div>
       </div>

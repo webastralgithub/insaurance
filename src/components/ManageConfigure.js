@@ -2,18 +2,15 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import './Upgradeplan.css'
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ManageConfigure = () => {
 
-  const { auth} = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const url = process.env.REACT_APP_API_URL;
-  const headers = {
-    Authorization: auth.token,
-  };
+  const headers = { Authorization: auth.token };
 
   const navigate = useNavigate()
-
   const [configData, setconfigData] = useState([])
   const getData = async () => {
     try {
@@ -34,10 +31,8 @@ const ManageConfigure = () => {
 
   return (
     <>
-
       <div className="add_user_btn-mng-cnfgr-pg">
         <div className="add_user_btn">
-
           <button onClick={() => navigate("/manage-configure/add-features")}>
             <img src="/plus.svg" />
             Add Features</button>
@@ -54,24 +49,19 @@ const ManageConfigure = () => {
                 <th>Actions</th>
               </tr>
             </thead>
-
-
             {configData.length > 0 &&
               configData.map((data) => (<tbody>
-
                 <tr key={data.id}>
                   <td>{data.name}</td>
                   <td className="manage-pg-table-confgr">{data.short_description}</td>
                   <td>{data.set_limit}</td>
                   <td>{data.page}</td>
                   <td className="manage-configr-table-btn">
-                  <buttton onClick={() => handleEdit(data)}>Edit Feature</buttton>
+                    <buttton onClick={() => handleEdit(data)}>Edit Feature</buttton>
                   </td>
                 </tr>
               </tbody>))}
-
           </table>
-
         </div>
       </div>
     </>

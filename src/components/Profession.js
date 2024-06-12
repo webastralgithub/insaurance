@@ -28,10 +28,8 @@ const Profession = () => {
     };
   }, []);
   const url = process.env.REACT_APP_API_URL
-  const [roles, setRoles] = useState([])
   useEffect(() => {
     getUsers()
-
   }, [])
 
   const styles = {
@@ -100,26 +98,10 @@ const Profession = () => {
   };
 
   const mediaQuery = window.matchMedia("(max-width: 768px)");
-  const mediaQueryMobile = window.matchMedia("(max-width: 480px)");
   const mediaQueryMobileNext = window.matchMedia("(max-width: 600px)");
-
-  const customStyles = {
-    overlay: {
-      ...styles.overlay,
-    },
-    content: {
-      ...styles.content,
-
-      width: mediaQueryMobileNext.matches ? "80%" : mediaQuery.matches ? "68%" : "60%"
-
-
-    },
-  };
   const filteredUsersNew = users.filter((user) =>
-
     (user.name.toLowerCase().includes(searchQuery.toLowerCase()))
   );
-
   const ITEMS_PER_PAGE = 10;
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -141,7 +123,9 @@ const Profession = () => {
 
 
 
-
+  const handleClick = (userId) => {
+    navigate(`/profession/${userId}`)
+  }
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top">
@@ -175,9 +159,7 @@ const Profession = () => {
             {filteredUsers?.map((user) => (
               <>
                 <tr key={user.id}>
-                  <td className="property-link" onClick={() => {
-                    navigate(`/profession/${user.id}`)
-                  }}>{user?.name}</td>
+                  <td className="property-link" onClick={()=>roleId == 1 ? handleClick(user.id) : null} >{user?.name}</td>
                   <td >{user?.notes?.replace(/(<([^>]+)>)/gi, '').slice(0, 100).replace(/(?<=\s)\S*$/i, '')}</td>
                   {roleId == 1 &&
                     <td>

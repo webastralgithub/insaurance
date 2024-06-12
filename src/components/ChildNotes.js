@@ -100,7 +100,6 @@ const ChildNotes = (props) => {
       if(!contact.notenew){
         setNotesErr(
          "Note is Required"
-   
         )
         return
       }

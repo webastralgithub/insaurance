@@ -18,7 +18,7 @@ const AddPost = () => {
     instagram: false,
   });
   const navigate = useNavigate();
-  const [images, setImages] = useState();
+  const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [nameError, setnameError] = useState("")
   const [imageError, setimageError] = useState("")
@@ -63,20 +63,26 @@ const AddPost = () => {
   };
 
 
-  
+
 
   const handleSaveClick = async (e) => {
     e.preventDefault();
+    let isValid
 
+    if (images.length === 0) {
+      setimageError("image is required")
+      toast.error("image is required")
+      isValid = false
+
+    }
     if (!post.name.trim()) {
       setnameError("name is required")
       toast.error("name is required")
-      return;
+      isValid = false
+
     }
-    if (images.length === 0) {
-    //  setimageError("image is required")
-      toast.error("image is required")
-      return;
+    if (isValid == false) {
+      return
     }
     const updateData = { ...post, images: images[0] }
     try {
@@ -86,7 +92,7 @@ const AddPost = () => {
 
       if (response.status === 201) {
         // Contact added successfully
-        navigate(`/social/${response.data.id}`)
+        navigate(`/posts`)
         toast.success('Post added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
         // Redirect to the contacts list page
       } else {
@@ -159,22 +165,24 @@ const AddPost = () => {
                     onChange={handleChange}
 
                   />
-                  <span style={{ color: 'red' }}>{nameError}</span>
-                </div>
+                  <span className="error-message" style={{ color: 'red' }}>{nameError}</span></div>
               </div>
 
 
-              <label>Image<span className="required-star">*</span></label>
-              <ImageUploader
-                images={images}
-                setImages={setImages}
-                mainImage={mainImage}
-                setMainImage={setMainImage}
-                headers={headers}
-                url={url}
-              />
-            </div>
 
+              <div className="form-user-add-inner-wrap">
+                <label>Image<span className="required-star">*</span></label>
+                <span className="error-message" style={{ color: 'red' }}>{imageError}</span>
+                <ImageUploader
+                  images={images}
+                  setImages={setImages}
+                  mainImage={mainImage}
+                  setMainImage={setMainImage}
+                  headers={headers}
+                  url={url}
+                />
+              </div>
+            </div>
             <div className="form-catagory-edit-sec-right">
               <div className="add-contact-user-custom-right">
                 <div className="form-user-add-inner-wrap">
