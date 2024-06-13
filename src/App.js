@@ -428,22 +428,28 @@ const App = () => {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/vendors/add" exact
-              element={
-                <PrivateRoute>
-                  <AddVendor />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/vendors/edit/:id" exact
-              element={
-                <PrivateRoute>
-                  <EditVendor />
-                </PrivateRoute>
-              }
-            />
+
+            {roleId == 1 &&
+              <>
+                <Route
+                  path="/vendors/add" exact
+                  element={
+                    <PrivateRoute>
+                      <AddVendor />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route
+                  path="/vendors/edit/:id" exact
+                  element={
+                    <PrivateRoute>
+                      <EditVendor />
+                    </PrivateRoute>
+                  }
+                />
+              </>
+            }
             <Route
               path="/todo-list" exact
               element={

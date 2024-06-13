@@ -457,11 +457,10 @@ export default function Profile(props) {
                           style={{ width: "100%", maxWidth: "800px", height: "200px" }}
                         />
                       </div>
-                      </div>
+                   </div>
 
                     <div className="profile-btm-cnt-last-line-right">
                       <label>Referral Amount
-
                         <input
                           name="referal_amount"
                           type="number"

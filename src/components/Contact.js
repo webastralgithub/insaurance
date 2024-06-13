@@ -300,55 +300,7 @@ const Contact = ({ role }) => {
     },
 
   };
-  const colourStyles = {
-    valueContainer: styles => ({
-      ...styles, overflowX: "auto", flex: "unset", flexWrap: "no-wrap", width: selectedContacts.length > 0 ? "354px" : "100%", padding: "2px 0",
-      '&::-webkit-scrollbar-track': {
-        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.3)',
-        'border-radius': '10px',
-        'background-color': 'rgb(0 70 134)',
-      },
-      '&::-webkit-scrollbar': {
-        'height': '8px',
-        'background-color': 'rgb(0 70 134)',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        'border-radius': '10px',
-        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,.3)',
-        'background-color': '#373a47',
-      },
-
-    }),
-    menu: (styles) => ({
-      ...styles,
-      maxHeight: "242px",
-      minHeight: "242px",
-      overflowY: "auto",
-      boxShadow: "none",
-
-
-    }),
-    menuList: styles => ({ ...styles, overflowY: "none", display: "none" }),
-    multiValue: styles => ({ ...styles, minWidth: "unset" }),
-    input: styles => ({ ...styles, color: "#fff" }),
-    placeholder: styles => ({ ...styles, color: "#fff" }),
-    control: styles => ({
-      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
-      border: "none", borderRadius: "0", background: "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-      padding: "10px 5px"
-    }),
-
-
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-
-      return {
-        ...styles,
-
-
-      };
-    },
-
-  };
+ 
   const getCategories = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });

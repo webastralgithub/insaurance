@@ -203,7 +203,7 @@ const SocialMediaLogin = () => {
                 />
               </div>
             </div>
-            <div>
+            <div style={{marginTop : "40px"}}>
               {editedContact.images ? <img src={editedContact?.images} style={{ height: "300px", width: "400px" }}></img> : "no image found"}
             </div>
           </div>

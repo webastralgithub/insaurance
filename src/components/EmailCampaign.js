@@ -471,29 +471,33 @@ const EmailCampaign = () => {
   );
   const getContacts = async () => {
     try {
-      const response = await axios.get(`${url}api/get/contacts/email`, {
+      const response = await axios.get(`${url}api/contacts`, {
         headers,
-      });
-      setcontactOptionunique(response.data)
+    });
+  
+  
+    setcontactOptionunique(response.data)
+      
+      // setcontactOptionunique(response.data)
 
-      const contactsWithoutParentId = response.data.filter(
-        (contact) => contact.parentId === null
-      );
-      const nonvendorcontacts = contactsWithoutParentId.filter(
-        (contact) => contact.isVendor === false
-      );
-      const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
-        (contact) => contact.isLead === false
-      );
+      // const contactsWithoutParentId = response.data.filter(
+      //   (contact) => contact.parentId === null
+      // );
+      // const nonvendorcontacts = contactsWithoutParentId.filter(
+      //   (contact) => contact.isVendor === false
+      // );
+      // const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
+      //   (contact) => contact.isLead === false
+      // );
 
 
-      // Set the filtered contacts in the state
+      // // Set the filtered contacts in the state
 
-      const realtorOptions = response?.data?.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.firstname,
-      }));
-      setContactoptions(realtorOptions);
+      // const realtorOptions = response?.data?.map((realtor) => ({
+      //   value: realtor.id,
+      //   label: realtor.firstname,
+      // }));
+     // setContactoptions(realtorOptions);
     } catch (error) {
       console.error(error);
       // Handle error
@@ -504,6 +508,7 @@ const EmailCampaign = () => {
   const colourStyles = {
     valueContainer: (styles) => ({
       ...styles,
+ 
       overflowX: "auto",
       flex: "unset",
       flexWrap: "no-wrap",
@@ -550,6 +555,8 @@ const EmailCampaign = () => {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
+        cursor: 'pointer' ,
+             overflow: 'scroll', 
       };
     },
   };
@@ -834,7 +841,7 @@ const EmailCampaign = () => {
         onRequestClose={closeModal}
         style={customStyles}
       >
-        <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+        <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category" >
           <img
             className="close-modal-share"
             onClick={closeModal}

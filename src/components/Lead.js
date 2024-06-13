@@ -178,7 +178,7 @@ const Lead = () => {
 
     }),
 
-     placeholder: (styles) => ({  color: " color: #fff"}),
+    placeholder: (styles) => ({ color: "white" }),
     control: (styles) => ({
       ...styles,
       boxShadow: "unset",
@@ -205,7 +205,7 @@ const Lead = () => {
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/${id}`, { isLead: false, isContact : true, category: seletedCategory.value }, {
+    const response = await axios.put(`${url}api/contacts/${id}`, { isLead: false, isContact: true, category: seletedCategory.value }, {
       headers,
     });
     getContacts();
@@ -238,7 +238,7 @@ const Lead = () => {
       const today = new Date();
       today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
 
-   
+
       const contactsCreatedToday = contactsWithoutParentId.filter(contact => {
         const contactDate = new Date(contact.updated_at);
         return contactDate.getTime() >= today.getTime();
@@ -248,7 +248,7 @@ const Lead = () => {
       setContacts(contactsWithoutParentId);
     } catch (error) {
       console.error(error)
-    
+
     }
   };
 
@@ -308,7 +308,7 @@ const Lead = () => {
   };
 
   const handleCategoryChange = (id) => {
-  //  searchRef.current.value = ""
+    //  searchRef.current.value = ""
     setActiveCategory(id === activeCategory ? "today" : id);
   }
 
@@ -326,6 +326,11 @@ const Lead = () => {
         key={number} onClick={() => handlePageChange(number)}>{number}</button>
     ));
   };
+
+  const seletectedCategoryfunc = (id) => {
+    setSelectedCategory(categoriesoptions.find((cat) => id == cat.value))
+  }
+ 
 
   return (
     <div className="add_property_btn add_property_btn-leads-page">
@@ -427,7 +432,7 @@ const Lead = () => {
           </div>) : (<>
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
-                <div className={`add_user_btn family_meber ${searchRef.current.value && category.totalLeads >0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.categoryId)} >
+                <div className={`add_user_btn family_meber ${searchRef.current.value && category.totalLeads > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.categoryId)} >
                   <h4>{category?.categoryName} (<>{category.totalLeads})</></h4>
                   <button style={{ padding: "12px 18px" }}  >{activeCategory == category.categoryId ? "-" : "+"}</button>
                 </div>
@@ -435,14 +440,13 @@ const Lead = () => {
                   <div className="table-container">
                     <table style={{ marginBottom: "30px" }}>
                       <thead>
-                        
+
                         <tr>
                           <th>Name</th>
                           <th>Phone</th>
                           <th>Email</th>
                           <th>Source</th>
                           <th>Date</th>
-                          {/* <th>My Category</th> */}
                         </tr>
                       </thead>
                       {activeLeadCategory.length > 0 &&
@@ -459,12 +463,7 @@ const Lead = () => {
                             <td>  <button className="permissions"
                               onClick={() => {
                                 setId(contact.id)
-                                if (contact?.category) {
-                                  setSelectedCategory({
-                                    value: contact.category.id,
-                                    label: contact.category.name,
-                                  })
-                                }
+                                seletectedCategoryfunc(contact.category)
                                 openModal("add")
                               }
                               }> Add to Contacts</button>       </td>

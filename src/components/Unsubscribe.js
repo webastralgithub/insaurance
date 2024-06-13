@@ -1,341 +1,134 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import Select,{ components } from 'react-select';
 import "./admin.css"
-
-import Modal from "react-modal";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Message, toaster } from "rsuite";
-import { toast } from "react-toastify";
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import { useNavigate, useRouter } from "react-router-dom";
 
-const Unsubscribe = ({role}) => {
-  const selectRef = useRef(null);
-  const [contacts, setContacts] = useState([]);
-
-  const[parentid,setParentId]=useState()
-  const navigate=useNavigate();
-  const[parentView,setParentView]=useState(false)
-  const[parentName,setParentName]=useState([])
-const[id,setId]=useState(0)
-const[contactOptions,setContactoptions]=useState(false)
-const [searchText, setSearchText] = useState('');
-  const[selectedContacts,setSelectedContacts]=useState(false)
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [categories,setCategories]=useState([])
-  const[error,setError]=useState("")
-  const [seletedCategory, setSelectedCategory] = useState(null);
-  const [modalMode, setModalMode] = useState("");
-  const [users, setUsers] = useState([]);
-
+const Unsubscribe = ({ role }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
-  const [width, setWidth] = useState(window.innerWidth);
-  const { auth, property, setProperty, setAuth } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
+  const { auth } = useContext(AuthContext);
+  const headers = { Authorization: auth.token };
   const url = process.env.REACT_APP_API_URL;
+  const [userList, setUserList] = useState([])
+  let searchRef = useRef("")
+  const [totalPages, setTotalPages] = useState("");
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
 
-  const handleWindowSizeChange = () => {
-    setWidth(window.innerWidth);
+  const getUserList = async () => {
+    setDataLoader(true)
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+    try {
+      const response = await axios.get(`${url}api/get/unsubscribe?search=${searchRef.current.value}&page=${currPage}`, { headers });
+      setUserList(response.data.unsubscribeUser);
+      setTotalPages(response.data.totalPages);
+      setDataLoader(false)
+    } catch (error) {
+      setDataLoader(false)
+      console.error("Server is busy");
+    }
   };
 
   useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    return () => {
-      window.removeEventListener('resize', handleWindowSizeChange);
-    };
-
-  }, []);
-  useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
-    if (selectRef.current) {
-      const valueContainer = selectRef?.current?.controlRef.firstChild;
-      if (valueContainer) {
-        valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
-      }
-    }
-  }, [selectedContacts]);
+    getUserList();
+  }, [currentPage]);
 
 
-    const handleDeleteClick = (propertyId) => {
-    confirmAlert({
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this Post?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => handleDelete(propertyId),
-        },
-        {
-          label: 'No',
-          onClick: () => {},
-        },
-      ],
-    });
+  const clearSearch = () => {
+    searchRef.current.value = ""
+    setButtonActive(1)
+    getUserList();
   };
 
-  const handleView = async (postid) =>{
-    await axios.get(`${url}api/remove/unsubscribe/${postid}`, { headers });
-
-    toast.success('User Removed successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setContacts(contacts.filter((p) => p.id !== postid));
-  }
-
- 
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      overflow:"unset",
-      padding: '0px',
-      transform: "translate(-50%, -50%)",
-      background: "rgb(255 255 255)",
-    },
-    overlay:{
-      backgroundColor: "rgb(0 0 0 / 34%)",
-    }
-  };
-  const openModal = (mode, role) => {
-    setModalMode(mode);
- 
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalMode("");
-    setError("")
-    setSelectedCategory(null)
-    setSelectedContacts([])
-    setIsOpen(false);
-  };
-  const colourStylesCAt = {
-    menu:(styles)=>({
-      ...styles,
-      maxHeight:"242px",
-      minHeight:"242px",
-      overflowY:"auto",
-      boxShadow:"none",
-      
-    }),
-    singleValue:styles=>({...styles,color:"#fff"    }),
-    placeholder:styles=>({...styles,color:"#fff"    }),
-    menuList:(styles)=>({
-      ...styles,
-overflow:"unset"
-    }),
-    control: styles => ({ ...styles, boxShadow:"unset",borderColor:"unset",minHeight:"0",
-    border:"none",borderRadius:"0" ,background:"linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-  padding:"10px 5px"
-  }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-     
-      return {
-        ...styles,
-      
-     
-      };
-    },
-  
-  }; 
-  const colourStyles = {
-    valueContainer:styles=>({...styles,overflowX:"auto",flex:"unset",flexWrap:"no-wrap",width:selectedContacts.length>0?"354px":"100%",padding:"2px 0",
-    '&::-webkit-scrollbar-track': {
-      '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.3)',
-      'border-radius': '10px',
-      'background-color': 'rgb(0 70 134)',
-    },
-    '&::-webkit-scrollbar': {
-      'height': '8px',
-      'background-color': 'rgb(0 70 134)',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      'border-radius': '10px',
-      '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,.3)',
-      'background-color': '#373a47',
-    },
-  
-  }),
-    menu:(styles)=>({
-      ...styles,
-      maxHeight:"242px",
-      minHeight:"242px",
-      overflowY:"auto",
-      boxShadow:"none",
- 
-  
-    }),
-    menuList:styles=>({...styles,overflowY:"none",display:"none"}),
-    multiValue:styles=>({...styles,minWidth:"unset"}),
-    input: styles =>({...styles,color:"#fff"}),
-    placeholder: styles =>({...styles,color:"#fff"}),
-    control: styles => ({ ...styles, boxShadow:"unset",borderColor:"unset",minHeight:"0",
-    border:"none",borderRadius:"0" ,background:"linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-  padding:"10px 5px"
-  }),
-
-   
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-     
-      return {
-        ...styles,
-      
-     
-      };
-    },
-  
-  }; 
-  
-  const getCategories = async () => {
-    try {
-     const res= await axios.get(`${url}api/categories`, { headers });
-     const options=res.data.map((realtor) => ({
-      value: realtor.id,
-      label: realtor.name,
-    }));
-     setCategories(options)
-  
-    } catch (error) {
-      console.error("User creation failed:", error);
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+      setButtonActive(2)
+      getUserList()
     }
   };
 
-  const handleDelete = async (postid) => {
-    await axios.delete(`${url}api/post/${postid}`, { headers });
-
-    toast.success('Post deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setContacts(contacts.filter((p) => p.id !== postid));
-
+  const handleKeyDown = () => {
+    setButtonActive(2)
+    getUserList();
   };
 
-  useEffect(() => {
-    getContacts();
-    getCategories()
-    getUsers();
-  }, []);
-
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/admin/get-users`, { headers });
-      setUsers(res.data);
-
-    } catch (error) {
-
-    }
-  };
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return ""; // Handle cases where the date string is empty or undefined
-    }
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-  
-    return `${year}-${month}-${day}`;
-  };
-  const filteredContacts = contacts.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact.email?.toLowerCase().includes(searchText)
-    );
-  });
-
-  const getContacts = async () => {
-    try {
-      const response = await axios.get(`${url}api/get/unsubscribe`, { headers });
-      // Set the filtered contacts in the state
-     
-      setContacts(response.data);
-    } catch (error) {
-      console.error(error)
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
-    }
-
-  };
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
-
-  const contactsToDisplay = filteredContacts.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-// Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
- 
-  // Rest of your component remains the same...
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
 
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top">
+        <h3>Unsubscribe Users</h3>
 
-     
-<h3>  {parentView ?`${parentName} Family `:"Unsubscribe Users"}</h3>
-
-<div className="search-group">
-
- <input type="text"
- value={searchQuery}
- onChange={(e) => setSearchQuery(e.target.value)}
- placeholder="Search here"/>
- <img src="/search.svg" />
-</div>
-
-
-      {/* Rest of your component remains the same... */}
+        <div className="search-grp-with-btn">
+          <div className="search-group">
+            <input type="text"
+              onKeyDown={handleKeyDownEnter}
+              ref={searchRef}
+              placeholder="Search here" />
+            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+                        {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
+          </div>
+          <div className="add_user_btn ">
+            <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+          </div>
+        </div>
+        {/* Rest of your component remains the same... */}
       </div>
       <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          {contacts.length>0 &&
-              contactsToDisplay.map((contact) => ( <tbody>
-          
-                <tr key={contact.id}>                 
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+          </div>)
+
+          : (<table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            {userList &&
+              userList.map((contact) => (<tbody>
+                <tr key={contact.id}>
                   <td>{contact.firstname}</td>
                   <td >{contact?.email}</td>
-                  <td> 
-           <img className="delete-btn-ico" src="/delete.svg"
-          onClick={()=>handleView(contact.id)}></img>
-          </td> 
-       
-              </tr>
-          </tbody> ))}
-        </table>
-        {totalPages > 1 && (
-  <div className="pagination">
-    {Array.from({ length: totalPages }, (_, index) => (
-      <button
-        key={index + 1}
-        onClick={() => handlePageChange(index + 1)}
-        className={currentPage === index + 1 ? 'active' : ''}
-      >
-        {index + 1}
-      </button>
-    ))}
-  </div>
-)}
+                  <td>
+                    <img className="delete-btn-ico" src="/delete.svg" />
+                  </td>
+                </tr>
+              </tbody>))}
 
+          </table>)}
+        {userList?.length > 0 && (
+          <div className="pagination">
+            {renderPageNumbers()}
+          </div>
+        )}
       </div>
-      { contactsToDisplay.length==0 && <p className="no-data">No data Found</p>}
+      {!userList && !dataLoader && <p className="no-data">No data Found</p>}
     </div>
   );
 };

@@ -148,15 +148,9 @@ const SendMessage = ({ role }) => {
   const [parentName, setParentName] = useState([]);
   const [id, setId] = useState(0);
   const [contactOptions, setContactoptions] = useState([]);
-  const [searchText, setSearchText] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
-  const [seletedCategory, setSelectedCategory] = useState(null);
-  const [modalMode, setModalMode] = useState("");
-  const [users, setUsers] = useState([]);
-  const [viewState, setViewState] = useState("contacts");
-  const [currentPage, setCurrentPage] = useState(1);
+
   const [width, setWidth] = useState(window.innerWidth);
   const { auth, property, setProperty, setAuth } = useContext(AuthContext);
   const [selectedContacts, setSelectedContacts] = useState([]);
@@ -373,10 +367,10 @@ const SendMessage = ({ role }) => {
       ...styles,
       maxHeight: "242px",
       minHeight: "242px",
-      overflowY: "auto",
+     // overflowY: "auto",
       boxShadow: "none",
     }),
-    menuList: (styles) => ({ ...styles, overflowY: "none" }),
+    menuList: (styles) => ({ ...styles, }),
     multiValue: (styles) => ({ ...styles, minWidth: "unset" }),
     input: (styles) => ({ ...styles, color: "#fff" }),
     placeholder: (styles) => ({ ...styles, color: "#fff" }),
@@ -395,352 +389,337 @@ const SendMessage = ({ role }) => {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
+       overflow: 'hidden'
       };
     },
   };
 
   const getContacts = async () => {
-    try {
-      const response = await axios.get(`${url}api/contacts`, { headers });
-      const contactsWithoutParentId = response.data.filter(
-        (contact) => contact.parentId === null
-      );
-      const nonvendorcontacts = contactsWithoutParentId.filter(
-        (contact) => contact.isVendor === false
-      );
-      const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
-        (contact) => contact.isLead === false
-      );
 
-      const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.firstname,
-        phone: realtor.phone,
-      }));
-      setContactoptions(realtorOptions);
-    } catch (error) {
-    }
-  };
-
-  const PlaceholderWithIcon = (props) => (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <span>{props.children}</span>{" "}
-      <img
-        style={{ width: "17px", filter: "brightness(4.5)" }}
-        src="/search.svg"
-      />
-    </div>
-  );
-
-  const fetchGroupNames = async () => {
-    try {
-      const response = await fetch(`${url}api/group-names`, { headers });
-      if (!response.ok) {
-        throw new Error("Failed to fetch group names");
+      try {
+        const response = await axios.get(`${url}api/contacts`, {headers});
+        const realtorOptions = response.data.map((realtor) => ({
+          value: realtor.id,
+          label: realtor.firstname,
+        }));
+        setContactoptions(realtorOptions)
+        
+      } catch (error) {
       }
-      const data = await response.json();
-      setGroupNames(data);
-    } catch (error) {
-      setError("Failed to fetch group names");
     }
-  };
 
-  const groupDelete = (postid) => {
-    setGroupNames(groupNames.filter((p) => p.id !== postid))
+    
+  const PlaceholderWithIcon = (props) => (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span>{props.children}</span>{" "}
+        <img
+          style={{ width: "17px", filter: "brightness(4.5)" }}
+          src="/search.svg"
+        />
+      </div>
+    );
 
-  }
-
-  const getGroupContacts = async (id) => {
-    try {
-      const response = await axios.get(`${url}api/group-contacts/${id}`, { headers });
-      const res = await response.data;
-      setGroupContact(res);
-    } catch (error) {
-      console.error("id data fetching error", error);
-    }
-  }
-
-
-  useEffect(() => {
-    fetchGroupNames();
-    getContacts();
-  }, []);
-
-
-  useEffect(() => {
-    const mergedContacts = [
-
-      ...(groupNames?.map((group) => ({
-        value: group.id + '/group',
-        name: group.group_name,
-      })) || []), ...(contactOptions?.map((user) => ({
-        value: user.value,
-        name: user.label,
-      })) || [])
-    ];
-
-    setMapmergeContact(mergedContacts)
-  }, [contactOptions, groupNames])
-
-
-  const handleAllChange = (selectedOptions) => {
-    setSelectedGroups(selectedOptions);
-  }
-
-  const handleContactChange = (selectedOptions) => {
-    setSelectedGroupContact(selectedOptions);
-    const selectedContactIds = selectedOptions.map(option => option.value);
-  };
-
-  const [contactModalIsOpen, setContactModalIsOpen] = useState(false);
-
-  const handleCloseModal = () => {
-    setSelectedGroupContact([]);
-    setContactModalIsOpen(false);
-  };
-
-  return (
-    <>
-      <div className="form-user-add">
-
-        <div className="property_header header-with-back-btn">
-          {!view ? <h3>{parentView ? `${parentName} Family ` : "Send SMS"}</h3> : <h3>  {<button className="back-only-btn"
-            onClick={() => {
-
-              setView(false); // Change the view state to "contacts"
-
-            }}
-          > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Groups"}</h3>}
-
-
-          {!view && <div className="top-bar-action-btns">
-            <button onClick={() => {
-              setView(true);
-            }}>
-              <FontAwesomeIcon icon={faUserGroup} /> Manage Group
-            </button>
-          </div>}
-          {view && <div className="top-bar-action-btns">
-            <button onClick={() => {
-              setIsOpen(true);
-              setEdit(false);
-            }}>
-              Add Group
-            </button>
-          </div>}
-        </div>
-        {view &&
-          <>
-            <Groups
-              setGroupId={setGroupId}
-              setGroupName={setGroupName}
-              setIsOpen={setIsOpen}
-              setSelectedContacts={setSelectedContacts}
-              groupNames={groupNames}
-              groupDelete={groupDelete}
-              setEdit={setEdit}
-            />
-          </>
-
+    const fetchGroupNames = async () => {
+      try {
+        const response = await fetch(`${url}api/group-names`, { headers });
+        if (!response.ok) {
+          throw new Error("Failed to fetch group names");
         }
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={customStyles}
-        >
-          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category send-msg-grp-popup">
-            <img
-              className="close-modal-share"
-              onClick={closeModal}
-              src="/plus.svg"
-            />
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                edit ? updateGroup() : addGroup();
+        const data = await response.json();
+        setGroupNames(data);
+      } catch (error) {
+        setError("Failed to fetch group names");
+      }
+    };
+
+    const groupDelete = (postid) => {
+      setGroupNames(groupNames.filter((p) => p.id !== postid))
+
+    }
+
+    const getGroupContacts = async (id) => {
+      try {
+        const response = await axios.get(`${url}api/group-contacts/${id}`, { headers });
+        const res = await response.data;
+        setGroupContact(res);
+      } catch (error) {
+        console.error("id data fetching error", error);
+      }
+    }
+
+
+    useEffect(() => {
+      fetchGroupNames();
+      getContacts();
+    }, []);
+
+
+    useEffect(() => {
+      const mergedContacts = [
+        ...(groupNames?.map((group) => ({
+          value: group.id + '/group',
+          name: group.group_name,
+        })) || []), ...(contactOptions?.map((user) => ({
+          value: user.value,
+          name: user.label,
+        })) || [])
+      ];
+
+      setMapmergeContact(mergedContacts)
+    }, [contactOptions, groupNames])
+
+
+    const handleAllChange = (selectedOptions) => {
+      setSelectedGroups(selectedOptions);
+    }
+
+    const handleContactChange = (selectedOptions) => {
+      setSelectedGroupContact(selectedOptions);
+      const selectedContactIds = selectedOptions.map(option => option.value);
+    };
+
+    const [contactModalIsOpen, setContactModalIsOpen] = useState(false);
+
+    const handleCloseModal = () => {
+      setSelectedGroupContact([]);
+      setContactModalIsOpen(false);
+    };
+
+    return (
+      <>
+        <div className="form-user-add">
+
+          <div className="property_header header-with-back-btn">
+            {!view ? <h3>{parentView ? `${parentName} Family ` : "Send SMS"}</h3> : <h3>  {<button className="back-only-btn"
+              onClick={() => {
+
+                setView(false); // Change the view state to "contacts"
+
               }}
-            >
+            > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Groups"}</h3>}
 
-              <h3 className="heading-category">{edit ? "Update Group" : "Add Group"} </h3>
-              {error && <p className="error-category">{error}</p>}
-              <input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                placeholder="Group Name"
-              />
-              <Select
-                placeholder={
-                  <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
-                }
-                ref={selectRef}
-                value={selectedContacts}
-                menuIsOpen={true}
-                closeMenuOnSelect={false}
-                hideSelectedOptions={false}
-                onChange={(selectedOptions) => {
-                  setSelectedContacts(selectedOptions);
 
-                }}
-                onInputChange={(input) => setModalSearchText(input)}
-                options={contactOptions}
-                // components={{
-                //   DropdownIndicator: () => null,
-                //   IndicatorSeparator: () => null,
-                //   Menu: (props) => (
-                //     <CustomDropdown searchText={modalSearchText}   {...props} />
-                //   ),
-                // }}
-
-                components={{
-                  DropdownIndicator: () => null,
-                  IndicatorSeparator: () => null,
-                  Option: (props) => (
-                    <CustomOption123 {...props}
-                      mapmergeContact={mapmergeContact}
-                      selectOption={props.selectOption}
-                    />
-                  )
-                }}
-                
-                styles={colourStyles}
-                className="select-new"
-                isMulti
-              />
-              <div className="modal-convert-btns">
-                <button type="submit">{edit ? "Update Group" : "Add Group"}</button>
-              </div>
-            </form>
-          </div>
-        </Modal>
-
-        {!view && <div className="form-user-add-wrapper">
-          <div className="todo-section todo-sectionnew">
-            <div className="todo-main-section todo-notes-section-new-left">
-              <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category sms-list-form">
-                <img className="close-modal-share" src="/plus.svg" />
-
-                {!view && <div style={{ display: 'flex', justifyContent: 'space-evenly', }}>
-                  <form>
-                    <h3 className="heading-category">Select Group(s) or Contact (s) </h3>
-                    <span className="share-contact-comment"></span>
-                    {error && <p className="error-category">{error}</p>}
-
-                    <Select
-                      placeholder={<PlaceholderWithIcon>Select Groups or Contacts...</PlaceholderWithIcon>}
-                      options={mapmergeContact?.map((groupName, index) => ({
-                        value: groupName.value,
-                        label: groupName.name,
-                      }))}
-                      isMulti={true}
-                      value={selectedGroups}
-                      onChange={handleAllChange}
-                      closeMenuOnSelect={false}
-                      menuIsOpen={true}
-                      hideSelectedOptions={false}
-                      styles={colourStyles}
-                      className="select-new"
-                      components={{
-                        DropdownIndicator: () => null,
-                        IndicatorSeparator: () => null,
-                        Option: (props) => (
-                          <CustomOption {...props}
-                            mapmergeContact={mapmergeContact}
-                            selectOption={props.selectOption}
-                          />
-                        )
-                      }}
-                    />
-                  </form>
-                </div>}
-              </div>
-            </div>
-
-            {!view && <div className="todo-notes-section todo-notes-section-new-right">
-              <div className="camp-gap">
-                <CKEditor
-                  editor={ClassicEditor}
-                  config={{
-                    toolbar: [
-                      "heading",
-                      "|",
-                      "bold",
-                      "italic",
-                      "link",
-                      "|",
-                      "bulletedList",
-                      "numberedList",
-                      "|",
-                      "undo",
-                      "redo",
-                    ],
-                    placeholder: "Enter your message here...",
-                  }}
-                  className="custom-ckeditor"
-
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setMessage(data);
-                  }}
-                />
-              </div>
+            {!view && <div className="top-bar-action-btns">
+              <button onClick={() => {
+                setView(true);
+              }}>
+                <FontAwesomeIcon icon={faUserGroup} /> Manage Group
+              </button>
+            </div>}
+            {view && <div className="top-bar-action-btns">
+              <button onClick={() => {
+                setIsOpen(true);
+                setEdit(false);
+              }}>
+                Add Group
+              </button>
             </div>}
           </div>
-          {!view && <div className="form-send-message">
-            <button onClick={handleSendMessage}>
-              Send SMS
-            </button>
-          </div>}
-        </div>}
-      </div>
-      <div>
-        {/* Modal */}
-
-        <div>
-          {/* <button onClick={handleOpenModal}>Open Modal</button> */}
-          <Modal
-            isOpen={contactModalIsOpen}
-            style={customStyles}
-            onRequestClose={handleCloseModal}
-          >
-
-            <form className="select-check-line">
-              <h3 className="heading-category">Add Group </h3>
-              {error && <p className="error-category">{error}</p>}
-              <Select
-                placeholder={<PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>}
-                onChange={handleContactChange}
-                options={groupContacts?.map((user) => ({
-                  value: user.id,
-                  label: user.firstname + user.lastname
-                }))}
-                isMulti
-                closeMenuOnSelect={false}
-                menuIsOpen={true}
-                hideSelectedOptions={false}
-                value={selectedGroupContact}
-                styles="select-check-line"
-                className="select-check-line"
-                components={{
-                  DropdownIndicator: () => null,
-                  IndicatorSeparator: () => null,
-
-                }}
+          {view &&
+            <>
+              <Groups
+                setGroupId={setGroupId}
+                setGroupName={setGroupName}
+                setIsOpen={setIsOpen}
+                setSelectedContacts={setSelectedContacts}
+                groupNames={groupNames}
+                groupDelete={groupDelete}
+                setEdit={setEdit}
               />
-            </form>
+            </>
+
+          }
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            style={customStyles}
+          >
+            <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category send-msg-grp-popup">
+              <img
+                className="close-modal-share"
+                onClick={closeModal}
+                src="/plus.svg"
+              />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  edit ? updateGroup() : addGroup();
+                }}
+              >
+
+                <h3 className="heading-category">{edit ? "Update Group" : "Add Group"} </h3>
+                {error && <p className="error-category">{error}</p>}
+                <input
+                  type="text"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  placeholder="Group Name"
+                />
+                <Select
+                  placeholder={
+                    <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
+                  }
+                  ref={selectRef}
+                  value={selectedContacts}
+                  menuIsOpen={true}
+                  closeMenuOnSelect={false}
+                  hideSelectedOptions={false}
+                  onChange={(selectedOptions) => {
+                    setSelectedContacts(selectedOptions);
+
+                  }}
+                  onInputChange={(input) => setModalSearchText(input)}
+                  options={contactOptions}
+                  components={{
+                    DropdownIndicator: () => null,
+                    IndicatorSeparator: () => null,
+                    Option: (props) => (
+                      <CustomOption123 {...props}
+                        mapmergeContact={mapmergeContact}
+                        selectOption={props.selectOption}
+                      />
+                    )
+                  }}
+                  styles={colourStyles}
+                  className="select-new"
+                  isMulti
+                />
+
+
+                <div className="modal-convert-btns" style={{ background: 'white' }}>
+                  <button type="submit">{edit ? "Update Group" : "Add Group"}</button>
+                </div>
+              </form>
+            </div>
           </Modal>
+
+          {!view && <div className="form-user-add-wrapper">
+            <div className="todo-section todo-sectionnew">
+              <div className="todo-main-section todo-notes-section-new-left">
+                <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category sms-list-form">
+                  <img className="close-modal-share" src="/plus.svg" />
+
+                  {!view && <div style={{ display: 'flex', justifyContent: 'space-evenly', }}>
+                    <form>
+                      <h3 className="heading-category">Select Group(s) or Contact (s) </h3>
+                      <span className="share-contact-comment"></span>
+                      {error && <p className="error-category">{error}</p>}
+
+                      <Select
+                        placeholder={<PlaceholderWithIcon>Select Groups or Contacts...</PlaceholderWithIcon>}
+                        options={mapmergeContact?.map((groupName, index) => ({
+                          value: groupName.value,
+                          label: groupName.name,
+                        }))}
+                        isMulti={true}
+                        value={selectedGroups}
+                        onChange={handleAllChange}
+                        closeMenuOnSelect={false}
+                        menuIsOpen={true}
+                        hideSelectedOptions={false}
+                        styles={colourStyles}
+                        className="select-new"
+                        components={{
+                          DropdownIndicator: () => null,
+                          IndicatorSeparator: () => null,
+                          Option: (props) => (
+                            <CustomOption {...props}
+                              mapmergeContact={mapmergeContact}
+                              selectOption={props.selectOption}
+                            />
+                          )
+                        }}
+                      />
+                    </form>
+                  </div>}
+                </div>
+              </div>
+
+              {!view && <div className="todo-notes-section todo-notes-section-new-right">
+                <div className="camp-gap">
+                  <CKEditor
+                    editor={ClassicEditor}
+                    config={{
+                      toolbar: [
+                        "heading",
+                        "|",
+                        "bold",
+                        "italic",
+                        "link",
+                        "|",
+                        "bulletedList",
+                        "numberedList",
+                        "|",
+                        "undo",
+                        "redo",
+                      ],
+                      placeholder: "Enter your message here...",
+                    }}
+                    className="custom-ckeditor"
+
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setMessage(data);
+                    }}
+                  />
+                </div>
+              </div>}
+            </div>
+            {!view && <div className="form-send-message">
+              <button onClick={handleSendMessage}>
+                Send SMS
+              </button>
+            </div>}
+          </div>}
+        </div>
+        <div>
+          {/* Modal */}
+
+          <div>
+            {/* <button onClick={handleOpenModal}>Open Modal</button> */}
+            <Modal
+              isOpen={contactModalIsOpen}
+              style={customStyles}
+              onRequestClose={handleCloseModal}
+            >
+
+              <form className="select-check-line">
+                <h3 className="heading-category">Add Group </h3>
+                {error && <p className="error-category">{error}</p>}
+                <Select
+                  placeholder={<PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>}
+                  onChange={handleContactChange}
+                  options={groupContacts?.map((user) => ({
+                    value: user.id,
+                    label: user.firstname + user.lastname
+                  }))}
+                  isMulti
+                  closeMenuOnSelect={false}
+                  menuIsOpen={true}
+                  hideSelectedOptions={false}
+                  value={selectedGroupContact}
+                  styles="select-check-line"
+                  className="select-check-line"
+                  components={{
+                    DropdownIndicator: () => null,
+                    IndicatorSeparator: () => null,
+
+                  }}
+                />
+              </form>
+            </Modal>
+          </div >
         </div >
-      </div >
 
 
-    </>
-  );
-};
+      </>
+    );
+  };
 
-export default SendMessage;
+  export default SendMessage;

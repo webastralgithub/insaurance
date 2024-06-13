@@ -12,31 +12,31 @@ import Select, { components } from "react-select";
 const CustomOption = ({ data, isSelected, selectOption, selectedContacts, ...props }) => {
 
     const handleButtonClick = async (event) => {
-      event.stopPropagation();
-  
+        event.stopPropagation();
+
     };
-  
+
     return (
-      <>
-  
-        <div>
-          <components.Option {...props}>
-            <div className="select-check-line" style={{ display: 'flex' }}>
-  
-              <span onClick={handleButtonClick}> {data.label}</span>
-              <label className="container-chk ">
-                <input type="checkbox" defaultChecked={isSelected} />
-                <span className="checkmark"></span>
-              </label>
+        <>
+
+            <div>
+                <components.Option {...props}>
+                    <div className="select-check-line" style={{ display: 'flex' }}>
+
+                        <span onClick={handleButtonClick}> {data.label}</span>
+                        <label className="container-chk ">
+                            <input type="checkbox" defaultChecked={isSelected} />
+                            <span className="checkmark"></span>
+                        </label>
+                    </div>
+                </components.Option>
             </div>
-          </components.Option>
-        </div>
-      </>
+        </>
     );
-  };
+};
 
 
-  
+
 const CustomDropdown = ({ children, searchText, ...props }) => {
     const selectedOptions = props.getValue();
 
@@ -177,6 +177,7 @@ const Templates = () => {
         option: (styles, { data, isDisabled, isFocused, isSelected }) => {
             return {
                 ...styles,
+                cursor: 'pointer' ,
             };
         },
     };
@@ -201,27 +202,32 @@ const Templates = () => {
 
     const getContacts = async () => {
         try {
-            const response = await axios.get(`${url}api/get/contacts/email`, {
+            const response = await axios.get(`${url}api/contacts`, {
                 headers,
             });
-            const contactsWithoutParentId = response.data.filter(
-                (contact) => contact.parentId === null
-            );
-            const nonvendorcontacts = contactsWithoutParentId.filter(
-                (contact) => contact.isVendor === false
-            );
-            const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
-                (contact) => contact.isLead === false
-            );
-
-
-            // Set the filtered contacts in the state
-
-            const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
+            const realtorOptions = response.data.map((realtor) => ({
                 value: realtor.id,
                 label: realtor.firstname,
             }));
-            setContactoptions(realtorOptions);
+            setContactoptions(realtorOptions)
+            // const contactsWithoutParentId = response.data.filter(
+            //     (contact) => contact.parentId === null
+            // );
+            // const nonvendorcontacts = contactsWithoutParentId.filter(
+            //     (contact) => contact.isVendor === false
+            // );
+            // const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
+            //     (contact) => contact.isLead === false
+            // );
+
+
+            // // Set the filtered contacts in the state
+
+            // const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
+            //     value: realtor.id,
+            //     label: realtor.firstname,
+            // }));
+            // setContactoptions(realtorOptions);
         } catch (error) {
             console.error(error);
             // Handle error
@@ -386,19 +392,19 @@ const Templates = () => {
                                     DropdownIndicator: () => null,
                                     IndicatorSeparator: () => null,
                                     Option: (props) => (
-                                      <CustomOption {...props}
-                                      searchText={searchText} selectedContacts={selectedContacts} {...props}
-                                      />
+                                        <CustomOption {...props}
+                                            searchText={searchText} selectedContacts={selectedContacts} {...props}
+                                        />
                                     )
-                                  }}
+                                }}
 
-                                // components={{
-                                //     DropdownIndicator: () => null,
-                                //     IndicatorSeparator: () => null,
-                                //     Menu: (props) => (
-                                //         <CustomDropdown searchText={searchText} selectedContacts={selectedContacts} {...props} />
-                                //     ),
-                                // }}
+                            // components={{
+                            //     DropdownIndicator: () => null,
+                            //     IndicatorSeparator: () => null,
+                            //     Menu: (props) => (
+                            //         <CustomDropdown searchText={searchText} selectedContacts={selectedContacts} {...props} />
+                            //     ),
+                            // }}
 
                             />
 

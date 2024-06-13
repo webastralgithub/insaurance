@@ -11,17 +11,10 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const UserList = () => {
     const [dataLoader, setDataLoader] = useState(false)
-    const [buttonActive, setButtonActive] = useState(1)
-    const { auth } = useContext(
-        AuthContext
-    );
-
+    const { auth } = useContext(AuthContext);
     const url = process.env.REACT_APP_API_URL;
-    const headers = {
-        Authorization: auth.token,
-    };
+    const headers = { Authorization: auth.token };
     const [userList, setUserList] = useState([])
-
     let searchRef = useRef("")
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState("");
@@ -53,19 +46,19 @@ const UserList = () => {
 
     const clearSearch = () => {
         searchRef.current.value = ""
-        setButtonActive(1)
+
         getUserList();
     };
 
     const handleKeyDownEnter = (event) => {
         if (event.key === 'Enter') {
-            setButtonActive(2)
+
             getUserList()
         }
     };
 
     const handleKeyDown = () => {
-        setButtonActive(2)
+
         getUserList();
     };
 

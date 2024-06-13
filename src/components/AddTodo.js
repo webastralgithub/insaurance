@@ -44,7 +44,7 @@ const AddTodo = ({ user }) => {
     setDateTime(newDateTime);
   };
   const navigate = useNavigate();
-  const { auth, tasklength, setTasklength, 
+  const { auth, tasklength, setTasklength,
     setConatctlength, contactlength } = useContext(AuthContext);
   const headers = { Authorization: auth.token };
 
@@ -56,10 +56,15 @@ const AddTodo = ({ user }) => {
     ContactID: "",
   });
 
+  let updatedContact
   const validateForm = () => {
     let isValid = true;
-
-    if (!contact.Followup) {
+    updatedContact = { ...contact, ContactID: newSelected.id };
+    if (!updatedContact.ContactID) {
+      setContactError("Select  Contact")
+      isValid = false;
+    }
+    if (!contact.Followup.trim()) {
       setMlsNoError("Task Title is required");
       isValid = false;
     }
@@ -87,7 +92,7 @@ const AddTodo = ({ user }) => {
   const clearErrors = (fieldName) => {
     switch (fieldName) {
       case "Followup":
-        setMlsNoError("");
+         setMlsNoError("");
         break;
       case "FollowupDate":
         setPropertyTypeError("");
@@ -128,11 +133,7 @@ const AddTodo = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedContact = { ...contact, ContactID: newSelected.id };
-    if (!updatedContact.ContactID) {
-      setContactError("Select  Contact")
-      return
-    }
+
     if (validateForm()) {
       try {
         const response = await axios.post(`${url}api/todo`, updatedContact, {
@@ -142,9 +143,9 @@ const AddTodo = ({ user }) => {
           setTasklength(tasklength + 1)
           toast.success('Todo added successfully', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
           navigate(-1);
-        }else if (response.data.status === false) {
+        } else if (response.data.status === false) {
           toast.error(response.data.message)
-        }  
+        }
         else {
           console.error("Failed to add contact");
         }

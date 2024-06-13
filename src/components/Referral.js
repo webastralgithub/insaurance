@@ -107,90 +107,6 @@ const Referral = ({ role }) => {
     setSelectedContacts([]);
     setIsOpen(false);
   };
-  const colourStylesCAt = {
-    menu: (styles) => ({
-      ...styles,
-      maxHeight: "242px",
-      minHeight: "242px",
-      overflowY: "auto",
-      boxShadow: "none",
-    }),
-    singleValue: (styles) => ({ ...styles, color: "#fff" }),
-    placeholder: (styles) => ({ ...styles, color: "#fff" }),
-    menuList: (styles) => ({
-      ...styles,
-      overflow: "unset",
-    }),
-    control: (styles) => ({
-      ...styles,
-      boxShadow: "unset",
-      borderColor: "unset",
-      minHeight: "0",
-      border: "none",
-      borderRadius: "0",
-      background:
-        "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-      padding: "10px 5px",
-    }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      return {
-        ...styles,
-      };
-    },
-  };
-  const colourStyles = {
-    valueContainer: (styles) => ({
-      ...styles,
-      overflowX: "auto",
-      flex: "unset",
-      flexWrap: "no-wrap",
-      width: selectedContacts.length > 0 ? "354px" : "100%",
-      padding: "2px 0",
-      "&::-webkit-scrollbar-track": {
-        "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.3)",
-        "border-radius": "10px",
-        "background-color": "rgb(0 70 134)",
-      },
-      "&::-webkit-scrollbar": {
-        height: "8px",
-        "background-color": "rgb(0 70 134)",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        "border-radius": "10px",
-        "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,.3)",
-        "background-color": "#373a47",
-      },
-    }),
-    menu: (styles) => ({
-      ...styles,
-      maxHeight: "242px",
-      minHeight: "242px",
-      overflowY: "auto",
-      boxShadow: "none",
-    }),
-    menuList: (styles) => ({ ...styles, overflowY: "none", display: "none" }),
-    multiValue: (styles) => ({ ...styles, minWidth: "unset" }),
-    input: (styles) => ({ ...styles, color: "#fff" }),
-    placeholder: (styles) => ({ ...styles, color: "#fff" }),
-    control: (styles) => ({
-      ...styles,
-      boxShadow: "unset",
-      borderColor: "unset",
-      minHeight: "0",
-      border: "none",
-      borderRadius: "0",
-      background:
-        "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-      padding: "10px 5px",
-    }),
-
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      return {
-        ...styles,
-      };
-    },
-  };
-
 
   const getCategories = async () => {
     try {
@@ -383,7 +299,7 @@ const Referral = ({ role }) => {
               <strong>Email:</strong> {bussinessDetail?.email}
             </p>
             <p>
-              <strong>Address:</strong> {bussinessDetail?.address1 ? bussinessDetail?.address1 + ' ' + bussinessDetail?.address2 : ""}
+              <strong>Address:</strong> {bussinessDetail?.address1 ? bussinessDetail?.address1 : ''}
             </p>
             <p>
               <strong>Phone:</strong> {bussinessDetail?.phone ? bussinessDetail?.phone : ""}
@@ -410,20 +326,20 @@ const Referral = ({ role }) => {
 
         <div className="search-grp-with-btn">
 
-        <div className="search-group">
-          <input
-            type="text"
-            ref={searchRef}
-            onKeyDown={handleKeyDownEnter}
-            placeholder="Search here"
-          />
-          {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+          <div className="search-group">
+            <input
+              type="text"
+              ref={searchRef}
+              onKeyDown={handleKeyDownEnter}
+              placeholder="Search here"
+            />
+            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
           {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch}/>} */}
+          </div>
+          <div className="add_user_btn">
+            <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+          </div>
         </div>
-        <div className="add_user_btn">
-          <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
-        </div>
-      </div>
       </div>
 
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">

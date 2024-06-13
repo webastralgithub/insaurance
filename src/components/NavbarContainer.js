@@ -362,6 +362,7 @@ const NavbarContainer = (props) => {
               onClick={closeModal}
               src="/plus.svg"
             />
+            
             <form
               onSubmit={(e) => {
                 e.preventDefault();

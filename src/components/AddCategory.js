@@ -12,108 +12,78 @@ import ImageUploader from "./ImageUploader";
 
 
 const AddCategory = () => {
-  const [contact, setContact] = useState({name:""});
+  const [contact, setContact] = useState({ name: "" });
   const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [firstError, setFirstError] = useState("");
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
-
-const validateForm = () => {
-  let isValid = true;
-
-  if (!contact.name) {
-    setFirstError("Name is required");
-    isValid = false;
-  }
-    if(!isValid){
-    window.scrollTo(0,0)
-  }
-      return isValid;
-};
-
-const clearErrors = (fieldName) => {
-  switch (fieldName) {
-    case "name":
-      setFirstError("");
-      break;
-
-    default:
-      break;
-  }
-};
-  
-  
-  const colourStyles = {
-    valueContainer: (provided, state) => ({
-      ...provided,
-     paddingLeft:"0px"
-    }),
-    control: styles => ({ ...styles, border: 'unset',boxShadow:"unset",borderColor:"unset",minHeight:"0" }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-     
-      return {
-        ...styles,
-      
-     
-      };
-    },
-  
-  };
+  const headers = { Authorization: auth.token };
   const url = process.env.REACT_APP_API_URL;
 
+  const validateForm = () => {
+    let isValid = true;
+    if (!contact.name) {
+      setFirstError("Name is required");
+      isValid = false;
+    }
+    if (!isValid) {
+      window.scrollTo(0, 0)
+    }
+    return isValid;
+  };
 
-
+  const clearErrors = (fieldName) => {
+    switch (fieldName) {
+      case "name":
+        setFirstError("");
+        break;
+      default:
+        break;
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-    try {
-      const response = await axios.post(`${url}api/categories/create`, contact, {
-        headers,
-      });
+      try {
+        const response = await axios.post(`${url}api/categories/create`, contact, {
+          headers,
+        });
 
-      if (response.status === 201) {
-        // Contact added successfully
-        navigate("/categories");
-        toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-        // Redirect to the contacts list page
-      } else {
-        console.error("Failed to add contact");
+        if (response.status === 201) {
+          navigate("/categories");
+          toast.success('Category added successfully', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
+        } else {
+          console.error("Failed to add contact");
+        }
+      } catch (error) {
+        console.error("An error occurred while adding a contact:", error);
       }
-    } catch (error) {
-      console.error("An error occurred while adding a contact:", error);
     }
-  }
   };
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     clearErrors(name);
     setContact({ ...contact, [name]: value });
-    
   };
 
-
-     
   const goBack = (e) => {
     e.preventDefault()
-    navigate(-1); // This function takes you back one step in the navigation stack
+    navigate(-1); 
   };
 
   return (
     <form onSubmit={handleSubmit} className="form-user-add">
-           <div className="property_header header-with-back-btn">
-          
-          <h3> <button  type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Category</h3>
-        
-          {/* <div className="top-bar-action-btns">
+      <div className="property_header header-with-back-btn">
+
+        <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Category</h3>
+
+        {/* <div className="top-bar-action-btns">
             <button type="submit" style={{background:"#004686"}} >Save</button>
           </div> */}
-          </div> 
-          <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">
+      </div>
+      <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">
         <div className="form-catagory-edit-sec-left">
           <div className="form-user-add-inner-wrap">
             <label>Name<span className="required-star">*</span></label>
@@ -130,12 +100,12 @@ const clearErrors = (fieldName) => {
           </div>
 
           <ImageUploader
-          images={images}
-          setImages={setImages}
-          mainImage={mainImage}
-          setMainImage={setMainImage}
-          headers={headers}
-          url={url}
+            images={images}
+            setImages={setImages}
+            mainImage={mainImage}
+            setMainImage={setMainImage}
+            headers={headers}
+            url={url}
           />
         </div>
 
@@ -171,13 +141,13 @@ const clearErrors = (fieldName) => {
             </div>
           </div>
         </div>
-        </div>
-        <div className="form-user-add-inner-btm-btn-wrap">
-     
+      </div>
+      <div className="form-user-add-inner-btm-btn-wrap">
+
         <button type="submit" >Save</button>
-        </div>
-      </form>
- 
+      </div>
+    </form>
+
   );
 };
 

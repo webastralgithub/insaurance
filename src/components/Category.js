@@ -143,6 +143,7 @@ const Category = () => {
   const handleClick = (userId) => {
     navigate(`/categories/${userId}`)
   }
+  
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top">
