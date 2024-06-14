@@ -638,7 +638,7 @@ const Contact = ({ role }) => {
                   <tr key={contact.id}>
                     <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
                     <td>{contact?.company}</td>
-                    <td>{contact?.category?.name}</td>
+                    <td>{contact?.profession?.name ? contact?.profession?.name  :""}</td>
                     <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
                     <td>{contact?.email}</td>
 

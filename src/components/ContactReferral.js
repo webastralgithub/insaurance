@@ -409,34 +409,12 @@ const ContactReferral = ({ role }) => {
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   );
-  // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
-  const changeView = async (id, name) => {
-
-    localStorage.setItem("parent", name)
-
-    setParentName(name)
-    // setParentId(id)
-    //   setParentView(true)
-    navigate(`${id}`)
-    try {
-      const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-
-      // Set the filtered contacts in the state
-      setContacts(response.data);
-
-
-    } catch (error) {
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
-    }
-  }
+  
 
   const PlaceholderWithIcon = (props) => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
@@ -444,6 +422,7 @@ const ContactReferral = ({ role }) => {
       <span>{props.children}</span>  <img style={{ width: "17px", filter: "brightness(4.5)" }} src="/search.svg" />
     </div>
   );
+  
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };

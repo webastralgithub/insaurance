@@ -111,6 +111,8 @@ const Profession = () => {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const filteredUsers = filteredUsersNew.slice(startIndex, endIndex);
+
+
   const getUsers = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });

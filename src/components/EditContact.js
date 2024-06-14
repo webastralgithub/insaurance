@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
-import { faPencil} from "@fortawesome/free-solid-svg-icons";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,12 +23,14 @@ const EditContact = ({ nameofuser }) => {
   const headers = {
     Authorization: auth.token,
   };
-
+  const [profession, setProfession] = useState([])
+  const [seletedProfession, setSeletedProfession] = useState([])
   const [editedContact, setEditedContact] = useState({});
   const [birth, setBirth] = useState("")
   const [ann, setAnn] = useState()
   const [emailError, setEmailError] = useState("")
   const [phoneError, setPhoneError] = useState("");
+  const [professionError, setProfessionError]= useState("")
   const [selectedRealtor, setSelectedRealtor] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [firstError, setFirstError] = useState("");
@@ -70,7 +72,7 @@ const EditContact = ({ nameofuser }) => {
     { value: 'Insurance', label: 'Insurance' },
     { value: 'Immigration', label: 'Immigration' }
   ];
-  
+
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
@@ -118,9 +120,28 @@ const EditContact = ({ nameofuser }) => {
     }
   };
   useEffect(() => {
-    getContactDetails();
+
     getCategories()
+    getProfession()
   }, []);
+
+  useEffect(() => {
+    getContactDetails();
+  }, [])
+
+  const getProfession = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
+      const options = res.data.map((realtor) => ({
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setProfession(options)
+
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
 
   const getCategories = async () => {
     try {
@@ -136,7 +157,10 @@ const EditContact = ({ nameofuser }) => {
       console.error("User creation failed:", error);
     }
   };
+
+  let contactData ;
   const validateForm = () => {
+     contactData = { ...editedContact, profession_id: seletedProfession.value };
     let isValid = true;
 
     if (!editedContact?.firstname) {
@@ -153,6 +177,11 @@ const EditContact = ({ nameofuser }) => {
       setPhoneError("Invalid phone number")
       isValid = false;
     }
+    // if (!editedContact.profession_id) {
+    //   setProfessionError("Please Select a profession");
+    //   //isValid = false;
+    // }
+
     if (!isValid) {
       window.scrollTo(0, 0)
     }
@@ -170,6 +199,9 @@ const EditContact = ({ nameofuser }) => {
         headers,
       });
       const contactDetails = response.data;
+
+
+
       localStorage.setItem("parent", contactDetails.firstname)
       if (contactDetails.birthday) {
         setEditedContact({ ...contactDetails, birthday: contactDetails.birthday })
@@ -220,23 +252,21 @@ const EditContact = ({ nameofuser }) => {
   };
 
 
+  useEffect(() => {
+    const dd = profession.find((cat) => cat.value === editedContact.profession_id);
+    setSeletedProfession(dd)
+  }, [editedContact])
+
   const handleSaveClick = async () => {
+  
     let isValid = validateForm()
     if (!isValid) {
       return
     }
 
     try {
-      let contact = {}
-      if (editedContact?.category) {
-        if (typeof editedContact.category === 'object') {
-          contact = { ...editedContact, category: editedContact.category.id }
-        }
-        else {
-          contact = editedContact
-        }
-      }
-      const response = await axios.put(`${url}api/contacts/${id}`, editedContact, {
+
+      const response = await axios.put(`${url}api/contacts/${id}`, contactData, {
         headers,
       });
       if (response.status === 200) {
@@ -256,6 +286,7 @@ const EditContact = ({ nameofuser }) => {
 
 
   const handleSaveNotes = async () => {
+
     if (validateForm()) {
       try {
         const response = await axios.put(`${url}api/contacts/${id}`, { notenew: editedContact.notenew, datenew: editedContact.datenew, addedBy: editedContact.addedBy }, {
@@ -304,7 +335,7 @@ const EditContact = ({ nameofuser }) => {
     navigate(`/contacts`);
   };
 
-  
+
   return (
     <div className="form-user-add">
       <div>
@@ -384,7 +415,7 @@ const EditContact = ({ nameofuser }) => {
               </div>
             )}
           </div>
-          <div className="form-user-add-inner-wrap">
+          {/* <div className="form-user-add-inner-wrap">
             <label>Profession</label>
             <div className="edit-new-input">
               <input
@@ -394,7 +425,7 @@ const EditContact = ({ nameofuser }) => {
                 onChange={handleChange}
               />
             </div>
-          </div>
+          </div> */}
           <div className="form-user-add-inner-wrap">
             <label>Website</label>
             <div className="edit-new-input">
@@ -515,8 +546,27 @@ const EditContact = ({ nameofuser }) => {
 
 
               </div>
+              <div className="form-user-add-inner-wrap">
+                <label>Profession<span className="required-star">*</span></label>
+                <img src="/icons-form/Group30055.svg" />
+                <Select
+                  placeholder="Select Profession.."
+                  value={seletedProfession}
+                  onChange={(selectedOption) => {
+                    setProfessionError("")
+                    setEditedContact({ ...editedContact, profession_id: selectedOption.value })
+                    setSeletedProfession(selectedOption)
+                  }}
+                  options={profession}
+                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                  styles={colourStyles}
+                  className="select-new"
+                />
+              </div>
+              <span className="error-message" style={{ color: "red" }}>{professionError}</span>
 
-              <div className="form-user-add-inner-wrap  form-user-category-edit-contact">
+
+              {/* <div className="form-user-add-inner-wrap  form-user-category-edit-contact">
                 <label>Category<span className="required-star">*</span></label>
 
                 <Select
@@ -533,7 +583,7 @@ const EditContact = ({ nameofuser }) => {
 
                 />
 
-              </div>
+              </div> */}
             </div>
 
             <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">

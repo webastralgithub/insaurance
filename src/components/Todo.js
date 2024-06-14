@@ -112,7 +112,7 @@ const TodoList = ({ role }) => {
       const today = new Date();
       const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
       const todayMonthDay = (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
-
+      setTasks(response.data.todo)
       const birthdayTodos = response.data.todo.filter((todo) => {
         if (todo.isBirthday || todo.isAnniversary) {
           const todoMonthDay = formatDateNew(todo?.FollowupDate)
@@ -120,7 +120,7 @@ const TodoList = ({ role }) => {
         }
         return todo
       });
-      setTasks(birthdayTodos);
+      //setTasks(birthdayTodos);
       setTaskCount(response?.data)
       setTotalPagess(response.data.totalPages);
       setCurrentPage(response.data?.currentPage)
@@ -264,7 +264,7 @@ const TodoList = ({ role }) => {
                   <th>Business Name</th>
                   <th>Profession</th>
                   <th>Phone</th>
-
+                  <th>Email</th>
                 </tr>
               </thead>
               <tbody>
@@ -288,9 +288,9 @@ const TodoList = ({ role }) => {
                       </td>
                       <td>{task?.contact?.firstname}</td>
                       <td>{task?.contact?.company}</td>
-                      <td>{task?.contact?.profession}</td>
+                      <td>{task?.contact?.profession ? task?.contact?.profession?.name : ""}</td>
                       <td>{formatPhoneNumber(task?.contact?.phone)}</td>
-
+                      <td>{task?.contact?.email}</td>
                       {/* <td>
                 {task.client?.firstname}
               </td>

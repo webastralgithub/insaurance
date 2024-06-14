@@ -453,8 +453,8 @@ const Lead = () => {
                         activeLeadCategory.map((contact) => (<tbody>
 
                           <tr key={contact.id}>
-                            <td className="property-link" onClick={() => navigate("/leads/edit/" + contact.id)}>{contact.firstname}{" "} {contact.lastname}</td>
-
+                            <td className="property-link"  >{contact.firstname}{" "} {contact.lastname}</td>
+                            {/* onClick={() => navigate(`/leads/edit/${contact.id}` ,  { state: { data: contact } })}                   */}
                             <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                             <td>{contact.email}</td>
                             <td>{contact.source}</td>

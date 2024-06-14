@@ -383,25 +383,27 @@ const App = () => {
               }
             />
 
+
+            <Route
+              path="/categories/add" exact
+              element={
+                <PrivateRoute>
+                  <AddCategory />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/categories/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditCategory />
+                </PrivateRoute>
+              }
+            />
+
             {roleId == 1 &&
               <>
-                <Route
-                  path="/categories/add" exact
-                  element={
-                    <PrivateRoute>
-                      <AddCategory />
-                    </PrivateRoute>
-                  }
-                />
-
-                <Route
-                  path="/categories/:id" exact
-                  element={
-                    <PrivateRoute>
-                      <EditCategory />
-                    </PrivateRoute>
-                  }
-                />
                 <Route
                   path="/profession/add" exact
                   element={

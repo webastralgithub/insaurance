@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
 import { faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import InputMask from "react-input-mask";
 import Places from "./Places";
@@ -12,13 +12,19 @@ import Places from "./Places";
 const EditLeads = () => {
   const { id } = useParams();
   const { auth } = useContext(AuthContext);
+  const location = useLocation();
+  const { data } = location.state;
+
   const navigate = useNavigate();
   const url = process.env.REACT_APP_API_URL;
   const headers = {
     Authorization: auth.token,
   };
-
-  const [editedContact, setEditedContact] = useState({});
+  const [profession, setProfession] = useState([])
+  const [categories, setCategories] = useState([])
+  const [editedContact, setEditedContact] = useState(data);
+  const [seletedCategory, setSelectedCategory] = useState();
+  const [seletedProfession, setSeletedProfession] = useState()
   const [selectedRealtor, setSelectedRealtor] = useState(null);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [phoneError, setPhoneError] = useState("");
@@ -28,8 +34,7 @@ const EditLeads = () => {
   const [areaOptions, setAreaOptions] = useState(null)
   const [budgetOption, setBudgetOptions] = useState(null)
   const [traitOption, setTraitOptions] = useState(null)
-  const [categories, setCategories] = useState([])
-  const [seletedCategory, setSelectedCategory] = useState(null);
+
   const [firstError, setFirstError] = useState("");
   const [editingField, setEditingField] = useState('all');
   const noSelectionOption = { value: null, label: 'No Selection' };
@@ -157,13 +162,30 @@ const EditLeads = () => {
   };
 
   useEffect(() => {
-    getContactDetails();
+    // getContactDetails();
     getCategories()
+    getProfession()
   }, [id]);
+
+  const getProfession = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
+      const options = res.data.map((realtor) => ({
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setProfession(options)
+
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
+
+
 
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories/`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
@@ -176,7 +198,7 @@ const EditLeads = () => {
     }
   };
 
-  
+
   const getContactDetails = async () => {
     try {
       const response = await axios.get(`${url}api/contacts/${id}`, {
@@ -319,6 +341,17 @@ const EditLeads = () => {
     navigate(`/leads`);
   };
 
+
+
+  useEffect(() => {
+    if (editedContact && editedContact.category && Array.isArray(editedContact.category)) {
+      const dd = profession.find((cat) => cat.value === editedContact.profession_id);
+      const matchedCategories = categories.filter(category => editedContact.category.includes(category.value));
+      setSeletedProfession(dd);
+      setSelectedCategory(matchedCategories);
+    }
+  }, [profession,categories, editedContact, data]);
+
   return (
     <div className="form-user-add">
       <div>
@@ -374,8 +407,28 @@ const EditLeads = () => {
 
 
         <Places value={editedContact.address1} onChange={handleAddressChange} />
-        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-profession">
+
+        <div className="form-user-add-inner-wrap">
+          <label>Profession<span className="required-star">*</span></label>
+          <img src="/icons-form/Group30055.svg" />
+          <Select
+            placeholder="Select Profession.."
+            value={seletedProfession}
+            onChange={(selectedOption) => {
+              setEditedContact({ ...editedContact, profession: selectedOption.value })
+              setSeletedProfession(selectedOption)
+            }}
+            options={profession}
+            components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+            styles={colourStyles}
+            className="select-new"
+          />
+        </div>
+
+        {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-profession">
+
           <label>Profession</label>
+          
           <div className="edit-new-input">
             <input
               type="text"
@@ -383,8 +436,10 @@ const EditLeads = () => {
               value={editedContact.profession}
               onChange={handleChange}
             />
+
           </div>
-        </div>
+
+        </div> */}
         {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-messgae">
           <label>Message</label>
           <div className="edit-new-input">
@@ -552,13 +607,18 @@ const EditLeads = () => {
 
           <Select
             placeholder="Select Category.."
+            //defaultValue={matchedCategories}
             value={seletedCategory}
+            isMulti
             onChange={(selectedOption) => {
               setEditedContact({ ...editedContact, category: selectedOption.value })
               setSelectedCategory(selectedOption)
             }}
             options={categories}
-            components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+            components={{
+              DropdownIndicator: () => null,
+              IndicatorSeparator: () => null
+            }}
             styles={colourStyles}
             className="select-new"
 

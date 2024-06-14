@@ -11,24 +11,30 @@ import { toast } from "react-toastify";
 
 
 const AddContact = ({ user }) => {
-
+  const navigate = useNavigate();
+  const { auth, setConatctlength, contactlength } = useContext(AuthContext);
+  const url = process.env.REACT_APP_API_URL;
+  const headers = { Authorization: auth.token };
   const [errors, setErrors] = useState({
     firstname: "",
     email: "",
     phone: "",
     category: ""
   });
-  const [emailError, setEmailError] = useState("")
   const [selectedServices, setSelectedServices] = useState([]);
-  const [firstError, setFirstError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
+  const [phoneError, setPhoneError] = useState("")
+
+
+  const [profession, setProfession] = useState([])
+  const [seletedProfession, setSeletedProfession] = useState([])
   const [categories, setCategories] = useState([])
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [contact, setContact] = useState({
     firstname: "",
     lastname: "",
     email: "",
-    profession: "",
+    
+    profession_id : "",
     address1: "",
     phone: "",
     company: "",
@@ -50,17 +56,11 @@ const AddContact = ({ user }) => {
     { value: 'Immigration', label: 'Immigration' }
   ];
 
-  const navigate = useNavigate();
-  const { auth, setConatctlength, contactlength } = useContext(AuthContext);
-  const headers = { Authorization: auth.token };
 
 
   const handlePhoneNumberChange = (event) => {
-    // Extract the raw phone number from the input
     setPhoneError("")
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-
-    // Update the phone number state with the raw input
     setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
   }
 
@@ -79,10 +79,11 @@ const AddContact = ({ user }) => {
     },
   };
 
-  const url = process.env.REACT_APP_API_URL;
+
 
   useEffect(() => {
     getCategories()
+    getProfession()
   }, []);
 
   const getCategories = async () => {
@@ -130,8 +131,12 @@ const AddContact = ({ user }) => {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
     }
-    if (!contact.category) {
-      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+    // if (!contact.category) {
+    //   setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+    //   isValid = false;
+    // }
+    if (!contact.profession_id) {
+      setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a profession" }));
       isValid = false;
     }
 
@@ -190,6 +195,21 @@ const AddContact = ({ user }) => {
     navigate(-1);
   };
 
+  const getProfession = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
+      const options = res.data.map((realtor) => ({
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setProfession(options)
+
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
+
+
   return (
     <>
       <form onSubmit={handleSubmit} className="form-user-add add-contact-from-adst add-contact-form">
@@ -230,8 +250,12 @@ const AddContact = ({ user }) => {
               />
               <span className="error-message">{errors.email}</span>
             </div>
+      
+
+
+
             <div className="form-user-add-inner-wrap">
-              <label>Profession</label>
+              {/* <label>Profession</label>
               <div className="edit-new-input">
                 <input
                   type="text"
@@ -239,8 +263,12 @@ const AddContact = ({ user }) => {
                   value={contact.profession}
                   onChange={handleChange}
                 />
-              </div>
+              </div>  */}
+
+
+
             </div>
+
             <div className="form-user-add-inner-wrap">
               <label>Website</label>
               <div className="edit-new-input">
@@ -323,6 +351,24 @@ const AddContact = ({ user }) => {
 
                 </div>
                 <div className="form-user-add-inner-wrap">
+              <label>Profession<span className="required-star">*</span></label>
+              <img src="/icons-form/Group30055.svg" />
+              <Select
+                placeholder="Select Profession.."
+                value={seletedProfession}
+                onChange={(selectedOption) => {
+                  setContact({ ...contact, profession_id: selectedOption.value })
+                  setSeletedProfession(selectedOption)
+                }}
+                options={profession}
+                components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                styles={colourStyles}
+                className="select-new"
+              />
+            </div>
+            <span className="error-message" style={{ color: "red" }}>{errors.profession}</span>
+
+                {/* <div className="form-user-add-inner-wrap">
                   <label>Category<span className="required-star">*</span></label>
                   <img src="/icons-form/Group30055.svg" />
                   <Select
@@ -337,8 +383,8 @@ const AddContact = ({ user }) => {
                     styles={colourStyles}
                     className="select-new"
                   />
-                </div>
-                <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
+                </div> */}
+                {/* <span className="error-message" style={{ color: "red" }}>{errors.category}</span> */}
               </div>
             </div>
 

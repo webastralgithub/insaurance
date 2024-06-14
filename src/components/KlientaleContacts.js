@@ -89,13 +89,10 @@ const KlientaleContacts = ({ role }) => {
   const [buttonActive, setButtonActive] = useState(1)
   const { id } = useParams();
   const selectRef = useRef(null);
-  const [contacts, setContacts] = useState([]);
   const [active, setActive] = useState(1);
-  const [parentid, setParentId] = useState();
   const navigate = useNavigate();
   const [parentView, setParentView] = useState(false);
   const [parentName, setParentName] = useState([]);
-
   const [searchText, setSearchText] = useState("");
   const [selectedContacts, setSelectedContacts] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -104,10 +101,6 @@ const KlientaleContacts = ({ role }) => {
   const [seletedCategory, setSelectedCategory] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filtered, setfilteredUsers] = useState(null);
-
-  const [users, setUsers] = useState([]);
-
-
   const [width, setWidth] = useState(window.innerWidth);
 
   const { auth, email } = useContext(AuthContext);
@@ -214,32 +207,6 @@ const KlientaleContacts = ({ role }) => {
   };
 
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get(`${klintaleUrl}listing/${localStorage.getItem('email')}`);
-      const data = response.data.user;
-      const options = response.data.category.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.category,
-      }));
-
-      setUsers(data);
-      const filteredUsers = data.filter(user => {
-        return options.some(option => option.label === user.category_name);
-      });
-      if (options.length > 0) {
-        setfilteredUsers(filteredUsers)
-      }
-      else {
-        setfilteredUsers(data)
-      }
-      setSelectedCategory(options)
-
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
   const fetchCategotires = async () => {
     try {
       const response = await axios.get(`${klintaleUrl}categories`);
@@ -254,10 +221,7 @@ const KlientaleContacts = ({ role }) => {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, [])
-
+  
 
   useEffect(() => {
     fetchCategotires();
@@ -324,7 +288,6 @@ const KlientaleContacts = ({ role }) => {
   );
 
   useEffect(() => {
-    fetchUsers();
     fetchCategotires();
   }, []);
 
@@ -408,11 +371,11 @@ const KlientaleContacts = ({ role }) => {
               src="/plus.svg"
             />
             <form>
-              <h3 className="heading-category">Select Category(s) </h3>
+              <h3 className="heading-category">Select Profession(s) </h3>
               {error && <p className="error-category">{error}</p>}
               <Select
                 placeholder={
-                  <PlaceholderWithIcon>Select Category...</PlaceholderWithIcon>
+                  <PlaceholderWithIcon>Select Profession...</PlaceholderWithIcon>
                 }
                 ref={selectRef}
                 value={seletedCategory}
@@ -446,7 +409,7 @@ const KlientaleContacts = ({ role }) => {
             <p>Upgrade To Klientale</p>
           </button>
           <button onClick={() => setIsOpen(true)}>
-            <p>Select Profession</p>
+            <p>Profession</p>
           </button>
         </div>
 
@@ -477,18 +440,22 @@ const KlientaleContacts = ({ role }) => {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Email</th>
+                <th>Business Name</th>
+                <th>Profession</th>
                 <th>Phone</th>
-                <th>Category</th>
+                <th>Email</th>
+             
               </tr>
             </thead>
             <tbody>
               {userss && userss?.map((user) => (
                 <tr key={user.id}>
                   <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{user.phone}</td>
+                  <td>{user.business_name}</td>
                   <td>{user.category_name}</td>
+                  <td>{user.phone}</td>
+                  <td>{user.email}</td>
+                 
                 </tr>
               ))}
             </tbody>

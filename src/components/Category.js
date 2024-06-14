@@ -148,13 +148,13 @@ const Category = () => {
     <div className="add_property_btn">
       <div className="inner-pages-top">
         <h3>Categories</h3>
-        {roleId == 1 &&
+       
           <div className="add_user_btn">
             <button onClick={() => navigate("/categories/add")}>
               <img src="/plus.svg" />
               Add Category</button>
           </div>
-        }
+      
 
         <div className="search-group">
           <input type="text"
@@ -178,15 +178,16 @@ const Category = () => {
             {filteredUsers?.map((user) => (
               <>
                 <tr key={user.id}>
-                  <td className="property-link"  onClick={()=>roleId == 1 ? handleClick(user.id) : null}>{user?.name}</td>
+                {/* nClick={()=>roleId == 1 ? handleClick(user.id) : null} */}
+                  <td className="property-link"  onClick={()=> handleClick(user.id)}>{user?.name}</td>
                   <td >{user?.notes?.replace(/(<([^>]+)>)/gi, '').slice(0, 100).replace(/(?<=\s)\S*$/i, '')}</td>
-                  {roleId == 1 &&
+               
                     <td>
                       <img className="delete-btn-ico" src="/delete.svg"
                         onClick={() => handleDeleteClick(user.id)}>
                       </img>
                     </td>
-                  }
+           
                   {/* <td><button className="permissions"
           onClick={()=>activate(!user.isActivate,user.id)
           }       > {user.isActivate?"Deactivate":"Activate"}</button>  </td> */}

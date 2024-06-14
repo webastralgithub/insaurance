@@ -231,6 +231,7 @@ const Referral = ({ role }) => {
     try {
       const response = await axios.get(`${url}api/get/contacts-shares/${active}?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setusers(response?.data?.shares)
+      console.log("api console", response?.data?.shares[0].send_contact)
       setTotalPages(response?.data?.totalPages)
       setDataLoader(false)
     } catch (error) {
@@ -382,8 +383,11 @@ const Referral = ({ role }) => {
                   {active == 1 && (
                     <>
                       <th>Date</th>
+                      <th> Name</th>
                       <th>Business Name</th>
                       <th>Profession</th>
+                      <th>Phone</th>
+                      <th>Email</th>
                       <th>Sent By</th>
                     </>
                   )
@@ -392,7 +396,10 @@ const Referral = ({ role }) => {
                     <>
                       <th>Date</th>
                       <th>Referral Name </th>
+                      <th>Business Name</th>
                       <th>Profession</th>
+                      <th>Phone</th>
+                      <th>Email</th>
                       <th>Sent to</th>
                     </>
                   )
@@ -460,15 +467,11 @@ const Referral = ({ role }) => {
                         {contact?.send_contact?.firstname ||
                           contact?.referrer_contact?.firstname}
                       </td>
-                      <td>
-                        {contact?.send_contact?.category?.name ||
-                          contact?.referrer_contact?.category?.name}
-                      </td>
-                      <td>
-                        {" "}
-                        {contact?.reciever_contact?.firstname ||
-                          contact?.reciever_contact?.firstname}
-                      </td>
+                      <td>{contact?.send_contact?.business_name}</td>
+                      <td>{contact?.send_contact?.profession ? contact?.send_contact?.profession?.name : ""} </td>
+                      <td>{contact?.send_contact?.phone} </td>
+                      <td> {contact?.send_contact?.email}</td>
+                      <td>{contact?.reciever_contact?.firstname}</td>
                     </tr>
                   </tbody>
                 ))
