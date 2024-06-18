@@ -77,7 +77,7 @@ const App = () => {
   const [nameofuser, setnameofUser] = useState("")
   function parseJwt(token) {
     if (!token) {
-      return 0
+      return 
     }
     const name = localStorage.getItem("name")
     const roleId = localStorage.getItem("roleId")

@@ -509,7 +509,7 @@ const EmailCampaign = () => {
     valueContainer: (styles) => ({
       ...styles,
  
-      overflowX: "auto",
+     // overflowX: "auto",
       flex: "unset",
       flexWrap: "no-wrap",
       width: selectedContacts?.length > 0 ? "354px" : "100%",
@@ -552,11 +552,10 @@ const EmailCampaign = () => {
       padding: "10px 5px",
     }),
 
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    option: (styles) => {
       return {
         ...styles,
         cursor: 'pointer' ,
-             overflow: 'scroll', 
       };
     },
   };

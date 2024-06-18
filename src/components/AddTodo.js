@@ -92,7 +92,7 @@ const AddTodo = ({ user }) => {
   const clearErrors = (fieldName) => {
     switch (fieldName) {
       case "Followup":
-         setMlsNoError("");
+        setMlsNoError("");
         break;
       case "FollowupDate":
         setPropertyTypeError("");
@@ -213,6 +213,7 @@ const AddTodo = ({ user }) => {
     setButtonOn(0)
     setContactError("")
   }
+  
   const handleSelect = (item) => {
     setSearchQuery(item.firstname)
     setButtonOn(2)
@@ -483,8 +484,7 @@ const AddTodo = ({ user }) => {
                       <label>Profession</label>
                       <input
                         type="text"
-
-                        value={newSelected?.profession}
+                        value={newSelected?.profession ? newSelected?.profession.name : ""}
                         readOnly
                       />
                     </div>

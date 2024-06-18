@@ -166,7 +166,7 @@ const AddTaskContact = () => {
                 <input
                   type="text"
 
-                  value={newSelected?.profession}
+                  value={newSelected?.profession ? newSelected?.profession?.name : ""}
                   readOnly
                 />
               </div>

@@ -617,13 +617,13 @@ const ContactReferral = ({ role }) => {
               </>
               }
             </table>)}
-        {userss?.length > 0 && (
+      </div>
+      
+      {userss?.length > 0 && (
           <div className="pagination">
             {renderPageNumbers()}
           </div>
         )}
-
-      </div>
       {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}

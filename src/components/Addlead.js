@@ -1,36 +1,50 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AuthContext } from "./context/AuthContext";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import InputMask from 'react-input-mask';
 import Places from "./Places";
 import { toast } from "react-toastify";
 
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+};
 
 const AddLead = ({ user }) => {
   const navigate = useNavigate();
   const url = process.env.REACT_APP_API_URL;
-  const { auth, leadlength, setLeadlength } = useContext(AuthContext);
+  const { auth, leadlength, setLeadlength,contactlength, setConatctlength } = useContext(AuthContext);
   const headers = { Authorization: auth.token };
   const [phoneError, setPhoneError] = useState("");
   const [selectedSource, setSelectedSource] = useState(null);
   const [categories, setCategories] = useState([])
-  const [seletedCategory, setSelectedCategory] = useState(null);
+  const [seletedCategory, setSelectedCategory] = useState([]);
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
+  const containerRef = useRef(null);
+
   const [contact, setContact] = useState({
     firstname: "",
     lastname: "",
     email: "",
-    profession_id :'',
+    profession_id: '',
     address1: "",
     phone: "",
     company: "",
     isLead: true,
-    //servceRequire :selectedServices,
+    isContact: true,
     category: "",
     notes: "",
     source: "",
@@ -48,6 +62,7 @@ const AddLead = ({ user }) => {
     { value: "Phone", label: "Phone" },
     { value: "Others", label: "Others" },
   ]
+
   const handlePhoneNumberChange = (event) => {
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
     setPhoneError("")
@@ -55,6 +70,7 @@ const AddLead = ({ user }) => {
   }
 
   const validateForm = () => {
+    setContact({ ...contact, firstname: contactName });
     let isValid = true;
     const { firstname, email, phone } = contact;
 
@@ -82,7 +98,7 @@ const AddLead = ({ user }) => {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
     }
-    if (!seletedCategory) {
+    if (!seletedCategory || seletedCategory.length == 0) {
       setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
       isValid = false;
     }
@@ -138,7 +154,6 @@ const AddLead = ({ user }) => {
     }
   };
 
-
   const getCategories = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
@@ -152,24 +167,44 @@ const AddLead = ({ user }) => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
 
-    let updatedData = seletedCategory.map((e) => e.value)
+    let updatedData = seletedCategory.length && seletedCategory?.map((e) => e.value)
     let contactData = { ...contact, category: updatedData };
+    let payloadData = {
+      firstname: contactData.firstname,
+      lastname: contactData.lastname,
+      email: contactData.email,
+      profession_id: contactData.profession_id,
+      address1: contactData.address1,
+      phone: contactData.phone,
+      company: contactData.company,
+      isContact: true,
+      isLead: true,
+      category: contactData.category,
+      notes: contactData.notes,
+      source: contactData.source,
+      createdBy: user,
+      realtorId: null,
+      propertyId: null
+    }
     if (!isValid) {
       return
     }
     try {
-      const response = await axios.post(`${url}api/leads`, contactData, {
+      const response = await axios.post(`${url}api/leads`, payloadData, {
         headers,
       });
 
       if (response.status === 200) {
         toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
+       
+        setConatctlength(contactlength + 1)
+        
         setLeadlength(leadlength + 1)
+        
         navigate("/leads"); // Redirect to the contacts list page
       } else if (response.data.status === false) {
         toast.error(response.data.message)
@@ -193,6 +228,8 @@ const AddLead = ({ user }) => {
   });
 
   const handleChange = (e) => {
+    setssearch(2)
+    setSearchContacts([])
     const { name, value } = e.target;
     setContact({ ...contact, [name]: value });
 
@@ -206,6 +243,57 @@ const AddLead = ({ user }) => {
     navigate(-1);
   };
 
+  const [contactName, setContactname] = useState("")
+  const debouncedSearchQuery = useDebounce(contactName, 1000);
+  const [ssearch, setssearch] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchContacts, setSearchContacts] = useState([])
+
+
+  const getSearchContact = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${url}api/contacts-list?page=${currentPage}&search=${debouncedSearchQuery}`, { headers });
+      setSearchContacts(response?.data?.contacts)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      console.error(error)
+    }
+  }
+  const handleSearchChange = (e) => {
+    setLoading(true)
+    setContact({ ...contact, firstname: e.target.value });
+    setContactname(e.target.value)
+    setErrors({ firstname: "" })
+    setssearch(1)
+    setSeletedProfession([])
+    setSelectedCategory([])
+  }
+
+
+  const handleSelect = async (item, id) => {
+    setssearch(2)
+    setContactname(item.firstname)
+    setContact(item)
+    setSearchContacts([])
+    const matchedprofession = profession.find(insurance => insurance.value === id);
+    setSeletedProfession(matchedprofession)
+
+    // const matchedCategories = categories?.filter(category => item?.category?.includes(category.value));
+    // setSelectedCategory(matchedCategories)
+  }
+
+  useEffect(() => {
+    if (ssearch === 1 && contactName) {
+      getSearchContact()
+    } else {
+      setSearchContacts([])
+    }
+
+  }, [debouncedSearchQuery, currentPage])
+
   return (
     <form onSubmit={handleSubmit} className="form-user-add form-add-lead leads-add-lead-form">
       <div className="property_header header-with-back-btn">
@@ -218,17 +306,28 @@ const AddLead = ({ user }) => {
       </div>
       <div className="form-user-add-wrapper">
 
+
         <div className="form-user-add-inner-wrap">
           <label>Name <span className="required-star">*</span></label>
           <input
             type="text"
             name="firstname"
             value={contact.firstname}
-            onChange={handleChange}
-
+            onChange={handleSearchChange}
           />
           <span className="error-message">{errors.firstname}</span>
         </div>
+        {searchContacts.length ?
+          <div className="scroll-for-contacts-search" style={{ height: "200px", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+
+            {searchContacts && searchContacts?.map((item) => (
+              <div key={item.id} >
+                <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
+              </div>
+            ))}
+          </div>
+          : ""}
+
 
 
         <div className="form-user-add-inner-wrap">
@@ -261,12 +360,14 @@ const AddLead = ({ user }) => {
             placeholder="Select Profession.."
             value={seletedProfession}
             onChange={(selectedOption) => {
-              setContact({ ...contact,  profession_id: selectedOption.value })
+              setContact({ ...contact, profession_id: selectedOption.value })
               setSeletedProfession(selectedOption)
             }}
             options={profession}
-            components={{ DropdownIndicator: () => null, 
-              IndicatorSeparator: () => null }}
+            components={{
+              DropdownIndicator: () => null,
+              IndicatorSeparator: () => null
+            }}
             styles={colourStyles}
             className="select-new"
           />
@@ -387,12 +488,13 @@ const AddLead = ({ user }) => {
           <img src="/icons-form/Group30055.svg" />
           <Select
             placeholder="Select Category.."
-         
+
             value={seletedCategory}
             isMulti={true}
             onChange={(selectedOption) => {
               setContact({ ...contact, category: selectedOption.map((e) => e.value) })
               setSelectedCategory(selectedOption)
+              setErrors({ category: "" })
             }}
             options={categories}
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}

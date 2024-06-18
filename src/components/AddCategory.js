@@ -46,7 +46,7 @@ const AddCategory = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.post(`${url}api/categories/create`, contact, {
+        const response = await axios.post(`${url}api/categories`, contact, {
           headers,
         });
 

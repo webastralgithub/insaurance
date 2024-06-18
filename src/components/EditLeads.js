@@ -14,78 +14,50 @@ const EditLeads = () => {
   const { auth } = useContext(AuthContext);
   const location = useLocation();
   const { data } = location.state;
-
   const navigate = useNavigate();
   const url = process.env.REACT_APP_API_URL;
   const headers = {
     Authorization: auth.token,
   };
+
   const [profession, setProfession] = useState([])
   const [categories, setCategories] = useState([])
   const [editedContact, setEditedContact] = useState(data);
   const [seletedCategory, setSelectedCategory] = useState();
   const [seletedProfession, setSeletedProfession] = useState()
-  const [selectedRealtor, setSelectedRealtor] = useState(null);
-  const [selectedAgent, setSelectedAgent] = useState(null);
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("")
   const [selectedSource, setSelectedSource] = useState(null);
-  const [listingOptions, setListingOptions] = useState(null)
-  const [areaOptions, setAreaOptions] = useState(null)
-  const [budgetOption, setBudgetOptions] = useState(null)
-  const [traitOption, setTraitOptions] = useState(null)
+  const [categoryError, setCategoryError] = useState("")
+  const [professionError, setProfessionError] = useState("")
 
   const [firstError, setFirstError] = useState("");
   const [editingField, setEditingField] = useState('all');
   const noSelectionOption = { value: null, label: 'No Selection' };
   const handleChange = (e) => {
-
     const { name, value } = e.target;
     clearErrors(name)
     setEditedContact({ ...editedContact, [name]: value });
   };
+
+
   const sourceOptions = [
     noSelectionOption,
     { value: "Website", label: "Website" },
     { value: "Phone", label: "Phone" },
     { value: "Others", label: "Others" },
+    { value: "Email Campaign", label: "Email Campaign" },
+    { value: "Social Media Campaign", label: "Social Media Campaign" },
+    { value: "Manual", label: "Manual" },
+    { value: "Referral Exchange", label: "Referral Exchange" }
   ]
+
+
   const handleEditClick = (field) => {
     setEditingField(field);
   };
-  const selectListingOptions = [
-    noSelectionOption,
-    { value: 'Never', label: 'Never' },
-    { value: 'First-time', label: 'First-time' },
-    { value: 'Homeowner', label: 'Homeowner' },
-    { value: 'Experienced', label: 'Experienced' },
-    { value: 'HomeBuyerInvestor', label: 'Home Buyer / Investor' },
-  ];
-  const selectTraitOptions = [
-    noSelectionOption,
-    { value: "lot_size", label: "Lot size" },
-    { value: "privacy", label: "Privacy" },
-    { value: "affordability", label: "Affordability" },
-    { value: "future_value", label: "Future value" },
-    { value: "other", label: "Other" },
-  ];
 
-  const selectAreaOptions = [
-    noSelectionOption,
-    { value: 'Surrey', label: 'Surrey' },
-    { value: 'Richmond', label: 'Richmond' },
-    { value: 'Langley', label: 'Langley' },
-    { value: 'Cloverdale', label: 'Cloverdale' },
-    { value: 'SouthSurreyWhiteRock', label: 'South Surrey / White Rock' },
-    { value: 'Other', label: 'Other' },
-  ];
-  const selectBudgetOptions = [
-    noSelectionOption,
-    { value: '$1,000,000', label: '$1,000,000' },
-    { value: '$1,000,000 - $2,000,000', label: '$1,000,000 - $2,000,000' },
-    { value: '>$2,000,000', label: '>$2,000,000' },
 
-  ];
   const validateEmail = (email) => {
     // Define a regular expression pattern for email validation.
     const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -103,7 +75,12 @@ const EditLeads = () => {
     setEditedContact({ ...editedContact, address1: newAddress });
   };
 
+
+
   const validateForm = () => {
+
+
+
     let isValid = true;
 
     if (!editedContact.firstname) {
@@ -124,6 +101,19 @@ const EditLeads = () => {
         isValid = false;
       }
     }
+
+    if (!seletedProfession) {
+      setProfessionError("select Profession")
+      isValid = false;
+    }
+
+
+    if (seletedCategory == 0) {
+      setCategoryError("select category")
+      isValid = false;
+    }
+
+
     if (!isValid) {
       window.scrollTo(0, 0)
     }
@@ -174,7 +164,13 @@ const EditLeads = () => {
         value: realtor.id,
         label: realtor.name,
       }));
+
+      const matchedprofession = options.find(insurance => insurance.value === data.profession_id);
+      setSeletedProfession(matchedprofession)
       setProfession(options)
+
+      let selectedSourceOptions = sourceOptions?.filter(item => item.value === data?.source)
+      setSelectedSource(selectedSourceOptions)
 
     } catch (error) {
       console.error("User creation failed:", error);
@@ -191,13 +187,18 @@ const EditLeads = () => {
         label: realtor.name,
       }));
 
+      //change to array from string
+      const valuesToFind = data.category.split(',').map(Number);
+      //compare 2 arrays anf save similar values
+
+      let seletctedOptions = options?.filter((item => valuesToFind.includes(item.value)))
+      setSelectedCategory(seletctedOptions)
       setCategories([noSelectionOption, ...options])
 
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
-
 
   const getContactDetails = async () => {
     try {
@@ -206,118 +207,35 @@ const EditLeads = () => {
       });
       const contactDetails = response.data;
       setEditedContact(contactDetails);
-      if (contactDetails.realtor) {
-        setSelectedRealtor({
-          value: contactDetails.realtor.id,
-          label: contactDetails.realtor.name,
-        })
-      }
-      if (contactDetails.listingOptions) {
-        const listingValue = contactDetails.listingOptions;
-
-        // Find the corresponding label in selectTraitOptions
-        const matchedOption = selectListingOptions.find(option => option.value === listingValue);
-
-        // Initialize the label based on the matched option or use an empty string as a default
-        const initialLabel = matchedOption ? matchedOption.label : '';
-        setListingOptions({
-          label: listingValue,
-          value: initialLabel
-        })
-      }
-      if (contactDetails.areaOptions) {
-
-        const areaValue = contactDetails.areaOptions;
-
-        // Find the corresponding label in selectTraitOptions
-        const matchedOption = selectAreaOptions.find(option => option.value === areaValue);
-
-        // Initialize the label based on the matched option or use an empty string as a default
-        const initialLabel = matchedOption ? matchedOption.label : '';
-        setAreaOptions({
-          value: areaValue,
-          label: initialLabel,
-        })
-
-      }
-      if (contactDetails.trait) {
-
-
-        const traitValue = contactDetails.trait;
-
-        // Find the corresponding label in selectTraitOptions
-        const matchedOption = selectTraitOptions.find(option => option.value === traitValue);
-
-        // Initialize the label based on the matched option or use an empty string as a default
-        const initialLabel = matchedOption ? matchedOption.label : '';
-
-        setTraitOptions({
-          value: traitValue,
-          label: initialLabel,
-        })
-
-      }
-      if (contactDetails.budget) {
-        const budgetValue = contactDetails.budget;
-
-        // Find the corresponding label in selectTraitOptions
-        const matchedOption = selectBudgetOptions.find(option => option.value === budgetValue);
-
-        // Initialize the label based on the matched option or use an empty string as a default
-        const initialLabel = matchedOption ? matchedOption.label : '';
-        setBudgetOptions({
-          value: budgetValue,
-          label: initialLabel,
-        })
-
-      }
-      if (contactDetails.activeAgent) {
-        setSelectedAgent({
-          value: contactDetails.activeAgent.id,
-          label: contactDetails.activeAgent.name,
-        })
-      }
-      if (contactDetails.category) {
-
-        setSelectedCategory({
-          value: contactDetails.category.id,
-          label: contactDetails.category.name,
-        })
-      }
-      if (contactDetails?.source) {
-
-        setSelectedSource({
-          label: contactDetails?.source,
-          value: contactDetails?.source
-        })
-      }
-
     } catch (error) {
       console.error("Error fetching contact details: ", error);
     }
   };
   const handlePhoneNumberChange = (event) => {
-    // Extract the raw phone number from the input
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
     setPhoneError("")
-    // Update the phone number state with the raw input
     setEditedContact({ ...editedContact, phone: rawPhoneNumber.slice(1, 11) });
   };
 
-
   const handleSaveClick = async () => {
+
+    let newContact = {
+      firstname: editedContact.firstname,
+      email: editedContact.email,
+      address1: editedContact.address1,
+      source: selectedSource.value,
+      phone: editedContact.phone,
+      category: seletedCategory.length && seletedCategory?.map((e) => e.value),
+      profession_id: seletedProfession.value,
+      isLead: true,
+      isContact: true,
+    }
+
+
     if (validateForm()) {
       try {
-        let contact = {}
-        if (editedContact?.category) {
-          if (typeof editedContact.category === 'object') {
-            contact = { ...editedContact, category: editedContact.category.id }
-          }
-          else {
-            contact = { ...editedContact }
-          }
-        }
-        const response = await axios.put(`${url}api/contacts/${id}`, contact, {
+
+        const response = await axios.put(`${url}api/leads/${id}`, newContact, {
           headers,
         });
 
@@ -343,14 +261,14 @@ const EditLeads = () => {
 
 
 
-  useEffect(() => {
-    if (editedContact && editedContact.category && Array.isArray(editedContact.category)) {
-      const dd = profession.find((cat) => cat.value === editedContact.profession_id);
-      const matchedCategories = categories.filter(category => editedContact.category.includes(category.value));
-      setSeletedProfession(dd);
-      setSelectedCategory(matchedCategories);
-    }
-  }, [profession,categories, editedContact, data]);
+  // useEffect(() => {
+  //   if (editedContact && editedContact.category && Array.isArray(editedContact.category)) {
+  //     const dd = profession.find((cat) => cat.value === editedContact.profession_id);
+  //     const matchedCategories = categories.filter(category => editedContact.category.includes(category.value));
+  //     setSeletedProfession(dd);
+  //     setSelectedCategory(matchedCategories);
+  //   }
+  // }, [profession,categories, editedContact, data]);
 
   return (
     <div className="form-user-add">
@@ -403,10 +321,8 @@ const EditLeads = () => {
             </div>
           )}
         </div>
-
-
-
         <Places value={editedContact.address1} onChange={handleAddressChange} />
+
 
         <div className="form-user-add-inner-wrap">
           <label>Profession<span className="required-star">*</span></label>
@@ -417,6 +333,7 @@ const EditLeads = () => {
             onChange={(selectedOption) => {
               setEditedContact({ ...editedContact, profession: selectedOption.value })
               setSeletedProfession(selectedOption)
+              setProfessionError("")
             }}
             options={profession}
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
@@ -424,76 +341,8 @@ const EditLeads = () => {
             className="select-new"
           />
         </div>
+        <span className="error-message">{professionError}</span>
 
-        {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-profession">
-
-          <label>Profession</label>
-          
-          <div className="edit-new-input">
-            <input
-              type="text"
-              name="profession"
-              value={editedContact.profession}
-              onChange={handleChange}
-            />
-
-          </div>
-
-        </div> */}
-        {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-messgae">
-          <label>Message</label>
-          <div className="edit-new-input">
-            <input name="message" defaultValue={editedContact.message} onChange={handleChange} />
-          </div>
-        </div> */}
-
-
-        {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-user-edit-lead-pg">
-          <label>User</label>
-          {editingField === "realtorId" || editingField === "all" ? (
-            <Select
-              placeholder="Select User..."
-              value={selectedRealtor}
-              onChange={(selectedOption) => {
-
-                setEditedContact({ ...editedContact, realtorId: selectedOption.value });
-                setSelectedRealtor(selectedOption);
-              }}
-              options={realtorOptions}
-              components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-              styles={colourStyles}
-              className="select-new"
-            />
-          ) : (
-            <div className="edit-new-input">
-              {selectedRealtor?.label}
-              <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("realtorId")} />
-            </div>
-          )}
-        </div> */}
-
-        {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-agent">
-          <label>Active Agent</label>
-          {editingField === "agentId" || editingField === "all" ? (
-            <Select
-              placeholder="Select Active Agent..."
-              value={selectedAgent}
-              onChange={(selectedOption) => {
-                setEditedContact({ ...editedContact, agentId: selectedOption.value });
-                setSelectedAgent(selectedOption);
-              }}
-              options={realtorOptions}
-              components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-              styles={colourStyles}
-              className="select-new"
-            />
-          ) : (
-            <div className="edit-new-input">
-              {selectedAgent?.label}
-              <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("agentId")} />
-            </div>
-          )}
-        </div> */}
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-phone">
           <label>Phone<span className="required-star">*</span></label>
@@ -516,9 +365,9 @@ const EditLeads = () => {
             </div>
           )}
         </div>
+
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-source">
           <label>Source</label>
-
           <Select
             placeholder="Select Active Agent..."
             value={selectedSource}
@@ -530,9 +379,7 @@ const EditLeads = () => {
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
             styles={colourStyles}
             className="select-new"
-
           />
-
         </div>
 
         {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-bought">
@@ -613,6 +460,7 @@ const EditLeads = () => {
             onChange={(selectedOption) => {
               setEditedContact({ ...editedContact, category: selectedOption.value })
               setSelectedCategory(selectedOption)
+              setCategoryError("")
             }}
             options={categories}
             components={{
@@ -623,8 +471,10 @@ const EditLeads = () => {
             className="select-new"
 
           />
-
+          <span className="error-message">{categoryError}</span>
         </div>
+
+
         <div className="form-user-add-inner-btm-btn-wrap">
           <button style={{ background: "#004686" }} onClick={handleSaveClick}>
             Save

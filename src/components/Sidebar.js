@@ -356,7 +356,7 @@ to multiply the revenue. </h6>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />
-                    <div className="daily-events">Leads ({count?.leads_count})</div>
+                    <div className="daily-events">Leads ({leadlength})</div>
 
                   </div>
                 </Link>

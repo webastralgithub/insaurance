@@ -231,7 +231,6 @@ const Referral = ({ role }) => {
     try {
       const response = await axios.get(`${url}api/get/contacts-shares/${active}?page=${currPage}&search=${searchRef.current.value}`, { headers });
       setusers(response?.data?.shares)
-      console.log("api console", response?.data?.shares[0].send_contact)
       setTotalPages(response?.data?.totalPages)
       setDataLoader(false)
     } catch (error) {

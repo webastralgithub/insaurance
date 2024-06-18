@@ -53,12 +53,14 @@ const Lead = () => {
     getCategories()
   }, []);
 
+
   const getCategories = async () => {
     try {
-      const res = await axios.get(`${url}api/leads/categories`, { headers },);
-      const options = res.data.map((realtor) => ({
-        value: realtor.categoryId,
-        label: realtor.categoryName,
+      const res = await axios.get(`${url}api/categories`, { headers },);
+      const options = res.data.map((item) => ({
+        key: item.id,
+        value: item.id,
+        label: item.name,
       }));
       setCategoriesOptions(options);
 
@@ -200,16 +202,17 @@ const Lead = () => {
 
   const convert = async (e) => {
     e.preventDefault()
-    if (!seletedCategory?.value) {
+    if (seletedCategory.length == 0) {
       setError("Please select a Category")
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/${id}`, { isLead: false, isContact: true, category: seletedCategory.value }, {
+    const response = await axios.put(`${url}api/leads/${id}`, { isLead: false, isContact: true, category: seletedCategory.length && seletedCategory?.map((e) => e.value) }, {
       headers,
     });
     getContacts();
     if (response.status === 200) {
+      getLeads()
       toast.success("Contact Converted successfully", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
@@ -327,10 +330,12 @@ const Lead = () => {
     ));
   };
 
-  const seletectedCategoryfunc = (id) => {
-    setSelectedCategory(categoriesoptions.find((cat) => id == cat.value))
+  const seletectedCategoryfunc = (category) => {
+    const valuesToFind = category.split(',').map(Number);
+    let seletctedOptions = categoriesoptions?.filter((item => valuesToFind.includes(item.value)))
+    setSelectedCategory(seletctedOptions)
   }
- 
+
 
   return (
     <div className="add_property_btn add_property_btn-leads-page">
@@ -355,12 +360,16 @@ const Lead = () => {
                 <Select
                   placeholder="Select Category.."
                   value={seletedCategory}
+                  isMulti={true}
                   onChange={(selectedOption) => {
                     setError("")
                     setSelectedCategory(selectedOption)
                   }}
                   options={categoriesoptions}
-                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                  components={{
+                    DropdownIndicator: () => null,
+                    IndicatorSeparator: () => null
+                  }}
                   styles={colourStyles}
                   className="select-new"
                   menuIsOpen={true}
@@ -432,11 +441,11 @@ const Lead = () => {
           </div>) : (<>
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
-                <div className={`add_user_btn family_meber ${searchRef.current.value && category.totalLeads > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.categoryId)} >
-                  <h4>{category?.categoryName} (<>{category.totalLeads})</></h4>
-                  <button style={{ padding: "12px 18px" }}  >{activeCategory == category.categoryId ? "-" : "+"}</button>
+                <div className={`add_user_btn family_meber ${searchRef.current.value && category.totalLeads > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.id)} >
+                  <h4>{category?.name} (<>{category.leads_count})</></h4>
+                  <button style={{ padding: "12px 18px" }}  >{activeCategory == category.id ? "-" : "+"}</button>
                 </div>
-                {activeCategory == category?.categoryId && <div>
+                {activeCategory == category?.id && <div>
                   <div className="table-container">
                     <table style={{ marginBottom: "30px" }}>
                       <thead>
@@ -453,7 +462,7 @@ const Lead = () => {
                         activeLeadCategory.map((contact) => (<tbody>
 
                           <tr key={contact.id}>
-                            <td className="property-link"  >{contact.firstname}{" "} {contact.lastname}</td>
+                            <td className="property-link" onClick={() => navigate(`/leads/edit/${contact.id}`, { state: { data: contact } })} >{contact.firstname}{" "} {contact.lastname}</td>
                             {/* onClick={() => navigate(`/leads/edit/${contact.id}` ,  { state: { data: contact } })}                   */}
                             <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                             <td>{contact.email}</td>

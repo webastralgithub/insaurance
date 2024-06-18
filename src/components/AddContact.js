@@ -33,7 +33,6 @@ const AddContact = ({ user }) => {
     firstname: "",
     lastname: "",
     email: "",
-    
     profession_id : "",
     address1: "",
     phone: "",
@@ -154,6 +153,7 @@ const AddContact = ({ user }) => {
       return
     }
 
+    
     try {
       const response = await axios.post(`${url}api/contacts`, contact, {
         headers,

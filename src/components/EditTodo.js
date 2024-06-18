@@ -280,7 +280,7 @@ const EditTodoForm = ({ user }) => {
     createdBy: user,
     realtorId: null,
     propertyId: null,
-    isContact :true
+    isContact: true
   });
 
   const [errors, setErrors] = useState({
@@ -343,9 +343,9 @@ const EditTodoForm = ({ user }) => {
       return
     }
     try {
-      const response = await axios.post(`${url}api/contacts`, contactNew, {headers,});
+      const response = await axios.post(`${url}api/contacts`, contactNew, { headers, });
       if (response.status === 201) {
-        let getContact =await axios.get(`${url}api/contacts/${response.data.id}`,{ headers });
+        let getContact = await axios.get(`${url}api/contacts/${response.data.id}`, { headers });
         setConatctlength(contactlength + 1);
         setNewSelected(getContact.data)
         setSearchQuery(getContact.data.firstname)
@@ -516,12 +516,12 @@ const EditTodoForm = ({ user }) => {
                   onChange={handleSearchChange}
                 />
                 {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && ssearch == 1 &&
-                 <div className='no-contact-found-div'>
-                  <h1> No Contacts Found</h1>
-                  <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
-                </div>}
+                  <div className='no-contact-found-div'>
+                    <h1> No Contacts Found</h1>
+                    <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
+                  </div>}
                 {searchContacts.length ?
-                  <div className="scroll-for-contacts-search" style={{ height: "200px", overflow: 'scroll' , cursor: 'pointer'}} ref={containerRef}>
+                  <div className="scroll-for-contacts-search" style={{ height: "200px", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
 
                     {searchContacts && searchContacts?.map((item) => (
                       <div key={item.id} >
@@ -563,7 +563,7 @@ const EditTodoForm = ({ user }) => {
                     <input
                       type="text"
 
-                      value={newSelected?.profession}
+                      value={newSelected?.profession ? newSelected?.profession.name : ""}
                       readOnly
                     />
                   </div>
