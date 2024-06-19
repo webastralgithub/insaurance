@@ -8,6 +8,8 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import InputMask from 'react-input-mask';
 import Places from "./Places";
 import { toast } from "react-toastify";
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -25,7 +27,7 @@ const useDebounce = (value, delay) => {
 const AddLead = ({ user }) => {
   const navigate = useNavigate();
   const url = process.env.REACT_APP_API_URL;
-  const { auth, leadlength, setLeadlength,contactlength, setConatctlength } = useContext(AuthContext);
+  const { auth, leadlength, setLeadlength, contactlength, setConatctlength } = useContext(AuthContext);
   const headers = { Authorization: auth.token };
   const [phoneError, setPhoneError] = useState("");
   const [selectedSource, setSelectedSource] = useState(null);
@@ -167,6 +169,8 @@ const AddLead = ({ user }) => {
     }
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
@@ -200,11 +204,11 @@ const AddLead = ({ user }) => {
 
       if (response.status === 200) {
         toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
-       
+
         setConatctlength(contactlength + 1)
-        
+
         setLeadlength(leadlength + 1)
-        
+
         navigate("/leads"); // Redirect to the contacts list page
       } else if (response.data.status === false) {
         toast.error(response.data.message)
@@ -263,7 +267,6 @@ const AddLead = ({ user }) => {
     }
   }
   const handleSearchChange = (e) => {
-    setLoading(true)
     setContact({ ...contact, firstname: e.target.value });
     setContactname(e.target.value)
     setErrors({ firstname: "" })
@@ -317,18 +320,21 @@ const AddLead = ({ user }) => {
           />
           <span className="error-message">{errors.firstname}</span>
         </div>
-        {searchContacts.length ?
-          <div className="scroll-for-contacts-search" style={{ height: "200px", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
-
-            {searchContacts && searchContacts?.map((item) => (
-              <div key={item.id} >
-                <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
-              </div>
-            ))}
-          </div>
-          : ""}
 
 
+        {loading === true  ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
+          <CircularProgress color="inherit" />
+        </Stack> : <>      {searchContacts.length >0 &&
+            <div className="scroll-for-contacts-search" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+
+              {searchContacts && searchContacts?.map((item) => (
+                <div key={item.id} >
+                  <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
+                </div>
+              ))}
+            </div>
+          }
+          </>}
 
         <div className="form-user-add-inner-wrap">
           <label>Email Id<span className="required-star">*</span></label>
@@ -484,7 +490,7 @@ const AddLead = ({ user }) => {
         </div>
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category ">
-          <label>My Category<span className="required-star">*</span></label>
+          <label>Category<span className="required-star">*</span></label>
           <img src="/icons-form/Group30055.svg" />
           <Select
             placeholder="Select Category.."

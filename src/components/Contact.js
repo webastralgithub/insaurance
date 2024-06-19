@@ -181,13 +181,15 @@ const Contact = ({ role }) => {
 
   const convert = async (e) => {
     e.preventDefault()
-    if (!seletedCategory?.value) {
+
+    if (!seletedCategory?.length) {
       setError("Please select a Category")
       return
     }
 
-    const response = await axios.put(`${url}api/contacts/${id}`,
-      { isContact: 1, isLead: true, category: seletedCategory.value }, { headers });
+    let newCatData = seletedCategory.length && seletedCategory?.map((e) => e.value)
+    const response = await axios.put(`${url}api/leads/${id}`,
+      { isContact: 1, isLead: true, category: newCatData }, { headers });
     getContacts();
     if (response.status === 200) {
       setLeadlength(leadlength + 1)
@@ -195,12 +197,12 @@ const Contact = ({ role }) => {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-      setLeadlength(leadlength + 1);
       setSelectedCategory()
       closeModal()
 
     }
   }
+
 
   const handleUpload = async () => {
     if (!selectedFile) {
@@ -300,7 +302,7 @@ const Contact = ({ role }) => {
     },
 
   };
- 
+
   const getCategories = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
@@ -426,6 +428,13 @@ const Contact = ({ role }) => {
 
 
 
+  const handleSelectCategory = (category) => {
+    const valuesToFind = category.split(',').map(Number);
+    let seletctedOptions = categories?.filter((item => valuesToFind.includes(item.value)))
+    setSelectedCategory(seletctedOptions)
+  }
+
+
   const PlaceholderWithIcon = (props) => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
       {/* Adjust icon and styling */}
@@ -455,13 +464,17 @@ const Contact = ({ role }) => {
                 {error && <p className="error-category">{error}</p>}
                 <Select
                   placeholder="Select Category.."
+                  isMulti={true}
                   value={seletedCategory}
                   onChange={(selectedOption) => {
                     setError("")
                     setSelectedCategory(selectedOption)
                   }}
                   options={categories}
-                  components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                  components={{
+                    DropdownIndicator: () => null,
+                    IndicatorSeparator: () => null
+                  }}
                   styles={colourStylesCAt}
                   className="select-new"
                   menuIsOpen={true}
@@ -638,7 +651,7 @@ const Contact = ({ role }) => {
                   <tr key={contact.id}>
                     <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
                     <td>{contact?.company}</td>
-                    <td>{contact?.profession?.name ? contact?.profession?.name  :""}</td>
+                    <td>{contact?.profession?.name ? contact?.profession?.name : ""}</td>
                     <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
                     <td>{contact?.email}</td>
 
@@ -654,18 +667,15 @@ const Contact = ({ role }) => {
                       }}       >Send me Referrals</button>       </td>
                     <td>
 
-                      <button className="permissions"
+                      <button className={` ${contact?.isLead == true ? 'permissions share-ref-button-tb' : 'permissions'} `}
                         onClick={() => {
                           setId(contact.id)
-                          if (contact?.category) {
 
-                            setSelectedCategory({
-                              value: contact.category.id,
-                              label: contact.category.name,
-                            })
+                          if (contact?.category) {
+                            handleSelectCategory(contact.category)
                           }
                           openModal("add")
-                        }}> Convert to Lead</button>
+                        }}>Convert to Lead</button>
                     </td>
                     <td>
                       <button className="permissions"
@@ -674,10 +684,10 @@ const Contact = ({ role }) => {
                           localStorage.setItem("phone", contact.phone)
 
                           navigate(`/todo-list/add/${contact.id}`)
-                        }}       >Create Task</button>
+                        }}>Create Task</button>
                     </td>
                     <td>
-                    <img className="delete-btn-ico" src="/delete.svg"
+                      <img className="delete-btn-ico" src="/delete.svg"
                         onClick={() => handleDeleteClick(contact.id)} alt="" ></img>
                     </td>
                   </tr>

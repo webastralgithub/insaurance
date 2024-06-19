@@ -1874,14 +1874,14 @@ body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-i
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .scroll-for-contacts-search {
   background: #fff !important;
-  padding: 0px 15px 15px 15px;
+  padding: 10px 15px 15px 15px;
   overflow-x: unset !important;
 }
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .scroll-for-contacts-search div {
-  border-bottom: 1px solid #a7a2a2;
+  border-bottom: 1px solid #a7a2a26b;
 }
 
-
-
-
+form.add-task-setion-form .form-user-add-wrapper  .scroll-for-contacts-search p {
+  margin: 0 0 10px 0;
+}

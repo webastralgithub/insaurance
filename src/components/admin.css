@@ -13,6 +13,17 @@ table tr td, table tr th{
     font-weight: 600;
     margin-top: 30px;
 }
+
+.css-1n6sfyn-MenuList {
+    max-height: 197px;
+    overflow-y: auto;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    box-sizing: border-box;
+    }
+
 .add_property_btn{
    top: 100px;
 }
@@ -43,6 +54,10 @@ z-index: unset;
     padding-bottom: 4px;
     position: relative !important;
     flex-direction: column;
+}
+
+.form-user-add-wrapper.form-user-add-wrapper-lead-form  .form-user-add-inner-wrap {
+    width: 100%;
 }
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap img {
@@ -95,7 +110,7 @@ z-index: unset;
 }
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap input, .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .select-new {
-    padding-left: 20px;
+    /* padding-left: 20px; */
     width: 100%;
     background-color: transparent !important;
     border: none;
@@ -182,11 +197,13 @@ z-index: unset;
     outline: unset;
 }
 
+
 /* second table */
 .form-user-edit-inner-wrap {
-    display: flex;
+    width: 100%;
     flex-wrap: wrap;
     gap: 30px;
+    display: flex;
 }
 .select-new .Select-control {
     border: none; /* Remove the border */
@@ -258,7 +275,10 @@ z-index: unset;
 
 .form-user-edit-inner-wrap .form-user-add-inner-wrap div.edit-new-input input {
     border: unset;
+    font-size: 14px;
+    font-weight: 500;
 }
+
 .form-user-edit-inner-wrap .form-user-add-inner-wrap div.edit-new-input input:focus-visible{
     outline: unset;
 }
@@ -307,7 +327,7 @@ z-index: unset;
 }
 
 .add-contact-user-custom-right{
-    width: 50%;
+    width: 46%;
 }
 
 .add-contact-user-custom-left{
@@ -866,10 +886,6 @@ form.form-user-add.form-add-lead .form-user-add-wrapper .form-user-add-inner-wra
     margin: auto;
 }
 
-.add-cnt-form-desc .form-user-add-wrapper .form-user-add-inner-wrap {
-    width: 100%;
-}
-
 .add-cnt-form-desc .form-user-add-wrapper .add-contact-user-custom-wrapper .add-contact-user-custom-left {
     width: 100%;
     padding: 0;
@@ -1103,4 +1119,8 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
 
 .search-yellow-highlight{
     background-color: yellow;
+}
+
+.add-contact-user-custom-left  .form-user-service-edit-contact {
+    z-index: 99999;
 }

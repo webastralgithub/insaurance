@@ -71,22 +71,7 @@ const Lead = () => {
     }
   };
 
-  const handleDeleteClick = (propertyId) => {
-    confirmAlert({
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this lead?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => handleDelete(propertyId),
-        },
-        {
-          label: 'No',
-          onClick: () => { },
-        },
-      ],
-    });
-  };
+  
 
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts${propertyId}`, { headers });
@@ -337,6 +322,62 @@ const Lead = () => {
   }
 
 
+
+
+  const handleDeleteLead = async (editedContact, leadid, categories, categoryid) => {
+    const valuesToFind = categories.split(',').map(Number);
+    let category = valuesToFind.filter(category => category !== categoryid);
+
+    let newContact = {
+      firstname: editedContact.firstname,
+      email: editedContact.email,
+      address1: editedContact.address1,
+      source: editedContact.source,
+      phone: editedContact.phone,
+      category: category,
+      profession_id: editedContact.profession_id,
+      isLead: true,
+      isContact: true,
+    }
+
+    try {
+
+
+      const response = await axios.put(`${url}api/leads/${leadid}`, newContact, {
+        headers,
+      });
+
+      if (response.status === 200) {
+        toast.success("Lead Deleted successfully", {
+          autoClose: 1000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        getLeads()
+      }
+
+    } catch (error) {
+      toast.error("Server is Busy")
+      console.error(error)
+    }
+  }
+
+  const handleDeleteClick = (editedContact, leadid, categories, categoryid) => {
+    confirmAlert({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this lead?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => handleDeleteLead(editedContact, leadid, categories, categoryid),
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
+
   return (
     <div className="add_property_btn add_property_btn-leads-page">
       <div className="inner-pages-top">
@@ -441,7 +482,7 @@ const Lead = () => {
           </div>) : (<>
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
-                <div className={`add_user_btn family_meber ${searchRef.current.value && category.totalLeads > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.id)} >
+                <div className={`add_user_btn family_meber ${searchRef.current.value && category.leads_count > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.id)} >
                   <h4>{category?.name} (<>{category.leads_count})</></h4>
                   <button style={{ padding: "12px 18px" }}  >{activeCategory == category.id ? "-" : "+"}</button>
                 </div>
@@ -469,22 +510,27 @@ const Lead = () => {
                             <td>{contact.source}</td>
                             <td>{contact.created_at.slice(0, 10)}</td>
                             {/* <td>{contact.category}</td> */}
-                            <td>  <button className="permissions"
-                              onClick={() => {
-                                setId(contact.id)
-                                seletectedCategoryfunc(contact.category)
-                                openModal("add")
-                              }
-                              }> Add to Contacts</button>       </td>
+
                             <td>
                               <button className="permissions"
                                 onClick={() => {
                                   navigate(`/todo-list/add/${contact.id}`)
                                 }}>Create Task</button>
                             </td>
-                            {/* <td> <button className="permissions"
-                      onClick={()=>handleDeleteClick(contact.id)}       >Delete</button></td>  */}
+                            {category?.id != "today" ?
+                              <td>
+                                <img className="delete-btn-ico" src="/delete.svg"
+                                  onClick={() => {
 
+                                    handleDeleteClick(contact, contact.id, contact.category, category.id)
+                                    // setId(contact.id)
+                                    // seletectedCategoryfunc(contact.category)
+                                    // openModal("add")
+                                  }
+                                  } alt="" ></img>
+                              </td>
+                              : ""}
+                           
                           </tr>
 
                         </tbody>))}

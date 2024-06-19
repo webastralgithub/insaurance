@@ -182,6 +182,17 @@ newContacts.splice(index, 1);
 
 setContacts(newContacts)
 }
+
+const handleDeleteClick = async (contactid) => {
+  try {
+    const res = await axios.delete(`${url}api/contacts/${contactid}`, { headers });
+    toast.success("Family Member Deleted Succesfully")
+    getContacts()
+  } catch (error) {
+    toast.error("Server is Busy")
+  }
+}
+
   return (
     <div className="add_property_btn">
       <div className="add_user_btn family_meber" onClick={()=>{
@@ -270,6 +281,16 @@ setContacts(newContacts)
                   </td>
                   <td> {index==contacts.length-1&& contact.id&&<button className="permissions" onClick={handleAddFamilyMember}>Add More</button>}</td>
                   <td> {!contact.id&&<button className="permissions" onClick={()=>removefamily(index)}>Remove</button>}</td>
+                  {contact.id &&
+                    <td>
+                      <img className="delete-btn-ico" src="/delete.svg"
+                        onClick={() => {
+
+                          handleDeleteClick(contact.id)
+
+                        }
+                        } alt="" ></img>
+                    </td>}
                 </tr>
               ))}
           </tbody>

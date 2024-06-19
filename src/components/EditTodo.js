@@ -10,6 +10,8 @@ import InputMask from 'react-input-mask';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Places from "./Places";
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -167,7 +169,7 @@ const EditTodoForm = ({ user }) => {
         { ...updatedContact },
         { headers });
       navigate(-1)
-      toast.success("FolowUp Created successfully", {
+      toast.success("Todo Updated successfully", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -243,7 +245,7 @@ const EditTodoForm = ({ user }) => {
   }, [debouncedSearchQuery, currentPage])
 
   const handleSearchChange = (e) => {
-    setLoading(true)
+    //setLoading(true)
     setSearchQuery(e.target.value);
     setNewSelected([])
     setssearch(1)
@@ -353,7 +355,7 @@ const EditTodoForm = ({ user }) => {
         setssearch(2)
         setIsContact(true)
         setContactError("")
-        toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
+        toast.success('To-Do Updated succesfully ', { autoClose: 1000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
       } else if (response.data.status === false) {
         toast.error(response.data.message)
       } else {
@@ -515,13 +517,21 @@ const EditTodoForm = ({ user }) => {
                   value={searchQuery}
                   onChange={handleSearchChange}
                 />
-                {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 && ssearch == 1 &&
-                  <div className='no-contact-found-div'>
-                    <h1> No Contacts Found</h1>
-                    <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
-                  </div>}
+                {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
+                  <CircularProgress color="inherit" />
+                </Stack> : <>      {searchContacts.length > 0 &&
+                  <div className="scroll-for-contacts-search" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+
+                    {searchContacts && searchContacts?.map((item) => (
+                      <div key={item.id} >
+                        <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
+                      </div>
+                    ))}
+                  </div>
+                }
+                </>}
                 {searchContacts.length ?
-                  <div className="scroll-for-contacts-search" style={{ height: "200px", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+                  <div className="scroll-for-contacts-search" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
 
                     {searchContacts && searchContacts?.map((item) => (
                       <div key={item.id} >

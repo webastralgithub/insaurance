@@ -101,7 +101,7 @@ const ChildContact = (props) => {
 
   const saveContactChanges = async (contact) => {
 
-let isValid = true;
+    let isValid = true;
     if (!contact.firstname) {
       setNotesErr("Name is Required")
       setErrCont(contact.id)
@@ -113,7 +113,7 @@ let isValid = true;
       setErrCont(contact.id)
       isValid = false;
     }
-    if (!contact.phone  || contact.phone.length != 10) {
+    if (!contact.phone || contact.phone.length != 10) {
       setPhoneErr("Invalid phone number")
       setErrCont(contact.id)
       isValid = false;
@@ -122,7 +122,7 @@ let isValid = true;
     if (isValid == false) {
       return
     }
-  
+
     try {
       if (contact.id) {
         // If the contact has an id, send a PUT request to update the contact
@@ -165,6 +165,20 @@ let isValid = true;
     newContacts.splice(index, 1);
     setContacts(newContacts)
   }
+
+  const handleDeleteClick = async (contactid) => {
+    try {
+      const res = await axios.delete(`${url}api/contacts/${contactid}`, { headers });
+      toast.success("Family Member Deleted Succesfully")
+      getContacts()
+    } catch (error) {
+      toast.error("Server is Busy")
+    }
+  }
+
+
+
+
 
   return (
     <div className="add_property_btn">
@@ -283,6 +297,16 @@ let isValid = true;
                   </td>
                   <td className="family-add-btn"> {index == contacts.length - 1 && contact.id && <button className="permissions" onClick={handleAddFamilyMember}>Add More</button>}</td>
                   <td> {!contact.id && <button className="permissions" onClick={() => removefamily(index)}>Remove</button>}</td>
+                  {contact.id &&
+                    <td>
+                      <img className="delete-btn-ico" src="/delete.svg"
+                        onClick={() => {
+
+                          handleDeleteClick(contact.id)
+
+                        }
+                        } alt="" ></img>
+                    </td>}
                 </tr>
 
               ))}

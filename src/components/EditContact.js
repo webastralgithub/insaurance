@@ -30,7 +30,7 @@ const EditContact = ({ nameofuser }) => {
   const [ann, setAnn] = useState()
   const [emailError, setEmailError] = useState("")
   const [phoneError, setPhoneError] = useState("");
-  const [professionError, setProfessionError]= useState("")
+  const [professionError, setProfessionError] = useState("")
   const [selectedRealtor, setSelectedRealtor] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [firstError, setFirstError] = useState("");
@@ -83,7 +83,7 @@ const EditContact = ({ nameofuser }) => {
     }),
     control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
     input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
-    listbox: (styles) => ({ ...styles, zIndex: "99999" }),
+    listbox: (styles) => ({ ...styles, zIndex: "99999",backGround : "hidden" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
@@ -158,11 +158,27 @@ const EditContact = ({ nameofuser }) => {
     }
   };
 
-  let contactData ;
-  const validateForm = () => {
-     contactData = { ...editedContact, profession_id: seletedProfession.value };
-    let isValid = true;
+  let contactData;
 
+  const validateForm = () => {
+    // contactData = { ...editedContact, profession_id: seletedProfession.value };
+    contactData = {
+      firstname: editedContact.firstname,
+      email: editedContact.email,
+      profession_id: seletedProfession.value,
+      address1: editedContact.address1,
+      phone: editedContact.phone,
+      company: editedContact.company,
+      website: editedContact.website,
+      notes: editedContact.notes,
+      source: editedContact.source,
+      servceRequire: selectedServices.value,
+      realtorId: null,
+      isContact: true,
+      propertyId: null,
+    }
+
+    let isValid = true;
     if (!editedContact?.firstname) {
       setFirstError("Name is required");
       isValid = false;
@@ -258,7 +274,7 @@ const EditContact = ({ nameofuser }) => {
   }, [editedContact])
 
   const handleSaveClick = async () => {
-  
+
     let isValid = validateForm()
     if (!isValid) {
       return
@@ -563,7 +579,13 @@ const EditContact = ({ nameofuser }) => {
                   className="select-new"
                 />
               </div>
-              <span className="error-message" style={{ color: "red" }}>{professionError}</span>
+              <span styles={{
+                  Bottom: '14px',
+                  color: 'red',
+                  fontSize: '12px',
+                  right: '10%',
+                  fontWeight: '500'
+                }}>{professionError}</span>
 
 
               {/* <div className="form-user-add-inner-wrap  form-user-category-edit-contact">
@@ -665,6 +687,8 @@ const EditContact = ({ nameofuser }) => {
       <div className="parent">
         <ContactProperty id={editedContact.id} />
       </div>
+
+      
       <div className="parent">
 
         <ChildNotes nameofuser={nameofuser} id={editedContact.id} />

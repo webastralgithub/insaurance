@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import Places from "./Places";
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -206,14 +208,14 @@ const AddTodo = ({ user }) => {
   }, [debouncedSearchQuery, currentPage])
 
   const handleSearchChange = (e) => {
-    setLoading(true)
+   // setLoading(true)
     setSearchQuery(e.target.value);
     setNewSelected([])
     setssearch(1)
     setButtonOn(0)
     setContactError("")
   }
-  
+
   const handleSelect = (item) => {
     setSearchQuery(item.firstname)
     setButtonOn(2)
@@ -441,16 +443,19 @@ const AddTodo = ({ user }) => {
                     </div>
                   }
 
-                  {searchContacts.length ?
-                    <div className="scroll-for-contacts-search" style={{ height: "200px", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+                  {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
+                    <CircularProgress color="inherit" />
+                  </Stack> : <>      {searchContacts.length > 0 &&
+                    <div className="scroll-for-contacts-search" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
 
                       {searchContacts && searchContacts?.map((item) => (
                         <div key={item.id} >
-                          <p onClick={() => handleSelect(item)}>{item.firstname}</p>
+                          <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
                         </div>
                       ))}
                     </div>
-                    : ""}
+                  }
+                  </>}
                 </div>
 
                 {newSelected.id &&

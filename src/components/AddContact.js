@@ -8,10 +8,17 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import InputMask from 'react-input-mask';
 import Places from "./Places";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@fortawesome/free-solid-svg-icons";
+
+
 
 
 const AddContact = ({ user }) => {
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("")
+  const [firstError, setFirstError] = useState("");
+  const [professionError, setProfessionError] = useState("")
   const { auth, setConatctlength, contactlength } = useContext(AuthContext);
   const url = process.env.REACT_APP_API_URL;
   const headers = { Authorization: auth.token };
@@ -19,7 +26,8 @@ const AddContact = ({ user }) => {
     firstname: "",
     email: "",
     phone: "",
-    category: ""
+    category: "",
+    profession: ""
   });
   const [selectedServices, setSelectedServices] = useState([]);
   const [phoneError, setPhoneError] = useState("")
@@ -29,11 +37,12 @@ const AddContact = ({ user }) => {
   const [seletedProfession, setSeletedProfession] = useState([])
   const [categories, setCategories] = useState([])
   const [seletedCategory, setSelectedCategory] = useState(null);
+
   const [contact, setContact] = useState({
     firstname: "",
     lastname: "",
     email: "",
-    profession_id : "",
+    profession_id: "",
     address1: "",
     phone: "",
     company: "",
@@ -64,21 +73,43 @@ const AddContact = ({ user }) => {
   }
 
   const colourStyles = {
-    control: styles => ({ ...styles, border: 'unset', boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
+    valueContainer: (provided, state) => ({
+      ...provided,
+      paddingLeft: "10px",
+      fontSize: "14px",
+      fontWeight: '550',
+      color: '#000000e8',
+    }),
+    control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
+    input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
+    listbox: (styles) => ({ ...styles, zIndex: "99999", }),
+   
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
-        cursor: "pointer",
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#fff', // semi-transparent black
+        zIndex: 999999,
         backGround: "#fff",
         color: "#000",
         position: "relative",
-        zIndex: "99",
+        
         fontSize: "14px"
       };
     },
+    placeholder: (provided, state) => ({
+      ...provided,
+      color: '#000000e8',
+      marginLeft: "10px",
+      fontSize: "14px",
+      fontWeight: '500'
+
+    })
   };
-
-
 
   useEffect(() => {
     getCategories()
@@ -110,7 +141,8 @@ const AddContact = ({ user }) => {
       firstname: "",
       email: "",
       phone: "",
-      category: ""
+      category: "",
+      profession: ""
     });
 
     // Validate firstname
@@ -136,6 +168,7 @@ const AddContact = ({ user }) => {
     // }
     if (!contact.profession_id) {
       setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a profession" }));
+      console.log("errors profession", errors.profession)
       isValid = false;
     }
 
@@ -153,7 +186,7 @@ const AddContact = ({ user }) => {
       return
     }
 
-    
+
     try {
       const response = await axios.post(`${url}api/contacts`, contact, {
         headers,
@@ -212,61 +245,59 @@ const AddContact = ({ user }) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="form-user-add add-contact-from-adst add-contact-form">
-        <div className="property_header header-with-back-btn">
-          <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Contact</h3>
-        </div>
 
-        <div className="add-cnt-form-desc">
-          <div className="form-user-add-wrapper">
+      <div className="form-user-add">
+        <div>
+          <div className="property_header">
+            <h3>
+              {" "}
+              <button type="button" className="back-only-btn" onClick={goBack}>
+                {" "}
+                <img src="/back.svg" />
+              </button>{" "}
+              ADD Contact
+            </h3>
+            {/* <div className="top-bar-action-btns">
+          <button style={{ background: "#004686" }} onClick={handleSaveClick}>
+            Save
+          </button>
+          </div> */}
+          </div>
+        </div>
+        <div className="parent">
+          <div className="add_user_btn family_meber" >
+
+            <h4>
+              General Details
+            </h4>
+
+          </div>
+          <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">
             <div className="form-user-add-inner-wrap">
               <label>Name<span className="required-star">*</span></label>
-              <input
-                type="text"
-                name="firstname"
-                value={contact.firstname}
-                onChange={handleChange}
-              />
-              <span className="error-message">{errors.firstname}</span>
-            </div>
-            {/* <div className="form-user-add-inner-wrap">
-          <label>Last Name</label>
-          <input
-            type="text"
-            name="lastname"
-            value={contact.lastname}
-            onChange={handleChange}
-            
-          />
-        </div>
-      */}
-            <div className="form-user-add-inner-wrap">
-              <label>Email Id<span className="required-star">*</span></label>
-              <input
-                type="text"
-                name="email"
-                value={contact.email}
-                onChange={handleChange}
-              />
-              <span className="error-message">{errors.email}</span>
-            </div>
-      
 
-
-
-            <div className="form-user-add-inner-wrap">
-              {/* <label>Profession</label>
               <div className="edit-new-input">
                 <input
                   type="text"
-                  name="profession"
-                  value={contact.profession}
+                  name="firstname"
+                  value={contact.firstname}
                   onChange={handleChange}
                 />
-              </div>  */}
+                <span className="error-message">{errors.firstname}</span>
+              </div>
+            </div>
 
-
-
+            <div className="form-user-add-inner-wrap">
+              <label>Email<span className="required-star">*</span></label>
+              <div className="edit-new-input">
+                <input
+                  type="text"
+                  name="email"
+                  value={contact.email}
+                  onChange={handleChange}
+                />
+                <span className="error-message">{emailError}</span>
+              </div>
             </div>
 
             <div className="form-user-add-inner-wrap">
@@ -280,59 +311,44 @@ const AddContact = ({ user }) => {
                 />
               </div>
             </div>
-            {/* <div className="form-user-add-inner-wrap">
-          <label>Birth Date</label>
-          <input
-            type="date"
-            name="birthDate"
-            value={contact.birthDate}
-            onChange={handleChange}
-          /> 
-        </div>*/}
+
+
+
             <Places value={contact.address1} onChange={handleAddressChange} />
-
-
-
-
-            {/* <div className="form-user-add-inner-wrap">
-          <label>City</label>
-          <input
-            type="text"
-            name="city"
-            value={contact.city}
-            onChange={handleChange}
-          />
-        </div> */}
-
-
-            <div className="form-user-add-inner-wrap">
-              <label>Phone<span className="required-star">*</span></label>
-              <InputMask
-                mask="+1 (999) 999-9999"
-                type="text"
-                name="phone"
-                value={contact.phone}
-                onChange={handlePhoneNumberChange}
-                placeholder="+1 (___) ___-____"
-              />
-              <span className="error-message">{errors.phone}</span>
-            </div>
-            <div className="form-user-add-inner-wrap">
-              <label>Company Name</label>
-              <div className="edit-new-input">
-                <input
-                  type="text"
-                  name="company"
-                  value={contact.company}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="add-contact-user-custom-right">
             <div className="add-contact-user-custom-wrapper">
               <div className="add-contact-user-custom-left">
-                <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
+                <div className="form-user-add-inner-wrap">
+                  <label>Phone<span className="required-star">*</span></label>
+
+                  <div className="edit-new-input">
+                    <InputMask
+                      mask="+1 (999) 999-9999"
+                      type="text"
+                      name="phone"
+                      value={contact.phone}
+                      onChange={handlePhoneNumberChange}
+                      placeholder="+1 (___) ___-____"
+                    />
+                    <span className="error-message">{errors.phone}</span>
+                  </div>
+
+                </div>
+                <div className="form-user-add-inner-wrap">
+                  <label>Company Name</label>
+
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="company"
+                      value={contact.company}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+
+
+                <div className="form-user-add-inner-wrap  form-user-service-edit-contact">
                   <label>Service Require</label>
                   <Select
                     placeholder="Select Service(s) Required..."
@@ -348,68 +364,65 @@ const AddContact = ({ user }) => {
                     className="select-new"
                     isMulti
                   />
-
                 </div>
-                <div className="form-user-add-inner-wrap">
-              <label>Profession<span className="required-star">*</span></label>
-              <img src="/icons-form/Group30055.svg" />
-              <Select
-                placeholder="Select Profession.."
-                value={seletedProfession}
-                onChange={(selectedOption) => {
-                  setContact({ ...contact, profession_id: selectedOption.value })
-                  setSeletedProfession(selectedOption)
-                }}
-                options={profession}
-                components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                styles={colourStyles}
-                className="select-new"
-              />
-            </div>
-            <span className="error-message" style={{ color: "red" }}>{errors.profession}</span>
 
-                {/* <div className="form-user-add-inner-wrap">
-                  <label>Category<span className="required-star">*</span></label>
+                <div className="form-user-add-inner-wrap">
+                  <label>Profession<span className="required-star">*</span>     </label>
                   <img src="/icons-form/Group30055.svg" />
                   <Select
-                    placeholder="Select Category.."
-                    value={seletedCategory}
+                    placeholder="Select Profession.."
+                    value={seletedProfession}
                     onChange={(selectedOption) => {
-                      setContact({ ...contact, category: selectedOption.value })
-                      setSelectedCategory(selectedOption)
+                      setContact({ ...contact, profession_id: selectedOption.value })
+                      setSeletedProfession(selectedOption)
                     }}
-                    options={categories}
+                    options={profession}
                     components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
                     styles={colourStyles}
                     className="select-new"
                   />
-                </div> */}
-                {/* <span className="error-message" style={{ color: "red" }}>{errors.category}</span> */}
+                </div>
+                <span className="required-star error-message" styles={{
+                  Bottom: '14px',
+                  color: 'red',
+                  fontSize: '12px',
+                  right: '10%',
+                  fontWeight: '500'
+                }} >{errors.profession}</span>
+              </div>
+
+              <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">
+                <div className="form-user-add-inner-wrap">
+                  <label>Description</label>
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={contact.notes}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setContact({ ...contact, notes: data });
+                    }}
+                    config={{
+                      toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                    }}
+                    className="custom-ckeditor" // Add a custom class for CKEditor container
+                    style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="form-user-add-inner-wrap">
-              <label>Description</label>
-              <CKEditor
-                editor={ClassicEditor}
-                data={contact.notes}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setContact({ ...contact, notes: data });
-                }}
-                config={{
-                  toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-                }}
-                className="custom-ckeditor" // Add a custom class for CKEditor container
-                style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-              />
-            </div>
+
           </div>
         </div>
+
         <div className="form-user-add-inner-btm-btn-wrap">
-          <button type="submit" >Save</button>
+          <button style={{ background: "#004686" }} onClick={handleSubmit}>
+            Save
+          </button>
         </div>
-      </form>
+
+      </div >
+
     </>
   );
 };

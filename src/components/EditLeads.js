@@ -140,15 +140,31 @@ const EditLeads = () => {
   const colourStyles = {
     valueContainer: (provided, state) => ({
       ...provided,
-      paddingLeft: "0px"
+      paddingLeft: "0px",
+      fontSize: "14px",
+      fontWeight: '550',
+      color: '#000000e8',
     }),
     control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", borderColor: "unset", minHeight: "0" }),
     input: (styles) => ({ ...styles, margin: "0px" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
+        cursor: "pointer",
+        backGround: "#fff",
+        color: "#000",
+        position: "relative",
+        zIndex: "99",
+        fontSize: "14px"
       };
     },
+    placeholder: (provided, state) => ({
+      ...provided,
+      color: '#000000e8',
+      marginLeft: "25px",
+      fontSize: "14px",
+      fontWeight: '500'
+    })
   };
 
   useEffect(() => {
@@ -173,7 +189,7 @@ const EditLeads = () => {
       setSelectedSource(selectedSourceOptions)
 
     } catch (error) {
-      console.error("User creation failed:", error);
+      console.error("Lead Updated Succesfully ");
     }
   };
 
@@ -291,7 +307,7 @@ const EditLeads = () => {
       </div>
 
 
-      <div className="form-user-edit-inner-wrap form-user-add-wrapper">
+      <div className="form-user-edit-inner-wrap form-user-add-wrapper form-user-add-wrapper-lead-form">
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-name">
           <label>Name<span className="required-star">*</span></label>
           <div className="edit-new-input">

@@ -322,6 +322,8 @@ const SendMessage = ({ role }) => {
     }
   }, [selectedContacts]);
 
+
+  
   const customStyles = {
     content: {
       top: "50%",
@@ -343,34 +345,26 @@ const SendMessage = ({ role }) => {
   const colourStyles = {
     valueContainer: (styles) => ({
       ...styles,
-      overflowX: "auto",
-      flex: "unset",
-      flexWrap: "no-wrap",
-      width: selectedContacts.length > 0 ? "354px" : "100%",
-      padding: "2px 0",
-      "&::-webkit-scrollbar-track": {
-        "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.3)",
-        "border-radius": "10px",
-        "background-color": "rgb(0 70 134)",
-      },
-      "&::-webkit-scrollbar": {
-        height: "8px",
-        "background-color": "rgb(0 70 134)",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        "border-radius": "10px",
-        "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,.3)",
-        "background-color": "#373a47",
-      },
     }),
+  
     menu: (styles) => ({
       ...styles,
-      maxHeight: "242px",
-      minHeight: "242px",
-     // overflowY: "auto",
+      maxHeight: "196px",  // Adjust as necessary
+      minHeight: "181px",  // Adjust as necessary
       boxShadow: "none",
     }),
-    menuList: (styles) => ({ ...styles, }),
+  
+    menuList: (provided) => ({
+      ...provided,
+      maxHeight: '197px',  // Adjust as necessary
+      overflowY: 'auto',
+      position: 'relative',
+      WebkitOverflowScrolling: 'touch',
+      paddingBottom: '4px',
+      paddingTop: '4px',
+      boxSizing: 'border-box',
+    }),
+  
     multiValue: (styles) => ({ ...styles, minWidth: "unset" }),
     input: (styles) => ({ ...styles, color: "#fff" }),
     placeholder: (styles) => ({ ...styles, color: "#fff" }),
@@ -385,14 +379,13 @@ const SendMessage = ({ role }) => {
         "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
       padding: "10px 5px",
     }),
-
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      return {
-        ...styles,
-       overflow: 'hidden'
-      };
-    },
+  
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+      ...styles,
+      overflow: 'hidden',  // Example: Adjust other styles as needed
+    }),
   };
+
 
   const getContacts = async () => {
 
@@ -587,18 +580,20 @@ const SendMessage = ({ role }) => {
                     )
                   }}
                   styles={colourStyles}
-                  className="select-new"
+                  className="select-new "
                   isMulti
                 />
 
 
-                <div className="modal-convert-btns" style={{ background: 'white' }}>
+              <div className="modal-convert-btns" style={{ background: 'white' }}>
                   <button type="submit">{edit ? "Update Group" : "Add Group"}</button>
-                </div>
+                </div> 
               </form>
             </div>
           </Modal>
 
+        
+        
           {!view && <div className="form-user-add-wrapper">
             <div className="todo-section todo-sectionnew">
               <div className="todo-main-section todo-notes-section-new-left">
