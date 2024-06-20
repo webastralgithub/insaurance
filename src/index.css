@@ -1885,3 +1885,24 @@ body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-i
 form.add-task-setion-form .form-user-add-wrapper  .scroll-for-contacts-search p {
   margin: 0 0 10px 0;
 }
+
+.clone-select-type {
+  border: 2px solid #dfdada;
+  border-radius: 4px;
+}
+
+.clone-select-type div p {
+  margin: 0;
+}
+
+.clone-select-type div {
+  padding: 8px 15px;
+}
+
+.clone-select-type div:hover {
+  background-color: #35a6d31c;
+}
+
+.clone-select-type div:active {
+  background-color: #35a6d36e;
+}

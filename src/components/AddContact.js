@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AuthContext } from "./context/AuthContext";
@@ -16,6 +16,7 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 const AddContact = ({ user }) => {
   const navigate = useNavigate();
+  const errorScroll = useRef(null)
   const [emailError, setEmailError] = useState("")
   const [firstError, setFirstError] = useState("");
   const [professionError, setProfessionError] = useState("")
@@ -48,7 +49,6 @@ const AddContact = ({ user }) => {
     company: "",
     website: "",
     servceRequire: selectedServices,
-    category: seletedCategory,
     notes: "",
     source: "",
     createdBy: user,
@@ -83,7 +83,7 @@ const AddContact = ({ user }) => {
     control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
     input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
     listbox: (styles) => ({ ...styles, zIndex: "99999", }),
-   
+
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
@@ -97,7 +97,7 @@ const AddContact = ({ user }) => {
         backGround: "#fff",
         color: "#000",
         position: "relative",
-        
+
         fontSize: "14px"
       };
     },
@@ -172,21 +172,33 @@ const AddContact = ({ user }) => {
       isValid = false;
     }
 
-    if (!isValid) {
-      window.scrollTo(0, 0);
+    if (isValid == false) {
+    
+      console.log("scrolled to top")
+      
     }
 
     return isValid;
   };
 
+  const handlescroll = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+    errorScroll.current.focus();
+      errorScroll.current.scrollTop = 0;
+}
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
     if (!isValid) {
+      handlescroll()
       return
     }
-
-
     try {
       const response = await axios.post(`${url}api/contacts`, contact, {
         headers,
@@ -199,12 +211,18 @@ const AddContact = ({ user }) => {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
         });
-      } else if (response.data.status === false) {
-        toast.error(response.data.message)
       } else {
-        toast.error("Failed to add contact");
+        toast.error("email or phone is already exists" , {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        })
       }
+
     } catch (error) {
+      toast.error("email or phone is already exists" , {
+        autoClose: 2000,
+        position: toast.POSITION.TOP_RIGHT
+      })
       console.error("An error occurred while adding a contact:", error);
     }
   }
@@ -278,6 +296,7 @@ const AddContact = ({ user }) => {
 
               <div className="edit-new-input">
                 <input
+                  ref={errorScroll}
                   type="text"
                   name="firstname"
                   value={contact.firstname}
@@ -419,6 +438,7 @@ const AddContact = ({ user }) => {
           <button style={{ background: "#004686" }} onClick={handleSubmit}>
             Save
           </button>
+       
         </div>
 
       </div >

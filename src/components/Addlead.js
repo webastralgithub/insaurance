@@ -36,6 +36,9 @@ const AddLead = ({ user }) => {
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
   const containerRef = useRef(null);
+  const [isAlreadyContact, setIsAlreadyContact] = useState(0)
+
+
 
   const [contact, setContact] = useState({
     firstname: "",
@@ -138,6 +141,7 @@ const AddLead = ({ user }) => {
       fontWeight: '500'
     })
   };
+
   useEffect(() => {
     getCategories()
     getProfession()
@@ -169,14 +173,28 @@ const AddLead = ({ user }) => {
     }
   };
 
-
+  const errorScroll = useRef(null)
+  const handlescroll = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+    errorScroll.current.focus();
+      errorScroll.current.scrollTop = 0;
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
+    if (!isValid) {
+      handlescroll()
+      return
+    }
 
     let updatedData = seletedCategory.length && seletedCategory?.map((e) => e.value)
+
     let contactData = { ...contact, category: updatedData };
+
     let payloadData = {
       firstname: contactData.firstname,
       lastname: contactData.lastname,
@@ -194,28 +212,40 @@ const AddLead = ({ user }) => {
       realtorId: null,
       propertyId: null
     }
-    if (!isValid) {
-      return
-    }
+
+
+
     try {
-      const response = await axios.post(`${url}api/leads`, payloadData, {
-        headers,
-      });
-
-      if (response.status === 200) {
-        toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
-
-        setConatctlength(contactlength + 1)
-
-        setLeadlength(leadlength + 1)
-
-        navigate("/leads"); // Redirect to the contacts list page
-      } else if (response.data.status === false) {
-        toast.error(response.data.message)
+      if (isAlreadyContact === 0) {
+        console.log("this is new lead")
+        const response = await axios.post(`${url}api/leads`, payloadData, { headers });
+        if (response.status === 200) {
+          toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
+          setConatctlength(contactlength + 1)
+          setLeadlength(leadlength + 1)
+          navigate(-1);
+        } else if (response.data.status === false) {
+          toast.error(response.data.message)
+        }
+        else {
+          console.error("Failed to add contact");
+        }
       }
-      else {
-        console.error("Failed to add contact");
-      }
+
+      if (isAlreadyContact === 1) {
+       const response =await axios.put(`${url}api/contacts/${contactData.id}` ,payloadData , { headers })
+        if (response.status === 200) {
+            toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
+            setLeadlength(leadlength + 1)
+            navigate(-1);
+          } else if (response.data.status === false) {
+            toast.error(response.data.message)
+          }
+          else {
+            console.error("Failed to add contact");
+           }
+       }
+
     } catch (error) {
       console.error("An error occurred while adding a contact:", error);
     }
@@ -277,6 +307,7 @@ const AddLead = ({ user }) => {
 
 
   const handleSelect = async (item, id) => {
+    setIsAlreadyContact(1)
     setssearch(2)
     setContactname(item.firstname)
     setContact(item)
@@ -299,9 +330,9 @@ const AddLead = ({ user }) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-user-add form-add-lead leads-add-lead-form">
-      <div className="property_header header-with-back-btn">
+      <div  className="property_header header-with-back-btn">
 
-        <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Lead</h3>
+        <h3> <button type="button" ref={errorScroll} className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Lead</h3>
 
         <div className="top-bar-action-btns">
           {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
@@ -313,6 +344,7 @@ const AddLead = ({ user }) => {
         <div className="form-user-add-inner-wrap">
           <label>Name <span className="required-star">*</span></label>
           <input
+            
             type="text"
             name="firstname"
             value={contact.firstname}
@@ -322,19 +354,19 @@ const AddLead = ({ user }) => {
         </div>
 
 
-        {loading === true  ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
+        {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
           <CircularProgress color="inherit" />
-        </Stack> : <>      {searchContacts.length >0 &&
-            <div className="scroll-for-contacts-search" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+        </Stack> : <>      {searchContacts.length > 0 &&
+          <div className="scroll-for-contacts-search clone-select-type" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
 
-              {searchContacts && searchContacts?.map((item) => (
-                <div key={item.id} >
-                  <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
-                </div>
-              ))}
-            </div>
-          }
-          </>}
+            {searchContacts && searchContacts?.map((item) => (
+              <div key={item.id} >
+                <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
+              </div>
+            ))}
+          </div>
+        }
+        </>}
 
         <div className="form-user-add-inner-wrap">
           <label>Email Id<span className="required-star">*</span></label>

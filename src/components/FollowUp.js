@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
@@ -69,9 +69,22 @@ const Followup = () => {
     return isValid;
   };
 
+
+
+  const errorScroll = useRef(null)
+  const handlescroll = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+    errorScroll.current.focus();
+      errorScroll.current.scrollTop = 0;
+} 
+
   const handleSaveClick = async () => {
     const isValid = validateForm()
     if (!isValid) {
+      handlescroll()
       return
     }
     try {
@@ -138,6 +151,8 @@ const Followup = () => {
               {editingField === "Followup" || editingField === "all" ? (
                 <div className="edit-new-input">
                   <input
+                  
+                  ref={errorScroll}
                     name="Followup"
                     value={editedTodo?.Followup}
                     onChange={handleChange}

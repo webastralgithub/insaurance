@@ -23,6 +23,7 @@ const EditContact = ({ nameofuser }) => {
   const headers = {
     Authorization: auth.token,
   };
+
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
   const [editedContact, setEditedContact] = useState({});
@@ -123,7 +124,7 @@ const EditContact = ({ nameofuser }) => {
 
     getCategories()
     getProfession()
-  }, []);
+  }, [editedContact.id]);
 
   useEffect(() => {
     getContactDetails();
@@ -137,6 +138,8 @@ const EditContact = ({ nameofuser }) => {
         label: realtor.name,
       }));
       setProfession(options)
+      const dd = options.find((cat) => cat.value === editedContact.profession_id);
+      setSeletedProfession(dd)
 
     } catch (error) {
       console.error("User creation failed:", error);
@@ -162,6 +165,7 @@ const EditContact = ({ nameofuser }) => {
 
   const validateForm = () => {
     // contactData = { ...editedContact, profession_id: seletedProfession.value };
+    // selectedServices.value,
     contactData = {
       firstname: editedContact.firstname,
       email: editedContact.email,
@@ -172,7 +176,7 @@ const EditContact = ({ nameofuser }) => {
       website: editedContact.website,
       notes: editedContact.notes,
       source: editedContact.source,
-      servceRequire: selectedServices.value,
+      servceRequire:  selectedServices.map(option => option.value),
       realtorId: null,
       isContact: true,
       propertyId: null,
@@ -268,18 +272,23 @@ const EditContact = ({ nameofuser }) => {
   };
 
 
-  useEffect(() => {
-    const dd = profession.find((cat) => cat.value === editedContact.profession_id);
-    setSeletedProfession(dd)
-  }, [editedContact])
+  const errorScroll = useRef(null)
+  const handlescroll = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+    errorScroll.current.focus();
+      errorScroll.current.scrollTop = 0;
+}
 
   const handleSaveClick = async () => {
 
     let isValid = validateForm()
     if (!isValid) {
+      handlescroll()
       return
     }
-
     try {
 
       const response = await axios.put(`${url}api/contacts/${id}`, contactData, {
@@ -384,7 +393,7 @@ const EditContact = ({ nameofuser }) => {
             <label>Name<span className="required-star">*</span></label>
             {editingField === "firstname" || editingField === "all" ? (
               <div className="edit-new-input">
-                <input name="firstname" value={editedContact?.firstname} onChange={handleChange} placeholder="First Name" />
+                <input   ref={errorScroll}  name="firstname" value={editedContact?.firstname} onChange={handleChange} placeholder="First Name" />
                 <span className="error-message">{firstError}</span>
               </div>
             ) : (
@@ -453,9 +462,6 @@ const EditContact = ({ nameofuser }) => {
               />
             </div>
           </div>
-
-
-
           <Places value={editedContact.address1} onChange={handleAddressChange} />
           <div className="add-contact-user-custom-wrapper">
             <div className="add-contact-user-custom-left">

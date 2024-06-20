@@ -83,14 +83,10 @@ const Contact = ({ role }) => {
   const [error, setError] = useState("")
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [modalMode, setModalMode] = useState("");
-
-
   const [searchQuery, setSearchQuery] = useState("");
   const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
-
-
 
   const { auth, leadlength, setLeadlength, roleId } = useContext(AuthContext);
 
@@ -139,6 +135,7 @@ const Contact = ({ role }) => {
 
     }
   }
+
   const downloadExampleExcel = () => {
     const data = [
       ['Name', 'Email', 'Address', 'Phone'],];
@@ -179,6 +176,17 @@ const Contact = ({ role }) => {
   };
 
 
+
+  const [isAlreadyLead, setIsAlreadyLead] = useState()
+
+  const handleSelectCategory = (category) => {
+
+    const valuesToFind = category.split(',').map(Number);
+    let seletctedOptions = categories?.filter((item => valuesToFind.includes(item.value)))
+    setSelectedCategory(seletctedOptions)
+  }
+
+
   const convert = async (e) => {
     e.preventDefault()
 
@@ -187,18 +195,42 @@ const Contact = ({ role }) => {
       return
     }
 
-    let newCatData = seletedCategory.length && seletedCategory?.map((e) => e.value)
-    const response = await axios.put(`${url}api/leads/${id}`,
-      { isContact: 1, isLead: true, category: newCatData }, { headers });
-    getContacts();
-    if (response.status === 200) {
-      setLeadlength(leadlength + 1)
-      toast.success("Contact Converted successfully", {
-        autoClose: 3000,
-        position: toast.POSITION.TOP_RIGHT,
-      });
+
+
+    try {
+
+      //already lead and only change in category
+      if (isAlreadyLead === true) {
+        let newCatData = seletedCategory.length && seletedCategory?.map((e) => e.value)
+        const response = await axios.put(`${url}api/leads/${id}`,
+          { category: newCatData }, { headers });
+        toast.success(" Lead Updated successfully", {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setLeadlength(leadlength + 1)
+      }
+
+
+      // if contact than set is lead true 
+      if (isAlreadyLead === false) {
+        let newCatData = {
+          category: seletedCategory.length && seletedCategory?.map((e) => e.value),
+          isLead: true
+        }
+
+        const response = await axios.put(`${url}api/contacts/${id}`, newCatData, { headers })
+        toast.success("Contact Converted To Lead successfully", {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setLeadlength(leadlength + 1)
+      }
+
+      getContacts();
       setSelectedCategory()
       closeModal()
+    } catch (error) {
 
     }
   }
@@ -272,6 +304,7 @@ const Contact = ({ role }) => {
     setSelectedContacts([])
     setIsOpen(false);
   };
+
   const colourStylesCAt = {
     menu: (styles) => ({
       ...styles,
@@ -428,11 +461,7 @@ const Contact = ({ role }) => {
 
 
 
-  const handleSelectCategory = (category) => {
-    const valuesToFind = category.split(',').map(Number);
-    let seletctedOptions = categories?.filter((item => valuesToFind.includes(item.value)))
-    setSelectedCategory(seletctedOptions)
-  }
+
 
 
   const PlaceholderWithIcon = (props) => (
@@ -441,11 +470,10 @@ const Contact = ({ role }) => {
       <span>{props.children}</span>  <img style={{ width: "17px", filter: "brightness(4.5)" }} src="/search.svg" />
     </div>
   );
+
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
-  // Rest of your component remains the same...
-
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top inner-pages-top-contacts inner-pages-top-contacts-duplicate">
@@ -670,7 +698,7 @@ const Contact = ({ role }) => {
                       <button className={` ${contact?.isLead == true ? 'permissions share-ref-button-tb' : 'permissions'} `}
                         onClick={() => {
                           setId(contact.id)
-
+                          setIsAlreadyLead(contact.isLead)
                           if (contact?.category) {
                             handleSelectCategory(contact.category)
                           }

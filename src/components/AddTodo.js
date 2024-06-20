@@ -28,6 +28,9 @@ const useDebounce = (value, delay) => {
 
 
 const AddTodo = ({ user }) => {
+  const [buttonOn, setButtonOn] = useState(0)
+  const [profession, setProfession] = useState([])
+  const [seletedProfession, setSeletedProfession] = useState([])
   const { date } = useParams()
   const [dateTime, setDateTime] = useState(date ? new Date(date) : new Date());
   const url = process.env.REACT_APP_API_URL;
@@ -154,6 +157,8 @@ const AddTodo = ({ user }) => {
       } catch (error) {
         console.error("An error occurred while adding a contact:", error);
       }
+    } else {
+      handlescroll()
     }
   };
 
@@ -208,7 +213,7 @@ const AddTodo = ({ user }) => {
   }, [debouncedSearchQuery, currentPage])
 
   const handleSearchChange = (e) => {
-   // setLoading(true)
+    // setLoading(true)
     setSearchQuery(e.target.value);
     setNewSelected([])
     setssearch(1)
@@ -234,13 +239,12 @@ const AddTodo = ({ user }) => {
     firstname: "",
     lastname: "",
     email: "",
-    profession: "",
+    profession_id: "",
     address1: "",
     phone: "",
     company: "",
     website: "",
     servceRequire: selectedServices,
-    category: seletedCategory,
     notes: "",
     source: "",
     createdBy: user,
@@ -289,8 +293,8 @@ const AddTodo = ({ user }) => {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
     }
-    if (!contactNew.category) {
-      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+    if (!contactNew.profession_id) {
+      setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a Profession" }));
       isValid = false;
     }
 
@@ -300,14 +304,46 @@ const AddTodo = ({ user }) => {
     return isValid;
   };
 
+  const errorScroll = useRef(null)
+  const handlescroll = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+    errorScroll.current.focus();
+    errorScroll.current.scrollTop = 0;
+  }
+
+
+  const getProfession = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
+      const options = res.data.map((realtor) => ({
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setProfession(options)
+
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
+
+  useEffect(() => {
+    getProfession()
+  }, [])
+
+
   const handleSubmitNewPhone = async (e) => {
     e.preventDefault();
     const isValid = validateFormNewPhone();
     if (!isValid) {
+      //handlescroll()
       return
     }
+let newData 
     try {
-      const response = await axios.post(`${url}api/contacts`, contactNew, { headers });
+      const response = await axios.post(`${url}api/contacts`,contactNew , { headers });
       if (response.status === 201) {
         let getContact = await axios.get(`${url}api/contacts/${response.data.id}`, { headers });
         setConatctlength(contactlength + 1);
@@ -355,7 +391,9 @@ const AddTodo = ({ user }) => {
     { value: 'Insurance', label: 'Insurance' },
     { value: 'Immigration', label: 'Immigration' }
   ];
-  const [buttonOn, setButtonOn] = useState(0)
+
+  
+
   return (
 
     <>
@@ -377,6 +415,7 @@ const AddTodo = ({ user }) => {
 
                   <label>Task Title <span className="required-star">*</span></label>
                   <input
+                  
                     type="text"
                     name="Followup"
                     value={contact.Followup}
@@ -419,6 +458,7 @@ const AddTodo = ({ user }) => {
                 <div className="form-user-add-inner-wrap">
                   <label>Task description</label>
                   <input
+
                     type="text"
                     name="description"
                     value={contact.description}
@@ -446,7 +486,7 @@ const AddTodo = ({ user }) => {
                   {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
                     <CircularProgress color="inherit" />
                   </Stack> : <>      {searchContacts.length > 0 &&
-                    <div className="scroll-for-contacts-search" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+                    <div className="scroll-for-contacts-search clone-select-type" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
 
                       {searchContacts && searchContacts?.map((item) => (
                         <div key={item.id} >
@@ -457,6 +497,8 @@ const AddTodo = ({ user }) => {
                   }
                   </>}
                 </div>
+
+
 
                 {newSelected.id &&
                   <>
@@ -546,49 +588,66 @@ const AddTodo = ({ user }) => {
       {/* Add Contact Form */}
       {isContacts == false &&
         <>
-          <form onSubmit={handleSubmitNewPhone} className="form-user-add add-contact-from-adst add-contact-form">
-            <div className="property_header header-with-back-btn">
+  
 
-              <h3> <button type="button" className="back-only-btn" onClick={() => setIsContacts(true)}> <img src="/back.svg" /></button>Add Contact</h3>
+          {/* clone form */}
 
+
+          <div className="form-user-add">
+            <div>
+              <div className="property_header">
+                <h3>
+                  {" "}
+                  <button type="button" className="back-only-btn" onClick={goBack}>
+                    {" "}
+                    <img src="/back.svg" />
+                  </button>{" "}
+                  ADD Contact
+                </h3>
+                {/* <div className="top-bar-action-btns">
+          <button style={{ background: "#004686" }} onClick={handleSaveClick}>
+            Save
+          </button>
+          </div> */}
+              </div>
             </div>
+            <div className="parent">
+              <div className="add_user_btn family_meber" >
 
-            <div className="add-cnt-form-desc">
-              <div className="form-user-add-wrapper">
+                <h4>
+                  General Details
+                </h4>
 
+              </div>
+              <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">
                 <div className="form-user-add-inner-wrap">
                   <label>Name<span className="required-star">*</span></label>
-                  <input
-                    type="text"
-                    name="firstname"
-                    value={contactNew.firstname}
-                    onChange={handleChangeAddPhone}
 
-                  />
-                  <span className="error-message">{errors.firstname}</span>
-                </div>
-
-                <div className="form-user-add-inner-wrap">
-                  <label>Email Id<span className="required-star">*</span></label>
-                  <input
-                    type="text"
-                    name="email"
-                    value={contactNew.email}
-                    onChange={handleChangeAddPhone}
-                  />
-                  <span className="error-message">{errors.email}</span>
-                </div>
-                <div className="form-user-add-inner-wrap">
-                  <label>Profession</label>
                   <div className="edit-new-input">
                     <input
                       type="text"
-                      name="profession"
-                      value={contactNew.profession}
+                      name="firstname"
+                      value={contactNew.firstname}
                       onChange={handleChangeAddPhone}
+
                     />
+                    <span className="error-message">{errors.firstname}</span>
                   </div>
                 </div>
+
+                <div className="form-user-add-inner-wrap">
+                  <label>Email<span className="required-star">*</span></label>
+                  <div className="edit-new-input">
+                    <input
+                      type="text"
+                      name="email"
+                      value={contactNew.email}
+                      onChange={handleChangeAddPhone}
+                    />
+                    <span className="error-message">{errors.email}</span>
+                  </div>
+                </div>
+
                 <div className="form-user-add-inner-wrap">
                   <label>Website</label>
                   <div className="edit-new-input">
@@ -601,39 +660,44 @@ const AddTodo = ({ user }) => {
                   </div>
                 </div>
 
+
+
                 <Places value={contactNew.address1} onChange={handleAddressChange} />
+                <div className="add-contact-user-custom-wrapper">
+                  <div className="add-contact-user-custom-left">
+                    <div className="form-user-add-inner-wrap">
+                      <label>Phone<span className="required-star">*</span></label>
 
-                <div className="form-user-add-inner-wrap">
-                  <label>Phone<span className="required-star">*</span></label>
-                  <InputMask
-                    mask="+1 (999) 999-9999"
-                    type="text"
-                    name="phone"
-                    value={contactNew.phone}
-                    onChange={handlePhoneNumberChange}
-                    placeholder="+1 (___) ___-____"
+                      <div className="edit-new-input">
+                        <InputMask
+                          mask="+1 (999) 999-9999"
+                          type="text"
+                          name="phone"
+                          value={contactNew.phone}
+                          onChange={handlePhoneNumberChange}
+                          placeholder="+1 (___) ___-____"
 
-                  />
-                  <span className="error-message">{errors.phone}</span>
-                </div>
-                <div className="form-user-add-inner-wrap">
-                  <label>Company Name</label>
-                  <div className="edit-new-input">
-                    <input
+                        />
+                        <span className="error-message">{errors.phone}</span>
+                      </div>
+
+                    </div>
+                    <div className="form-user-add-inner-wrap">
+                      <label>Company Name</label>
+
+                      <div className="edit-new-input">
+                      <input
                       type="text"
                       name="company"
                       value={contactNew.company}
                       onChange={handleChangeAddPhone}
                     />
-                  </div>
-                </div>
-              </div>
+                      </div>
+                    </div>
 
-              <div className="add-contact-user-custom-right">
-                <div className="add-contact-user-custom-wrapper">
-                  <div className="add-contact-user-custom-left">
 
-                    <div className="form-user-add-inner-wrap  form-user-add-inner-wrap-add-contact-service">
+
+                    <div className="form-user-add-inner-wrap  form-user-service-edit-contact">
                       <label>Service Require</label>
                       <Select
                         placeholder="Select Service(s) Required..."
@@ -650,54 +714,74 @@ const AddTodo = ({ user }) => {
                         className="select-new"
                         isMulti // This is what enables multiple selections
                       />
-
                     </div>
+
                     <div className="form-user-add-inner-wrap">
-                      <label>Category<span className="required-star">*</span></label>
+                      <label>Profession<span className="required-star">*</span>     </label>
                       <img src="/icons-form/Group30055.svg" />
                       <Select
-                        placeholder="Select Category.."
-                        value={seletedCategory}
-                        onChange={(selectedOption) => {
-                          setContactNew({ ...contactNew, category: selectedOption.value })
-                          setSelectedCategory(selectedOption)
-                        }}
-                        options={categories}
-                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                        styles={colourStyles}
-                        className="select-new"
-
-                      />
+                    placeholder="Select Profession.."
+                    value={seletedProfession}
+                    onChange={(selectedOption) => {
+                      setContactNew({ ...contactNew, profession_id: selectedOption.value })
+                      setSeletedProfession(selectedOption)
+                    }}
+                    options={profession}
+                    components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                    styles={colourStyles}
+                    className="select-new"
+                  />
                     </div>
-                    <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
+                    <span className="required-star error-message" styles={{
+                      Bottom: '14px',
+                      color: 'red',
+                      fontSize: '12px',
+                      right: '10%',
+                      fontWeight: '500'
+                    }} >{errors.profession}</span>
                   </div>
 
+                  <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">
+                    <div className="form-user-add-inner-wrap">
+                      <label>Description</label>
+                      <CKEditor
+                        editor={ClassicEditor}
+                        data={contactNew.notes}
+                        onChange={(event, editor) => {
+                          const data = editor.getData();
+                          setContactNew({ ...contactNew, notes: data });
+                        }}
+                        config={{
+                          toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                        }}
+                        className="custom-ckeditor" // Add a custom class for CKEditor container
+                        style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                      />
+                    </div>
+                  </div>
                 </div>
 
 
-                <div className="form-user-add-inner-wrap">
-                  <label>Description</label>
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={contactNew.notes}
-                    onChange={(event, editor) => {
-                      const data = editor.getData();
-                      setContactNew({ ...contactNew, notes: data });
-                    }}
-                    config={{
-                      toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-                    }}
-                    className="custom-ckeditor" // Add a custom class for CKEditor container
-                    style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-                  />
-                </div>
               </div>
             </div>
+
             <div className="form-user-add-inner-btm-btn-wrap">
-              <button type="submit" >Save</button>
+              <button style={{ background: "#004686" }} onClick={handleSubmitNewPhone}>
+                Save
+              </button>
+
             </div>
-          </form>
+
+          </div >
+
+
+
+
         </>
+
+
+
+
       }
     </>
 

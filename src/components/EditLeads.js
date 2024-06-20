@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "react-select";
 import { faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -78,9 +78,6 @@ const EditLeads = () => {
 
 
   const validateForm = () => {
-
-
-
     let isValid = true;
 
     if (!editedContact.firstname) {
@@ -115,6 +112,7 @@ const EditLeads = () => {
 
 
     if (!isValid) {
+     
       window.scrollTo(0, 0)
     }
     return isValid;
@@ -233,6 +231,16 @@ const EditLeads = () => {
     setEditedContact({ ...editedContact, phone: rawPhoneNumber.slice(1, 11) });
   };
 
+  const errorScroll = useRef(null)
+  const handlescroll = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+    errorScroll.current.focus();
+      errorScroll.current.scrollTop = 0;
+}
+
   const handleSaveClick = async () => {
 
     let newContact = {
@@ -268,7 +276,10 @@ const EditLeads = () => {
       } catch (error) {
         console.error("An error occurred while updating the contact:", error);
       }
+    }else{
+      handlescroll()
     }
+
   };
 
   const goBack = () => {
@@ -276,21 +287,11 @@ const EditLeads = () => {
   };
 
 
-
-  // useEffect(() => {
-  //   if (editedContact && editedContact.category && Array.isArray(editedContact.category)) {
-  //     const dd = profession.find((cat) => cat.value === editedContact.profession_id);
-  //     const matchedCategories = categories.filter(category => editedContact.category.includes(category.value));
-  //     setSeletedProfession(dd);
-  //     setSelectedCategory(matchedCategories);
-  //   }
-  // }, [profession,categories, editedContact, data]);
-
   return (
     <div className="form-user-add">
       <div>
         <div className="property_header">
-          <h3>
+          <h3 ref={errorScroll}>
             {" "}
             <button type="button" className="back-only-btn" onClick={goBack}>
               {" "}
@@ -311,7 +312,7 @@ const EditLeads = () => {
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-name">
           <label>Name<span className="required-star">*</span></label>
           <div className="edit-new-input">
-            <input name="firstname" value={editedContact.firstname} onChange={handleChange} placeholder="Name" />
+            <input    name="firstname" value={editedContact.firstname} onChange={handleChange} placeholder="Name" />
             <span className="error-message">{firstError}</span>
           </div>
 
