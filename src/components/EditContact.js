@@ -305,7 +305,15 @@ const EditContact = ({ nameofuser }) => {
         console.error("Failed to update contact");
       }
     } catch (error) {
-      console.error("An error occurred while updating the contact:", error);
+      if(error.response.status === 409){
+        toast.error(error.response.data.message, {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        })
+      }  else{
+        toast.error("server is busy")
+        console.error("An error occurred while adding a contact:", error);
+      }
     }
   };
 

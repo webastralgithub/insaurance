@@ -154,7 +154,7 @@ const AddLead = ({ user }) => {
         label: realtor.name,
       }));
       setProfession(options)
-
+    
     } catch (error) {
       console.error(error);
     }
@@ -176,12 +176,12 @@ const AddLead = ({ user }) => {
   const errorScroll = useRef(null)
   const handlescroll = () => {
     window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+      top: 0,
+      behavior: "smooth"
     });
     errorScroll.current.focus();
-      errorScroll.current.scrollTop = 0;
-}
+    errorScroll.current.scrollTop = 0;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -217,7 +217,7 @@ const AddLead = ({ user }) => {
 
     try {
       if (isAlreadyContact === 0) {
-        console.log("this is new lead")
+
         const response = await axios.post(`${url}api/leads`, payloadData, { headers });
         if (response.status === 200) {
           toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
@@ -233,21 +233,29 @@ const AddLead = ({ user }) => {
       }
 
       if (isAlreadyContact === 1) {
-       const response =await axios.put(`${url}api/contacts/${contactData.id}` ,payloadData , { headers })
+        const response = await axios.put(`${url}api/contacts/${contactData.id}`, payloadData, { headers })
         if (response.status === 200) {
-            toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
-            setLeadlength(leadlength + 1)
-            navigate(-1);
-          } else if (response.data.status === false) {
-            toast.error(response.data.message)
-          }
-          else {
-            console.error("Failed to add contact");
-           }
-       }
+          toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
+          setLeadlength(leadlength + 1)
+          navigate(-1);
+        } else if (response.data.status === false) {
+          toast.error(response.data.message)
+        }
+        else {
+          console.error("Failed to add contact");
+        }
+      }
 
     } catch (error) {
-      console.error("An error occurred while adding a contact:", error);
+      if(error.response.status === 409){
+        toast.error(error.response.data.message, {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        })
+      }  else{
+        toast.error("server is busy")
+        console.error("An error occurred while adding a contact:", error);
+      }
     }
   }
 
@@ -306,17 +314,26 @@ const AddLead = ({ user }) => {
   }
 
 
-  const handleSelect = async (item, id) => {
+  const handleSelect = async (item, id, source, category) => {
     setIsAlreadyContact(1)
     setssearch(2)
     setContactname(item.firstname)
     setContact(item)
     setSearchContacts([])
+
+    //pre-selected profession of user if exists
     const matchedprofession = profession.find(insurance => insurance.value === id);
     setSeletedProfession(matchedprofession)
 
-    // const matchedCategories = categories?.filter(category => item?.category?.includes(category.value));
-    // setSelectedCategory(matchedCategories)
+    // pre-selected categories of user if exists
+    const valuesToFind = category.split(',').map(Number);
+    let seletctedOptions = categories?.filter((item => valuesToFind.includes(item.value)))
+    setSelectedCategory(seletctedOptions)
+
+    //pre-selected source of user if exists
+    let sourceData = sourceOptions.filter(element => element.value === source)
+    setSelectedSource(sourceData)
+   
   }
 
   useEffect(() => {
@@ -330,7 +347,7 @@ const AddLead = ({ user }) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-user-add form-add-lead leads-add-lead-form">
-      <div  className="property_header header-with-back-btn">
+      <div className="property_header header-with-back-btn">
 
         <h3> <button type="button" ref={errorScroll} className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Lead</h3>
 
@@ -344,7 +361,7 @@ const AddLead = ({ user }) => {
         <div className="form-user-add-inner-wrap">
           <label>Name <span className="required-star">*</span></label>
           <input
-            
+
             type="text"
             name="firstname"
             value={contact.firstname}
@@ -357,11 +374,11 @@ const AddLead = ({ user }) => {
         {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
           <CircularProgress color="inherit" />
         </Stack> : <>      {searchContacts.length > 0 &&
-          <div className="scroll-for-contacts-search clone-select-type" style={{ height: "auto", overflow: 'scroll', cursor: 'pointer' }} ref={containerRef}>
+          <div className="scroll-for-contacts-search clone-select-type add-lead-contact-dropdown" ref={containerRef}>
 
             {searchContacts && searchContacts?.map((item) => (
               <div key={item.id} >
-                <p onClick={() => handleSelect(item, item?.profession_id)}>{item.firstname}</p>
+                <p onClick={() => handleSelect(item, item?.profession_id , item.source , item.category)}>{item.firstname}</p>
               </div>
             ))}
           </div>

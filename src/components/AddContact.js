@@ -14,6 +14,7 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 
 
 
+
 const AddContact = ({ user }) => {
   const navigate = useNavigate();
   const errorScroll = useRef(null)
@@ -166,16 +167,18 @@ const AddContact = ({ user }) => {
     //   setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
     //   isValid = false;
     // }
-    if (!contact.profession_id) {
+    if (!seletedProfession.value) {
+
       setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a profession" }));
-      console.log("errors profession", errors.profession)
       isValid = false;
     }
 
     if (isValid == false) {
-    
-      console.log("scrolled to top")
-      
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
     }
 
     return isValid;
@@ -183,12 +186,12 @@ const AddContact = ({ user }) => {
 
   const handlescroll = () => {
     window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+      top: 0,
+      behavior: "smooth"
     });
     errorScroll.current.focus();
-      errorScroll.current.scrollTop = 0;
-}
+    errorScroll.current.scrollTop = 0;
+  }
 
 
 
@@ -212,18 +215,23 @@ const AddContact = ({ user }) => {
           position: toast.POSITION.TOP_RIGHT
         });
       } else {
-        toast.error("email or phone is already exists" , {
+        toast.error("email or phone is already exists", {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
         })
       }
 
     } catch (error) {
-      toast.error("email or phone is already exists" , {
-        autoClose: 2000,
-        position: toast.POSITION.TOP_RIGHT
-      })
-      console.error("An error occurred while adding a contact:", error);
+      if (error.response.status === 409) {
+        toast.error(error.response.data.message, {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        })
+      } else {
+        toast.error("server is busy")
+        console.error("An error occurred while adding a contact:", error);
+      }
+
     }
   }
 
@@ -315,7 +323,8 @@ const AddContact = ({ user }) => {
                   value={contact.email}
                   onChange={handleChange}
                 />
-                <span className="error-message">{emailError}</span>
+                <span className="error-message">{errors.email}</span>
+
               </div>
             </div>
 
@@ -386,7 +395,7 @@ const AddContact = ({ user }) => {
                 </div>
 
                 <div className="form-user-add-inner-wrap">
-                  <label>Profession<span className="required-star">*</span>     </label>
+                  <label>Profession<span className="required-star">*</span>       </label>
                   <img src="/icons-form/Group30055.svg" />
                   <Select
                     placeholder="Select Profession.."
@@ -401,13 +410,13 @@ const AddContact = ({ user }) => {
                     className="select-new"
                   />
                 </div>
-                <span className="required-star error-message" styles={{
-                  Bottom: '14px',
-                  color: 'red',
-                  fontSize: '12px',
-                  right: '10%',
-                  fontWeight: '500'
-                }} >{errors.profession}</span>
+                <span className="required-star " styles={{
+                    Bottom: '14px',
+                    color: 'red',
+                    fontSize: '12px',
+                    right: '10%',
+                    fontWeight: '500'
+                  }} >{errors.profession}</span>
               </div>
 
               <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">
@@ -438,7 +447,7 @@ const AddContact = ({ user }) => {
           <button style={{ background: "#004686" }} onClick={handleSubmit}>
             Save
           </button>
-       
+
         </div>
 
       </div >

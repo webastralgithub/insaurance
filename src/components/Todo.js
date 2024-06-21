@@ -313,12 +313,11 @@ const TodoList = ({ role }) => {
                         <img className="delete-btn-ico" src="/delete.svg"
                           onClick={() => { handleMarkAsread(!task.IsRead, task.id) }}
                         ></img>
-                        {/* Mark as {task.IsRead ? "unread" : "read"} */}
+                    
                       </td>
                     </tr>}
                   </>
                 ))}
-                {/* </>)} */}
               </tbody>
 
             </table>)}

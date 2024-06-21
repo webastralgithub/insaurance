@@ -157,8 +157,6 @@ const AddTodo = ({ user }) => {
       } catch (error) {
         console.error("An error occurred while adding a contact:", error);
       }
-    } else {
-      handlescroll()
     }
   };
 
@@ -213,7 +211,7 @@ const AddTodo = ({ user }) => {
   }, [debouncedSearchQuery, currentPage])
 
   const handleSearchChange = (e) => {
-    // setLoading(true)
+    setLoading(true)
     setSearchQuery(e.target.value);
     setNewSelected([])
     setssearch(1)
@@ -229,6 +227,12 @@ const AddTodo = ({ user }) => {
     setSearchContacts([])
     setContactError("")
   }
+
+  useEffect(() => {
+    if (searchQuery?.length == 0) {
+      setLoading(false)
+    }
+  }, [searchQuery])
 
   // Add contact Data
   const [selectedServices, setSelectedServices] = useState([]);
@@ -273,7 +277,8 @@ const AddTodo = ({ user }) => {
       firstname: "",
       email: "",
       phone: "",
-      category: ""
+      category: "", 
+      profession : ""
     });
 
     // Validate firstname
@@ -293,8 +298,9 @@ const AddTodo = ({ user }) => {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
     }
-    if (!contactNew.profession_id) {
-      setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a Profession" }));
+    if (!seletedProfession.value) {
+
+      setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a Profession" }));
       isValid = false;
     }
 
@@ -341,9 +347,9 @@ const AddTodo = ({ user }) => {
       //handlescroll()
       return
     }
-let newData 
+    let newData
     try {
-      const response = await axios.post(`${url}api/contacts`,contactNew , { headers });
+      const response = await axios.post(`${url}api/contacts`, contactNew, { headers });
       if (response.status === 201) {
         let getContact = await axios.get(`${url}api/contacts/${response.data.id}`, { headers });
         setConatctlength(contactlength + 1);
@@ -360,7 +366,15 @@ let newData
         toast.error("Failed to add contact");
       }
     } catch (error) {
-      console.error("An error occurred while adding a contact:", error);
+      if(error.response.status === 409){
+        toast.error(error.response.data.message, {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        })
+      }  else{
+        toast.error("server is busy")
+        console.error("An error occurred while adding a contact:", error);
+      }
     }
   }
 
@@ -392,7 +406,7 @@ let newData
     { value: 'Immigration', label: 'Immigration' }
   ];
 
-  
+
 
   return (
 
@@ -415,7 +429,7 @@ let newData
 
                   <label>Task Title <span className="required-star">*</span></label>
                   <input
-                  
+
                     type="text"
                     name="Followup"
                     value={contact.Followup}
@@ -588,7 +602,7 @@ let newData
       {/* Add Contact Form */}
       {isContacts == false &&
         <>
-  
+
 
           {/* clone form */}
 
@@ -686,12 +700,12 @@ let newData
                       <label>Company Name</label>
 
                       <div className="edit-new-input">
-                      <input
-                      type="text"
-                      name="company"
-                      value={contactNew.company}
-                      onChange={handleChangeAddPhone}
-                    />
+                        <input
+                          type="text"
+                          name="company"
+                          value={contactNew.company}
+                          onChange={handleChangeAddPhone}
+                        />
                       </div>
                     </div>
 
@@ -720,19 +734,19 @@ let newData
                       <label>Profession<span className="required-star">*</span>     </label>
                       <img src="/icons-form/Group30055.svg" />
                       <Select
-                    placeholder="Select Profession.."
-                    value={seletedProfession}
-                    onChange={(selectedOption) => {
-                      setContactNew({ ...contactNew, profession_id: selectedOption.value })
-                      setSeletedProfession(selectedOption)
-                    }}
-                    options={profession}
-                    components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                    styles={colourStyles}
-                    className="select-new"
-                  />
+                        placeholder="Select Profession.."
+                        value={seletedProfession}
+                        onChange={(selectedOption) => {
+                          setContactNew({ ...contactNew, profession_id: selectedOption.value })
+                          setSeletedProfession(selectedOption)
+                        }}
+                        options={profession}
+                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                        styles={colourStyles}
+                        className="select-new"
+                      />
                     </div>
-                    <span className="required-star error-message" styles={{
+                    <span className="required-star" styles={{
                       Bottom: '14px',
                       color: 'red',
                       fontSize: '12px',

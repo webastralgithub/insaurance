@@ -180,23 +180,17 @@ const Contact = ({ role }) => {
   const [isAlreadyLead, setIsAlreadyLead] = useState()
 
   const handleSelectCategory = (category) => {
-
     const valuesToFind = category.split(',').map(Number);
     let seletctedOptions = categories?.filter((item => valuesToFind.includes(item.value)))
     setSelectedCategory(seletctedOptions)
   }
 
-
   const convert = async (e) => {
     e.preventDefault()
-
     if (!seletedCategory?.length) {
       setError("Please select a Category")
       return
     }
-
-
-
     try {
 
       //already lead and only change in category
@@ -226,9 +220,9 @@ const Contact = ({ role }) => {
         });
         setLeadlength(leadlength + 1)
       }
-
+      setSelectedCategory([])
       getContacts();
-      setSelectedCategory()
+      
       closeModal()
     } catch (error) {
 

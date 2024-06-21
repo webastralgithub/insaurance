@@ -1872,10 +1872,21 @@ body .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .edit-new-i
   justify-content: space-between;
 }
 
+.add-lead-contact-dropdown{
+  height: auto;
+  cursor: pointer;
+  overflow: scroll;
+  background: white;
+  z-index: 999999;
+  position: absolute;
+  width: 100%;
+}
+
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .scroll-for-contacts-search {
   background: #fff !important;
   padding: 10px 15px 15px 15px;
   overflow-x: unset !important;
+
 }
 
 .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap .scroll-for-contacts-search div {
