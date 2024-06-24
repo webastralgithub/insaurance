@@ -287,7 +287,7 @@ const TodoList = ({ role }) => {
                         {formatDate(task.FollowupDate)}
                       </td>
                       <td>{task?.contact?.firstname}</td>
-                      <td>{task?.contact?.company}</td>
+                      <td>{task?.contact?.business_name}</td>
                       <td>{task?.contact?.profession ? task?.contact?.profession?.name : ""}</td>
                       <td>{formatPhoneNumber(task?.contact?.phone)}</td>
                       <td>{task?.contact?.email}</td>

@@ -18,19 +18,10 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 const AddContact = ({ user }) => {
   const navigate = useNavigate();
   const errorScroll = useRef(null)
-  const [emailError, setEmailError] = useState("")
-  const [firstError, setFirstError] = useState("");
-  const [professionError, setProfessionError] = useState("")
   const { auth, setConatctlength, contactlength } = useContext(AuthContext);
   const url = process.env.REACT_APP_API_URL;
   const headers = { Authorization: auth.token };
-  const [errors, setErrors] = useState({
-    firstname: "",
-    email: "",
-    phone: "",
-    category: "",
-    profession: ""
-  });
+
   const [selectedServices, setSelectedServices] = useState([]);
   const [phoneError, setPhoneError] = useState("")
 
@@ -38,40 +29,39 @@ const AddContact = ({ user }) => {
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
   const [categories, setCategories] = useState([])
-  const [seletedCategory, setSelectedCategory] = useState(null);
 
   const [contact, setContact] = useState({
     firstname: "",
-    lastname: "",
-    email: "",
+    business_name: "",
     profession_id: "",
-    address1: "",
     phone: "",
+    email: "",
+
+    address1: "",
     company: "",
     website: "",
     servceRequire: selectedServices,
     notes: "",
     source: "",
+
+
     createdBy: user,
     realtorId: null,
     isContact: true,
     propertyId: null,
   });
 
-  const serviceOptions = [
-    { value: 'Real Estate', label: 'Real Estate' },
-    { value: 'Mortgage', label: 'Mortgage' },
-    { value: 'Insurance', label: 'Insurance' },
-    { value: 'Immigration', label: 'Immigration' }
-  ];
+  const [errors, setErrors] = useState({
+    firstname: "",
+    business_name: "",
+    profession_id: "" ,
+    email: "",
+    phone: ""
+  });
 
-
-
-  const handlePhoneNumberChange = (event) => {
-    setPhoneError("")
-    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-    setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
-  }
+  const goBack = () => {
+    navigate(-1);
+  };
 
   const colourStyles = {
     valueContainer: (provided, state) => ({
@@ -111,39 +101,80 @@ const AddContact = ({ user }) => {
 
     })
   };
+  const serviceOptions = [
+    { value: 'Real Estate', label: 'Real Estate' },
+    { value: 'Mortgage', label: 'Mortgage' },
+    { value: 'Insurance', label: 'Insurance' },
+    { value: 'Immigration', label: 'Immigration' }
+  ];
+
+  const handlescroll = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+    errorScroll.current.focus();
+    errorScroll.current.scrollTop = 0;
+  }
 
   useEffect(() => {
-    getCategories()
     getProfession()
   }, []);
 
-  const getCategories = async () => {
+
+  const getProfession = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
       const options = res.data.map((realtor) => ({
         value: realtor.id,
         label: realtor.name,
       }));
-      setCategories(options)
+      setProfession(options)
+
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
-  const validateForm = () => {
-    let isValid = true;
-    const { firstname, email, phone } = contact;
 
-    const trimmedFirstName = firstname.trim();
-    const trimmedEmail = email.trim();
-    const trimmedPhone = phone.trim();
 
-    // Reset errors
+  const handlePhoneNumberChange = (event) => {
+    setErrors({ phone: "" })
+    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
+    setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
+  }
+  const handleAddressChange = (newAddress) => {
+    setContact({ ...contact, address1: newAddress });
+  };
+
+  const handleChange = (e) => {
     setErrors({
       firstname: "",
       email: "",
       phone: "",
-      category: "",
-      profession: ""
+      category: ""
+    })
+    const { name, value } = e.target;
+    setContact({ ...contact, [name]: value });
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    setContact({ ...contact, profession_id: seletedProfession.value });
+    const { firstname, business_name, profession_id, email, phone } = contact;
+
+    const trimmedFirstName = firstname.trim();
+    const trimmedBusinessname = business_name.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedEmail = email.trim();
+
+
+    // Reset errors
+    setErrors({
+      firstname: "",
+      business_name: "",
+      profession_id: "",
+      phone: "",
+      email: ""
     });
 
     // Validate firstname
@@ -163,13 +194,14 @@ const AddContact = ({ user }) => {
       setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
     }
-    // if (!contact.category) {
-    //   setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
-    //   isValid = false;
-    // }
-    if (!seletedProfession.value) {
 
-      setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a profession" }));
+    //validate business Name
+    if (!trimmedBusinessname) {
+      setErrors(prevErrors => ({ ...prevErrors, business_name: "Business Name is Required" }));
+      isValid = false;
+    }
+    if (!profession_id) {
+      setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a profession" }));
       isValid = false;
     }
 
@@ -178,22 +210,9 @@ const AddContact = ({ user }) => {
         top: 0,
         behavior: "smooth"
       });
-
     }
-
     return isValid;
   };
-
-  const handlescroll = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-    errorScroll.current.focus();
-    errorScroll.current.scrollTop = 0;
-  }
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,7 +234,7 @@ const AddContact = ({ user }) => {
           position: toast.POSITION.TOP_RIGHT
         });
       } else {
-        toast.error("email or phone is already exists", {
+        toast.error(response.data.message, {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
         })
@@ -235,43 +254,8 @@ const AddContact = ({ user }) => {
     }
   }
 
-  const handleAddressChange = (newAddress) => {
-    setContact({ ...contact, address1: newAddress });
-  };
-
-  const handleChange = (e) => {
-    setErrors({
-      firstname: "",
-      email: "",
-      phone: "",
-      category: ""
-    })
-    const { name, value } = e.target;
-    setContact({ ...contact, [name]: value });
-  };
-
-  const goBack = () => {
-    navigate(-1);
-  };
-
-  const getProfession = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
-      const options = res.data.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.name,
-      }));
-      setProfession(options)
-
-    } catch (error) {
-      console.error("User creation failed:", error);
-    }
-  };
-
-
   return (
     <>
-
       <div className="form-user-add">
         <div>
           <div className="property_header">
@@ -362,15 +346,16 @@ const AddContact = ({ user }) => {
 
                 </div>
                 <div className="form-user-add-inner-wrap">
-                  <label>Company Name</label>
+                  <label>Bussiness Name<span className="required-star">*</span></label>
 
                   <div className="edit-new-input">
                     <input
                       type="text"
-                      name="company"
-                      value={contact.company}
+                      name="business_name"
+                      value={contact.business_name}
                       onChange={handleChange}
                     />
+                    <span className="error-message">{errors.business_name}</span>
                   </div>
                 </div>
 
@@ -401,6 +386,7 @@ const AddContact = ({ user }) => {
                     placeholder="Select Profession.."
                     value={seletedProfession}
                     onChange={(selectedOption) => {
+                      setErrors({ profession_id: "" })
                       setContact({ ...contact, profession_id: selectedOption.value })
                       setSeletedProfession(selectedOption)
                     }}
@@ -411,12 +397,12 @@ const AddContact = ({ user }) => {
                   />
                 </div>
                 <span className="required-star " styles={{
-                    Bottom: '14px',
-                    color: 'red',
-                    fontSize: '12px',
-                    right: '10%',
-                    fontWeight: '500'
-                  }} >{errors.profession}</span>
+                  Bottom: '14px',
+                  color: 'red',
+                  fontSize: '12px',
+                  right: '10%',
+                  fontWeight: '500'
+                }} >{errors.profession_id}</span>
               </div>
 
               <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">

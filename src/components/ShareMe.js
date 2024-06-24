@@ -515,9 +515,11 @@ const ShareMe = ({ role }) => {
                   <tr>
                     <th></th>
                     <th>Name</th>
+                    <th>Business Name</th>
+                    <th>Profession</th>
                     <th>Phone</th>
                     <th>Email Id</th>
-                    <th>Profession</th>
+                   
                   </tr>
                 </thead>
 
@@ -532,23 +534,11 @@ const ShareMe = ({ role }) => {
                             sendRefferal(contact)
                           }} >Share</button>       </td>
                         <td>{contact.firstname}</td>
+                        <td>{contact.business_name}</td>
+                        <td>{contact.profession_id > 0? contact.profession.name : ""}</td>
                         <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                         <td>{contact.email}</td>
-
-                        {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
-
-                        <td>{contact.category?.name}</td>
-
-
-                        {/* <td> 
-                   
-                 <button className="permissions"
-                   onClick={() => {changeView(Number(contact.id),contact.firstname)
-
-                  }}> Family Members</button>
-                    
-         
-         </td> */}
+                
                       </tr>
                     </tbody>))}
                 </>
@@ -566,9 +556,11 @@ const ShareMe = ({ role }) => {
                             handleShareKlintaleClick(contact)
                           }} >Share</button>       </td>
                         <td>{contact?.name}</td>
+                        <td>{contact?.business_name}</td>
+                        <td>{contact?.category_name}</td>
                         <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
                         <td>{contact?.email}</td>
-                        <td>{contact?.category_name}</td>
+                     
                       </tr>
 
 

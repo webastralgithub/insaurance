@@ -92,16 +92,20 @@ const Followup = () => {
       const response = await axios.post(`${url}api/todo`,
         { ...restOfEditedTodo, Followup: editedTodo.Followup, taskId: id },
         { headers });
-      if (response.status === 200) {
+      if (response.status === 201) {
         setLeadlength(leadlength + 1)
+        navigate(-1)
+        toast.success("Followup updated successfully", {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        setEditingField(null);
+      }else{
+        toast.error(response.data.message, {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        })
       }
-
-      navigate(-1)
-      toast.success("Followup updated successfully", {
-        autoClose: 2000,
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      setEditingField(null);
     } catch (error) {
       toast.error("Server is Busy")
       console.error(error)
@@ -246,7 +250,7 @@ const Followup = () => {
                 <label>Business Name</label>
                 <input
                   type="text"
-                  value={newSelected?.company}
+                  value={newSelected?.business_name}
                   readOnly
                 />
               </div>

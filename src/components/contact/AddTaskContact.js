@@ -57,7 +57,10 @@ const AddTaskContact = () => {
         toast.success("Task Created Successfully")
         navigate(-1); // Redirect to the contacts list page
       } else {
-        console.error("Failed to add contact");
+        toast.error(response.data.message, {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT
+        })
       }
     } catch (error) {
       console.error("An error occurred while adding a contact:", error);
@@ -157,7 +160,7 @@ const AddTaskContact = () => {
                 <label>Business Name</label>
                 <input
                   type="text"
-                  value={newSelected?.company}
+                  value={newSelected?.business_name}
                   readOnly
                 />
               </div>

@@ -130,22 +130,8 @@ const EditTodoForm = ({ user }) => {
     getProfession()
   }, [])
 
-  const getCategories = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
-      const options = res.data.map((realtor) => ({
-        key: realtor.id,
-        value: realtor.id,
-        label: realtor.name,
-      }));
-      setCategories(options)
-    } catch (error) {
-      console.error("User creation failed:", error);
-    }
-  };
   useEffect(() => {
     getTodos()
-    getCategories()
   }, []);
 
 
@@ -161,10 +147,6 @@ const EditTodoForm = ({ user }) => {
         isValid = false;
       }
     }
-
-
-
-
     if (!isValid) {
       window.scrollTo(0, 0)
     }
@@ -228,14 +210,6 @@ const EditTodoForm = ({ user }) => {
     }
   }
 
-
-
-  // const handlePhoneNumberChange = (event) => {
-  //   // Extract the raw phone number from the input
-  //   const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-  //   // Update the phone number state with the raw input
-  //   setEditedTodo({ ...editedTodo, phone: rawPhoneNumber.slice(1, 11) });
-  // };
   const [loading, setLoading] = useState(false)
   const getSearchContact = async () => {
     setLoading(true)
@@ -285,12 +259,9 @@ const EditTodoForm = ({ user }) => {
 
   // Add contact Data
   const [selectedServices, setSelectedServices] = useState([]);
-  const [categories, setCategories] = useState([])
-  const [seletedCategory, setSelectedCategory] = useState(null);
-
   const [contactNew, setContactNew] = useState({
     firstname: "",
-    lastname: "",
+    business_name: '',
     email: "",
     profession_id: "",
     address1: "",
@@ -311,17 +282,19 @@ const EditTodoForm = ({ user }) => {
     email: "",
     phone: "",
     category: "",
-    profession : ""
+    profession: "",
+    business_name: ""
   });
 
 
   const validateFormNewPhone = () => {
     let isValid = true;
-    const { firstname, email, phone } = contactNew;
+    const { firstname, email, phone, business_name } = contactNew;
 
     const trimmedFirstName = firstname.trim();
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
+    const trimmedBusinessname = business_name.trim();
 
     // Reset errors
     setErrors({
@@ -337,6 +310,12 @@ const EditTodoForm = ({ user }) => {
       isValid = false;
     }
 
+    //validate business Name
+    if (!trimmedBusinessname) {
+      setErrors(prevErrors => ({ ...prevErrors, business_name: "Business Name is Required" }));
+      isValid = false;
+    }
+
     // Validate email
     if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
@@ -349,7 +328,7 @@ const EditTodoForm = ({ user }) => {
       isValid = false;
     }
     if (!seletedProfession.value) {
-  
+
       setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a profession" }));
       isValid = false;
     }
@@ -396,12 +375,12 @@ const EditTodoForm = ({ user }) => {
         toast.error("Failed to add contact");
       }
     } catch (error) {
-      if(error.response.status === 409){
+      if (error.response.status === 409) {
         toast.error(error.response.data.message, {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
         })
-      }  else{
+      } else {
         toast.error("server is busy")
         console.error("An error occurred while adding a contact:", error);
       }
@@ -425,7 +404,8 @@ const EditTodoForm = ({ user }) => {
       firstname: "",
       email: "",
       phone: "",
-      category: ""
+      category: "",
+      business_name: ""
     })
     const { name, value } = e.target;
     setContactNew({ ...contactNew, [name]: value });
@@ -441,15 +421,15 @@ const EditTodoForm = ({ user }) => {
   return (
 
     <div className="form-user-add">
-            {isContact == true && <>
-      <div >
-        <div className="property_header">
-          <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Edit Task</h3>
-          {/* <div className="top-bar-action-btns">
+      {isContact == true && <>
+        <div >
+          <div className="property_header">
+            <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Edit Task</h3>
+            {/* <div className="top-bar-action-btns">
             <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
           </div> */}
+          </div>
         </div>
-      </div>
 
         <div className="form-user-edit-inner-wrap form-user-add-wrapper">
           <div className="todo-section">
@@ -577,7 +557,7 @@ const EditTodoForm = ({ user }) => {
                     <label>Business Name</label>
                     <input
                       type="text"
-                      value={newSelected?.company}
+                      value={newSelected?.business_name}
                       readOnly
                     />
                   </div>
@@ -664,8 +644,8 @@ const EditTodoForm = ({ user }) => {
 
 
         </div>
-        </>
-        }
+      </>
+      }
       {/* Add Contact Form */}
       {isContact == false &&
         <>
@@ -764,15 +744,16 @@ const EditTodoForm = ({ user }) => {
 
                     </div>
                     <div className="form-user-add-inner-wrap">
-                      <label>Company Name</label>
+                      <label>Business Name<span className="required-star">*</span></label>
 
                       <div className="edit-new-input">
                         <input
                           type="text"
-                          name="company"
-                          value={contactNew.company}
+                          name="business_name"
+                          value={contactNew.business_name}
                           onChange={handleChangeAddPhone}
                         />
+                        <span className="error-message">{errors.business_name}</span>
                       </div>
                     </div>
 
@@ -814,14 +795,14 @@ const EditTodoForm = ({ user }) => {
                       />
                     </div>
                     <span className="required-star " styles={{
-                    Bottom: '14px',
-                    color: 'red',
-                    fontSize: '12px',
-                    right: '10%',
-                    fontWeight: '500'
-                  }} >{errors.profession}</span>
+                      Bottom: '14px',
+                      color: 'red',
+                      fontSize: '12px',
+                      right: '10%',
+                      fontWeight: '500'
+                    }} >{errors.profession}</span>
                   </div>
-              
+
                   <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">
                     <div className="form-user-add-inner-wrap">
                       <label>Description</label>

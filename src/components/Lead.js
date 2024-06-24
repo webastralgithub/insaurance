@@ -71,7 +71,7 @@ const Lead = () => {
     }
   };
 
-  
+
 
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/contacts${propertyId}`, { headers });
@@ -493,9 +493,11 @@ const Lead = () => {
 
                         <tr>
                           <th>Name</th>
+                          <th>Bussiness Name</th>
+                          <th>Profession</th>
                           <th>Phone</th>
                           <th>Email</th>
-                          <th>Source</th>
+
                           <th>Date</th>
                         </tr>
                       </thead>
@@ -504,10 +506,12 @@ const Lead = () => {
 
                           <tr key={contact.id}>
                             <td className="property-link" onClick={() => navigate(`/leads/edit/${contact.id}`, { state: { data: contact } })} >{contact.firstname}{" "} {contact.lastname}</td>
-                            {/* onClick={() => navigate(`/leads/edit/${contact.id}` ,  { state: { data: contact } })}                   */}
+                            {/* onClick={() => navigate(`/leads/edit/${contact.id}` ,  { state: { data: contact } })}  
+                                             */}
+                            <td>{contact.business_name}</td>
+                            <td>{contact.profession_name}</td>
                             <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                             <td>{contact.email}</td>
-                            <td>{contact.source}</td>
                             <td>{contact.created_at.slice(0, 10)}</td>
                             {/* <td>{contact.category}</td> */}
 
@@ -530,7 +534,7 @@ const Lead = () => {
                                   } alt="" ></img>
                               </td>
                               : ""}
-                           
+
                           </tr>
 
                         </tbody>))}

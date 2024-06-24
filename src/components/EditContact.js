@@ -4,55 +4,61 @@ import Select from "react-select";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import InputMask from "react-input-mask";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Places from "./Places";
 import ChildContact from "./ChildContact";
-import AddContactNew from "./AddContactNew";
 import ContactProperty from "./contact/ContactProperty";
 import ChildNotes from "./ChildNotes";
 
 const EditContact = ({ nameofuser }) => {
   const { id } = useParams();
-  const { auth } = useContext(AuthContext);
+  const location = useLocation();
+  const { data } = location.state;
   const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
   const url = process.env.REACT_APP_API_URL;
   const headers = {
     Authorization: auth.token,
   };
-
+  const [birth, setBirth] = useState("")
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [editingField, setEditingField] = useState('all');
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
-  const [editedContact, setEditedContact] = useState({});
-  const [birth, setBirth] = useState("")
-  const [ann, setAnn] = useState()
-  const [emailError, setEmailError] = useState("")
-  const [phoneError, setPhoneError] = useState("");
-  const [professionError, setProfessionError] = useState("")
-  const [selectedRealtor, setSelectedRealtor] = useState(null);
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [firstError, setFirstError] = useState("");
-  const [selectedAgent, setSelectedAgent] = useState(null);
-  const [categories, setCategories] = useState([])
-  const [seletedCategory, setSelectedCategory] = useState(null);
-  const [editingField, setEditingField] = useState('all');
-  const noSelectionOption = { value: null, label: 'No Selection' };
+  const [editedContact, setEditedContact] = useState(data);
+  const [errors, setErrors] = useState({
+    firstname: "",
+    business_name: "",
+    profession_id: "",
+    email: "",
+    phone: ""
+  });
 
   const handleChange = (e) => {
+    setErrors({
+      firstname: "",
+      business_name: "",
+      profession_id: "",
+      email: "",
+      phone: ""
+    });
     const { name, value } = e.target;
-    clearErrors(name)
     setEditedContact({ ...editedContact, [name]: value });
-    if (name == 'birthday') {
-      const birth = formatDate(value)
-      setBirth(birth)
-    }
-    if (name == "anniversary") {
-      const birth = formatDate(value)
-      setAnn(birth)
-    }
+
+  };
+
+  const handlePhoneNumberChange = (event) => {
+    setErrors({ phone: "" })
+    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
+    setEditedContact({ ...editedContact, phone: rawPhoneNumber.slice(1, 11) });
+  };
+
+  const handleAddressChange = (newAddress) => {
+    setEditedContact({ ...editedContact, address1: newAddress });
   };
 
   const handleEditClick = (field) => {
@@ -63,10 +69,7 @@ const EditContact = ({ nameofuser }) => {
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
-  const handleAddressChange = (newAddress) => {
 
-    setEditedContact({ ...editedContact, address1: newAddress });
-  };
   const serviceOptions = [
     { value: 'Real Estate', label: 'Real Estate' },
     { value: 'Mortgage', label: 'Mortgage' },
@@ -84,7 +87,7 @@ const EditContact = ({ nameofuser }) => {
     }),
     control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
     input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
-    listbox: (styles) => ({ ...styles, zIndex: "99999",backGround : "hidden" }),
+    listbox: (styles) => ({ ...styles, zIndex: "99999", backGround: "hidden" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
@@ -105,30 +108,9 @@ const EditContact = ({ nameofuser }) => {
     })
   };
 
-  const clearErrors = (fieldName) => {
-    switch (fieldName) {
-      case "firstname":
-        setFirstError("");
-        break;
-      case "phone":
-        setPhoneError("");
-        break;
-      case "email":
-        setEmailError("")
-        break;
-      default:
-        break;
-    }
-  };
   useEffect(() => {
-
-    getCategories()
     getProfession()
   }, [editedContact.id]);
-
-  useEffect(() => {
-    getContactDetails();
-  }, [])
 
   const getProfession = async () => {
     try {
@@ -138,160 +120,110 @@ const EditContact = ({ nameofuser }) => {
         label: realtor.name,
       }));
       setProfession(options)
-      const dd = options.find((cat) => cat.value === editedContact.profession_id);
+      const dd = options.filter((cat) => cat.value == editedContact.profession_id);
       setSeletedProfession(dd)
 
+      //set service require
+      const setServicerequire = JSON.parse(editedContact.servceRequire).map(option => { return { value: option, label: option } })
+      setSelectedServices(setServicerequire)
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
 
-  const getCategories = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
-      const options = res.data.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.name,
-      }));
-
-      setCategories([noSelectionOption, ...options])
-
-    } catch (error) {
-      console.error("User creation failed:", error);
-    }
+  const goBack = () => {
+    navigate(`/contacts`);
   };
 
-  let contactData;
 
   const validateForm = () => {
-    // contactData = { ...editedContact, profession_id: seletedProfession.value };
-    // selectedServices.value,
-    contactData = {
-      firstname: editedContact.firstname,
-      email: editedContact.email,
-      profession_id: seletedProfession.value,
-      address1: editedContact.address1,
-      phone: editedContact.phone,
-      company: editedContact.company,
-      website: editedContact.website,
-      notes: editedContact.notes,
-      source: editedContact.source,
-      servceRequire:  selectedServices.map(option => option.value),
-      realtorId: null,
-      isContact: true,
-      propertyId: null,
-    }
-
     let isValid = true;
-    if (!editedContact?.firstname) {
-      setFirstError("Name is required");
+    setEditedContact({ ...editedContact, profession_id: seletedProfession.value, servceRequire: selectedServices });
+    const { firstname, business_name, profession_id, email, phone } = editedContact;
+    const trimmedFirstName = firstname?.trim();
+    const trimmedBusinessname = business_name?.trim();
+    const trimmedPhone = phone?.trim();
+    const trimmedEmail = email?.trim();
+    setErrors({
+      firstname: "",
+      business_name: "",
+      profession_id: "",
+      phone: "",
+      email: ""
+    });
+
+    // Validate firstname
+    if (!trimmedFirstName) {
+      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
       isValid = false;
     }
 
-    if (!editedContact?.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editedContact?.email)) {
-      setEmailError("invalid email")
+    // Validate email
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
       isValid = false;
     }
 
-    if (!editedContact?.phone || !/^\d+$/.test(editedContact?.phone) || editedContact?.phone?.length != 10) {
-      setPhoneError("Invalid phone number")
+    // Validate phone number
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
+      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
       isValid = false;
     }
-    // if (!editedContact.profession_id) {
-    //   setProfessionError("Please Select a profession");
-    //   //isValid = false;
-    // }
 
-    if (!isValid) {
-      window.scrollTo(0, 0)
+    //validate business Name
+    if (!trimmedBusinessname) {
+      setErrors(prevErrors => ({ ...prevErrors, business_name: "Business Name is Required" }));
+      isValid = false;
+    }
+    if (!profession_id) {
+      setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a profession" }));
+      isValid = false;
+    }
+
+    if (isValid == false) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
     }
     return isValid;
   };
 
-
-  const getContactDetails = async () => {
-
-    try {
-      if (editedContact.firstname) {
-        return
-      }
-      const response = await axios.get(`${url}api/contacts/${id}`, {
-        headers,
-      });
-      const contactDetails = response.data;
-
-
-
-      localStorage.setItem("parent", contactDetails.firstname)
-      if (contactDetails.birthday) {
-        setEditedContact({ ...contactDetails, birthday: contactDetails.birthday })
-        const birth = formatDate(contactDetails.birthday)
-        setBirth(birth)
-      }
-      if (contactDetails.anniversary) {
-        setEditedContact({ ...contactDetails, anniversary: contactDetails.anniversary })
-        const birth = formatDate(contactDetails.anniversary)
-        setAnn(birth)
-      }
-      if (contactDetails.servceRequire) {
-        setEditedContact({ ...contactDetails, servceRequire: JSON.parse(contactDetails.servceRequire) })
-      }
-      else {
-        setEditedContact(contactDetails)
-      }
-
-      if (contactDetails.realtor) {
-        setSelectedRealtor({
-          value: contactDetails.realtor.id,
-          label: contactDetails.realtor.name,
-        })
-      }
-
-      if (contactDetails.category) {
-        setSelectedCategory({
-          value: contactDetails.category.id,
-          label: contactDetails.category.name,
-        })
-      }
-      if (contactDetails.servceRequire) {
-        const selectedValues = JSON.parse(contactDetails.servceRequire).map(option => {
-          return { value: option, label: option };
-        });
-
-        setSelectedServices(selectedValues)
-      }
-      if (contactDetails.activeAgent) {
-        setSelectedAgent({
-          value: contactDetails.activeAgent.id,
-          label: contactDetails.activeAgent.name,
-        })
-      }
-    } catch (error) {
-      console.error("Error fetching contact details: ", error);
-    }
-  };
-
-
   const errorScroll = useRef(null)
+
   const handlescroll = () => {
     window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+      top: 0,
+      behavior: "smooth"
     });
     errorScroll.current.focus();
-      errorScroll.current.scrollTop = 0;
-}
+    errorScroll.current.scrollTop = 0;
+  }
 
-  const handleSaveClick = async () => {
-
-    let isValid = validateForm()
+  const handleSaveClick = async (e) => {
+    e.preventDefault();
+    const isValid = validateForm();
     if (!isValid) {
+      console.log("error submit" , errors)
       handlescroll()
       return
     }
+
+    const updatedData = {
+      firstname: editedContact.firstname,
+      business_name: editedContact.business_name,
+      profession_id: editedContact.profession_id,
+      phone: editedContact.phone,
+      email: editedContact.email,
+      address1: editedContact.address1,
+      website: editedContact.website,
+      servceRequire: editedContact.servceRequire,
+      notes: editedContact.notes,
+    }
+
     try {
 
-      const response = await axios.put(`${url}api/contacts/${id}`, contactData, {
+      const response = await axios.put(`${url}api/contacts/${id}`, updatedData, {
         headers,
       });
       if (response.status === 200) {
@@ -305,70 +237,17 @@ const EditContact = ({ nameofuser }) => {
         console.error("Failed to update contact");
       }
     } catch (error) {
-      if(error.response.status === 409){
+      if (error.response.status === 409) {
         toast.error(error.response.data.message, {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
         })
-      }  else{
+      } else {
         toast.error("server is busy")
         console.error("An error occurred while adding a contact:", error);
       }
     }
   };
-
-
-  const handleSaveNotes = async () => {
-
-    if (validateForm()) {
-      try {
-        const response = await axios.put(`${url}api/contacts/${id}`, { notenew: editedContact.notenew, datenew: editedContact.datenew, addedBy: editedContact.addedBy }, {
-          headers,
-        });
-
-        if (response.status === 200) {
-          toast.success("Notes updated successfully", {
-            autoClose: 3000,
-            position: toast.POSITION.TOP_RIGHT,
-          });
-          // setEditingField(null);
-          // goBack()
-        } else {
-          console.error("Failed to update contact");
-        }
-      } catch (error) {
-        console.error("An error occurred while updating the contact:", error);
-      }
-    }
-  };
-
-  const formatDate = (dateString) => {
-
-    if (!dateString) {
-      return ""; // Handle cases where the date string is empty or undefined
-    }
-
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
-  const handlePhoneNumberChange = (event) => {
-    setPhoneError("")
-    // Extract the raw phone number from the input
-    const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-
-    // Update the phone number state with the raw input
-    setEditedContact({ ...editedContact, phone: rawPhoneNumber.slice(1, 11) });
-  };
-
-  const goBack = () => {
-    navigate(`/contacts`);
-  };
-
-
   return (
     <div className="form-user-add">
       <div>
@@ -381,11 +260,6 @@ const EditContact = ({ nameofuser }) => {
             </button>{" "}
             Edit Contact
           </h3>
-          {/* <div className="top-bar-action-btns">
-          <button style={{ background: "#004686" }} onClick={handleSaveClick}>
-            Save
-          </button>
-          </div> */}
         </div>
       </div>
       <div className="parent">
@@ -401,8 +275,8 @@ const EditContact = ({ nameofuser }) => {
             <label>Name<span className="required-star">*</span></label>
             {editingField === "firstname" || editingField === "all" ? (
               <div className="edit-new-input">
-                <input   ref={errorScroll}  name="firstname" value={editedContact?.firstname} onChange={handleChange} placeholder="First Name" />
-                <span className="error-message">{firstError}</span>
+                <input ref={errorScroll} name="firstname" value={editedContact?.firstname} onChange={handleChange} placeholder="First Name" />
+                <span className="error-message">{errors.firstname}</span>
               </div>
             ) : (
               <div className="edit-new-input">
@@ -439,7 +313,7 @@ const EditContact = ({ nameofuser }) => {
                   onChange={handleChange}
                   placeholder="Email"
                 />
-                <span className="error-message">{emailError}</span>
+                <span className="error-message">{errors.email}</span>
               </div>
             ) : (
               <div className="edit-new-input">
@@ -485,7 +359,7 @@ const EditContact = ({ nameofuser }) => {
                       onChange={handlePhoneNumberChange}
                       placeholder="+1 (___) ___-____"
                     />
-                    <span className="error-message">{phoneError}</span>
+                    <span className="error-message">{errors.phone}</span>
                   </div>
                 ) : (
                   <div className="edit-new-input">
@@ -495,75 +369,24 @@ const EditContact = ({ nameofuser }) => {
                 )}
               </div>
               <div className="form-user-add-inner-wrap">
-                <label>Company Name</label>
+                <label>Business Name<span className="required-star">*</span></label>
                 <div className="edit-new-input">
                   <input
                     type="text"
-                    name="company"
-                    value={editedContact?.company}
+                    name="business_name"
+                    value={editedContact?.business_name}
                     onChange={handleChange}
                   />
+                  <span className="error-message">{errors.business_name}</span>
                 </div>
               </div>
-
-              {/* <div className="form-user-add-inner-wrap">
-          <label>User</label>
-
-          {editingField === "all" && !selectedRealtor? (
-            <Select
-              placeholder="Select User..."
-              value={selectedRealtor}
-              onChange={(selectedOption) => {
-                
-                setEditedContact({ ...editedContact, realtorId: selectedOption.value });
-                setSelectedRealtor(selectedOption);
-              }}
-              options={realtorOptions}
-              components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-              styles={colourStyles}
-              className="select-new"
-            />
-          ) : (
-            <div className="edit-new-input" style={{paddingBottom:"14px"}}>
-              {selectedRealtor?.label}
-            
-            </div>
-          )}
-        </div> */}
-
-              {/* <div className="form-user-add-inner-wrap   form-user-agent-edit-contact">
-                <label>Active Agent</label>
-                {editingField === "agentId" || editingField === "all" ? (
-                  <Select
-                    placeholder="Select Active Agent..."
-                    value={selectedAgent}
-                    onChange={(selectedOption) => {
-                      setEditedContact({ ...editedContact, agentId: selectedOption.value });
-                      setSelectedAgent(selectedOption);
-                    }}
-                    options={realtorOptions}
-                    components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                    styles={colourStyles}
-                    className="select-new"
-                  />
-                ) : (
-                  <div className="edit-new-input" style={{ background: "unset" }}>
-                    {selectedAgent?.label}
-                    <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("agentId")} />
-                  </div>
-                )}
-              </div> */}
-
               <div className="form-user-add-inner-wrap  form-user-service-edit-contact">
                 <label>Service Require</label>
-
-
                 <Select
                   placeholder="   Select Service(s) Required..."
                   value={selectedServices}
                   onChange={(selectedOptions) => {
                     setSelectedServices(selectedOptions);
-                    // You can also extract the values into an array if needed
                     const selectedValues = selectedOptions.map(option => option.value);
                     setEditedContact({ ...editedContact, servceRequire: selectedValues });
                   }}
@@ -583,7 +406,7 @@ const EditContact = ({ nameofuser }) => {
                   placeholder="Select Profession.."
                   value={seletedProfession}
                   onChange={(selectedOption) => {
-                    setProfessionError("")
+                    setErrors({ profession_id: "" })
                     setEditedContact({ ...editedContact, profession_id: selectedOption.value })
                     setSeletedProfession(selectedOption)
                   }}
@@ -594,12 +417,12 @@ const EditContact = ({ nameofuser }) => {
                 />
               </div>
               <span styles={{
-                  Bottom: '14px',
-                  color: 'red',
-                  fontSize: '12px',
-                  right: '10%',
-                  fontWeight: '500'
-                }}>{professionError}</span>
+                Bottom: '14px',
+                color: 'red',
+                fontSize: '12px',
+                right: '10%',
+                fontWeight: '500'
+              }}>{errors.profession_id}</span>
 
 
               {/* <div className="form-user-add-inner-wrap  form-user-category-edit-contact">
@@ -645,7 +468,8 @@ const EditContact = ({ nameofuser }) => {
 
         </div>
       </div>
-      <div className="parent">
+
+      {/* <div className="parent">
         <div className="add_property_btn">
           <div className="add_user_btn family_meber" >
 
@@ -681,18 +505,16 @@ const EditContact = ({ nameofuser }) => {
               </div>
             </div>
 
-
-            {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-btn">
+ <div className="form-user-add-inner-wrap form-user-add-inner-wrap-btn">
 <div className="top-bar-action-btns">
           <button style={{ background: "#004686" }} onClick={handleSaveAdditional}>
             Save
           </button>
-          </div>
-  
-    </div> */}
+         </div>
+    </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="parent">
         <ChildContact id={editedContact.id} />
@@ -702,7 +524,7 @@ const EditContact = ({ nameofuser }) => {
         <ContactProperty id={editedContact.id} />
       </div>
 
-      
+
       <div className="parent">
 
         <ChildNotes nameofuser={nameofuser} id={editedContact.id} />
@@ -761,9 +583,7 @@ const EditContact = ({ nameofuser }) => {
               Save
             </button>
             </div>
-    
       </div>
-    
       </div>
       </div> */}
       </div>

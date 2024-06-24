@@ -671,8 +671,8 @@ const Contact = ({ role }) => {
 
 
                   <tr key={contact.id}>
-                    <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id)}>{contact.firstname}</td>
-                    <td>{contact?.company}</td>
+                    <td className="property-link" onClick={() => navigate("/contact/edit/" + contact.id , { state: { data: contact } })}>{contact.firstname}</td>
+                    <td>{contact?.business_name}</td>
                     <td>{contact?.profession?.name ? contact?.profession?.name : ""}</td>
                     <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
                     <td>{contact?.email}</td>
@@ -687,6 +687,8 @@ const Contact = ({ role }) => {
                       onClick={() => {
                         navigate(`/contacts/send/${contact?.id}`)
                       }}       >Send me Referrals</button>       </td>
+                   
+                   
                     <td>
 
                       <button className={` ${contact?.isLead == true ? 'permissions share-ref-button-tb' : 'permissions'} `}
@@ -697,9 +699,11 @@ const Contact = ({ role }) => {
                             handleSelectCategory(contact.category)
                           }
                           openModal("add")
-                        }}>Convert to Lead</button>
+                        }}>{contact?.isLead == true ? `Converted to Lead(${contact.category.split(',').map(Number).length})` : 'Convert to Lead'}</button>
                     </td>
                     <td>
+
+
                       <button className="permissions"
                         onClick={() => {
                           localStorage.setItem("parent", contact.firstname)

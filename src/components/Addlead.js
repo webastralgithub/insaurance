@@ -42,22 +42,29 @@ const AddLead = ({ user }) => {
 
   const [contact, setContact] = useState({
     firstname: "",
-    lastname: "",
-    email: "",
+    business_name: "",
     profession_id: '',
-    address1: "",
     phone: "",
-    company: "",
+    email: "",
+    address1: "",
+    category: "",
+    source: "",
     isLead: true,
     isContact: true,
-    category: "",
-    notes: "",
-    source: "",
     createdBy: user,
     realtorId: null,
     propertyId: null
   });
 
+  const [errors, setErrors] = useState({
+    firstname: "",
+    business_name: "",
+    profession_id: "",
+    email: "",
+    phone: "",
+    category: ""
+  });
+  
   const sourceOptions = [
     { value: "Website", label: "Website" },
     { value: "Email Campaign", label: "Email Campaign" },
@@ -73,45 +80,6 @@ const AddLead = ({ user }) => {
     setPhoneError("")
     setContact({ ...contact, phone: rawPhoneNumber.slice(1, 11) });
   }
-
-  const validateForm = () => {
-    setContact({ ...contact, firstname: contactName });
-    let isValid = true;
-    const { firstname, email, phone } = contact;
-
-    const trimmedFirstName = firstname.trim();
-    const trimmedEmail = email.trim();
-    const trimmedPhone = phone.trim();
-
-    // Reset errors
-    setErrors({
-      firstname: "",
-      email: "",
-      phone: "",
-      category: ""
-    });
-
-    if (!trimmedFirstName) {
-      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
-      isValid = false;
-    }
-    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
-      isValid = false;
-    }
-    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
-      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
-      isValid = false;
-    }
-    if (!seletedCategory || seletedCategory.length == 0) {
-      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
-      isValid = false;
-    }
-    if (!isValid) {
-      window.scrollTo(0, 0);
-    }
-    return isValid;
-  };
 
   const colourStyles = {
     valueContainer: (provided, state) => ({
@@ -154,7 +122,7 @@ const AddLead = ({ user }) => {
         label: realtor.name,
       }));
       setProfession(options)
-    
+
     } catch (error) {
       console.error(error);
     }
@@ -183,6 +151,61 @@ const AddLead = ({ user }) => {
     errorScroll.current.scrollTop = 0;
   }
 
+  const validateForm = () => {
+    let isValid = true;
+
+    let updatedData = seletedCategory.length && seletedCategory?.map((e) => e.value)
+    setContact({ ...contact, firstname: contactName, profession_id: seletedProfession.value, category: updatedData });
+    const { firstname, business_name, profession_id, email, phone } = contact;
+
+    const trimmedFirstName = firstname.trim();
+    const trimmedBusinessname = business_name.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedEmail = email.trim();
+
+    // Reset errors
+    setErrors({
+      firstname: "",
+      business_name: "",
+      profession_id: "",
+      phone: "",
+      email: "",
+      category: ""
+    });
+
+    if (!trimmedFirstName) {
+      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
+      isValid = false;
+    }
+    if (!trimmedBusinessname) {
+      setErrors(prevErrors => ({ ...prevErrors, business_name: "Business Name is required" }));
+      isValid = false;
+    }
+    
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
+      isValid = false;
+    }
+
+    if (!profession_id) {
+      setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a Profession" }));
+      isValid = false;
+    }
+
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
+      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
+      isValid = false;
+    }
+    if (!seletedCategory || seletedCategory.length == 0) {
+      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+      isValid = false;
+    }
+    if (!isValid) {
+      window.scrollTo(0, 0);
+    }
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const isValid = validateForm();
@@ -190,42 +213,20 @@ const AddLead = ({ user }) => {
       handlescroll()
       return
     }
-
-    let updatedData = seletedCategory.length && seletedCategory?.map((e) => e.value)
-
-    let contactData = { ...contact, category: updatedData };
-
-    let payloadData = {
-      firstname: contactData.firstname,
-      lastname: contactData.lastname,
-      email: contactData.email,
-      profession_id: contactData.profession_id,
-      address1: contactData.address1,
-      phone: contactData.phone,
-      company: contactData.company,
-      isContact: true,
-      isLead: true,
-      category: contactData.category,
-      notes: contactData.notes,
-      source: contactData.source,
-      createdBy: user,
-      realtorId: null,
-      propertyId: null
-    }
-
-
-
     try {
       if (isAlreadyContact === 0) {
 
-        const response = await axios.post(`${url}api/leads`, payloadData, { headers });
-        if (response.status === 200) {
+        const response = await axios.post(`${url}api/leads`, contact, { headers });
+        if (response.status === 201) {
           toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
           setConatctlength(contactlength + 1)
           setLeadlength(leadlength + 1)
           navigate(-1);
-        } else if (response.data.status === false) {
-          toast.error(response.data.message)
+        } else if (response.status === 200) {
+          toast.error(response.data.message, {
+            autoClose: 2000,
+            position: toast.POSITION.TOP_RIGHT
+          })
         }
         else {
           console.error("Failed to add contact");
@@ -233,7 +234,7 @@ const AddLead = ({ user }) => {
       }
 
       if (isAlreadyContact === 1) {
-        const response = await axios.put(`${url}api/contacts/${contactData.id}`, payloadData, { headers })
+        const response = await axios.put(`${url}api/contacts/${contact.id}`, contact, { headers })
         if (response.status === 200) {
           toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
           setLeadlength(leadlength + 1)
@@ -247,12 +248,12 @@ const AddLead = ({ user }) => {
       }
 
     } catch (error) {
-      if(error.response.status === 409){
+      if (error.response.status === 409) {
         toast.error(error.response.data.message, {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
         })
-      }  else{
+      } else {
         toast.error("server is busy")
         console.error("An error occurred while adding a contact:", error);
       }
@@ -262,12 +263,7 @@ const AddLead = ({ user }) => {
   const handleAddressChange = (newAddress) => {
     setContact({ ...contact, address1: newAddress });
   };
-  const [errors, setErrors] = useState({
-    firstname: "",
-    email: "",
-    phone: "",
-    category: ""
-  });
+
 
   const handleChange = (e) => {
     setssearch(2)
@@ -280,6 +276,7 @@ const AddLead = ({ user }) => {
       [name]: ""
     }));
   };
+
   const goBack = (e) => {
     e.preventDefault()
     navigate(-1);
@@ -333,7 +330,7 @@ const AddLead = ({ user }) => {
     //pre-selected source of user if exists
     let sourceData = sourceOptions.filter(element => element.value === source)
     setSelectedSource(sourceData)
-   
+
   }
 
   useEffect(() => {
@@ -369,7 +366,17 @@ const AddLead = ({ user }) => {
           />
           <span className="error-message">{errors.firstname}</span>
         </div>
+        <div className="form-user-add-inner-wrap">
+          <label>Business Name <span className="required-star">*</span></label>
+          <input
 
+            type="text"
+            name="business_name"
+            value={contact.business_name}
+            onChange={handleChange}
+          />
+          <span className="error-message">{errors.business_name}</span>
+        </div>
 
         {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
           <CircularProgress color="inherit" />
@@ -378,7 +385,7 @@ const AddLead = ({ user }) => {
 
             {searchContacts && searchContacts?.map((item) => (
               <div key={item.id} >
-                <p onClick={() => handleSelect(item, item?.profession_id , item.source , item.category)}>{item.firstname}</p>
+                <p onClick={() => handleSelect(item, item?.profession_id, item.source, item.category)}>{item.firstname}</p>
               </div>
             ))}
           </div>
@@ -415,6 +422,7 @@ const AddLead = ({ user }) => {
             placeholder="Select Profession.."
             value={seletedProfession}
             onChange={(selectedOption) => {
+              setErrors({ profession_id: "" })
               setContact({ ...contact, profession_id: selectedOption.value })
               setSeletedProfession(selectedOption)
             }}
@@ -427,7 +435,7 @@ const AddLead = ({ user }) => {
             className="select-new"
           />
         </div>
-        <span className="error-message" style={{ color: "red" }}>{errors.profession}</span>
+        <span className="error-message" style={{ color: "red" }}>{errors.profession_id}</span>
 
 
         {/* <div className="form-user-add-inner-wrap">
@@ -527,6 +535,7 @@ const AddLead = ({ user }) => {
             placeholder="Select Active Agent..."
             value={selectedSource}
             onChange={(selectedOption) => {
+
               setContact({ ...contact, source: selectedOption.value })
               setSelectedSource(selectedOption)
             }}
@@ -547,6 +556,7 @@ const AddLead = ({ user }) => {
             value={seletedCategory}
             isMulti={true}
             onChange={(selectedOption) => {
+              setErrors({ category: "" })
               setContact({ ...contact, category: selectedOption.map((e) => e.value) })
               setSelectedCategory(selectedOption)
               setErrors({ category: "" })

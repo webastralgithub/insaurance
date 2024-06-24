@@ -23,6 +23,15 @@ const EditLeads = () => {
   const [profession, setProfession] = useState([])
   const [categories, setCategories] = useState([])
   const [editedContact, setEditedContact] = useState(data);
+  const [errors, setErrors] = useState({
+    firstname: "",
+    business_name: "",
+    profession_id: "",
+    email: "",
+    phone: "",
+    category: ""
+  });
+
   const [seletedCategory, setSelectedCategory] = useState();
   const [seletedProfession, setSeletedProfession] = useState()
   const [phoneError, setPhoneError] = useState("");
@@ -35,8 +44,12 @@ const EditLeads = () => {
   const [editingField, setEditingField] = useState('all');
   const noSelectionOption = { value: null, label: 'No Selection' };
   const handleChange = (e) => {
+    setErrors({
+      firstname: "",
+      business_name: "",
+      email: "",
+    });
     const { name, value } = e.target;
-    clearErrors(name)
     setEditedContact({ ...editedContact, [name]: value });
   };
 
@@ -63,6 +76,7 @@ const EditLeads = () => {
     const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     return emailPattern.test(email);
   };
+
   const formatPhoneNumber = (phoneNumber) => {
     if (!phoneNumber) {
       return ""
@@ -77,46 +91,7 @@ const EditLeads = () => {
 
 
 
-  const validateForm = () => {
-    let isValid = true;
 
-    if (!editedContact.firstname) {
-      setFirstError("First Name is required");
-      isValid = false;
-    }
-
-    if (editedContact.email) {
-      const emailval = validateEmail(editedContact.email)
-      if (!emailval) {
-        setEmailError("invalid email")
-        isValid = false;
-      }
-    }
-    if (editedContact.phone) {
-      if (editedContact.phone.length != 10) {
-        setPhoneError("Invalid phone number")
-        isValid = false;
-      }
-    }
-
-    if (!seletedProfession) {
-      setProfessionError("select Profession")
-      isValid = false;
-    }
-
-
-    if (seletedCategory == 0) {
-      setCategoryError("select category")
-      isValid = false;
-    }
-
-
-    if (!isValid) {
-     
-      window.scrollTo(0, 0)
-    }
-    return isValid;
-  };
 
 
   const clearErrors = (fieldName) => {
@@ -191,8 +166,6 @@ const EditLeads = () => {
     }
   };
 
-
-
   const getCategories = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
@@ -214,51 +187,99 @@ const EditLeads = () => {
     }
   };
 
-  const getContactDetails = async () => {
-    try {
-      const response = await axios.get(`${url}api/contacts/${id}`, {
-        headers,
-      });
-      const contactDetails = response.data;
-      setEditedContact(contactDetails);
-    } catch (error) {
-      console.error("Error fetching contact details: ", error);
-    }
-  };
+
   const handlePhoneNumberChange = (event) => {
+    setErrors({ phone: "" });
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
-    setPhoneError("")
     setEditedContact({ ...editedContact, phone: rawPhoneNumber.slice(1, 11) });
   };
 
   const errorScroll = useRef(null)
   const handlescroll = () => {
     window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+      top: 0,
+      behavior: "smooth"
     });
     errorScroll.current.focus();
-      errorScroll.current.scrollTop = 0;
-}
+    errorScroll.current.scrollTop = 0;
+  }
 
-  const handleSaveClick = async () => {
 
-    let newContact = {
-      firstname: editedContact.firstname,
-      email: editedContact.email,
-      address1: editedContact.address1,
-      source: selectedSource.value,
-      phone: editedContact.phone,
-      category: seletedCategory.length && seletedCategory?.map((e) => e.value),
-      profession_id: seletedProfession.value,
-      isLead: true,
-      isContact: true,
+  const validateForm = () => {
+    let isValid = true;
+
+    let updatedData = seletedCategory?.length && seletedCategory?.map((e) => e.value)
+    setEditedContact({ ...editedContact, profession_id: seletedProfession.value, category: updatedData });
+    const { firstname, business_name, profession_id, email, phone, category } = editedContact;
+
+    const trimmedFirstName = firstname.trim();
+    const trimmedBusinessname = business_name.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedEmail = email.trim();
+
+    // Reset errors
+    setErrors({
+      firstname: "",
+      business_name: "",
+      profession_id: "",
+      phone: "",
+      email: "",
+      category: ""
+    });
+
+    if (!trimmedFirstName) {
+      setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
+      isValid = false;
+    }
+    if (!trimmedBusinessname) {
+      setErrors(prevErrors => ({ ...prevErrors, business_name: "Business Name is required" }));
+      isValid = false;
+    }
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
+      isValid = false;
     }
 
+    if (!profession_id) {
+      setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a Profession" }));
+      isValid = false;
+    }
 
-    if (validateForm()) {
+    if (!trimmedPhone || !/^\d+$/.test(trimmedPhone) || phone.length != 10) {
+      setErrors(prevErrors => ({ ...prevErrors, phone: "Invalid phone number" }));
+      isValid = false;
+    }
+    if (!seletedCategory || seletedCategory.length == 0) {
+      setErrors(prevErrors => ({ ...prevErrors, category: "Please Select a category" }));
+      isValid = false;
+    }
+    if (!isValid) {
+      window.scrollTo(0, 0);
+    }
+    return isValid;
+  };
+
+  const handleSaveClick = async (e) => {
+    e.preventDefault();
+    const isValid = validateForm();
+    if (!isValid) {
+      handlescroll()
+      return
+    }
+   
+    let newContact = {
+      firstname: editedContact.firstname,
+      business_name : editedContact.business_name ,
+      email: editedContact.email,
+      address1: editedContact.address1,
+      source:editedContact.source,
+      phone: editedContact.phone,
+      category: seletedCategory?.length && seletedCategory?.map((e) => e.value) ,
+      profession_id: editedContact.profession_id,
+
+    }
+ 
       try {
-
         const response = await axios.put(`${url}api/leads/${id}`, newContact, {
           headers,
         });
@@ -274,19 +295,16 @@ const EditLeads = () => {
           console.error("Failed to update contact");
         }
       } catch (error) {
-        if(error.response.status === 409){
+        if (error.response.status === 409) {
           toast.error(error.response.data.message, {
             autoClose: 2000,
             position: toast.POSITION.TOP_RIGHT
           })
-        }  else{
+        } else {
           toast.error("server is busy")
           console.error("An error occurred while adding a contact:", error);
         }
       }
-    }else{
-      handlescroll()
-    }
 
   };
 
@@ -320,16 +338,28 @@ const EditLeads = () => {
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-name">
           <label>Name<span className="required-star">*</span></label>
           <div className="edit-new-input">
-            <input    name="firstname" value={editedContact.firstname} onChange={handleChange} placeholder="Name" />
-            <span className="error-message">{firstError}</span>
+            <input name="firstname" value={editedContact.firstname} onChange={handleChange} placeholder="Name" />
+            <span className="error-message">{errors.firstname}</span>
           </div>
 
         </div>
 
+        <div className="form-user-add-inner-wrap form-user-add-inner-wrap-name">
+          <label>Business Name<span className="required-star">*</span></label>
+          <div className="edit-new-input">
+            <input 
+            name="business_name" 
+            value={editedContact.business_name}
+             onChange={handleChange} 
+             placeholder="Business Name" />
+            <span className="error-message">{errors.business_name}</span>
+          </div>
+        </div>
+
+
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-email">
           <label>Email<span className="required-star">*</span></label>
-          {editingField === "email" || editingField === "all" ? (
             <div className="edit-new-input">
               <input
                 name="email"
@@ -337,15 +367,11 @@ const EditLeads = () => {
                 onChange={handleChange}
                 placeholder="Email"
               />
-              <span className="error-message">{emailError}</span>
-            </div>
-          ) : (
-            <div className="edit-new-input">
-              {editedContact.email}
-              <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("email")} />
-            </div>
-          )}
+              <span className="error-message">{errors.email}</span>
+           </div> 
         </div>
+
+
         <Places value={editedContact.address1} onChange={handleAddressChange} />
 
 
@@ -356,9 +382,9 @@ const EditLeads = () => {
             placeholder="Select Profession.."
             value={seletedProfession}
             onChange={(selectedOption) => {
-              setEditedContact({ ...editedContact, profession: selectedOption.value })
+              setEditedContact({ ...editedContact, profession_id: selectedOption.value })
               setSeletedProfession(selectedOption)
-              setProfessionError("")
+             setErrors({profession_id : ""})
             }}
             options={profession}
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
@@ -366,12 +392,12 @@ const EditLeads = () => {
             className="select-new"
           />
         </div>
-        <span className="error-message">{professionError}</span>
+        <span className="error-message">{errors.profession_id}</span>
 
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-phone">
           <label>Phone<span className="required-star">*</span></label>
-          {editingField === "phone" || editingField === "all" ? (
+         
             <div className="edit-new-input">
               <InputMask
                 mask="+1 (999) 999-9999"
@@ -381,14 +407,8 @@ const EditLeads = () => {
                 onChange={handlePhoneNumberChange}
                 placeholder="+1 (___) ___-____"
               />
-              <span className="error-message">{phoneError}</span>
+              <span className="error-message">{errors.phone}</span>
             </div>
-          ) : (
-            <div className="edit-new-input">
-              {editedContact.phone != undefined ? formatPhoneNumber(editedContact.phone) : ""}
-              <FontAwesomeIcon icon={faPencil} onClick={() => handleEditClick("phone")} />
-            </div>
-          )}
         </div>
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-source">
@@ -485,7 +505,7 @@ const EditLeads = () => {
             onChange={(selectedOption) => {
               setEditedContact({ ...editedContact, category: selectedOption.value })
               setSelectedCategory(selectedOption)
-              setCategoryError("")
+              setErrors({ category: "" })
             }}
             options={categories}
             components={{
@@ -496,9 +516,9 @@ const EditLeads = () => {
             className="select-new"
 
           />
-          <span className="error-message">{categoryError}</span>
+        
         </div>
-
+        <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
 
         <div className="form-user-add-inner-btm-btn-wrap">
           <button style={{ background: "#004686" }} onClick={handleSaveClick}>

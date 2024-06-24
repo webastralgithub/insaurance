@@ -45,7 +45,7 @@ const ContactReferral = ({ role }) => {
 
 
 
-  const { auth, email, property, setProperty, setAuth } = useContext(AuthContext);
+  const { auth, email } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -138,24 +138,6 @@ const ContactReferral = ({ role }) => {
     });
   };
 
-
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      overflow: "unset",
-      padding: '0px',
-      transform: "translate(-50%, -50%)",
-      background: "rgb(255 255 255)",
-    },
-    overlay: {
-      backgroundColor: "rgb(0 0 0 / 34%)",
-    }
-  };
-
   const handleShareKlintaleClick = async (contact) => {
     const { email, phone, name, category_name } = contact;
     const combinedObject = {
@@ -165,7 +147,6 @@ const ContactReferral = ({ role }) => {
       category_name,
       sendTo: id, selectedContacts: [contact.id],
     };
-
     try {
       const response = await axios.post(`${url}api/klientale-contact-send-me`, combinedObject, { headers }
       );
@@ -216,86 +197,7 @@ const ContactReferral = ({ role }) => {
     setSelectedContacts([])
     setIsOpen(false);
   };
-  const colourStylesCAt = {
-    menu: (styles) => ({
-      ...styles,
-      maxHeight: "242px",
-      minHeight: "242px",
-      overflowY: "auto",
-      boxShadow: "none",
 
-    }),
-    singleValue: styles => ({ ...styles, color: "#fff" }),
-    placeholder: styles => ({ ...styles, color: "#fff" }),
-    menuList: (styles) => ({
-      ...styles,
-      overflow: "unset"
-    }),
-    control: styles => ({
-      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
-      border: "none", borderRadius: "0", background: "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-      padding: "10px 5px"
-    }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-
-      return {
-        ...styles,
-
-
-      };
-    },
-
-  };
-
-  const colourStyles = {
-    valueContainer: styles => ({
-      ...styles, overflowX: "auto", flex: "unset", flexWrap: "no-wrap", width: selectedContacts.length > 0 ? "354px" : "100%", padding: "2px 0",
-      '&::-webkit-scrollbar-track': {
-        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.3)',
-        'border-radius': '10px',
-        'background-color': 'rgb(0 70 134)',
-      },
-      '&::-webkit-scrollbar': {
-        'height': '8px',
-        'background-color': 'rgb(0 70 134)',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        'border-radius': '10px',
-        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,.3)',
-        'background-color': '#373a47',
-      },
-
-    }),
-    menu: (styles) => ({
-      ...styles,
-      maxHeight: "242px",
-      minHeight: "242px",
-      overflowY: "auto",
-      boxShadow: "none",
-
-
-    }),
-    menuList: styles => ({ ...styles, overflowY: "none", display: "none" }),
-    multiValue: styles => ({ ...styles, minWidth: "unset" }),
-    input: styles => ({ ...styles, color: "#fff" }),
-    placeholder: styles => ({ ...styles, color: "#fff" }),
-    control: styles => ({
-      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
-      border: "none", borderRadius: "0", background: "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-      padding: "10px 5px"
-    }),
-
-
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-
-      return {
-        ...styles,
-
-
-      };
-    },
-
-  };
   const getCategories = async () => {
     try {
       const res = await axios.get(`${url}api/categories`, { headers });
@@ -321,7 +223,7 @@ const ContactReferral = ({ role }) => {
 
   useEffect(() => {
     getContacts();
-    getCategories()
+    // getCategories()
     getUsers();
     fetchUsers();
   }, []);
@@ -414,7 +316,7 @@ const ContactReferral = ({ role }) => {
     setCurrentPage(newPage);
   };
 
-  
+
 
   const PlaceholderWithIcon = (props) => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
@@ -422,7 +324,7 @@ const ContactReferral = ({ role }) => {
       <span>{props.children}</span>  <img style={{ width: "17px", filter: "brightness(4.5)" }} src="/search.svg" />
     </div>
   );
-  
+
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
@@ -444,12 +346,13 @@ const ContactReferral = ({ role }) => {
       if (active === 0) {
         setDataLoader(true)
         const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
-        setusers(response?.data?.contacts)
+        setusers( await response?.data?.contacts)
         setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
       }
       if (active === 1) {
         setDataLoader(true)
+        setUsers([])
         const response = await axios.get(`${klintaleUrl}listing/${email.email}?page=${currPage}&search=${searchRef.current.value}`, { headers })
         setusers(response?.data?.user)
         setTotalPages(response?.data?.totalPages)
@@ -513,21 +416,21 @@ const ContactReferral = ({ role }) => {
             <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
           </svg>
           Send me referrals from your following contacts</span>
-      
-      
-          <div className="search-grp-with-btn">
-                    <div className="search-group">
-                        <input type="text"
-                            onKeyDown={handleKeyDownEnter}
-                            ref={searchRef}
-                            placeholder="Search here" />
-                        {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
+
+
+        <div className="search-grp-with-btn">
+          <div className="search-group">
+            <input type="text"
+              onKeyDown={handleKeyDownEnter}
+              ref={searchRef}
+              placeholder="Search here" />
+            {/* {buttonActive == 1 && <img src="/search.svg" onClick={handleKeyDown} />}
                         {buttonActive == 2 && <FontAwesomeIcon icon={faXmark} onClick={clearSearch} />} */}
-                    </div>
-                    <div className="add_user_btn ">
-                        <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
-                    </div>
-                </div>
+          </div>
+          <div className="add_user_btn ">
+            <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+          </div>
+        </div>
 
       </div>
 
@@ -537,7 +440,7 @@ const ContactReferral = ({ role }) => {
           <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0) }}>
             Personal Contacts</button>
 
-          <button className={active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(1) }}>
+          <button className={active ? 'active' : ''} onClick={() => { setUsers([]); setCurrentPage(1); setActive(1) }}>
             Klientale Contacts</button>
         </div>
       </div>
@@ -557,14 +460,16 @@ const ContactReferral = ({ role }) => {
                 <tr>
                   <th></th>
                   <th>Name</th>
+                  <th>Business Name</th>
+                  <th>Profession</th>
                   <th>Phone</th>
                   <th>Email Id</th>
-                  <th>Category</th>
-                    </tr>
+                </tr>
               </thead>
+
               {active === 0 && <>
                 {userss.length > 0 &&
-                  userss.map((contact) => (contact.id != id && <tbody>
+                  userss?.map((contact) => (contact.id != id && <tbody>
 
                     <tr key={contact.id}>
                       {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
@@ -573,24 +478,10 @@ const ContactReferral = ({ role }) => {
                           handleDeleteClick(contact)
                         }}>Send</button>       </td>
                       <td>{contact.firstname}</td>
-
+                      <td>{contact.business_name}</td>
+                      <td>{contact.profession_id > 0? contact.profession.name : ""}</td>
                       <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                       <td>{contact.email}</td>
-
-                      {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
-
-                      <td>{contact.category?.name}</td>
-
-
-                      {/* <td> 
-                    
-                  <button className="permissions"
-                    onClick={() => {changeView(Number(contact.id),contact.firstname)
-
-                   }}> Family Members</button>
-                     
-          
-          </td> */}
                     </tr>
                   </tbody>))}
               </>
@@ -608,22 +499,25 @@ const ContactReferral = ({ role }) => {
                           handleDeleteKlintaleClick(contact)
                         }} >Send</button>       </td>
                       <td>{contact.name}</td>
+                      <td>{contact.business_name}</td>
+                      <td>{contact?.category_name}</td>
                       <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                       <td>{contact.email}</td>
-                      <td>{contact.category_name}</td>
+                     
                     </tr>
                   </tbody>))
                 }
               </>
               }
             </table>)}
+            {userss?.length > 0 && (
+        <div className="pagination">
+          {renderPageNumbers()}
+        </div>
+      )}
       </div>
-      
-      {userss?.length > 0 && (
-          <div className="pagination">
-            {renderPageNumbers()}
-          </div>
-        )}
+
+   
       {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}

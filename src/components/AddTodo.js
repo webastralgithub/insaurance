@@ -169,24 +169,8 @@ const AddTodo = ({ user }) => {
     navigate(-1);
   };
 
-  //new component
-  const getCategories = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
-      const options = res.data.map((realtor) => ({
-        key: realtor.id,
-        value: realtor.id,
-        label: realtor.name,
-      }));
-      setCategories(options)
-    } catch (error) {
-      console.error("User creation failed:", error);
-    }
-  };
 
-  useEffect(() => {
-    getCategories()
-  }, [])
+
 
   const [loading, setLoading] = useState(false)
   const getSearchContact = async () => {
@@ -241,7 +225,7 @@ const AddTodo = ({ user }) => {
 
   const [contactNew, setContactNew] = useState({
     firstname: "",
-    lastname: "",
+    business_name: '',
     email: "",
     profession_id: "",
     address1: "",
@@ -251,6 +235,7 @@ const AddTodo = ({ user }) => {
     servceRequire: selectedServices,
     notes: "",
     source: "",
+
     createdBy: user,
     realtorId: null,
     propertyId: null,
@@ -261,29 +246,37 @@ const AddTodo = ({ user }) => {
     firstname: "",
     email: "",
     phone: "",
-    category: ""
+    category: "",
+    business_name: ""
   });
 
   const validateFormNewPhone = () => {
     let isValid = true;
-    const { firstname, email, phone } = contactNew;
+    const { firstname, email, phone , business_name } = contactNew;
 
     const trimmedFirstName = firstname.trim();
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
-
+    const trimmedBusinessname = business_name.trim();
     // Reset errors
     setErrors({
       firstname: "",
+      business_name: "",
       email: "",
       phone: "",
-      category: "", 
-      profession : ""
+      category: "",
+      profession: ""
     });
 
     // Validate firstname
     if (!trimmedFirstName) {
       setErrors(prevErrors => ({ ...prevErrors, firstname: "Name is required" }));
+      isValid = false;
+    }
+
+    //validate business Name
+    if (!trimmedBusinessname) {
+      setErrors(prevErrors => ({ ...prevErrors, business_name: "Business Name is Required" }));
       isValid = false;
     }
 
@@ -299,7 +292,6 @@ const AddTodo = ({ user }) => {
       isValid = false;
     }
     if (!seletedProfession.value) {
-
       setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a Profession" }));
       isValid = false;
     }
@@ -366,12 +358,12 @@ const AddTodo = ({ user }) => {
         toast.error("Failed to add contact");
       }
     } catch (error) {
-      if(error.response.status === 409){
+      if (error.response.status === 409) {
         toast.error(error.response.data.message, {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
         })
-      }  else{
+      } else {
         toast.error("server is busy")
         console.error("An error occurred while adding a contact:", error);
       }
@@ -537,7 +529,7 @@ const AddTodo = ({ user }) => {
                       <label>Business Name</label>
                       <input
                         type="text"
-                        value={newSelected?.company}
+                        value={newSelected?.business_name}
                         readOnly
                       />
                     </div>
@@ -697,15 +689,16 @@ const AddTodo = ({ user }) => {
 
                     </div>
                     <div className="form-user-add-inner-wrap">
-                      <label>Company Name</label>
+                      <label>Business Name<span className="required-star">*</span></label>
 
                       <div className="edit-new-input">
                         <input
                           type="text"
-                          name="company"
-                          value={contactNew.company}
+                          name="business_name"
+                          value={contactNew.business_name}
                           onChange={handleChangeAddPhone}
                         />
+                        <span className="error-message">{errors.business_name}</span>
                       </div>
                     </div>
 
