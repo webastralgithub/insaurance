@@ -349,10 +349,10 @@ const EditLeads = () => {
           <div className="edit-new-input">
             <input 
             name="business_name" 
-            value={editedContact.business_name}
+            value={editedContact?.business_name}
              onChange={handleChange} 
              placeholder="Business Name" />
-            <span className="error-message">{errors.business_name}</span>
+            <span className="error-message">{errors?.business_name}</span>
           </div>
         </div>
 
@@ -363,16 +363,16 @@ const EditLeads = () => {
             <div className="edit-new-input">
               <input
                 name="email"
-                value={editedContact.email}
+                value={editedContact?.email}
                 onChange={handleChange}
                 placeholder="Email"
               />
-              <span className="error-message">{errors.email}</span>
+              <span className="error-message">{errors?.email}</span>
            </div> 
         </div>
 
 
-        <Places value={editedContact.address1} onChange={handleAddressChange} />
+        <Places value={editedContact?.address1} onChange={handleAddressChange} />
 
 
         <div className="form-user-add-inner-wrap">
@@ -392,7 +392,7 @@ const EditLeads = () => {
             className="select-new"
           />
         </div>
-        <span className="error-message">{errors.profession_id}</span>
+        <span className="error-message">{errors?.profession_id}</span>
 
 
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-phone">
@@ -407,7 +407,7 @@ const EditLeads = () => {
                 onChange={handlePhoneNumberChange}
                 placeholder="+1 (___) ___-____"
               />
-              <span className="error-message">{errors.phone}</span>
+              <span className="error-message">{errors?.phone}</span>
             </div>
         </div>
 
@@ -518,7 +518,7 @@ const EditLeads = () => {
           />
         
         </div>
-        <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
+        <span className="error-message" style={{ color: "red" }}>{errors?.category}</span>
 
         <div className="form-user-add-inner-btm-btn-wrap">
           <button style={{ background: "#004686" }} onClick={handleSaveClick}>

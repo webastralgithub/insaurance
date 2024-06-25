@@ -109,6 +109,7 @@ const ShareMe = ({ role }) => {
     }
 
   }
+  
   const convert = async (e) => {
     e.preventDefault()
     if (!seletedCategory?.value) {
@@ -311,15 +312,6 @@ const ShareMe = ({ role }) => {
     }
   };
 
-
-
-  const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts/${propertyId}`, { headers });
-
-    toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setContacts(contacts.filter((p) => p.id !== propertyId));
-
-  };
   const fetchUsers = async () => {
     setDataLoader(true)
     try {
@@ -362,7 +354,7 @@ const ShareMe = ({ role }) => {
       const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
       const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false);
       // Set the filtered contacts in the state
-      setContacts(contactsWithoutParentIdandlead);
+      //setContacts(contactsWithoutParentIdandlead);
       const contact = response.data.find((p) => p.id == id);
       setContactName(contact);
 
@@ -370,7 +362,7 @@ const ShareMe = ({ role }) => {
         value: realtor.id,
         label: realtor.firstname,
       }));
-      setContactoptions(realtorOptions)
+     // setContactoptions(realtorOptions)
 
     } catch (error) {
       console.error(error)
@@ -445,10 +437,6 @@ const ShareMe = ({ role }) => {
     getTaskss();
   };
 
-  const handlePageChangee = (newPage) => {
-    setCurrentPage(newPage);
-  };
-
   const renderPageNumbers = () => {
     const pageNumbers = [];
     for (let i = 1; i <= totalPagess; i++) {
@@ -494,7 +482,6 @@ const ShareMe = ({ role }) => {
           <div className="add_user_btn">
             <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0) }}>
               Personal Contacts</button>
-
             <button className={active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(1) }}>
               Klientale Contacts</button>
           </div>
@@ -503,12 +490,10 @@ const ShareMe = ({ role }) => {
         {/* Rest of your component remains the same... */}
 
         <div className="table-container share-ref-table-in">
-
           {dataLoader ?
             (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
               <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
             </div>)
-
             : (
               <table>
                 <thead>
@@ -519,16 +504,13 @@ const ShareMe = ({ role }) => {
                     <th>Profession</th>
                     <th>Phone</th>
                     <th>Email Id</th>
-                   
                   </tr>
                 </thead>
 
                 {active === 0 && <>
                   {userss.length > 0 &&
                     userss.map((contact) => (contact.id != id && <tbody>
-
                       <tr key={contact.id}>
-                        {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                         <td>  <button className="permissions share-ref-button-tb"
                           onClick={() => {
                             sendRefferal(contact)
@@ -538,7 +520,6 @@ const ShareMe = ({ role }) => {
                         <td>{contact.profession_id > 0? contact.profession.name : ""}</td>
                         <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                         <td>{contact.email}</td>
-                
                       </tr>
                     </tbody>))}
                 </>
@@ -550,7 +531,6 @@ const ShareMe = ({ role }) => {
                     userss?.map((contact) => (contact.id != id && <tbody>
 
                       <tr key={contact.id}>
-                        {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                         <td>  <button className="permissions share-ref-button-tb"
                           onClick={() => {
                             handleShareKlintaleClick(contact)
@@ -560,15 +540,11 @@ const ShareMe = ({ role }) => {
                         <td>{contact?.category_name}</td>
                         <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
                         <td>{contact?.email}</td>
-                     
                       </tr>
-
-
                     </tbody>))
                   }
                 </>
                 }
-
               </table>)}
 
           {userss?.length > 0 && (
@@ -581,7 +557,6 @@ const ShareMe = ({ role }) => {
       {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
     </div>
-
   );
 };
 

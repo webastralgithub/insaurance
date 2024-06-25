@@ -44,7 +44,6 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
         const isSelected = selectedOptions.some(
             (selected) => selected.value === option.value
         );
-
         if (isSelected) {
             props.setValue(
                 selectedOptions.filter((selected) => selected.value !== option.value)
@@ -73,7 +72,6 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
                 boxShadow: "none",
             }}
         >
-            {/* Show selected options with radio buttons */}
             {filteredOptions.map((option) => (
                 <div
                     onClick={() => handleOptionClick(option)}
@@ -90,8 +88,6 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
                     <div className="circle"></div>
                 </div>
             ))}
-
-            {/* Show available options */}
             {React.cloneElement(children, { ...props })}
         </div>
     );
@@ -210,27 +206,8 @@ const Templates = () => {
                 label: realtor.firstname,
             }));
             setContactoptions(realtorOptions)
-            // const contactsWithoutParentId = response.data.filter(
-            //     (contact) => contact.parentId === null
-            // );
-            // const nonvendorcontacts = contactsWithoutParentId.filter(
-            //     (contact) => contact.isVendor === false
-            // );
-            // const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
-            //     (contact) => contact.isLead === false
-            // );
-
-
-            // // Set the filtered contacts in the state
-
-            // const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
-            //     value: realtor.id,
-            //     label: realtor.firstname,
-            // }));
-            // setContactoptions(realtorOptions);
         } catch (error) {
             console.error(error);
-            // Handle error
         }
     };
 

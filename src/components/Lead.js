@@ -23,10 +23,6 @@ const Lead = () => {
   const url = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   let searchRef = useRef()
-  const [contacts, setContacts] = useState([]);
-  const [noCategoryContacts, setNoCategoryContacts] = useState([]);
-  const [parentid, setParentId] = useState()
-  const [todayContacs, setTodayContacts] = useState([]);
   const [parentView, setParentView] = useState(false)
   const [parentName, setParentName] = useState([])
   const [id, setId] = useState(0)
@@ -35,64 +31,14 @@ const Lead = () => {
   const [error, setError] = useState("")
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [modalMode, setModalMode] = useState("");
-  const [users, setUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
-  const [width, setWidth] = useState(window.innerWidth);
-  const [categories, setCategories] = useState([])
   const [activeCategory, setActiveCategory] = useState("today");
   const [buttonActive, setButtonActive] = useState(1)
   const [dataLoader, setDataLoader] = useState(false)
   const [leadCountData, setLeadCountData] = useState([])
   const [activeLeadCategory, setactiveLeadCategory] = useState([])
   const [totalPagess, settotalPagess] = useState()
-
-
-  useEffect(() => {
-    getCategories()
-  }, []);
-
-
-  const getCategories = async () => {
-    try {
-      const res = await axios.get(`${url}api/categories`, { headers },);
-      const options = res.data.map((item) => ({
-        key: item.id,
-        value: item.id,
-        label: item.name,
-      }));
-      setCategoriesOptions(options);
-
-      setCategories([{ id: -1, categoryName: "Today's Leads" }, ...res.data])
-      // setActiveCategory(-1);
-    } catch (error) {
-      console.error("User creation failed:", error);
-    }
-  };
-
-
-
-  const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts${propertyId}`, { headers });
-
-    toast.success('Lead deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setContacts(contacts.filter((p) => p.id !== propertyId));
-  };
-  useEffect(() => {
-    getContacts();
-    getUsers();
-  }, []);
-
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`${url}api/admin/get-users`, { headers });
-      setUsers(res.data);
-
-    } catch (error) {
-      console.error(error)
-    }
-  };
 
   const customStyles = {
     content: {
@@ -111,19 +57,12 @@ const Lead = () => {
     }
   };
 
-  const openModal = (mode, role) => {
-    setModalMode(mode);
-
-    setIsOpen(true);
-  };
-
+ 
   const closeModal = () => {
     setModalMode("");
     setError("")
     setIsOpen(false);
   };
-
-
 
   const colourStyles = {
     valueContainer: (styles) => ({
@@ -195,7 +134,6 @@ const Lead = () => {
     const response = await axios.put(`${url}api/leads/${id}`, { isLead: false, isContact: true, category: seletedCategory.length && seletedCategory?.map((e) => e.value) }, {
       headers,
     });
-    getContacts();
     if (response.status === 200) {
       getLeads()
       toast.success("Contact Converted successfully", {
@@ -208,37 +146,6 @@ const Lead = () => {
       closeModal()
     }
   }
-
-  const getContacts = async () => {
-    try {
-      const response = await axios.get(`${url}api/contacts`, { headers });
-      const contactsWithoutParentId = response.data.filter((contact) => contact.isLead === true);
-      //   const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-      contactsWithoutParentId.sort((a, b) => {
-        const dateA = new Date(a.created_at);
-        const dateB = new Date(b.created_at);
-        return dateB - dateA;
-      })
-
-      const nocat = contactsWithoutParentId.filter((contact) => !contact.category)
-
-      setNoCategoryContacts(nocat)
-      const today = new Date();
-      today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
-
-
-      const contactsCreatedToday = contactsWithoutParentId.filter(contact => {
-        const contactDate = new Date(contact.updated_at);
-        return contactDate.getTime() >= today.getTime();
-      });
-      setTodayContacts(contactsCreatedToday)
-
-      setContacts(contactsWithoutParentId);
-    } catch (error) {
-      console.error(error)
-
-    }
-  };
 
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0 for comparison
@@ -321,9 +228,6 @@ const Lead = () => {
     setSelectedCategory(seletctedOptions)
   }
 
-
-
-
   const handleDeleteLead = async (editedContact, leadid, categories, categoryid) => {
     const valuesToFind = categories.split(',').map(Number);
     let category = valuesToFind.filter(category => category !== categoryid);
@@ -339,10 +243,7 @@ const Lead = () => {
       isLead: true,
       isContact: true,
     }
-
     try {
-
-
       const response = await axios.put(`${url}api/leads/${leadid}`, newContact, {
         headers,
       });
@@ -427,7 +328,6 @@ const Lead = () => {
         <h3>  {parentView && <button className="back-only-btn"
           onClick={() => {
             if (parentView) {
-              getContacts();
               setParentView(false);
               setViewState("contacts"); // Change the view state to "contacts"
             }
@@ -483,7 +383,7 @@ const Lead = () => {
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
                 <div className={`add_user_btn family_meber ${searchRef.current.value && category.leads_count > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.id)} >
-                  <h4>{category?.name} (<>{category.leads_count})</></h4>
+                  <h4>{category?.name} (<>{category?.leads_count})</></h4>
                   <button style={{ padding: "12px 18px" }}  >{activeCategory == category.id ? "-" : "+"}</button>
                 </div>
                 {activeCategory == category?.id && <div>
@@ -501,44 +401,35 @@ const Lead = () => {
                           <th>Date</th>
                         </tr>
                       </thead>
-                      {activeLeadCategory.length > 0 &&
-                        activeLeadCategory.map((contact) => (<tbody>
+                      {activeLeadCategory?.length > 0 &&
+                        activeLeadCategory?.map((contact) => (<tbody>
 
                           <tr key={contact.id}>
                             <td className="property-link" onClick={() => navigate(`/leads/edit/${contact.id}`, { state: { data: contact } })} >{contact.firstname}{" "} {contact.lastname}</td>
-                            {/* onClick={() => navigate(`/leads/edit/${contact.id}` ,  { state: { data: contact } })}  
-                                             */}
-                            <td>{contact.business_name}</td>
-                            <td>{contact.profession_name}</td>
-                            <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                            <td>{contact.email}</td>
-                            <td>{contact.created_at.slice(0, 10)}</td>
-                            {/* <td>{contact.category}</td> */}
-
+                            <td>{contact?.business_name}</td>
+                            <td>{contact?.profession_name}</td>
+                            <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
+                            <td>{contact?.email}</td>
+                            <td>{contact?.created_at.slice(0, 10)}</td>
                             <td>
                               <button className="permissions"
                                 onClick={() => {
-                                  navigate(`/todo-list/add/${contact.id}`)
+                                  navigate(`/todo-list/add/${contact?.id}`)
                                 }}>Create Task</button>
                             </td>
                             {category?.id != "today" ?
                               <td>
                                 <img className="delete-btn-ico" src="/delete.svg"
                                   onClick={() => {
-
                                     handleDeleteClick(contact, contact.id, contact.category, category.id)
-                                    // setId(contact.id)
-                                    // seletectedCategoryfunc(contact.category)
-                                    // openModal("add")
                                   }
                                   } alt="" ></img>
                               </td>
                               : ""}
-
                           </tr>
-
                         </tbody>))}
                     </table>
+                    
                     {activeLeadCategory?.length > 0 && (
                       <div className="pagination">
                         {renderPageNumbers()}

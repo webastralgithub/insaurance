@@ -266,7 +266,6 @@ const EditTodoForm = ({ user }) => {
     profession_id: "",
     address1: "",
     phone: "",
-    company: "",
     website: "",
     servceRequire: selectedServices,
     notes: "",
@@ -328,7 +327,6 @@ const EditTodoForm = ({ user }) => {
       isValid = false;
     }
     if (!seletedProfession.value) {
-
       setErrors(prevErrors => ({ ...prevErrors, profession: "Please Select a profession" }));
       isValid = false;
     }
@@ -537,7 +535,6 @@ const EditTodoForm = ({ user }) => {
               {newSelected.id &&
                 <>
                   <div className="form-user-add-inner-wrap">
-
                     <label>Phone Number</label>
                     <input
                       type="phone"
@@ -566,7 +563,7 @@ const EditTodoForm = ({ user }) => {
                     <input
                       type="text"
 
-                      value={newSelected?.profession ? newSelected?.profession.name : ""}
+                      value={newSelected?.profession_id > 0 ? newSelected?.profession.name : ""}
                       readOnly
                     />
                   </div>
@@ -589,36 +586,11 @@ const EditTodoForm = ({ user }) => {
                   </div>
                 </>
               }
-              {/* <div className="form-user-add-inner-wrap ">
-              <label>Contact</label>
-
-              <Select
-                defaultInputValue={editedTodo?.contact?.firstname}
-                placeholder="Select Contact"
-                onChange={(selectedOption) => {
-                  setSelectedContact(selectedOption)
-                  setEditedTodo({ ...editedTodo, ContactID: selectedOption.value })
-                }
-                }
-                options={contactOption}
-                styles={colourStyles}
-                className="select-new"
-                isMulti={false}
-                value={selectedContact}
-                closeMenuOnSelect={true}
-                hideSelectedOptions={false}
-                components={{ DropdownIndicator: () => null,IndicatorSeparator:() => null }}
-              />
-            </div> */}
             </div>
-
-
-
 
             <div className="todo-notes-section">
               <div className="form-user-add-inner-wrap">
                 <label>Notes</label>
-
                 <CKEditor
                   editor={ClassicEditor}
                   data={editedTodo?.Comments || ''}
@@ -637,7 +609,6 @@ const EditTodoForm = ({ user }) => {
 
           </div>
           <div className="form-user-add-inner-btm-btn-wrap">
-
             <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
           </div>
 
@@ -665,11 +636,6 @@ const EditTodoForm = ({ user }) => {
                   </button>{" "}
                   ADD Contact
                 </h3>
-                {/* <div className="top-bar-action-btns">
-         <button style={{ background: "#004686" }} onClick={handleSaveClick}>
-           Save
-         </button>
-         </div> */}
               </div>
             </div>
             <div className="parent">
@@ -688,7 +654,7 @@ const EditTodoForm = ({ user }) => {
                     <input
                       type="text"
                       name="firstname"
-                      value={contactNew.firstname}
+                      value={contactNew?.firstname}
                       onChange={handleChangeAddPhone}
 
                     />
@@ -702,7 +668,7 @@ const EditTodoForm = ({ user }) => {
                     <input
                       type="text"
                       name="email"
-                      value={contactNew.email}
+                      value={contactNew?.email}
                       onChange={handleChangeAddPhone}
                     />
                     <span className="error-message">{errors.email}</span>
@@ -715,7 +681,7 @@ const EditTodoForm = ({ user }) => {
                     <input
                       type="text"
                       name="website"
-                      value={contactNew.website}
+                      value={contactNew?.website}
                       onChange={handleChangeAddPhone}
                     />
                   </div>
@@ -734,12 +700,12 @@ const EditTodoForm = ({ user }) => {
                           mask="+1 (999) 999-9999"
                           type="text"
                           name="phone"
-                          value={contactNew.phone}
+                          value={contactNew?.phone}
                           onChange={handlePhoneNumberChange}
                           placeholder="+1 (___) ___-____"
 
                         />
-                        <span className="error-message">{errors.phone}</span>
+                        <span className="error-message">{errors?.phone}</span>
                       </div>
 
                     </div>
@@ -750,7 +716,7 @@ const EditTodoForm = ({ user }) => {
                         <input
                           type="text"
                           name="business_name"
-                          value={contactNew.business_name}
+                          value={contactNew?.business_name}
                           onChange={handleChangeAddPhone}
                         />
                         <span className="error-message">{errors.business_name}</span>

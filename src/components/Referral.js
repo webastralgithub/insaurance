@@ -269,7 +269,7 @@ const Referral = ({ role }) => {
               />
               {active == 1 && userss?.length > 0 && (
 
-                userss.map((contact) => (
+                userss?.map((contact) => (
                   <tbody>
 
                     <tr key={contact?.id}>
@@ -310,7 +310,7 @@ const Referral = ({ role }) => {
                           contact?.referrer_contact?.firstname}
                       </td>
                       <td>{contact?.send_contact?.business_name}</td>
-                      <td>{contact?.send_contact?.profession ? contact?.send_contact?.profession?.name : ""} </td>
+                      <td>{contact?.send_contact?.profession_id > 0 ? contact?.send_contact?.profession?.name : ""} </td>
                       <td>{contact?.send_contact?.phone} </td>
                       <td> {contact?.send_contact?.email}</td>
                       <td>{contact?.reciever_contact?.firstname}</td>
@@ -318,7 +318,6 @@ const Referral = ({ role }) => {
                   </tbody>
                 ))
               )}
-
             </table>)}
         {userss?.length > 0 && (
           <div className="pagination">

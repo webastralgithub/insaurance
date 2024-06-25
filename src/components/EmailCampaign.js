@@ -102,6 +102,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 };
 
 const EmailCampaign = () => {
+  const [customEmail, setCustomEmail] = useState(0)
   const [dataLoader, setDataLoader] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [templates, setTemplates] = useState([]);
@@ -125,7 +126,7 @@ const EmailCampaign = () => {
   const [contactOptions, setContactoptions] = useState([]);
   const [templateSendEmailContent, setTemplateSendEmailContent] = useState("template");
   const [active, setActive] = useState(2)
-  const [contactOptionunique , setcontactOptionunique] = useState([])
+  const [contactOptionunique, setcontactOptionunique] = useState([])
   const ref = useRef()
 
   useEffect(() => {
@@ -473,11 +474,11 @@ const EmailCampaign = () => {
     try {
       const response = await axios.get(`${url}api/contacts`, {
         headers,
-    });
-  
-  
-    setcontactOptionunique(response.data)
-      
+      });
+
+
+      setcontactOptionunique(response.data)
+
       // setcontactOptionunique(response.data)
 
       // const contactsWithoutParentId = response.data.filter(
@@ -497,19 +498,19 @@ const EmailCampaign = () => {
       //   value: realtor.id,
       //   label: realtor.firstname,
       // }));
-     // setContactoptions(realtorOptions);
+      // setContactoptions(realtorOptions);
     } catch (error) {
       console.error(error);
       // Handle error
     }
   };
 
-  
+
   const colourStyles = {
     valueContainer: (styles) => ({
       ...styles,
- 
-     // overflowX: "auto",
+
+      // overflowX: "auto",
       flex: "unset",
       flexWrap: "no-wrap",
       width: selectedContacts?.length > 0 ? "354px" : "100%",
@@ -555,7 +556,7 @@ const EmailCampaign = () => {
     option: (styles) => {
       return {
         ...styles,
-        cursor: 'pointer' ,
+        cursor: 'pointer',
       };
     },
   };
@@ -650,119 +651,235 @@ const EmailCampaign = () => {
     setTemplateSendEmailContent("custom")
     setIsOpen(true)
   }
+  ///////contact listing
+  let searchRef = useRef()
+  const [currentPage, setCurrentPage] = useState(1);
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
 
+  useEffect(() => {
+    getTasks()
+  }, [currentPage])
+  const getTasks = async () => {
+    setDataLoader(true)
+    let currPage
+    let seachData
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+
+    try {
+      const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
+      setusers(response?.data?.contacts)
+      setTotalPages(response?.data?.totalPages)
+      setDataLoader(false)
+    } catch (error) {
+      setDataLoader(false)
+      console.error("Server is busy");
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const formatPhoneNumber = (phoneNumber) => {
+    return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
   return (
+    <>
+      <div className="add_property_btn">
 
-    <div className="add_property_btn">
-
-      <PreviewUserModal
-        className="preview-modal"
-        isOpen={isUserPreviewModalOpen}
-        closeModal={closeUserPreviewModal}
-        templateUserContent={previewUserContent}
-        onSave={updateUserEmailTemplate}
-      />
-      <div className="inner-pages-top inner-pages-top-flex-direction">
-        {chooseTemplate &&
+        <PreviewUserModal
+          className="preview-modal"
+          isOpen={isUserPreviewModalOpen}
+          closeModal={closeUserPreviewModal}
+          templateUserContent={previewUserContent}
+          onSave={updateUserEmailTemplate}
+        />
+        <div className="inner-pages-top inner-pages-top-flex-direction">
           <div className="inner-pages-top" style={{ justifyContent: 'flex-start' }}>
             <button className="back-only-btn" >
               <img src="/back.svg" onClick={() => { setChooseTemplate(false) }} />
             </button>
-
             <h3> Email Campaigns</h3>
-          </div>
-
-          // <h3> <button className="back-only-btn"
-          //   onClick={() => {
-          //     setChooseTemplate(false); // Change the view state to "contacts"
-          //   }}
-          // > <img src="/back.svg" /></button> </h3>
-        }
-
-
-        {chooseTemplate == true ? <div className="add_user_btn buttons-with-returb-btn">
-          <button className={active == "2" ? 'active' : ''} onClick={() => setActive(2)}>
-            Custom Text</button>
-          <button className={active == "1" ? 'active' : ''} onClick={() => setActive(1)}>
-            Email Template</button>
-
-        </div> : ""}
-      </div>
-
-      <>
-        {!chooseTemplate && <>
-          <div className="inner-pages-top">
-            <h3> Email Campaigns</h3>
-            <div className="add_user_btn">
-              <button onClick={() => setChooseTemplate(true)}> Send New Email </button>
-            </div>
-            {/* <div className="search-group">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search here"
-              />
-              <img src="/search.svg" />
-            </div> */}
-            {/* Rest of your component remains the same... */}
-          </div>
-
-
-          <div className="add_property_btn" >
-            <div className="template-grid">
-              <div className="new-email-tem-set">
-                <ul className="image-list">
-
-                  {dataLoader ?
-                    (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-                      <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
-                    </div>)
-
-                    : (<>
-                      {userTemplates.map((userTemplate, index) => (
-
-                        <li key={index}>
-                          <input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
-                          <label htmlFor={userTemplate.id}>
-                            <div key={userTemplate.id} className="template-item">
-                              {/* Add div for preview */}
-
-                              <div
-                                className="email-template-box"
-                                style={{
-                                  width: "100%",
-                                  height: "100px",
-                                  border: "1px solid #ccc",
-                                  overflow: "hidden",
-                                }}
-                              >
-                                <div dangerouslySetInnerHTML={{ __html: userTemplate.text }} />
-                              </div>
-                              <div className="email-template-name"> {userTemplate.name}
-                              </div>
-                            </div>
-                            <button onClick={() => openUserPreviewModal(userTemplate.id, userTemplate.text)}>
-                              Edit
-                            </button>
-                          </label>
-                        </li>
-
-                      ))} </>)}
-                </ul>
+          <div className="search-grp-with-btn" style={{marginLeft : '395px'}}>
+              <div className="search-group">
+                <input type="text"
+                  ref={searchRef}
+                  placeholder="Search here" />
               </div>
-              {userTemplates.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+              <div className="add_user_btn">
+                <button >Search</button>
+              </div>
             </div>
           </div>
-        </>}
-      </>
+          <div className="add_user_btn buttons-with-returb-btn">
+            <button className={active === 1 ? 'active' : ''} onClick={() => { setActive(1); setCustomEmail(0) }}>
+              Campaign</button>
+            <button className={active === 2 ? 'active' : ''} onClick={() => { setActive(2); setCustomEmail(0) }}>
+              People</button>
+            <button className={active === 3 ? 'active' : ''} onClick={() => { setActive(3); setCustomEmail(0) }}>
+              Templates</button>
+          </div>
+        </div>
 
-      <>
-        {chooseTemplate &&
+
+        {/* active === 1 and email campign list */}
+        <>
+          {active === 1 && <>
+            <div className="add_property_btn" >
+              <div className="template-grid">
+                <div className="new-email-tem-set">
+                  <ul className="image-list">
+
+                    {dataLoader ?
+                      (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+                        <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+                      </div>)
+
+                      : (<>
+                        {userTemplates.map((userTemplate, index) => (
+
+                          <li key={index}>
+                            <input type="radio" name="test" ref={ref} value={userTemplate.id} id={userTemplate.id} />
+                            <label htmlFor={userTemplate.id}>
+                              <div key={userTemplate.id} className="template-item">
+                                {/* Add div for preview */}
+
+                                <div
+                                  className="email-template-box"
+                                  style={{
+                                    width: "100%",
+                                    height: "100px",
+                                    border: "1px solid #ccc",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  <div dangerouslySetInnerHTML={{ __html: userTemplate.text }} />
+                                </div>
+                                <div className="email-template-name"> {userTemplate.name}
+                                </div>
+                              </div>
+                              <button onClick={() => openUserPreviewModal(userTemplate.id, userTemplate.text)}>
+                                Edit
+                              </button>
+                            </label>
+                          </li>
+
+                        ))} </>)}
+                  </ul>
+                </div>
+                {userTemplates.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+              </div>
+            </div>
+          </>}
+        </>
+
+        {/* active === 1 and contacts list */}
+        <>
+          {active == 2 && customEmail != 1 &&
+            <div className="table-container">
+              {dataLoader ?
+                (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+                  <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+                </div>)
+
+                : (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Business Name</th>
+                        <th>Profession</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                      </tr>
+                    </thead>
+                    {userss.length > 0 &&
+                      userss.map((contact) => (<tbody key={contact.id}>
+                        <tr key={contact.id}>
+                          <td><input type='checkbox' /></td>
+                          <td>{contact.firstname}</td>
+                          <td>{contact?.business_name}</td>
+                          <td>{contact?.profession?.name ? contact?.profession?.name : ""}</td>
+                          <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
+                          <td>{contact?.email}</td>
+                        </tr>
+                      </tbody>))}
+                  </table>)}
+              {userss?.length > 0 && (
+                <div className="pagination">
+                  {renderPageNumbers()}
+                </div>
+              )}
+            </div>
+          }
+        </>
+
+        {/* active == 3  */}
+        <>
           <div className="template-grid">
-            <div className="custom-text-tab-sec">
-              {/* <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} /> */}
-            </div>  {active == "1" &&
+
+            {/* pre-defiened email templates */}
+
+            {active === 3 && customEmail === 1 && <>
+              <div className="custom-text-tab-sec">
+                <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={content.emailContent}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setContent({ ...content, emailContent: data });
+                  }}
+                  config={{
+                    toolbar: [
+                      "heading",
+                      "|",
+                      "bold",
+                      "italic",
+                      "link",
+                      "|",
+                      "bulletedList",
+                      "numberedList",
+                      "|",
+                      "undo",
+                      "redo",
+                    ],
+                  }}
+                  className="custom-ckeditor"
+                  style={{ width: "100%" }}
+                />
+
+                {subject && content.emailContent ? <div className="camp-gap camp-gap-button-wrapper-nxt">
+                  <div className="icon-dashboard share-ref-top-wrp">
+                    <button onClick={handleSaveCustomContent}>
+                      <p>Share</p>
+                    </button>
+                  </div>
+                </div> : ""}
+              </div>
+            </>
+            }
+
+
+            {/*pre-defiened email templates */}
+            {active === 3 && customEmail != 1 &&
               <>
                 <PreviewModal
                   className="preview-modal"
@@ -771,6 +888,12 @@ const EmailCampaign = () => {
                   templateContent={previewContent}
                   onSave={updateEmailTemplate}
                 />
+
+                <div className="template-item custom-email-template-flex" style={{ border: '1px solid', overflow: 'hidden' }}>
+                  <div style={{ fontSize: '199px', overflow: 'hidden' }} onClick={() => setCustomEmail(1)}>
+                    +
+                  </div>
+                </div>
                 {templates.map((template) => (
                   <div key={template.id} className="template-item">
                     <label htmlFor={template.id}></label>
@@ -790,118 +913,74 @@ const EmailCampaign = () => {
                     <div className="email-template-name" >{template.name}</div>
                   </div>
                 ))}
-
-              </>}
-
-            {active == "2" && <><div className="custom-text-tab-sec">
-              <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
-              <CKEditor
-                editor={ClassicEditor}
-                data={content.emailContent}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setContent({ ...content, emailContent: data });
-                }}
-                config={{
-                  toolbar: [
-                    "heading",
-                    "|",
-                    "bold",
-                    "italic",
-                    "link",
-                    "|",
-                    "bulletedList",
-                    "numberedList",
-                    "|",
-                    "undo",
-                    "redo",
-                  ],
-                }}
-                className="custom-ckeditor"
-                style={{ width: "100%" }}
-              />
-
-              {subject && content.emailContent ? <div className="camp-gap camp-gap-button-wrapper-nxt">
-                <div className="icon-dashboard share-ref-top-wrp">
-                  <button onClick={handleSaveCustomContent}>
-                    <p>Share</p>
-                  </button>
-                </div>
-              </div> : ""}
-
-            </div>
-            </>
+              </>
             }
           </div>
-        }
-      </>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-      >
-        <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category" >
-          <img
-            className="close-modal-share"
-            onClick={closeModal}
-            src="/plus.svg"
-          />
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              sendRefferal();
-            }}
-          >
-            <h3 className="heading-category">Select Contact(s) </h3>
-            {error && <p className="error-category">{error}</p>}
-            <Select
-              placeholder={
-                <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
-              }
-              ref={selectRef}
-              value={selectedContacts}
-              menuIsOpen={true}
-              hideSelectedOptions={false}
-              onChange={(selectedOptions) => {
-                setSelectedContacts(selectedOptions);
-              }}
-              onInputChange={(input) => setSearchText(input)}
-              options={contactOptionunique?.map((user) => ({
-                value: user.id,
-                label: user.firstname
-              }))}
+        </>
 
-              components={{
-                DropdownIndicator: () => null,
-                IndicatorSeparator: () => null,
-                Option: (props) => (
-                  <CustomOption {...props}
-                  selectedContacts={contactOptionunique}
-                    selectOption={props.selectOption}
-                  />
-                )
-              }}
-
-              // components={{
-              //   DropdownIndicator: () => null,
-              //   IndicatorSeparator: () => null,
-              //   Menu: (props) => (
-              //     <CustomDropdown searchText={searchText} {...props} />
-              //   ),
-              // }}
-              styles={colourStyles}
-              className="select-new"
-              isMulti
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customStyles}
+        >
+          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category" >
+            <img
+              className="close-modal-share"
+              onClick={closeModal}
+              src="/plus.svg"
             />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendRefferal();
+              }}
+            >
+              <h3 className="heading-category">Select Contact(s) </h3>
+              {error && <p className="error-category">{error}</p>}
+              <Select
+                placeholder={
+                  <PlaceholderWithIcon>Select Contacts...</PlaceholderWithIcon>
+                }
+                ref={selectRef}
+                value={selectedContacts}
+                menuIsOpen={true}
+                hideSelectedOptions={false}
+                onChange={(selectedOptions) => {
+                  setSelectedContacts(selectedOptions);
+                }}
+                onInputChange={(input) => setSearchText(input)}
+                options={contactOptionunique?.map((user) => ({
+                  value: user.id,
+                  label: user.firstname
+                }))}
 
-            {/* main share button */}
-            <div className="modal-convert-btns">
-              <button type="submit">Share</button>
-            </div>
-          </form>
-        </div>
-      </Modal>
-    </div>
+                components={{
+                  DropdownIndicator: () => null,
+                  IndicatorSeparator: () => null,
+                  Option: (props) => (
+                    <CustomOption {...props}
+                      selectedContacts={contactOptionunique}
+                      selectOption={props.selectOption}
+                    />
+                  )
+                }}
+                styles={colourStyles}
+                className="select-new"
+                isMulti
+              />
+
+              {/* main share button */}
+              <div className="modal-convert-btns">
+                <button type="submit">Share</button>
+              </div>
+            </form>
+          </div>
+        </Modal>
+      </div>
+
+      {/* new design for email Campaigns */}
+
+    </>
   );
 };
 export default EmailCampaign;

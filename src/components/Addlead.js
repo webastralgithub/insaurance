@@ -264,7 +264,6 @@ const AddLead = ({ user }) => {
     setContact({ ...contact, address1: newAddress });
   };
 
-
   const handleChange = (e) => {
     setssearch(2)
     setSearchContacts([])
@@ -361,22 +360,13 @@ const AddLead = ({ user }) => {
 
             type="text"
             name="firstname"
-            value={contact.firstname}
+            value={contact?.firstname}
             onChange={handleSearchChange}
           />
           <span className="error-message">{errors.firstname}</span>
         </div>
-        <div className="form-user-add-inner-wrap">
-          <label>Business Name <span className="required-star">*</span></label>
-          <input
 
-            type="text"
-            name="business_name"
-            value={contact.business_name}
-            onChange={handleChange}
-          />
-          <span className="error-message">{errors.business_name}</span>
-        </div>
+ 
 
         {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
           <CircularProgress color="inherit" />
@@ -391,6 +381,18 @@ const AddLead = ({ user }) => {
           </div>
         }
         </>}
+
+        <div className="form-user-add-inner-wrap">
+          <label>Business Name <span className="required-star">*</span></label>
+          <input
+
+            type="text"
+            name="business_name"
+            value={contact.business_name}
+            onChange={handleChange}
+          />
+          <span className="error-message">{errors.business_name}</span>
+        </div>
 
         <div className="form-user-add-inner-wrap">
           <label>Email Id<span className="required-star">*</span></label>

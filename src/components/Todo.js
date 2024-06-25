@@ -2,21 +2,17 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./admin.css";
 import axios from "axios";
-import Modal from "react-modal";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { AuthContext } from "./context/AuthContext";
-import Show from "./Show";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { Circles } from 'react-loader-spinner'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const TodoList = ({ role }) => {
+  const url = process.env.REACT_APP_API_URL;
   const [dataLoader, setDataLoader] = useState(false)
   const [buttonActive, setButtonActive] = useState(1)
   const [tasks, setTasks] = useState([]);
@@ -71,32 +67,6 @@ const TodoList = ({ role }) => {
 
     return `${month}-${day}`;
   };
-  const url = process.env.REACT_APP_API_URL;
-
-  const handleDeleteClick = (propertyId) => {
-    confirmAlert({
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this task?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => handleDelete(propertyId),
-        },
-        {
-          label: 'No',
-          onClick: () => { },
-        },
-      ],
-    });
-  };
-
-  const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/todo/${propertyId}`, { headers });
-
-    toast.success('Todo deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setTasks(tasks.filter((p) => p.id !== propertyId));
-  };
-
 
   const getTasks = async () => {
     setDataLoader(true)
@@ -155,7 +125,6 @@ const TodoList = ({ role }) => {
     ));
   };
 
-  const [active, setActive] = useState("")
   const handleMarkAsread = (status, id) => {
     confirmAlert({
       title: 'Confirm Delete',
@@ -271,41 +240,26 @@ const TodoList = ({ role }) => {
 
                 {tasks && tasks?.map((task, index) => (
                   <>
-                    {!task.IsRead && <tr key={task.id}>
+                    {!task.IsRead && <tr key={task?.id}>
 
                       <td
                         className="property-link"
                         onClick={() => {
                           setTodo(task)
-                          navigate(`/todo-list-todo/edit/${task.id}`);
+                          navigate(`/todo-list-todo/edit/${task?.id}`);
                         }}
                       >
-                        {task.Followup}
+                        {task?.Followup}
                       </td>
 
                       <td>
-                        {formatDate(task.FollowupDate)}
+                        {formatDate(task?.FollowupDate)}
                       </td>
                       <td>{task?.contact?.firstname}</td>
                       <td>{task?.contact?.business_name}</td>
-                      <td>{task?.contact?.profession ? task?.contact?.profession?.name : ""}</td>
+                      <td>{task?.contact?.profession_id > 0 ? task?.contact?.profession?.name : ""}</td>
                       <td>{formatPhoneNumber(task?.contact?.phone)}</td>
                       <td>{task?.contact?.email}</td>
-                      {/* <td>
-                {task.client?.firstname}
-              </td>
-            
-              <td>
-                {task.realtor?.name}
-              </td> */}
-                      {/* {task.contact? <td   className="property-link"   onClick={() => {
-                   
-                    navigate(`/contact/edit/${task.contact.id}`);
-                  }}>
-                { task.contact.firstname}
-              </td>:<td></td>} */}
-
-
                       <td> <button className="permissions"
                         onClick={() => navigate(`/todo-list/followup/${task.id}`)} >Create Follow-Up</button>
                       </td>
@@ -313,13 +267,12 @@ const TodoList = ({ role }) => {
                         <img className="delete-btn-ico" src="/delete.svg"
                           onClick={() => { handleMarkAsread(!task.IsRead, task.id) }}
                         ></img>
-                    
+
                       </td>
                     </tr>}
                   </>
                 ))}
               </tbody>
-
             </table>)}
 
         {tasks?.length > 0 && (
@@ -328,11 +281,10 @@ const TodoList = ({ role }) => {
           </div>
         )}
 
-
       </div>
-      {type == "previous" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
-      {type == "today" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
-      {type == "future" && tasks.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+      {type == "previous" && tasks?.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+      {type == "today" && tasks?.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
+      {type == "future" && tasks?.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
     </div>
   );
 };

@@ -1,3 +1,14 @@
+.custom-email-template-flex{
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px 6px 4px 4px;
+
+}
+
 .ck.ck-editor__editable_inline>:last-child {
   margin-bottom: var(--ck-spacing-large);
   height: 100px;
@@ -7,7 +18,7 @@
   display: flex;
   row-gap: 30px;
   justify-content: start;
-  column-gap: 30px;
+  column-gap: 15px;
   margin-top: 20px;
   flex-wrap: wrap;
 }

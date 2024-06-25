@@ -12,58 +12,6 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 
-const CustomDropdown = ({ children, searchText, ...props }) => {
-  const selectedOptions = props.getValue();
-
-  const handleOptionClick = (option) => {
-    const isSelected = selectedOptions.some((selected) => selected.value === option.value);
-
-    if (isSelected) {
-      props.setValue(selectedOptions.filter((selected) => selected.value !== option.value));
-    } else {
-      props.setValue([...selectedOptions, option]);
-    }
-  };
-
-  const isOptionSelected = (option) => {
-    return selectedOptions.some((selected) => selected.value === option.value);
-  };
-
-  const filteredOptions = props.options.filter((option) =>
-    option.label.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  return (
-    <div className="custom-dropdown" style={{
-      maxHeight: "250px",
-      minHeight: "250px",
-      overflowY: "auto",
-      background: "#fff",
-      boxShadow: "none"
-    }}>
-      {/* Show selected options with radio buttons */}
-      {filteredOptions.map((option) => (
-        <div onClick={() => handleOptionClick(option)} key={option.value} className={`custom-option ${isOptionSelected(option) ? "selected" : ""}`} style={{ backgroundColor: isOptionSelected(option) ? "rgb(202 146 51 / 10%)" : "" }}>
-          <label htmlFor={option.value}>{option.label}</label>
-          <div className="circle"></div>
-          {/* <input
-            type="radio"
-            id={option.value}
-            name={option.label}
-            checked={isOptionSelected(option)}
-            onChange={() => handleOptionClick(option)}
-          /> */}
-
-        </div>
-      ))}
-
-      {/* Show available options */}
-      {React.cloneElement(children, { ...props })}
-    </div>
-  );
-};
-
-
 const Contact = ({ role }) => {
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
@@ -87,9 +35,13 @@ const Contact = ({ role }) => {
   const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
-
-  const { auth, leadlength, setLeadlength, roleId } = useContext(AuthContext);
-
+  const [dataLoader, setDataLoader] = useState(false)
+  const [buttonActive, setButtonActive] = useState(1)
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
+  const { auth, leadlength, setLeadlength, roleId,contactlength ,setConatctlength,tasklength, setTasklength } = useContext(AuthContext);
+  const [isAlreadyLead, setIsAlreadyLead] = useState()
   const headers = {
     Authorization: auth.token,
   };
@@ -174,13 +126,8 @@ const Contact = ({ role }) => {
     window.URL.revokeObjectURL(url);
     closeModal()
   };
-
-
-
-  const [isAlreadyLead, setIsAlreadyLead] = useState()
-
-  const handleSelectCategory = (category) => {
-    const valuesToFind = category.split(',').map(Number);
+    const handleSelectCategory = (category) => {
+    const valuesToFind = category?.split(',').map(Number);
     let seletctedOptions = categories?.filter((item => valuesToFind.includes(item.value)))
     setSelectedCategory(seletctedOptions)
   }
@@ -229,7 +176,6 @@ const Contact = ({ role }) => {
     }
   }
 
-
   const handleUpload = async () => {
     if (!selectedFile) {
       toast.error(" Please select a file");
@@ -251,14 +197,14 @@ const Contact = ({ role }) => {
     }
   };
 
-  const handleDeleteClick = (propertyId) => {
+  const handleDeleteClick = (propertyId, isLead) => {
     confirmAlert({
       title: 'Confirm Delete',
       message: 'Are you sure you want to delete this contact?',
       buttons: [
         {
           label: 'Yes',
-          onClick: () => handleDelete(propertyId),
+          onClick: () => handleDelete(propertyId , isLead),
         },
         {
           label: 'No',
@@ -344,14 +290,6 @@ const Contact = ({ role }) => {
     }
   };
 
-  const [dataLoader, setDataLoader] = useState(false)
-  const [buttonActive, setButtonActive] = useState(1)
-  let searchRef = useRef()
-  const [userss, setusers] = useState([])
-  const [totalPagess, setTotalPages] = useState("");
-
-
-
   const getTasks = async () => {
     setDataLoader(true)
     let currPage
@@ -374,7 +312,7 @@ const Contact = ({ role }) => {
   };
   useEffect(() => {
     getTasks();
-  }, [currentPage, leadlength]);
+  }, [currentPage, leadlength, contactlength]);
 
   const handleKeyDownEnter = (event) => {
     if (event.key === 'Enter') {
@@ -408,12 +346,17 @@ const Contact = ({ role }) => {
     ));
   };
 
-  const handleDelete = async (propertyId) => {
+  const handleDelete = async (propertyId , isLead) => {
     setDataLoader(true)
     try {
       await axios.delete(`${url}api/contacts/${propertyId}`, { headers });
       toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       setContacts(contacts.filter((p) => p.id !== propertyId));
+      setConatctlength(contactlength -1)
+      setTasklength(tasklength -1)
+      if(isLead == true){
+        setLeadlength(leadlength -1)
+      }
       getTasks()
       setDataLoader(false)
     } catch (error) {
@@ -428,7 +371,6 @@ const Contact = ({ role }) => {
       getContacts();
     }
   }, []);
-
 
   const getContacts = async () => {
     try {
@@ -452,18 +394,6 @@ const Contact = ({ role }) => {
       // navigate('/');
     }
   };
-
-
-
-
-
-
-  const PlaceholderWithIcon = (props) => (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
-      {/* Adjust icon and styling */}
-      <span>{props.children}</span>  <img style={{ width: "17px", filter: "brightness(4.5)" }} src="/search.svg" />
-    </div>
-  );
 
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
@@ -699,7 +629,7 @@ const Contact = ({ role }) => {
                             handleSelectCategory(contact.category)
                           }
                           openModal("add")
-                        }}>{contact?.isLead == true ? `Converted to Lead(${contact.category.split(',').map(Number).length})` : 'Convert to Lead'}</button>
+                        }}>{contact?.isLead == true && contact?.category !=null ? `Converted to Lead(${contact?.category.split(',').map(Number).length})` : 'Convert to Lead'}</button>
                     </td>
                     <td>
 
@@ -714,7 +644,7 @@ const Contact = ({ role }) => {
                     </td>
                     <td>
                       <img className="delete-btn-ico" src="/delete.svg"
-                        onClick={() => handleDeleteClick(contact.id)} alt="" ></img>
+                        onClick={() => handleDeleteClick(contact.id, contact?.isLead)} alt="" ></img>
                     </td>
                   </tr>
                 </tbody>))}
