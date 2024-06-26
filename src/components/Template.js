@@ -35,64 +35,6 @@ const CustomOption = ({ data, isSelected, selectOption, selectedContacts, ...pro
     );
 };
 
-
-
-const CustomDropdown = ({ children, searchText, ...props }) => {
-    const selectedOptions = props.getValue();
-
-    const handleOptionClick = (option) => {
-        const isSelected = selectedOptions.some(
-            (selected) => selected.value === option.value
-        );
-        if (isSelected) {
-            props.setValue(
-                selectedOptions.filter((selected) => selected.value !== option.value)
-            );
-        } else {
-            props.setValue([...selectedOptions, option]);
-        }
-    };
-
-    const isOptionSelected = (option) => {
-        return selectedOptions.some((selected) => selected.value === option.value);
-    };
-
-    const filteredOptions = props.options.filter((option) =>
-        option.label.toLowerCase().includes(searchText.toLowerCase())
-    );
-
-    return (
-        <div
-            className="custom-dropdown"
-            style={{
-                maxHeight: "250px",
-                minHeight: "250px",
-                overflowY: "auto",
-                background: "#fff",
-                boxShadow: "none",
-            }}
-        >
-            {filteredOptions.map((option) => (
-                <div
-                    onClick={() => handleOptionClick(option)}
-                    key={option.value}
-                    className={`custom-option ${isOptionSelected(option) ? "selected" : ""
-                        }`}
-                    style={{
-                        backgroundColor: isOptionSelected(option)
-                            ? "rgb(0 70 134 / 8%)"
-                            : "",
-                    }}
-                >
-                    <label htmlFor={option.value}>{option.label}</label>
-                    <div className="circle"></div>
-                </div>
-            ))}
-            {React.cloneElement(children, { ...props })}
-        </div>
-    );
-};
-
 const Templates = () => {
     const url = process.env.REACT_APP_API_URL
     const location = useLocation();
@@ -235,21 +177,13 @@ const Templates = () => {
             return
         }
         try {
-            const response = await axios.post(
-                `${url}api/contacts/email`,
-
-                {
+            const response = await axios.post(`${url}api/contacts/email`,{
                     selectedContacts: selectedContacts.map((option) => option.value),
                     emailContent: editedTempalteContent,
                     subject: subject,
                     templateName: templateName,
                     type: templateSendEmailContent
-                },
-                {
-                    headers,
-                }
-            );
-
+                },{headers});
             if (response.status === 200) {
                 toast.success("Email Sent successfully", {
                     autoClose: 2000,

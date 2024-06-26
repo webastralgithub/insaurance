@@ -1,79 +1,32 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import Select, { components } from 'react-select';
 import "./admin.css"
-import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { useNavigate, useParams, useRouter } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-
 
 
 const ContactReferral = ({ role }) => {
   const [dataLoader, setDataLoader] = useState(false)
   const { id } = useParams()
-  const selectRef = useRef(null);
-  const [contacts, setContacts] = useState([]);
+  const location = useLocation();
+  const { data } = location.state;
   const [active, setActive] = useState(0);
-  const [parentid, setParentId] = useState()
   const navigate = useNavigate();
-  const [parentView, setParentView] = useState(false)
-  const [parentName, setParentName] = useState([])
-  const [contactName, setContactName] = useState();
-  const [contactOptions, setContactoptions] = useState(false)
-  const [searchText, setSearchText] = useState('');
-  const [selectedContacts, setSelectedContacts] = useState(false)
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState([])
-  const [error, setError] = useState("")
-  const [seletedCategory, setSelectedCategory] = useState(null);
-  const [modalMode, setModalMode] = useState("");
-  const [users, setUsers] = useState([]);
-  const [KlientaleContacts, setKlintaleContacts] = useState([])
-  const [searchQuery, setSearchQuery] = useState("");
-  const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
-  const [width, setWidth] = useState(window.innerWidth);
-  const [isLoading, setIsLoading] = useState(false);
-
-
-
-  const { auth, email } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
   const url = process.env.REACT_APP_API_URL;
   const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
-
-  const handleWindowSizeChange = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    return () => {
-      window.removeEventListener('resize', handleWindowSizeChange);
-    };
-
-  }, []);
-  useEffect(() => {   // Scroll to the end of valueContainer when selectedContacts change
-    if (selectRef.current) {
-      const valueContainer = selectRef?.current?.controlRef.firstChild;
-
-
-      if (valueContainer) {
-        valueContainer.scrollTo({ left: valueContainer.scrollWidth, behavior: 'smooth' });
-      }
-    }
-  }, [selectedContacts]);
-
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
 
   const sendRefferal = async (contact) => {
 
@@ -86,38 +39,12 @@ const ContactReferral = ({ role }) => {
         toast.success("Contact Sent successfully", {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
-        });
-        setSelectedContacts()
-        closeModal()
+        })
+       
       }
     } catch (error) {
       toast.error("error in sending refferal")
       console.error("error", error)
-    }
-  }
-
-  const convert = async (e) => {
-    e.preventDefault()
-    if (!seletedCategory?.value) {
-      setError("Please select a Category")
-      return
-    }
-
-    const response = await axios.put(`${url}api/contacts${id}`, {
-      isLead: true, category: seletedCategory
-        .value
-    }, {
-      headers,
-    });
-    getContacts();
-    if (response.status === 200) {
-      toast.success("Contact Converted successfully", {
-        autoClose: 3000,
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      setSelectedCategory()
-      closeModal()
-
     }
   }
 
@@ -184,156 +111,11 @@ const ContactReferral = ({ role }) => {
     });
   };
 
-  const openModal = (mode, role) => {
-    setModalMode(mode);
 
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalMode("");
-    setError("")
-    setSelectedCategory(null)
-    setSelectedContacts([])
-    setIsOpen(false);
-  };
-
-  const getCategories = async () => {
-    try {
-      const res = await axios.get(`${url}api/categories`, { headers });
-      const options = res.data.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.name,
-      }));
-      setCategories(options)
-
-    } catch (error) {
-      console.error("User creation failed:", error);
-    }
-  };
-
-
-  const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts/${propertyId}`, { headers });
-
-    toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setContacts(contacts.filter((p) => p.id !== propertyId));
-
-  };
-
-  useEffect(() => {
-    getContacts();
-    // getCategories()
-    getUsers();
-    fetchUsers();
-  }, []);
-
-
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`${url}api/admin/get-users`, { headers });
-      setUsers(res.data);
-    } catch (error) {
-      console.error("error in getting users", error)
-    }
-  };
-
-
-  const fetchUsers = async () => {
-    try {
-
-      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
-      const data = response.data.user;
-      setKlintaleContacts(data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return ""; // Handle cases where the date string is empty or undefined
-    }
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
-  const filteredContacts = contacts.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact.lastname?.toLowerCase().includes(searchText) ||
-      formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
-      contact.email?.toLowerCase().includes(searchText) ||
-      (contact.address1 + ' ' + contact.address2).toLowerCase().includes(searchText) ||
-      contact.city?.toLowerCase().includes(searchText) ||
-      contact.provinceName?.toLowerCase().includes(searchText) ||
-      (contact.realtor?.name.toLowerCase().includes(searchText)) ||
-      contact.source?.toLowerCase().includes(searchText) ||
-      contact.phone?.toLowerCase().includes(searchText)
-    );
-  });
-
-  const getContacts = async () => {
-    setDataLoader(true)
-    try {
-      const response = await axios.get(`${url}api/contacts`, { headers });
-      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-      const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
-      const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false);
-      // Set the filtered contacts in the state
-      setContacts(contactsWithoutParentIdandlead);
-      const contact = response.data.find((p) => p.id == id);
-      setContactName(contact);
-
-      const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
-        value: realtor.id,
-        label: realtor.firstname,
-      }));
-      setContactoptions(realtorOptions)
-      setDataLoader(false)
-    } catch (error) {
-      setDataLoader(false)
-      console.error(error)
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
-    }
-
-  };
-
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
-
-  const contactsToDisplay = filteredContacts.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
-
-
-
-  const PlaceholderWithIcon = (props) => (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
-      {/* Adjust icon and styling */}
-      <span>{props.children}</span>  <img style={{ width: "17px", filter: "brightness(4.5)" }} src="/search.svg" />
-    </div>
-  );
 
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
-  // Rest of your component remains the same...
-
-  const [buttonActive, setButtonActive] = useState(1)
-  let searchRef = useRef()
-  const [userss, setusers] = useState([])
-  const [totalPagess, setTotalPages] = useState("");
 
   const getTaskss = async () => {
     let currPage
@@ -352,9 +134,9 @@ const ContactReferral = ({ role }) => {
       }
       if (active === 1) {
         setDataLoader(true)
-        setUsers([])
-        const response = await axios.get(`${klintaleUrl}listing/${email.email}?page=${currPage}&search=${searchRef.current.value}`, { headers })
-        setusers(response?.data?.user)
+        setusers([])
+        const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&categories=${[]}`, { headers });
+        setusers(response?.data?.users)
         setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
         setDataLoader(false)
@@ -386,10 +168,10 @@ const ContactReferral = ({ role }) => {
     getTaskss();
   };
 
-  const handlePageChangee = (newPage) => {
+
+  const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-
   const renderPageNumbers = () => {
     const pageNumbers = [];
     for (let i = 1; i <= totalPagess; i++) {
@@ -410,7 +192,7 @@ const ContactReferral = ({ role }) => {
           onClick={() => {
             navigate("/contacts"); // Change the view state to "contacts"
           }}
-        > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Send Me Referrals "}({contactName?.firstname})</h3>
+        > <img src="/back.svg" /></button> {"Send Me Referrals"}({data?.firstname})</h3>
         <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
             <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
@@ -440,7 +222,7 @@ const ContactReferral = ({ role }) => {
           <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0) }}>
             Personal Contacts</button>
 
-          <button className={active ? 'active' : ''} onClick={() => { setUsers([]); setCurrentPage(1); setActive(1) }}>
+          <button className={active ? 'active' : ''} onClick={() => { setusers([]); setCurrentPage(1); setActive(1) }}>
             Klientale Contacts</button>
         </div>
       </div>

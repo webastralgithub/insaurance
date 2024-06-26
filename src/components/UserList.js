@@ -1,10 +1,7 @@
 import { useState, useContext, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from "./context/AuthContext";
-import { useNavigate, useLocation } from 'react-router-dom';
 import { Circles } from 'react-loader-spinner'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -28,7 +25,6 @@ const UserList = () => {
             currPage = currentPage
         }
         try {
-
             const response = await axios.get(`${url}api/admin/get-user?page=${currPage}&search=${searchRef.current.value}`, { headers });
             setUserList(response.data.users);
             setTotalPages(response.data.totalPages);
@@ -43,22 +39,18 @@ const UserList = () => {
         getUserList();
     }, [currentPage]);
 
-
     const clearSearch = () => {
         searchRef.current.value = ""
-
         getUserList();
     };
 
     const handleKeyDownEnter = (event) => {
         if (event.key === 'Enter') {
-
             getUserList()
         }
     };
 
     const handleKeyDown = () => {
-
         getUserList();
     };
 
@@ -112,9 +104,6 @@ const UserList = () => {
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Username</th>
-                                    {/* <th>User Type</th>
-                                    <th>Membership</th>
-                                    <th>Actions</th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -142,22 +131,6 @@ const UserList = () => {
                                         <td>{user.email}</td>
                                         <td>{user.phone}</td>
                                         <td>{user.username}</td>
-                                        {/* <td>{user.user_role}</td>
-                                <td>{user.membership_name}</td>
-                                <td>{user.user_role}</td> */}
-                                        <td>
-                                            {/* <button className="permissions share-ref-button-tb"
-                                        onClick={() => {
-                                            navigate(`/klientale-contacts/share/${user.id}/${user.name}`)
-                                        }}       >Share Me</button> */}
-                                        </td>
-                                        <td>
-                                            {/* <button className="permissions share-ref-button-tb"
-                                    onClick={() => {
-                                        navigate(`/klientale-contacts/contacts/send/${user.id}`)
-                                    }}       >Send me Referrals</button>  */}
-                                        </td>
-
                                     </tr>
                                 ))}
                             </tbody>

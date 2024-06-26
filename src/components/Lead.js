@@ -5,15 +5,9 @@ import { Circles } from 'react-loader-spinner'
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Message, toaster } from "rsuite";
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
-import { useNavigate, useRouter } from "react-router-dom";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+import { useNavigate } from "react-router-dom";
 
 const Lead = () => {
   const { auth, contactlength, setConatctlength, leadlength, setLeadlength } = useContext(AuthContext);
@@ -57,7 +51,7 @@ const Lead = () => {
     }
   };
 
- 
+
   const closeModal = () => {
     setModalMode("");
     setError("")
@@ -222,33 +216,16 @@ const Lead = () => {
     ));
   };
 
-  const seletectedCategoryfunc = (category) => {
-    const valuesToFind = category.split(',').map(Number);
-    let seletctedOptions = categoriesoptions?.filter((item => valuesToFind.includes(item.value)))
-    setSelectedCategory(seletctedOptions)
-  }
 
   const handleDeleteLead = async (editedContact, leadid, categories, categoryid) => {
     const valuesToFind = categories.split(',').map(Number);
-    let category = valuesToFind.filter(category => category !== categoryid);
-
-    let newContact = {
-      firstname: editedContact.firstname,
-      email: editedContact.email,
-      address1: editedContact.address1,
-      source: editedContact.source,
-      phone: editedContact.phone,
-      category: category,
-      profession_id: editedContact.profession_id,
-      isLead: true,
-      isContact: true,
-    }
     try {
-      const response = await axios.put(`${url}api/leads/${leadid}`, newContact, {
-        headers,
-      });
+      const response = await axios.delete(`${url}api/leads/${leadid}/${valuesToFind}`, { headers });
 
       if (response.status === 200) {
+        if (response.data.deletedCat === true) {
+          setLeadlength(leadlength - 1)
+        }
         toast.success("Lead Deleted successfully", {
           autoClose: 1000,
           position: toast.POSITION.TOP_RIGHT,
@@ -414,7 +391,7 @@ const Lead = () => {
                             <td>
                               <button className="permissions"
                                 onClick={() => {
-                                  navigate(`/todo-list/add/${contact?.id}`)
+                                  navigate(`/todo-list/add/${contact?.id}` ,  { state: { data: contact } })
                                 }}>Create Task</button>
                             </td>
                             {category?.id != "today" ?
@@ -429,7 +406,7 @@ const Lead = () => {
                           </tr>
                         </tbody>))}
                     </table>
-                    
+
                     {activeLeadCategory?.length > 0 && (
                       <div className="pagination">
                         {renderPageNumbers()}

@@ -125,7 +125,7 @@ const EmailCampaign = () => {
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [contactOptions, setContactoptions] = useState([]);
   const [templateSendEmailContent, setTemplateSendEmailContent] = useState("template");
-  const [active, setActive] = useState(2)
+  const [active, setActive] = useState(1)
   const [contactOptionunique, setcontactOptionunique] = useState([])
   const ref = useRef()
 
@@ -475,37 +475,11 @@ const EmailCampaign = () => {
       const response = await axios.get(`${url}api/contacts`, {
         headers,
       });
-
-
       setcontactOptionunique(response.data)
-
-      // setcontactOptionunique(response.data)
-
-      // const contactsWithoutParentId = response.data.filter(
-      //   (contact) => contact.parentId === null
-      // );
-      // const nonvendorcontacts = contactsWithoutParentId.filter(
-      //   (contact) => contact.isVendor === false
-      // );
-      // const contactsWithoutParentIdandlead = nonvendorcontacts.filter(
-      //   (contact) => contact.isLead === false
-      // );
-
-
-      // // Set the filtered contacts in the state
-
-      // const realtorOptions = response?.data?.map((realtor) => ({
-      //   value: realtor.id,
-      //   label: realtor.firstname,
-      // }));
-      // setContactoptions(realtorOptions);
     } catch (error) {
       console.error(error);
-      // Handle error
     }
   };
-
-
   const colourStyles = {
     valueContainer: (styles) => ({
       ...styles,
@@ -564,6 +538,8 @@ const EmailCampaign = () => {
   const handleContactChange = (selectedOptions) => {
     setSelectedContacts(selectedOptions);
   };
+  const [content, setContent] = useState({ emailContent: "" });
+  const navigate = useNavigate();
 
   const customStyles = {
     content: {
@@ -598,18 +574,13 @@ const EmailCampaign = () => {
       return
     }
     try {
-      const response = await axios.post(`${url}api/contacts/email`,
-
-        {
-          selectedContacts: selectedContacts.map((option) => option.value),
-          emailContent: content.emailContent,
-          subject: subject,
-          templateName: templateName,
-          type: templateSendEmailContent
-        },
-        {
-          headers,
-        }
+      const response = await axios.post(`${url}api/contacts/email`, {
+        selectedContacts: selectedContacts.map((option) => option.value),
+        emailContent: content.emailContent,
+        subject: subject,
+        templateName: templateName,
+        type: templateSendEmailContent
+      }, { headers }
       );
 
       if (response.status === 200) {
@@ -619,9 +590,10 @@ const EmailCampaign = () => {
         });
         setSelectedContacts([]);
         setSubject("")
-        setContent("")
         closeModal();
         setChooseTemplate(false)
+        setActive(1)
+        setContent("")
       }
     } catch (err) {
       toast.error("Email server is bussy try after sometime", {
@@ -638,8 +610,7 @@ const EmailCampaign = () => {
     setIsOpen(false);
   };
 
-  const [content, setContent] = useState({ emailContent: "", });
-  const navigate = useNavigate();
+
 
   const openTemplate = (id, text, name) => {
     const selected = { id, text, name }
@@ -699,6 +670,10 @@ const EmailCampaign = () => {
         key={number} onClick={() => handlePageChange(number)}>{number}</button>
     ));
   };
+
+  const handleBackbutton = () => {
+    setActive(1)
+  }
   return (
     <>
       <div className="add_property_btn">
@@ -712,11 +687,19 @@ const EmailCampaign = () => {
         />
         <div className="inner-pages-top inner-pages-top-flex-direction">
           <div className="inner-pages-top" style={{ justifyContent: 'flex-start' }}>
-            <button className="back-only-btn" >
-              <img src="/back.svg" onClick={() => { setChooseTemplate(false) }} />
-            </button>
-            <h3> Email Campaigns</h3>
-          <div className="search-grp-with-btn" style={{marginLeft : '395px'}}>
+            {active > 1 &&
+              <button className="back-only-btn" onClick={handleBackbutton} >
+                <img src="/back.svg" onClick={() => { setChooseTemplate(false) }} />
+              </button>
+            }
+            <h3> Email Campaigns</h3 >
+
+            {active === 1 &&
+              <div className="add_user_btn" onClick={() => { setActive(2); setCustomEmail(0) }}>
+                <button >Add Campaigns</button>
+              </div>}
+
+            <div className="search-grp-with-btn" style={{ marginLeft: '395px' }}>
               <div className="search-group">
                 <input type="text"
                   ref={searchRef}
@@ -727,14 +710,15 @@ const EmailCampaign = () => {
               </div>
             </div>
           </div>
-          <div className="add_user_btn buttons-with-returb-btn">
-            <button className={active === 1 ? 'active' : ''} onClick={() => { setActive(1); setCustomEmail(0) }}>
-              Campaign</button>
-            <button className={active === 2 ? 'active' : ''} onClick={() => { setActive(2); setCustomEmail(0) }}>
-              People</button>
-            <button className={active === 3 ? 'active' : ''} onClick={() => { setActive(3); setCustomEmail(0) }}>
-              Templates</button>
-          </div>
+          {active > 1 &&
+            <div className="add_user_btn buttons-with-returb-btn">
+              {/* <button className={active === 1 ? 'active' : ''} onClick={() => { setActive(1); setCustomEmail(0) }}>
+              Campaign</button> */}
+              <button className={active === 2 ? 'active' : ''} onClick={() => { setActive(2); setCustomEmail(0) }}>
+                People</button>
+              <button className={active === 3 ? 'active' : ''} onClick={() => { setActive(3); setCustomEmail(0) }}>
+                Templates</button>
+            </div>}
         </div>
 
 
@@ -842,7 +826,7 @@ const EmailCampaign = () => {
                 <input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
                 <CKEditor
                   editor={ClassicEditor}
-                  data={content.emailContent}
+                  data={content?.emailContent}
                   onChange={(event, editor) => {
                     const data = editor.getData();
                     setContent({ ...content, emailContent: data });
@@ -866,7 +850,7 @@ const EmailCampaign = () => {
                   style={{ width: "100%" }}
                 />
 
-                {subject && content.emailContent ? <div className="camp-gap camp-gap-button-wrapper-nxt">
+                {subject && content?.emailContent ? <div className="camp-gap camp-gap-button-wrapper-nxt">
                   <div className="icon-dashboard share-ref-top-wrp">
                     <button onClick={handleSaveCustomContent}>
                       <p>Share</p>

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -11,15 +11,17 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const Followup = () => {
   const { id } = useParams()
-  const { auth,setLeadlength,leadlength } = useContext(AuthContext)
+  const location = useLocation();
+  const { data } = location.state;
+  const { auth,tasklength, setTasklength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
   const navigate = useNavigate()
   const headers = { Authorization: auth.token };
-  const [editedTodo, setEditedTodo] = useState();
+  const [editedTodo, setEditedTodo] = useState(data);
   const [editingField, setEditingField] = useState('all');
   const [mlsNoError, setMlsNoError] = useState("");
   const [propertyTypeError, setPropertyTypeError] = useState("");
-  const [newSelected, setNewSelected] = useState([])
+  const [newSelected, setNewSelected] = useState(data.contact)
   const clearErrors = (fieldName) => {
     switch (fieldName) {
       case "Followup":
@@ -47,9 +49,6 @@ const Followup = () => {
   const handleEditClick = (field) => {
     setEditingField(field);
   };
-  useEffect(() => {
-    getTodos()
-  }, []);
 
   const validateForm = () => {
     let isValid = true;
@@ -74,12 +73,12 @@ const Followup = () => {
   const errorScroll = useRef(null)
   const handlescroll = () => {
     window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+      top: 0,
+      behavior: "smooth"
     });
     errorScroll.current.focus();
-      errorScroll.current.scrollTop = 0;
-} 
+    errorScroll.current.scrollTop = 0;
+  }
 
   const handleSaveClick = async () => {
     const isValid = validateForm()
@@ -93,14 +92,15 @@ const Followup = () => {
         { ...restOfEditedTodo, Followup: editedTodo.Followup, taskId: id },
         { headers });
       if (response.status === 201) {
-        setLeadlength(leadlength + 1)
+        //setLeadlength(leadlength + 1)
+        setTasklength(tasklength + 1)
         navigate(-1)
         toast.success("Followup updated successfully", {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT,
         });
         setEditingField(null);
-      }else{
+      } else {
         toast.error(response.data.message, {
           autoClose: 2000,
           position: toast.POSITION.TOP_RIGHT
@@ -128,17 +128,6 @@ const Followup = () => {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
-  const getTodos = async () => {
-    try {
-      const response = await axios.get(`${url}api/todo`, { headers });
-      const responseData = response?.data
-      const filtered = responseData.todo.find((x) => x.id == id)
-      setEditedTodo(filtered)
-      setNewSelected(filtered?.contact)
-    } catch (error) {
-      console.error(error)
-    }
-  }
   return (
 
     <div className="form-user-add">
@@ -155,8 +144,8 @@ const Followup = () => {
               {editingField === "Followup" || editingField === "all" ? (
                 <div className="edit-new-input">
                   <input
-                  
-                  ref={errorScroll}
+
+                    ref={errorScroll}
                     name="Followup"
                     value={editedTodo?.Followup}
                     onChange={handleChange}
@@ -259,7 +248,7 @@ const Followup = () => {
                 <input
                   type="text"
 
-                  value={newSelected?.profession ? newSelected?.profession?.name  : ""}
+                  value={newSelected?.profession ? newSelected?.profession?.name : ""}
                   readOnly
                 />
               </div>

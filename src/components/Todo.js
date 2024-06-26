@@ -24,8 +24,6 @@ const TodoList = ({ role }) => {
   let searchRef = useRef()
   const navigate = useNavigate();
   const { auth, setAuth, todo, setTodo, tasklength, setTasklength } = useContext(AuthContext);
-
-
   const headers = {
     Authorization: auth.token,
   };
@@ -46,9 +44,7 @@ const TodoList = ({ role }) => {
       hour12: true,
       timeZone: 'UTC'
     };
-
     const localDateTimeString = dateTime.toLocaleString('en-US', options);
-
     return localDateTimeString;
   };
   const formatDateNew = (dateTimeString) => {
@@ -57,7 +53,6 @@ const TodoList = ({ role }) => {
     }
 
     const dateTime = new Date(dateTimeString);
-
     const year = dateTime.getFullYear();
     const month = String(dateTime.getMonth() + 1).padStart(2, "0");
     const day = String(dateTime.getDate()).padStart(2, "0");
@@ -222,7 +217,6 @@ const TodoList = ({ role }) => {
           (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
             <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
           </div>)
-
           : (
             <table>
               <thead>
@@ -261,7 +255,7 @@ const TodoList = ({ role }) => {
                       <td>{formatPhoneNumber(task?.contact?.phone)}</td>
                       <td>{task?.contact?.email}</td>
                       <td> <button className="permissions"
-                        onClick={() => navigate(`/todo-list/followup/${task.id}`)} >Create Follow-Up</button>
+                        onClick={() => navigate(`/todo-list/followup/${task.id}` ,  { state: { data: task } })} >Create Follow-Up</button>
                       </td>
                       <td>
                         <img className="delete-btn-ico" src="/delete.svg"

@@ -32,6 +32,7 @@ const EditTodoForm = ({ user }) => {
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
   const { id } = useParams()
+  const navigate = useNavigate()
   const { auth, setConatctlength, contactlength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
   const [newSelected, setNewSelected] = useState([])
@@ -67,10 +68,7 @@ const EditTodoForm = ({ user }) => {
         break;
     }
   };
-  const navigate = useNavigate()
-  const noSelectionOption = { value: null, label: 'No Selection' };
-
-
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     clearErrors(name)
@@ -128,18 +126,13 @@ const EditTodoForm = ({ user }) => {
 
   useEffect(() => {
     getProfession()
-  }, [])
-
-  useEffect(() => {
     getTodos()
-  }, []);
-
+  }, [])
 
   const validateForm = () => {
     let isValid = true;
 
     if (!editedTodo.Followup) {
-
       if (editedTodo.Followup == undefined) {
 
       } else {
@@ -620,11 +613,7 @@ const EditTodoForm = ({ user }) => {
       {/* Add Contact Form */}
       {isContact == false &&
         <>
-
-
           {/* clone form */}
-
-
           <div className="form-user-add">
             <div>
               <div className="property_header">

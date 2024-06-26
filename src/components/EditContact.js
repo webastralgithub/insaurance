@@ -120,8 +120,8 @@ const EditContact = ({ nameofuser }) => {
         label: realtor.name,
       }));
       setProfession(options)
-      const dd = options.filter((cat) => cat.value == editedContact.profession_id);
-      setSeletedProfession(dd)
+      const matchedprofession = options.find(insurance => insurance.value === data.profession_id);
+      setSeletedProfession(matchedprofession)
 
       //set service require
       const setServicerequire = JSON.parse(editedContact.servceRequire).map(option => { return { value: option, label: option } })
@@ -138,6 +138,8 @@ const EditContact = ({ nameofuser }) => {
 
   const validateForm = () => {
     let isValid = true;
+    
+
     setEditedContact({ ...editedContact, profession_id: seletedProfession.value, servceRequire: selectedServices });
     const { firstname, business_name, profession_id, email, phone } = editedContact;
     const trimmedFirstName = firstname?.trim();
@@ -204,7 +206,6 @@ const EditContact = ({ nameofuser }) => {
     e.preventDefault();
     const isValid = validateForm();
     if (!isValid) {
-      console.log("error submit" , errors)
       handlescroll()
       return
     }

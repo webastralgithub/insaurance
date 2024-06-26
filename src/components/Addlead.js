@@ -218,9 +218,9 @@ const AddLead = ({ user }) => {
 
         const response = await axios.post(`${url}api/leads`, contact, { headers });
         if (response.status === 201) {
-          toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
           setConatctlength(contactlength + 1)
           setLeadlength(leadlength + 1)
+          toast.success("Lead added Sucessfuly", { autoClose: 2000, position: toast.POSITION.TOP_RIGHT })
           navigate(-1);
         } else if (response.status === 200) {
           toast.error(response.data.message, {

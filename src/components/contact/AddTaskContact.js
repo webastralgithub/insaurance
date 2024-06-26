@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { toast } from "react-toastify";
@@ -10,7 +10,10 @@ const AddTaskContact = () => {
 
   const { id } = useParams()
   const parent = localStorage.getItem("parent")
-  const [newSelected, setNewSelected] = useState([])
+  const location = useLocation();
+  const { data } = location.state;
+  const [newSelected, setNewSelected] = useState(data)
+
   const url = process.env.REACT_APP_API_URL;
   const [contact, setContact] = useState({
     Followup: "",
@@ -55,7 +58,7 @@ const AddTaskContact = () => {
       if (response.status === 201) {
         setTasklength(tasklength + 1)
         toast.success("Task Created Successfully")
-        navigate(-1); // Redirect to the contacts list page
+        navigate(-1); 
       } else {
         toast.error(response.data.message, {
           autoClose: 2000,
@@ -73,19 +76,6 @@ const AddTaskContact = () => {
     const { name, value } = e.target;
     setContact({ ...contact, [name]: value });
   };
-
-  const getContactDetails = async () => {
-    try {
-      const response = await axios.get(`${url}api/contacts/${id}`, { headers });
-      const responseData = await response?.data
-      setNewSelected(responseData)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-  useEffect(() => {
-    getContactDetails()
-  }, [])
 
   return (
     <form onSubmit={handleSubmit} className="form-user-add">
@@ -168,8 +158,7 @@ const AddTaskContact = () => {
                 <label>Profession</label>
                 <input
                   type="text"
-
-                  value={newSelected?.profession ? newSelected?.profession?.name : ""}
+                  value={newSelected?.profession ? newSelected?.profession?.name : newSelected?.profession_name}
                   readOnly
                 />
               </div>

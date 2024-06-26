@@ -89,10 +89,7 @@ const KlientaleContacts = ({ role }) => {
   const [buttonActive, setButtonActive] = useState(1)
   const { id } = useParams();
   const selectRef = useRef(null);
-  const [active, setActive] = useState(1);
   const navigate = useNavigate();
-  const [parentView, setParentView] = useState(false);
-  const [parentName, setParentName] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedContacts, setSelectedContacts] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -100,7 +97,6 @@ const KlientaleContacts = ({ role }) => {
   const [error, setError] = useState("");
   const [seletedCategory, setSelectedCategory] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filtered, setfilteredUsers] = useState(null);
   const [width, setWidth] = useState(window.innerWidth);
 
   const { auth, email } = useContext(AuthContext);
@@ -116,7 +112,6 @@ const KlientaleContacts = ({ role }) => {
 
 
   useEffect(() => {
-
     window.addEventListener("resize", handleWindowSizeChange);
     return () => {
       window.removeEventListener("resize", handleWindowSizeChange);
@@ -206,7 +201,6 @@ const KlientaleContacts = ({ role }) => {
     },
   };
 
-
   const fetchCategotires = async () => {
     try {
       const response = await axios.get(`${klintaleUrl}categories`);
@@ -221,49 +215,16 @@ const KlientaleContacts = ({ role }) => {
     }
   };
 
-  
 
   useEffect(() => {
     fetchCategotires();
   }, []);
 
-
-
-
-
   const handleSelectChange = async (event) => {
     event.preventDefault();
     getKlientaleContacts();
-    
-    // setCurrentPage(1)
-    // const filteredUsers = users.filter(user => {
-    //   return seletedCategory.some(option => option.label === user.category_name);
-    // });
-    // if (seletedCategory.length > 0) {
-    //   setfilteredUsers(filteredUsers)
-    // }
-    // else {
-    //   setfilteredUsers(users)
-    // }
-    // const obj = {
-    //   email: email?.email,
-    //   category: seletedCategory
-    // }
-    // try {
-    //   const response = await axios.post(`${klintaleUrl}create-preference-category`, obj);
-
-    //   if (response.status === 200) {
-    //     toast.success('Category added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    //     // Redirect to the contacts list page
-    //   } else {
-    //     console.error("Failed to add contact");
-    //   }
-    // } catch (error) {
-    //   console.error("An error occurred while adding a contact:", error);
-    // }
     closeModal();
   }
-
 
   const closeModal = () => {
     setSelectedContacts(null);
@@ -298,16 +259,17 @@ const KlientaleContacts = ({ role }) => {
 
   const getKlientaleContacts = async () => {
     setDataLoader(true)
-    let categoriesData = seletedCategory.map((item) => item.label)
+    let categoriesData = seletedCategory.map((item) => item.value)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
     } else {
       currPage = currentPage
     }
+
     try {
-      //user_pref_cat=
-      const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&${categoriesData}`, { headers });
+
+      const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&categories=${categoriesData}`, { headers });
       setusers(response?.data?.users)
       setTotalPages(response?.data?.totalPages)
       setDataLoader(false)
@@ -358,7 +320,7 @@ const KlientaleContacts = ({ role }) => {
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top inner-pages-top-share-ref">
-        <h3>{parentView ? `${parentName} Family ` : "Klientale Contacts"}</h3>
+        <h3>{"Klientale Contacts"}</h3>
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}

@@ -313,7 +313,7 @@ const Referral = ({ role }) => {
                       <td>{contact?.send_contact?.profession_id > 0 ? contact?.send_contact?.profession?.name : ""} </td>
                       <td>{contact?.send_contact?.phone} </td>
                       <td> {contact?.send_contact?.email}</td>
-                      <td>{contact?.reciever_contact?.firstname}</td>
+                      <td>{contact?.reciever_contact?.firstname ? contact?.reciever_contact?.firstname : <p style={{color : 'red'}}>Deleted</p>}</td>
                     </tr>
                   </tbody>
                 ))

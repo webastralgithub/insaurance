@@ -174,14 +174,7 @@ const App = () => {
               }
             />
 
-            <Route
-              path="/contacts/send/:id" exact
-              element={
-                <PrivateRoute>
-                  <ContactReferral role={role} />
-                </PrivateRoute>
-              }
-            />
+
 
             <Route
               path="/klientale-contacts/contacts/send/:id" exact

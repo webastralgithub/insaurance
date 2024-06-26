@@ -441,12 +441,13 @@ const Contact = ({ role }) => {
           {modalMode === "sample" && (
             <div className="modal-roles-add download-file">
               <button className="close-btn" onClick={closeModal}><img src="/plus.svg" /></button>
+            
               <div>
                 <input style={{ visibility: "hidden", padding: "0", height: "0" }}></input>
                 <button onClick={downloadExampleExcel}>Example Excel</button>
-
                 <button onClick={ExampleFileDownloadCSV}>Example Csv</button>
               </div>
+              
             </div>
           )}
           {modalMode === "upload" && (
@@ -610,15 +611,14 @@ const Contact = ({ role }) => {
                     <td>
                       <button className="permissions share-ref-button-tb"
                         onClick={() => {
-                          navigate(`/contacts/share/${contact.id}`)
+                          navigate(`/contacts/share/${contact.id}`,{ state: { data: contact } })
                         }}       >Share Me</button>
                     </td>
+
                     <td>  <button className="permissions share-ref-button-tb"
                       onClick={() => {
-                        navigate(`/contacts/send/${contact?.id}`)
+                        navigate(`/contacts/send/${contact?.id}` , { state: { data: contact } })
                       }}       >Send me Referrals</button>       </td>
-                   
-                   
                     <td>
 
                       <button className={` ${contact?.isLead == true ? 'permissions share-ref-button-tb' : 'permissions'} `}
@@ -631,15 +631,13 @@ const Contact = ({ role }) => {
                           openModal("add")
                         }}>{contact?.isLead == true && contact?.category !=null ? `Converted to Lead(${contact?.category.split(',').map(Number).length})` : 'Convert to Lead'}</button>
                     </td>
+
                     <td>
-
-
                       <button className="permissions"
                         onClick={() => {
                           localStorage.setItem("parent", contact.firstname)
                           localStorage.setItem("phone", contact.phone)
-
-                          navigate(`/todo-list/add/${contact.id}`)
+                          navigate(`/todo-list/add/${contact.id}`,  { state: { data: contact } })
                         }}>Create Task</button>
                     </td>
                     <td>
