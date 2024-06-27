@@ -1,12 +1,9 @@
 .custom-email-template-flex{
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
+  border :1px solid black ;
+  border-radius: 6px 6px 4px 4px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 6px 6px 4px 4px;
-
 }
 
 .ck.ck-editor__editable_inline>:last-child {

@@ -68,7 +68,7 @@ import FeatureUpdate from "./components/FeatureUpdate";
 import UserList from "./components/UserList";
 import AddProfession from "./components/AddProfession";
 import EditProfession from "./components/EditProfession";
-
+import EmailCampaign2 from "./components/EmailCampaign2";
 
 const App = () => {
   const { toggle, setToggle, auth, roleId, subscriptionStatus } = useContext(AuthContext)
@@ -77,7 +77,7 @@ const App = () => {
   const [nameofuser, setnameofUser] = useState("")
   function parseJwt(token) {
     if (!token) {
-      return 
+      return
     }
     const name = localStorage.getItem("name")
     const roleId = localStorage.getItem("roleId")
@@ -258,6 +258,17 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
+            <Route
+              path="/email-campaign-clone" exact
+              element={
+                <PrivateRoute>
+                  <EmailCampaign2 role={role} />
+                </PrivateRoute>
+              }
+            />
+
+
             <Route
               path="/leads/add" exact
               element={

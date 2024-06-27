@@ -653,6 +653,10 @@ z-index: unset;
 }
 
 @media (max-width:1000px){
+    .react-confirm-alert-body {
+        width: 256px !important;
+    }
+    
     .form-user-add .form-user-add-wrapper .form-user-add-inner-wrap {
         width: 45%;
         justify-content: space-between;

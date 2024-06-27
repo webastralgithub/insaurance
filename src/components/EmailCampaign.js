@@ -41,66 +41,6 @@ const CustomOption = ({ data, isSelected, selectOption, selectedContacts, ...pro
   );
 };
 
-const CustomDropdown = ({ children, searchText, ...props }) => {
-  const selectedOptions = props.getValue();
-
-  const handleOptionClick = (option) => {
-    const isSelected = selectedOptions.some(
-      (selected) => selected.value === option.value
-    );
-
-    if (isSelected) {
-      props.setValue(
-        selectedOptions.filter((selected) => selected.value !== option.value)
-      );
-    } else {
-      props.setValue([...selectedOptions, option]);
-    }
-  };
-
-  const isOptionSelected = (option) => {
-    return selectedOptions.some((selected) => selected.value === option.value);
-  };
-
-  const filteredOptions = props.options.filter((option) =>
-    option.label.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  return (
-    <div
-      className="custom-dropdown"
-      style={{
-        maxHeight: "250px",
-        minHeight: "250px",
-        overflowY: "auto",
-        background: "#fff",
-        boxShadow: "none",
-      }}
-    >
-      {/* Show selected options with radio buttons */}
-      {filteredOptions.map((option) => (
-        <div
-          onClick={() => handleOptionClick(option)}
-          key={option.value}
-          className={`custom-option ${isOptionSelected(option) ? "selected" : ""
-            }`}
-          style={{
-            backgroundColor: isOptionSelected(option)
-              ? "rgb(0 70 134 / 8%)"
-              : "",
-          }}
-        >
-          <label htmlFor={option.value}>{option.label}</label>
-          <div className="circle"></div>
-        </div>
-      ))}
-
-      {/* Show available options */}
-      {React.cloneElement(children, { ...props })}
-    </div>
-  );
-};
-
 const EmailCampaign = () => {
   const [customEmail, setCustomEmail] = useState(0)
   const [dataLoader, setDataLoader] = useState(false)
@@ -123,7 +63,6 @@ const EmailCampaign = () => {
   const [searchText, setSearchText] = useState("");
   const [subject, setSubject] = useState("");
   const [selectedContacts, setSelectedContacts] = useState([]);
-  const [contactOptions, setContactoptions] = useState([]);
   const [templateSendEmailContent, setTemplateSendEmailContent] = useState("template");
   const [active, setActive] = useState(1)
   const [contactOptionunique, setcontactOptionunique] = useState([])
@@ -134,16 +73,7 @@ const EmailCampaign = () => {
     getEmailTemplates();
     getEmailTemplatesByUserId();
   }, []);
-
-  const [dataUrlTemplate, setdataUrlTemplate] = useState([])
-  const convertToDataUrl = (htmlContent) => {
-    const encodedHtml = btoa(htmlContent);
-    return `data:text/html;base64,${encodedHtml}`;
-  };
-
-
   const getEmailTemplates = async () => {
-
     try {
       const response = await axios.get(`${url}api/get/email`, {
         headers: {
@@ -152,12 +82,6 @@ const EmailCampaign = () => {
       });
       if (response.data && Array.isArray(response.data)) {
         setTemplates(response.data);
-        const dataUrls = response?.data?.map(template => ({
-          id: template.id,
-          name: template.name,
-          dataUrl: convertToDataUrl(template.text)
-        }));
-        setdataUrlTemplate(dataUrls)
       } else {
         console.error("Invalid response format:", response);
       }

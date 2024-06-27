@@ -31,7 +31,7 @@ const UserList = () => {
             setDataLoader(false)
         } catch (error) {
             setDataLoader(false)
-            console.error("Server is busy");
+            console.error("Server is busy", error);
         }
     };
 
