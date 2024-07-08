@@ -27,6 +27,7 @@
     "draft-js": "^0.11.7",
     "install": "^0.13.0",
     "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "react": "^18.2.0",
     "react-accordion": "^0.3.0",
     "react-bootstrap": "^2.9.0",

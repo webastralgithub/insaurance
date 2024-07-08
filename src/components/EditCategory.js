@@ -110,14 +110,13 @@ const EditCategory = () => {
           headers,
         }
       );
-
       if (response.status === 200) {
         toast.success("Category updated successfully", {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         });
         setEditingField(null);
-        goBack();
+        navigate("/profile", { state: { data: 4}})
       } else {
         console.error("Failed to update contact");
       }
@@ -127,7 +126,7 @@ const EditCategory = () => {
   };
 
   const goBack = () => {
-    navigate(`/categories`);
+    navigate("/profile", { state: { data: 4}})
   };
 
   return (
@@ -142,11 +141,7 @@ const EditCategory = () => {
             </button>{" "}
             Edit Category
           </h3>
-          <div className="top-bar-action-btns">
-            <button style={{ background: "#004686" }} onClick={handleSaveClick}>
-              Save
-            </button>
-          </div>
+       
         </div>
       </div>
       <div className="form-user-edit-inner-wrap form-user-add-wrapper form-catagory-edit-sec">

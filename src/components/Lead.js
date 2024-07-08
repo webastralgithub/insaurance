@@ -8,6 +8,8 @@ import { AuthContext } from "./context/AuthContext";
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import { useNavigate } from "react-router-dom";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Lead = () => {
   const { auth, contactlength, setConatctlength, leadlength, setLeadlength } = useContext(AuthContext);
@@ -149,7 +151,7 @@ const Lead = () => {
   };
 
   const getLeads = async () => {
-    setDataLoader(true)
+     setDataLoader(true)
     let currPage
     let activeCat
     if (searchRef.current.value) {
@@ -166,7 +168,7 @@ const Lead = () => {
       setLeadCountData(responseData?.leadsCountWithCategory?.reverse())
       settotalPagess(responseData?.totalPages)
       setactiveLeadCategory(responseData?.leads)
-      setDataLoader(false)
+       setDataLoader(false)
       setActiveCategory(activeCategory)
     } catch (error) {
       setDataLoader(false)
@@ -336,27 +338,7 @@ const Lead = () => {
 
       {/* Rest of your component remains the same... */}
       <div className="add_property_btn">
-        {dataLoader ?
-          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-            <Circles
-
-              height="100"
-              width="100%"
-              color="#004382"
-              ariaLabel="circles-loading"
-              wrapperStyle={{
-                height: "100%",
-                width: "100%",
-                position: "absolute",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9,
-                background: "transparent"
-              }}
-              wrapperClass=""
-              visible={dataLoader}
-            />
-          </div>) : (<>
+        <>
             {leadCountData && leadCountData.map((category, index) => (
               <div key={category.categoryId}>
                 <div className={`add_user_btn family_meber ${searchRef.current.value && category.leads_count > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.id)} >
@@ -374,37 +356,47 @@ const Lead = () => {
                           <th>Profession</th>
                           <th>Phone</th>
                           <th>Email</th>
-
                           <th>Date</th>
                         </tr>
                       </thead>
-                      {activeLeadCategory?.length > 0 &&
-                        activeLeadCategory?.map((contact) => (<tbody>
 
-                          <tr key={contact.id}>
-                            <td className="property-link" onClick={() => navigate(`/leads/edit/${contact.id}`, { state: { data: contact } })} >{contact.firstname}{" "} {contact.lastname}</td>
-                            <td>{contact?.business_name}</td>
-                            <td>{contact?.profession_name}</td>
-                            <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
-                            <td>{contact?.email}</td>
-                            <td>{contact?.created_at.slice(0, 10)}</td>
-                            <td>
-                              <button className="permissions"
-                                onClick={() => {
-                                  navigate(`/todo-list/add/${contact?.id}` ,  { state: { data: contact } })
-                                }}>Create Task</button>
-                            </td>
-                            {category?.id != "today" ?
-                              <td>
-                                <img className="delete-btn-ico" src="/delete.svg"
-                                  onClick={() => {
-                                    handleDeleteClick(contact, contact.id, contact.category, category.id)
-                                  }
-                                  } alt="" ></img>
-                              </td>
-                              : ""}
-                          </tr>
-                        </tbody>))}
+                      {dataLoader ?
+                        <div className="sekelton-class" style={{ backgroundColor: 'white',
+                          width: "76vw",
+                          position: "absolute"
+                       }} >
+                          <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+                        </div> : <>
+                          {activeLeadCategory?.length > 0 &&
+                            activeLeadCategory?.map((contact) => (<tbody>
+
+                              <tr key={contact.id}>
+                                <td className="property-link" onClick={() => navigate(`/leads/edit/${contact.id}`, { state: { data: contact } })} >{contact.firstname}{" "} {contact.lastname}</td>
+                                <td>{contact?.business_name}</td>
+                                <td>{contact?.profession_name}</td>
+                                <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
+                                <td>{contact?.email}</td>
+                                <td>{contact?.created_at.slice(0, 10)}</td>
+                                <td>
+                                  <button className="permissions"
+                                    onClick={() => {
+                                      navigate(`/todo-list/add/${contact?.id}`, { state: { data: contact } })
+                                    }}>Create Task</button>
+                                </td>
+                                {category?.id != "today" ?
+                                  <td>
+                                    <img className="delete-btn-ico" src="/delete.svg"
+                                      onClick={() => {
+                                        handleDeleteClick(contact, contact.id, contact.category, category.id)
+                                      }
+                                      } alt="" ></img>
+                                  </td>
+                                  : ""}
+                              </tr>
+                            </tbody>))}
+                        </>}
+
+
                     </table>
 
                     {activeLeadCategory?.length > 0 && (
@@ -415,7 +407,7 @@ const Lead = () => {
                   </div>
                   {activeLeadCategory.length == 0 && !dataLoader && <p className="no-data">No data Found</p>}
                 </div>}
-              </div>))}</>)}</div>
+              </div>))}</></div>
     </div>
   );
 };

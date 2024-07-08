@@ -12,6 +12,7 @@ import 'react-datetime/css/react-datetime.css';
 import Places from "./Places";
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+import moment from 'moment';
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -28,18 +29,22 @@ const useDebounce = (value, delay) => {
 
 
 const AddTodo = ({ user }) => {
+  const { date } = useParams()
+  const initialDate = date && moment(date).isSameOrAfter(moment(), 'day')
+    ? new Date(date)
+    : new Date();
+  const [dateTime, setDateTime] = useState(initialDate);
+
   const [buttonOn, setButtonOn] = useState(0)
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
-  const { date } = useParams()
-  const [dateTime, setDateTime] = useState(date ? new Date(date) : new Date());
   const url = process.env.REACT_APP_API_URL;
   const [mlsNoError, setMlsNoError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [contactError, setContactError] = useState("")
   const [propertyTypeError, setPropertyTypeError] = useState("");
   const [searchQuery, setSearchQuery] = useState("")
-  const [isContacts, setIsContacts] = useState(true)
+  const [isContacts, setIsContacts] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchContacts, setSearchContacts] = useState([])
   const [newSelected, setNewSelected] = useState([])
@@ -165,9 +170,7 @@ const AddTodo = ({ user }) => {
     clearErrors(name)
     setContact({ ...contact, [name]: value });
   };
-  const goBack = () => {
-    navigate(-1);
-  };
+
 
 
 
@@ -252,7 +255,7 @@ const AddTodo = ({ user }) => {
 
   const validateFormNewPhone = () => {
     let isValid = true;
-    const { firstname, email, phone , business_name } = contactNew;
+    const { firstname, email, phone, business_name } = contactNew;
 
     const trimmedFirstName = firstname.trim();
     const trimmedEmail = email.trim();
@@ -351,6 +354,8 @@ const AddTodo = ({ user }) => {
         setssearch(2)
         setIsContacts(true)
         setContactError("")
+        setIsContacts(0)
+        setSearchQuery("")
         toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
       } else if (response.data.status === false) {
         toast.error(response.data.message)
@@ -398,22 +403,21 @@ const AddTodo = ({ user }) => {
     { value: 'Immigration', label: 'Immigration' }
   ];
 
-
+  const isValidDate = (current) => {
+    return current.isSameOrAfter(moment(), 'day');
+  };
 
   return (
 
     <>
-      {isContacts == true &&
-        <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form">
+      <div className="div-add-contact-parent" style={{ position: 'relative' }} >
+
+        <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form"   >
           <div className="property_header header-with-back-btn">
 
-            <h3> <button type="button" className="back-only-btn" onClick={
-              goBack}> <img src="/back.svg" /></button>Add Task</h3>
+            <h3> <button type="button" className="back-only-btn" onClick={() => navigate(-1)}> <img src="/back.svg" /></button>Add Task</h3>
 
-            <div className="top-bar-action-btns">
-              {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
-
-            </div>   </div>
+          </div>
           <div className="form-user-add-wrapper">
             <div className="todo-section">
               <div className="todo-main-section">
@@ -436,6 +440,7 @@ const AddTodo = ({ user }) => {
                   <Datetime
                     value={dateTime}
                     onChange={handleDateTimeChange}
+                    isValidDate={isValidDate}
                     renderInput={(props, openCalendar) => (
                       <input
                         {...props}
@@ -485,7 +490,7 @@ const AddTodo = ({ user }) => {
                   {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 &&
                     <div className='no-contact-found-div'>
                       <h1> No Contacts Found</h1>
-                      <button className="add-new-contact-btn" onClick={() => { setIsContacts(false); setButtonOn(1) }}>Add New Contact</button>
+                      <button className="add-new-contact-btn" onClick={() => { setIsContacts(1); setButtonOn(1); setContactNew({ ...contactNew, firstname: searchQuery }) }}>Add New Contact</button>
                     </div>
                   }
 
@@ -508,7 +513,7 @@ const AddTodo = ({ user }) => {
 
                 {newSelected.id &&
                   <>
-                    <div className="form-user-add-inner-wrap">
+                    <div className="form-user-add-inner-wrap disable">
 
                       <label>Phone Number</label>
                       <input
@@ -517,7 +522,7 @@ const AddTodo = ({ user }) => {
                         readOnly
                       />
                     </div>
-                    <div className="form-user-add-inner-wrap">
+                    <div className="form-user-add-inner-wrap disable">
                       <label>Email</label>
                       <input
                         type="text"
@@ -525,7 +530,7 @@ const AddTodo = ({ user }) => {
                         readOnly
                       />
                     </div>
-                    <div className="form-user-add-inner-wrap">
+                    <div className="form-user-add-inner-wrap disable">
                       <label>Business Name</label>
                       <input
                         type="text"
@@ -533,7 +538,7 @@ const AddTodo = ({ user }) => {
                         readOnly
                       />
                     </div>
-                    <div className="form-user-add-inner-wrap">
+                    <div className="form-user-add-inner-wrap disable">
                       <label>Profession</label>
                       <input
                         type="text"
@@ -541,7 +546,7 @@ const AddTodo = ({ user }) => {
                         readOnly
                       />
                     </div>
-                    <div className="form-user-add-inner-wrap">
+                    <div className="form-user-add-inner-wrap disable">
                       <label>Address</label>
                       <input
                         type="text"
@@ -550,7 +555,7 @@ const AddTodo = ({ user }) => {
                         readOnly
                       />
                     </div>
-                    <div className="form-user-add-inner-wrap">
+                    <div className="form-user-add-inner-wrap disable">
                       <label>Website</label>
                       <input
                         type="text"
@@ -589,22 +594,27 @@ const AddTodo = ({ user }) => {
             <button type="submit" >Save</button>
           </div>
         </form>
-      }
-
-      {/* Add Contact Form */}
-      {isContacts == false &&
-        <>
 
 
-          {/* clone form */}
+        {/* Add Contact Form */}
+        {isContacts === 1 &&
+          <div className="parent-pop-up-add-contact">
 
 
-          <div className="form-user-add">
-            <div>
+            {/* clone form */}
+
+
+            <div className="form-user-add add-contact-popup-new-child" style={{
+              marginTop: '50px',
+              height: '500px',
+              overflow: 'scroll',
+              overflowX: 'hidden'
+            }}>
+              {/* <div>
               <div className="property_header">
                 <h3>
                   {" "}
-                  <button type="button" className="back-only-btn" onClick={goBack}>
+                  <button type="button" className="back-only-btn" onClick={() => { setIsContacts(true); setButtonOn(0);}}>
                     {" "}
                     <img src="/back.svg" />
                   </button>{" "}
@@ -615,181 +625,178 @@ const AddTodo = ({ user }) => {
             Save
           </button>
           </div> */}
-              </div>
-            </div>
-            <div className="parent">
-              <div className="add_user_btn family_meber" >
+              {/* </div>
+            </div> */}
+              <div className="parent">
+                <div className="add_user_btn family_meber" >
 
-                <h4>
-                  General Details
-                </h4>
-
-              </div>
-              <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">
-                <div className="form-user-add-inner-wrap">
-                  <label>Name<span className="required-star">*</span></label>
-
-                  <div className="edit-new-input">
-                    <input
-                      type="text"
-                      name="firstname"
-                      value={contactNew.firstname}
-                      onChange={handleChangeAddPhone}
-
-                    />
-                    <span className="error-message">{errors.firstname}</span>
-                  </div>
+                  <h4>
+                    General Details
+                  </h4>
+                  <p onClick={() => setIsContacts(0)}>x</p>
                 </div>
+                <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">
+                  <div className="form-user-add-inner-wrap">
+                    <label>Name<span className="required-star">*</span></label>
 
-                <div className="form-user-add-inner-wrap">
-                  <label>Email<span className="required-star">*</span></label>
-                  <div className="edit-new-input">
-                    <input
-                      type="text"
-                      name="email"
-                      value={contactNew.email}
-                      onChange={handleChangeAddPhone}
-                    />
-                    <span className="error-message">{errors.email}</span>
+                    <div className="edit-new-input">
+                      <input
+                        type="text"
+                        name="firstname"
+                        value={contactNew.firstname}
+                        onChange={handleChangeAddPhone}
+
+                      />
+                      <span className="error-message">{errors.firstname}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="form-user-add-inner-wrap">
-                  <label>Website</label>
-                  <div className="edit-new-input">
-                    <input
-                      type="text"
-                      name="website"
-                      value={contactNew.website}
-                      onChange={handleChangeAddPhone}
-                    />
+                  <div className="form-user-add-inner-wrap">
+                    <label>Email<span className="required-star">*</span></label>
+                    <div className="edit-new-input">
+                      <input
+                        type="text"
+                        name="email"
+                        value={contactNew.email}
+                        onChange={handleChangeAddPhone}
+                      />
+                      <span className="error-message">{errors.email}</span>
+                    </div>
                   </div>
-                </div>
+
+                  <div className="form-user-add-inner-wrap">
+                    <label>Website</label>
+                    <div className="edit-new-input">
+                      <input
+                        type="text"
+                        name="website"
+                        value={contactNew.website}
+                        onChange={handleChangeAddPhone}
+                      />
+                    </div>
+                  </div>
 
 
 
-                <Places value={contactNew.address1} onChange={handleAddressChange} />
-                <div className="add-contact-user-custom-wrapper">
-                  <div className="add-contact-user-custom-left">
-                    <div className="form-user-add-inner-wrap">
-                      <label>Phone<span className="required-star">*</span></label>
+                  <Places value={contactNew.address1} onChange={handleAddressChange} />
+                  <div className="add-contact-user-custom-wrapper">
+                    <div className="add-contact-user-custom-left">
+                      <div className="form-user-add-inner-wrap">
+                        <label>Phone<span className="required-star">*</span></label>
 
-                      <div className="edit-new-input">
-                        <InputMask
-                          mask="+1 (999) 999-9999"
-                          type="text"
-                          name="phone"
-                          value={contactNew.phone}
-                          onChange={handlePhoneNumberChange}
-                          placeholder="+1 (___) ___-____"
+                        <div className="edit-new-input">
+                          <InputMask
+                            mask="+1 (999) 999-9999"
+                            type="text"
+                            name="phone"
+                            value={contactNew.phone}
+                            onChange={handlePhoneNumberChange}
+                            placeholder="+1 (___) ___-____"
 
-                        />
-                        <span className="error-message">{errors.phone}</span>
+                          />
+                          <span className="error-message">{errors.phone}</span>
+                        </div>
+
+                      </div>
+                      <div className="form-user-add-inner-wrap">
+                        <label>Business Name<span className="required-star">*</span></label>
+
+                        <div className="edit-new-input">
+                          <input
+                            type="text"
+                            name="business_name"
+                            value={contactNew.business_name}
+                            onChange={handleChangeAddPhone}
+                          />
+                          <span className="error-message">{errors.business_name}</span>
+                        </div>
                       </div>
 
-                    </div>
-                    <div className="form-user-add-inner-wrap">
-                      <label>Business Name<span className="required-star">*</span></label>
 
-                      <div className="edit-new-input">
-                        <input
-                          type="text"
-                          name="business_name"
-                          value={contactNew.business_name}
-                          onChange={handleChangeAddPhone}
+
+                      <div className="form-user-add-inner-wrap  form-user-service-edit-contact">
+                        <label>Service Require</label>
+                        <Select
+                          placeholder="Select Service(s) Required..."
+                          value={selectedServices}
+                          onChange={(selectedOptions) => {
+                            setSelectedServices(selectedOptions);
+                            // You can also extract the values into an array if needed
+                            const selectedValues = selectedOptions.map(option => option.value);
+                            setContactNew({ ...contactNew, servceRequire: selectedValues });
+                          }}
+                          options={serviceOptions}
+                          components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                          styles={colourStyles}
+                          className="select-new"
+                          isMulti // This is what enables multiple selections
                         />
-                        <span className="error-message">{errors.business_name}</span>
                       </div>
+
+                      <div className="form-user-add-inner-wrap">
+                        <label>Profession<span className="required-star">*</span>     </label>
+                        <img src="/icons-form/Group30055.svg" />
+                        <Select
+                          placeholder="Select Profession.."
+                          value={seletedProfession}
+                          onChange={(selectedOption) => {
+                            setContactNew({ ...contactNew, profession_id: selectedOption.value })
+                            setSeletedProfession(selectedOption)
+                          }}
+                          options={profession}
+                          components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                          styles={colourStyles}
+                          className="select-new"
+                        />
+                      </div>
+                      <span className="required-star" styles={{
+                        Bottom: '14px',
+                        color: 'red',
+                        fontSize: '12px',
+                        right: '10%',
+                        fontWeight: '500'
+                      }} >{errors.profession}</span>
                     </div>
 
-
-
-                    <div className="form-user-add-inner-wrap  form-user-service-edit-contact">
-                      <label>Service Require</label>
-                      <Select
-                        placeholder="Select Service(s) Required..."
-                        value={selectedServices}
-                        onChange={(selectedOptions) => {
-                          setSelectedServices(selectedOptions);
-                          // You can also extract the values into an array if needed
-                          const selectedValues = selectedOptions.map(option => option.value);
-                          setContactNew({ ...contactNew, servceRequire: selectedValues });
-                        }}
-                        options={serviceOptions}
-                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                        styles={colourStyles}
-                        className="select-new"
-                        isMulti // This is what enables multiple selections
-                      />
-                    </div>
-
-                    <div className="form-user-add-inner-wrap">
-                      <label>Profession<span className="required-star">*</span>     </label>
-                      <img src="/icons-form/Group30055.svg" />
-                      <Select
-                        placeholder="Select Profession.."
-                        value={seletedProfession}
-                        onChange={(selectedOption) => {
-                          setContactNew({ ...contactNew, profession_id: selectedOption.value })
-                          setSeletedProfession(selectedOption)
-                        }}
-                        options={profession}
-                        components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
-                        styles={colourStyles}
-                        className="select-new"
-                      />
-                    </div>
-                    <span className="required-star" styles={{
-                      Bottom: '14px',
-                      color: 'red',
-                      fontSize: '12px',
-                      right: '10%',
-                      fontWeight: '500'
-                    }} >{errors.profession}</span>
-                  </div>
-
-                  <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">
-                    <div className="form-user-add-inner-wrap">
-                      <label>Description</label>
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={contactNew.notes}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setContactNew({ ...contactNew, notes: data });
-                        }}
-                        config={{
-                          toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
-                        }}
-                        className="custom-ckeditor" // Add a custom class for CKEditor container
-                        style={{ width: "100%", maxWidth: "800px", height: "200px" }}
-                      />
+                    <div className="add-contact-user-custom-right add-contact-user-custom-right-edit">
+                      <div className="form-user-add-inner-wrap">
+                        <label>Description</label>
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={contactNew.notes}
+                          onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setContactNew({ ...contactNew, notes: data });
+                          }}
+                          config={{
+                            toolbar: ["heading", "|", "bold", "italic", "link", "|", "bulletedList", "numberedList", "|", "undo", "redo"],
+                          }}
+                          className="custom-ckeditor" // Add a custom class for CKEditor container
+                          style={{ width: "100%", maxWidth: "800px", height: "200px" }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-
-
+                <div className="form-user-add-inner-btm-btn-wrap" style={{
+                  marginBottom: '12px',
+                  marginLeft: '-18px',
+                  paddingRight: '5px'
+                }}>
+                  <button style={{ background: "#004686" }} onClick={handleSubmitNewPhone}>
+                    Save
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div className="form-user-add-inner-btm-btn-wrap">
-              <button style={{ background: "#004686" }} onClick={handleSubmitNewPhone}>
-                Save
-              </button>
-
-            </div>
-
-          </div >
 
 
 
+            </div >
 
-        </>
+          </div>
 
-
-
-
-      }
+        }
+      </div>
     </>
 
   );

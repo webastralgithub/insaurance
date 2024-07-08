@@ -1,12 +1,10 @@
-import React, { useState, useLayoutEffect, useRef, useContext } from "react";
-
+import React, { useState, useLayoutEffect, useRef, useContext, useEffect } from "react";
 import axios from "axios";
-
 import { AuthContext } from "./context/AuthContext";
 import Modal from "react-modal";
 import InputMask from 'react-input-mask';
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Realtor from "./Realtor";
@@ -24,6 +22,8 @@ const INITIAL_STATE = {
 
 
 const AddRoleForm = ({ onAdd, onCancel }) => {
+
+
   const [newPassword, setNewPassword] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,9 +51,11 @@ const AddRoleForm = ({ onAdd, onCancel }) => {
   );
 };
 export default function Profile(props) {
+  const location = useLocation();
+  const activeTab = location?.state?.data;
   const [user, setUser] = useState(INITIAL_STATE);
   const [contacts, setContacts] = useState([]);
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(activeTab || 1);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
   const [nameError, setNameError] = useState("");
@@ -69,6 +71,20 @@ export default function Profile(props) {
   };
   const url = process.env.REACT_APP_API_URL;
   const fileInputRef = useRef(null);
+
+  const categoryRef = useRef(null)
+  const professionRef = useRef(null)
+  useEffect(() => {
+    if (active === 4) {
+      categoryRef.current.scrollIntoView({ block: 'start' });
+    }
+  }, [])
+
+  useEffect(() => {
+    if (active === 5) {
+      professionRef.current.scrollIntoView({ block: 'start' });
+    }
+  }, [])
 
   useLayoutEffect(() => {
     (async () => {
@@ -457,7 +473,7 @@ export default function Profile(props) {
                           style={{ width: "100%", maxWidth: "800px", height: "200px" }}
                         />
                       </div>
-                   </div>
+                    </div>
 
                     <div className="profile-btm-cnt-last-line-right">
                       <label>Referral Amount
@@ -506,21 +522,23 @@ export default function Profile(props) {
         <button
           className={active == 4 ? "active" : ""}
           onClick={() => getContacts(4)}
+          ref={categoryRef}
         >
           My Categories <span>{active == 4 ? "-" : "+"}</span>
         </button>
         {active == 4 &&
-        <Category />
-      }
+          <Category />
+        }
         <button
+          ref={professionRef}
           className={active == 5 ? "active" : ""}
           onClick={() => getContacts(5)}
         >
           Profession <span>{active == 5 ? "-" : "+"}</span>
         </button>
         {active == 5 &&
-       <Profession/>
-      }
+          <Profession />
+        }
       </div>
     </div>
   );

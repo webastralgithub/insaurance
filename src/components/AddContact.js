@@ -54,7 +54,7 @@ const AddContact = ({ user }) => {
   const [errors, setErrors] = useState({
     firstname: "",
     business_name: "",
-    profession_id: "" ,
+    profession_id: "",
     email: "",
     phone: ""
   });
@@ -327,6 +327,7 @@ const AddContact = ({ user }) => {
 
 
             <Places value={contact.address1} onChange={handleAddressChange} />
+
             <div className="add-contact-user-custom-wrapper">
               <div className="add-contact-user-custom-left">
                 <div className="form-user-add-inner-wrap">

@@ -51,13 +51,19 @@ const AddCategory = () => {
         });
 
         if (response.status === 201) {
-          navigate("/categories");
+          navigate("/profile", { state: { data: 4 } })
           toast.success('Category added successfully', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
         } else {
           console.error("Failed to add contact");
         }
       } catch (error) {
-        console.error("An error occurred while adding a contact:", error);
+        if (error.response.status === 409) {
+          toast.error(error.response.data.error, 
+            { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
+
+        } else {
+          console.error("An error occurred while adding a contact:", error.response.status);
+        }
       }
     }
   };
@@ -70,7 +76,7 @@ const AddCategory = () => {
 
   const goBack = (e) => {
     e.preventDefault()
-    navigate(-1); 
+    navigate("/profile", { state: { data: 4 } })
   };
 
   return (

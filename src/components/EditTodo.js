@@ -10,8 +10,8 @@ import InputMask from 'react-input-mask';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Places from "./Places";
-import Stack from '@mui/material/Stack';
-import CircularProgress from '@mui/material/CircularProgress';
+
+
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -68,7 +68,7 @@ const EditTodoForm = ({ user }) => {
         break;
     }
   };
- 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     clearErrors(name)
@@ -357,7 +357,8 @@ const EditTodoForm = ({ user }) => {
         setSearchQuery(getContact.data.firstname)
         setSearchContacts(getContact.data)
         setssearch(2)
-        setIsContact(true)
+        setIsContact(0)
+        setSearchQuery("")
         setContactError("")
         toast.success('To-Do Updated succesfully ', { autoClose: 1000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
       } else if (response.data.status === false) {
@@ -409,10 +410,27 @@ const EditTodoForm = ({ user }) => {
     { value: 'Immigration', label: 'Immigration' }
   ];
   const [buttonOn, setButtonOn] = useState(0)
+
+
+
+  const [minDate, setMinDate] = useState('');
+
+  useEffect(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+  }, []);
+
   return (
 
     <div className="form-user-add">
-      {isContact == true && <>
+
+      <>
         <div >
           <div className="property_header">
             <h3> <button type="button" className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Edit Task</h3>
@@ -451,25 +469,17 @@ const EditTodoForm = ({ user }) => {
 
               <div className="form-user-add-inner-wrap">
                 <label>Follow Up Date<span className="required-star">*</span></label>
-                {editingField === "FollowupDate" || editingField === "all" ? (
-                  <div className="edit-new-input">
-                    <input
-                      name="FollowupDate"
-                      type="datetime-local"
-                      defaultValue={formatDate(defaultFollowupDate)}
-                      onChange={handleChange}
-                    />
-                    <span className="error-message">{propertyTypeError}</span>
-                  </div>
-                ) : (
-                  <div className="edit-new-input">
-                    {formatDate(editedTodo?.FollowupDate)}
-                    <FontAwesomeIcon
-                      icon={faPencil}
-                      onClick={() => handleEditClick("FollowupDate")}
-                    />
-                  </div>
-                )}
+                <div className="edit-new-input">
+                  <input
+                    name="FollowupDate"
+                    type="datetime-local"
+                    min={minDate}
+                    defaultValue={formatDate(defaultFollowupDate)}
+                    onChange={handleChange}
+                  />
+                  <span className="error-message">{propertyTypeError}</span>
+                </div>
+
               </div>
 
               <div className="form-user-add-inner-wrap">
@@ -510,7 +520,7 @@ const EditTodoForm = ({ user }) => {
                 {!newSelected.id && searchContacts?.length == 0 && searchQuery?.length > 0 && loading === false && buttonOn == 0 &&
                   <div className='no-contact-found-div'>
                     <h1> No Contacts Found</h1>
-                    <button className="add-new-contact-btn" onClick={() => { setIsContact(false); setButtonOn(1) }}>Add New Contact</button>
+                    <button className="add-new-contact-btn" onClick={() => { setIsContact(1); setButtonOn(1); setContactNew({ ...contactNew, firstname: searchQuery }) }}>Add New Contact</button>
                   </div>
                 }
 
@@ -525,9 +535,10 @@ const EditTodoForm = ({ user }) => {
                   </div>
                   : ""}
               </div>
+
               {newSelected.id &&
                 <>
-                  <div className="form-user-add-inner-wrap">
+                  <div className="form-user-add-inner-wrap disable">
                     <label>Phone Number</label>
                     <input
                       type="phone"
@@ -535,7 +546,7 @@ const EditTodoForm = ({ user }) => {
                       readOnly
                     />
                   </div>
-                  <div className="form-user-add-inner-wrap">
+                  <div className="form-user-add-inner-wrap disable">
                     <label>Email</label>
                     <input
                       type="text"
@@ -543,7 +554,7 @@ const EditTodoForm = ({ user }) => {
                       readOnly
                     />
                   </div>
-                  <div className="form-user-add-inner-wrap">
+                  <div className="form-user-add-inner-wrap disable">
                     <label>Business Name</label>
                     <input
                       type="text"
@@ -551,7 +562,7 @@ const EditTodoForm = ({ user }) => {
                       readOnly
                     />
                   </div>
-                  <div className="form-user-add-inner-wrap">
+                  <div className="form-user-add-inner-wrap disable">
                     <label>Profession</label>
                     <input
                       type="text"
@@ -560,7 +571,7 @@ const EditTodoForm = ({ user }) => {
                       readOnly
                     />
                   </div>
-                  <div className="form-user-add-inner-wrap">
+                  <div className="form-user-add-inner-wrap disable">
                     <label>Address</label>
                     <input
                       type="text"
@@ -569,7 +580,7 @@ const EditTodoForm = ({ user }) => {
                       readOnly
                     />
                   </div>
-                  <div className="form-user-add-inner-wrap">
+                  <div className="form-user-add-inner-wrap disable">
                     <label>Website</label>
                     <input
                       type="text"
@@ -609,32 +620,36 @@ const EditTodoForm = ({ user }) => {
 
         </div>
       </>
-      }
+
       {/* Add Contact Form */}
-      {isContact == false &&
-        <>
-          {/* clone form */}
-          <div className="form-user-add">
-            <div>
-              <div className="property_header">
+      {isContact === 1 &&
+        <div className="parent-pop-up-add-contact" >
+
+          <div className="form-user-add add-contact-popup-new-child" style={{marginTop: '50px',
+        height: '500px',
+        overflow: 'scroll',
+        overflowX: 'hidden'}}>
+            {/* <div>
+               <div className="property_header">
                 <h3>
                   {" "}
-                  <button type="button" className="back-only-btn" onClick={goBack}>
+                  <button type="button" className="back-only-btn" onClick={() => {setIsContact(true) ; setButtonOn(0);}  }>
                     {" "}
                     <img src="/back.svg" />
                   </button>{" "}
                   ADD Contact
                 </h3>
               </div>
-            </div>
+            </div> */}
             <div className="parent">
               <div className="add_user_btn family_meber" >
 
                 <h4>
                   General Details
                 </h4>
-
+                <p onClick={()=>setIsContact(0)}>X</p>
               </div>
+
               <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">
                 <div className="form-user-add-inner-wrap">
                   <label>Name<span className="required-star">*</span></label>
@@ -777,24 +792,16 @@ const EditTodoForm = ({ user }) => {
                     </div>
                   </div>
                 </div>
-
-
+              </div>
+              <div className="form-user-add-inner-btm-btn-wrap">
+                <button style={{ background: "#004686" }} onClick={handleSubmitNewPhone}>
+                  Save
+                </button>
               </div>
             </div>
 
-            <div className="form-user-add-inner-btm-btn-wrap">
-              <button style={{ background: "#004686" }} onClick={handleSubmitNewPhone}>
-                Save
-              </button>
-
-            </div>
-
           </div >
-
-
-
-
-        </>
+        </div>
       }
     </div>
   );

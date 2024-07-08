@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -13,7 +13,29 @@ const AddTaskContact = () => {
   const location = useLocation();
   const { data } = location.state;
   const [newSelected, setNewSelected] = useState(data)
+  const [minDate, setMinDate] = useState('');
 
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().slice(0, 16);
+    setContact((prevContact) => ({
+      ...prevContact,
+      FollowupDate: formattedDate,
+    }));
+  }, []);
+  
+  useEffect(() => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+  
+      setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+    }, []);
+  
   const url = process.env.REACT_APP_API_URL;
   const [contact, setContact] = useState({
     Followup: "",
@@ -105,6 +127,7 @@ const AddTaskContact = () => {
               <input
                 type="datetime-local"
                 name="FollowupDate"
+                min={minDate}
                 value={contact.FollowupDate}
                 onChange={handleChange}
               />

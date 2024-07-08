@@ -13,7 +13,7 @@ const Followup = () => {
   const { id } = useParams()
   const location = useLocation();
   const { data } = location.state;
-  const { auth,tasklength, setTasklength } = useContext(AuthContext)
+  const { auth, tasklength, setTasklength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
   const navigate = useNavigate()
   const headers = { Authorization: auth.token };
@@ -127,7 +127,18 @@ const Followup = () => {
     // Return date in "YYYY-MM-DDTHH:MM" format
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
+  const [minDate, setMinDate] = useState('');
 
+  useEffect(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+  }, []);
   return (
 
     <div className="form-user-add">
@@ -170,6 +181,7 @@ const Followup = () => {
                 <div className="edit-new-input">
                   <input
                     value={formatDate(editedTodo?.FollowupDate)}
+                    min={minDate}
                     name="FollowupDate"
                     type="datetime-local"
                     // defaultValue={ }

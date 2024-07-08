@@ -3,7 +3,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-
 import '@fullcalendar/common/main.css';
 import './mycalander.css'
 import { AuthContext } from './context/AuthContext';
@@ -11,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Tooltip } from 'react-tooltip'
+import moment from 'moment-timezone';
 
 const MyCalendar = () => {
   const [view, setView] = useState('month');
@@ -22,23 +22,25 @@ const MyCalendar = () => {
     totalAvailableJobs, totalReffrals, totalReffralsReceived } = useContext(
       AuthContext
     );
+  const currentDate = new Date();
+  const currentDatee = moment(currentDate).tz('Your/Timezone').format('YYYY-MM-DD HH:mm:ss');
+
   const url = process.env.REACT_APP_API_URL;
   const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
   const headers = {
     Authorization: auth.token,
   };
   const handleDateClick = (selected) => {
-
-
-  
     const currentTime = new Date();
     let time = selected?.dateStr + ' ' + currentTime.toLocaleTimeString();
+
+
     // Check if the clicked date is before the current date
-    // if (clickedDate < currentDate) {
-    //   // If the clicked date is before the current date, prevent further action
-    //   toast.error('Invalid date selection', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    //   return;
-    // }
+    if (time < currentDatee) {
+      // If the clicked date is before the current date, prevent further action
+      toast.error('You cannot add task for previous date', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
+      return;
+    }
     navigate("/todo-list/add/new-dashboard/" + time)
   }
 
@@ -77,13 +79,19 @@ const MyCalendar = () => {
       navigate('/');
     }
   };
+
+
   const eventMouseEnter = (info) => {
+
     const startTime = new Date(info.event.start);
     const istStartTime = startTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true });
     const tooltipContent = `${istStartTime} - ${info.event.title}`;
+    const currentTime = new Date();
     setTooltipContent(tooltipContent); setTooltipContent(tooltipContent);
 
   };
+
+
 
   const eventMouseLeave = () => {
     setTooltipContent('');
@@ -121,14 +129,28 @@ const MyCalendar = () => {
       console.error("An error occurred while adding a contact:", error);
     }
   }
+
+  const validRange = {
+    start: currentDate
+  };
+  const dayCellClassNames = (arg) => {
+    if (arg.date < new Date(currentDate)) {
+      return 'past-date';
+    }
+    return '';
+  };
+
   return (
 
     <div className='add_property_btn'>
+
       {!tooltipContent && <Tooltip anchorSelect=".fc-daygrid-day-frame" place="top"
         style={{ zIndex: 999999999999 }}
       >
         Do you want to add task? Click here
       </Tooltip>}
+
+
       <Tooltip anchorSelect=".fc-daygrid-event-harness" place="top"
         style={{ zIndex: 999999999999, maxWidth: "200px", whiteSpace: "normal", wordWrap: 'break-word' }}
       >
@@ -171,7 +193,7 @@ const MyCalendar = () => {
             </div>
           </div>
 
-          <div className="stats-sec"  style={{ "cursor": "pointer" }} onClick={()=>navigate(`/referral-sent/${2}`)}>
+          <div className="stats-sec" style={{ "cursor": "pointer" }} onClick={() => navigate(`/referral-sent/${2}`)}>
             <div className="stats-order">
               <span>Total Referrals</span>
               <span className="order-numbers">{totalReffrals}</span>
@@ -184,7 +206,7 @@ const MyCalendar = () => {
               <span className="stats-full-perc">100%</span>
             </div>
           </div>
-          <div className="stats-sec" onClick={()=>navigate("/referral")} style={{ "cursor": "pointer" }}>
+          <div className="stats-sec" onClick={() => navigate("/referral")} style={{ "cursor": "pointer" }}>
             <div className="stats-order">
               <span>Total Referrals Received</span>
               <span className="order-numbers">{totalReffralsReceived}</span>
@@ -229,6 +251,8 @@ const MyCalendar = () => {
         eventClick={eventClick}
         eventMouseEnter={eventMouseEnter}
         eventMouseLeave={eventMouseLeave}
+        // dayCellClassNames={dayCellClassNames}// Set the validRange prop here
+        // validRange={validRange}
       />
     </div>
   );

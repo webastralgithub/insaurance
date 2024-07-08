@@ -173,7 +173,7 @@ const AddVendor = () => {
         });
 
         if (response.status === 201) {
-          navigate("/suppliers");
+          navigate("/profile", { state: { data: 3}})
           toast.success('Vendor added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
        
         } else {
@@ -272,7 +272,6 @@ const AddVendor = () => {
         </div>
       </div>
       <div className="form-user-add-inner-btm-btn-wrap">
-
         <button>Save</button>
       </div>
     </form>

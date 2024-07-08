@@ -47,12 +47,12 @@ const AddProfession = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.post(`${url}api/categories/create`, contact, {
+        const response = await axios.post(`${url}api/profession`, contact, {
           headers,
         });
         if (response.status === 201) {
-          navigate("/categories");
-          toast.success('Category added successfully', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
+          navigate("/profile", { state: { data: 5}})
+          toast.success('Profession added successfully', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
         } else {
           console.error("Failed to add contact");
         }
@@ -70,7 +70,7 @@ const AddProfession = () => {
 
   const goBack = (e) => {
     e.preventDefault()
-    navigate(-1);
+    navigate("/profile", { state: { data: 5}})
   };
 
   return (
