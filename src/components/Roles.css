@@ -29,6 +29,9 @@ th {
   color: white;
 }
 
+.new-tag-date th{
+  color: black;
+}
 /* CSS for the buttons */
 .add_user_btn button {
   background-color: #004686;

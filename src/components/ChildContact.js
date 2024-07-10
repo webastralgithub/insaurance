@@ -18,6 +18,7 @@ const ChildContact = (props) => {
   const [showContent, setShowContent] = useState(false);
   const [contacts, setContacts] = useState([]);
   const [useGoogleAddress, setUseGoogleAddress] = useState(true);
+  const [contactCount, setContactCount] = useState([])
 
   const navigate = useNavigate();
   const [newContact, setNewContact] = useState({
@@ -64,6 +65,7 @@ const ChildContact = (props) => {
         const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
         const newData = response.data.filter(res => res.isNote == 0)
         setContacts(newData);
+        setContactCount(newData);
       }
     } catch (error) {
       // localStorage.removeItem('token');
@@ -143,7 +145,6 @@ const ChildContact = (props) => {
 
   const handleAddFamilyMember = () => {
     // Add an empty family member to the contacts list
-
     const updatedContacts = [...contacts];
     updatedContacts.push({
       firstname: "",
@@ -176,27 +177,32 @@ const ChildContact = (props) => {
     }
   }
 
-
-
-
-
   return (
     <div className="add_property_btn">
+
       <div className="add_user_btn family_meber" onClick={() => {
         setShowContent(!showContent)
       }} >
 
         <h4>
-
-          Family Members ({contacts.length})
-
+          Family Members ({contactCount.length})
         </h4>
+
         {contacts.length == 0 &&
-          <button onClick={(e) => {
-            e.stopPropagation();
-            setShowContent(true)
-            handleAddFamilyMember()
-          }}>New</button>
+
+
+          <button
+            title="Add Family Member"
+
+            className="active"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowContent(true)
+              handleAddFamilyMember()
+            }}
+          >
+            +
+          </button>
         }
       </div>
       <div className="inner-pages-top">

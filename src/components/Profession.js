@@ -11,9 +11,12 @@ const Profession = () => {
   const headers = {
     Authorization: auth.token
   }
+
   const [users, setUsers] = useState([])
-  const [width, setWidth] = useState(window.innerWidth);
+  const [totalPagess, setTotalPages] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [width, setWidth] = useState(window.innerWidth);
+
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate()
 
@@ -30,45 +33,9 @@ const Profession = () => {
   const url = process.env.REACT_APP_API_URL
   useEffect(() => {
     getUsers()
-  }, [])
-
-  const styles = {
-    overlay: {
-      backgroundColor: "rgb(0 0 0 / 75%)",
-      zIndex: "99999",
-      overflow: 'scroll',
-    },
-    content: width > 400 ? {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      border: "none",
-      background: "#000",
-      border: "1px solid #fff",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-
-      width: "60%",
-      borderRadius: "24px",
-    } : {
-
-      position: "absolute",
-      inset: "56% auto auto 50%",
-      border: " none",
-      background: "#000",
-      border: "1px solid #fff",
-      overflow: " auto",
-      borderRadius: "10px",
-      outline: "none",
-
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      width: "68%",
+  }, [currentPage])
 
 
-    },
-  };
   const handleDelete = async (propertyId) => {
     try {
       await axios.delete(`${url}api/profession/${propertyId}`, { headers });
@@ -97,33 +64,33 @@ const Profession = () => {
     });
   };
 
-  const mediaQuery = window.matchMedia("(max-width: 768px)");
-  const mediaQueryMobileNext = window.matchMedia("(max-width: 600px)");
-  const filteredUsersNew = users.filter((user) =>
-    (user.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-  const ITEMS_PER_PAGE = 10;
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  const totalPages = Math.ceil(filteredUsersNew.length / ITEMS_PER_PAGE);
-  // Calculate the start and end indices for the current page
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const filteredUsers = filteredUsersNew.slice(startIndex, endIndex);
+
 
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
-      setUsers(res.data)
 
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession-list?page=${currentPage}`, { headers });
+      setUsers(res.data.profession)
+      setTotalPages(res?.data?.totalPages)
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
 
-
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
 
   const handleClick = (userId) => {
     navigate(`/profession/${userId}`)
@@ -158,7 +125,7 @@ const Profession = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers?.map((user) => (
+            {users?.map((user) => (
               <>
                 <tr key={user.id}>
                   <td className="property-link" onClick={()=>roleId == 1 ? handleClick(user.id) : null} >{user?.name}</td>
@@ -177,21 +144,13 @@ const Profession = () => {
             ))}
           </tbody>
         </table>
-        {totalPages > 1 && (
+        {users?.length > 0 && (
           <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? 'active' : ''}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {renderPageNumbers()}
           </div>
         )}
       </div>
-      {filteredUsers.length == 0 && <p className="no-data">No data Found</p>}
+      {users.length == 0 && <p className="no-data">No data Found</p>}
     </div>
   )
 }

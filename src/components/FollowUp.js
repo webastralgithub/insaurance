@@ -7,6 +7,9 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+import moment from 'moment';
 
 
 const Followup = () => {
@@ -127,18 +130,38 @@ const Followup = () => {
     // Return date in "YYYY-MM-DDTHH:MM" format
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
-  const [minDate, setMinDate] = useState('');
+  const [dateTime, setDateTime] = useState(Datetime.moment());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+
+  const handleDateTimeChange = (momentObj) => {
+    setEditedTodo({ ...editedTodo, FollowupDate: momentObj })
+    setDateTime(momentObj);
+    setIsCalendarOpen(false);
+  };
+
+  const isValidDate = (current) => {
+    return current.isAfter(Datetime.moment().subtract(1, 'day'));
+  };
+
+  const openCalendar = () => {
+    setIsCalendarOpen(true);
+  }
+
+  const calendarRef = useRef(null)
+  const handleClickOutside = (event) => {
+    if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+      setIsCalendarOpen(false);
+    }
+  };
 
   useEffect(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-
-    setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
+
   return (
 
     <div className="form-user-add">
@@ -175,18 +198,33 @@ const Followup = () => {
               )}
             </div>
 
-            <div className="form-user-add-inner-wrap">
+            <div className="form-user-add-inner-wrap" ref={calendarRef}>
               <label>Follow Up Date<span className="required-star">*</span></label>
               {editingField === "FollowupDate" || editingField === "all" ? (
-                <div className="edit-new-input">
-                  <input
+                <div className="edit-new-input new-tag-date">
+
+                  <Datetime
+                    value={dateTime}
+                    onChange={handleDateTimeChange}
+                    isValidDate={isValidDate}
+                    open={isCalendarOpen}
+
+                    renderInput={(props) => (
+                      <input
+                        {...props}
+                        readOnly
+                        onClick={openCalendar}
+                        style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                      />
+                    )}
+                  />
+                  {/* <input
                     value={formatDate(editedTodo?.FollowupDate)}
-                    min={minDate}
                     name="FollowupDate"
                     type="datetime-local"
                     // defaultValue={ }
                     onChange={handleChange}
-                  />
+                  /> */}
                   <span className="error-message">{propertyTypeError}</span>
                 </div>
               ) : (

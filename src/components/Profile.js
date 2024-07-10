@@ -520,7 +520,7 @@ export default function Profile(props) {
           <Vendor />
         }
         <button
-          className={active == 4 ? "active" : ""}
+          className={`${active == 4 ? "active" : ""}`}
           onClick={() => getContacts(4)}
           ref={categoryRef}
         >

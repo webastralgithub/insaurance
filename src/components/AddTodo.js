@@ -33,6 +33,7 @@ const AddTodo = ({ user }) => {
   const initialDate = date && moment(date).isSameOrAfter(moment(), 'day')
     ? new Date(date)
     : new Date();
+
   const [dateTime, setDateTime] = useState(initialDate);
 
   const [buttonOn, setButtonOn] = useState(0)
@@ -50,6 +51,7 @@ const AddTodo = ({ user }) => {
   const [newSelected, setNewSelected] = useState([])
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const containerRef = useRef(null);
+
   const handleDateTimeChange = (newDateTime) => {
     setDateTime(newDateTime);
   };
@@ -143,7 +145,6 @@ const AddTodo = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (validateForm()) {
       try {
         const response = await axios.post(`${url}api/todo`, updatedContact, {
@@ -170,10 +171,6 @@ const AddTodo = ({ user }) => {
     clearErrors(name)
     setContact({ ...contact, [name]: value });
   };
-
-
-
-
 
   const [loading, setLoading] = useState(false)
   const getSearchContact = async () => {
@@ -242,7 +239,7 @@ const AddTodo = ({ user }) => {
     createdBy: user,
     realtorId: null,
     propertyId: null,
-    isContact: true
+    isContact: 1
   });
 
   const [errors, setErrors] = useState({
@@ -338,11 +335,12 @@ const AddTodo = ({ user }) => {
   const handleSubmitNewPhone = async (e) => {
     e.preventDefault();
     const isValid = validateFormNewPhone();
+
     if (!isValid) {
       //handlescroll()
       return
     }
-    let newData
+
     try {
       const response = await axios.post(`${url}api/contacts`, contactNew, { headers });
       if (response.status === 201) {
@@ -355,7 +353,7 @@ const AddTodo = ({ user }) => {
         setIsContacts(true)
         setContactError("")
         setIsContacts(0)
-        setSearchQuery("")
+        setButtonOn(1)
         toast.success(' Contact added successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
       } else if (response.data.status === false) {
         toast.error(response.data.message)
@@ -411,10 +409,8 @@ const AddTodo = ({ user }) => {
 
     <>
       <div className="div-add-contact-parent" style={{ position: 'relative' }} >
-
         <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form"   >
           <div className="property_header header-with-back-btn">
-
             <h3> <button type="button" className="back-only-btn" onClick={() => navigate(-1)}> <img src="/back.svg" /></button>Add Task</h3>
 
           </div>
@@ -487,10 +483,13 @@ const AddTodo = ({ user }) => {
                     value={searchQuery}
                     onChange={handleSearchChange}
                   />
-                  {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn == 0 &&
+                  {searchContacts?.length == 0 && searchQuery?.length > 0 && loading == false && buttonOn === 0 &&
                     <div className='no-contact-found-div'>
                       <h1> No Contacts Found</h1>
-                      <button className="add-new-contact-btn" onClick={() => { setIsContacts(1); setButtonOn(1); setContactNew({ ...contactNew, firstname: searchQuery }) }}>Add New Contact</button>
+                      <button className="add-new-contact-btn" onClick={() => {
+                        setIsContacts(1); setButtonOn(1);
+                        setContactNew({ ...contactNew, firstname: searchQuery })
+                      }}>Add New Contact</button>
                     </div>
                   }
 
@@ -509,62 +508,77 @@ const AddTodo = ({ user }) => {
                   </>}
                 </div>
 
+                <div className="todo-section todo-section-selected">
+                  {newSelected.id &&
+                    <>
+                      <div className="contact-card">
 
 
-                {newSelected.id &&
-                  <>
-                    <div className="form-user-add-inner-wrap disable">
+                        <div className="contact-details">
+                          <div className="detail">
+                            <label>Phone Number :
+                              <span> {(newSelected?.phone ? newSelected?.phone : " ")}</span></label>
+                          </div>
+                          <div className="detail">
+                            <label>Email :
+                              <span> {(newSelected?.email ? newSelected?.email : " ")}</span></label>
+                          </div>
+                          <div className="detail">
+                            <label>Business Name :
+                              <span> {newSelected?.business_name}</span></label>
+                          </div>
+                          <div className="detail">
+                            <label>Profession :
+                              <span> {newSelected?.profession_id > 0 ? newSelected?.profession.name : ""}</span></label>
+                          </div>
+                          <div className="detail">
+                            <label>Address :
+                              <span> {newSelected?.address1 ? newSelected?.address1 : ""}</span></label>
+                          </div>
+                          <div className="detail">
+                            <label>Website :
+                              <span>  {newSelected?.website ?? ""}</span></label>
+                          </div>
+                        </div>
+                      </div>
 
-                      <label>Phone Number</label>
-                      <input
-                        type="phone"
-                        value={(newSelected?.phone ? newSelected?.phone : " ")}
-                        readOnly
-                      />
-                    </div>
-                    <div className="form-user-add-inner-wrap disable">
-                      <label>Email</label>
-                      <input
-                        type="text"
-                        value={(newSelected?.email ? newSelected?.email : " ")}
-                        readOnly
-                      />
-                    </div>
-                    <div className="form-user-add-inner-wrap disable">
-                      <label>Business Name</label>
-                      <input
-                        type="text"
-                        value={newSelected?.business_name}
-                        readOnly
-                      />
-                    </div>
-                    <div className="form-user-add-inner-wrap disable">
-                      <label>Profession</label>
-                      <input
-                        type="text"
-                        value={newSelected?.profession ? newSelected?.profession.name : ""}
-                        readOnly
-                      />
-                    </div>
-                    <div className="form-user-add-inner-wrap disable">
-                      <label>Address</label>
-                      <input
-                        type="text"
+                      {/* <div className="fields-selected-check">
+                        <div className="form-user-add-inner-wrap disable">
+                          <p>   <label>Phone Number :</label>
+                            {(newSelected?.phone ? newSelected?.phone : " ")}</p>
 
-                        value={newSelected?.address1 ? newSelected?.address1 : ""}
-                        readOnly
-                      />
-                    </div>
-                    <div className="form-user-add-inner-wrap disable">
-                      <label>Website</label>
-                      <input
-                        type="text"
-                        value={newSelected?.website ?? ""}
-                        readOnly
-                      />
-                    </div>
-                  </>
-                }
+
+                        </div>
+                        <div className="form-user-add-inner-wrap disable">
+                          <p>    <label>Email :</label>
+                            {(newSelected?.email ? newSelected?.email : " ")}</p>
+
+
+                        </div>
+                        <div className="form-user-add-inner-wrap disable">
+                          <p> <label>Business Name :</label>
+                            {newSelected?.business_name}</p>
+
+                        </div>
+                        <div className="form-user-add-inner-wrap disable">
+                          <p>    <label>Profession :</label>
+                            {newSelected?.profession ? newSelected?.profession.name : ""}</p>
+
+                        </div>
+                        <div className="form-user-add-inner-wrap disable">
+                          <p>    <label>Address :</label>
+                            {newSelected?.address1 ? newSelected?.address1 : ""}</p>
+
+                        </div>
+                        <div className="form-user-add-inner-wrap disable">
+                          <p>  <label>Website :</label>
+                            {newSelected?.website ?? ""}</p>
+                        </div>
+                      </div> */}
+                    </>
+                  }
+                </div>
+
               </div>
 
               <div className="todo-notes-section">
@@ -587,10 +601,16 @@ const AddTodo = ({ user }) => {
 
                 </div>
               </div>
+
+
+
+
+
+
             </div>
+
           </div>
           <div className="form-user-add-inner-btm-btn-wrap">
-
             <button type="submit" >Save</button>
           </div>
         </form>
@@ -604,12 +624,7 @@ const AddTodo = ({ user }) => {
             {/* clone form */}
 
 
-            <div className="form-user-add add-contact-popup-new-child" style={{
-              marginTop: '50px',
-              height: '500px',
-              overflow: 'scroll',
-              overflowX: 'hidden'
-            }}>
+            <div className="form-user-add add-contact-popup-new-child" >
               {/* <div>
               <div className="property_header">
                 <h3>
@@ -633,7 +648,7 @@ const AddTodo = ({ user }) => {
                   <h4>
                     General Details
                   </h4>
-                  <p onClick={() => setIsContacts(0)}>x</p>
+                  <p onClick={() => { setIsContacts(0); setButtonOn(1); setContactNew({}) }}>x</p>
                 </div>
                 <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">
                   <div className="form-user-add-inner-wrap">
@@ -678,7 +693,8 @@ const AddTodo = ({ user }) => {
 
 
 
-                  <Places value={contactNew.address1} onChange={handleAddressChange} />
+                  <Places value={contactNew.address1} onChange={(newAddress) => setContactNew({ ...contactNew, address1: newAddress })} />
+
                   <div className="add-contact-user-custom-wrapper">
                     <div className="add-contact-user-custom-left">
                       <div className="form-user-add-inner-wrap">
@@ -794,7 +810,6 @@ const AddTodo = ({ user }) => {
             </div >
 
           </div>
-
         }
       </div>
     </>

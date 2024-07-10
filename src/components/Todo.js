@@ -28,39 +28,24 @@ const TodoList = ({ role }) => {
     Authorization: auth.token,
   };
 
+
+
   const formatDate = (dateTimeString) => {
     if (!dateTimeString) {
       return "";
     }
-
+    
     const dateTime = new Date(dateTimeString);
     const options = {
       year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-      timeZone: 'UTC'
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true
     };
-    const localDateTimeString = dateTime.toLocaleString('en-US', options);
-    return localDateTimeString;
-  };
-  const formatDateNew = (dateTimeString) => {
-    if (!dateTimeString) {
-      return "";
-    }
-
-    const dateTime = new Date(dateTimeString);
-    const year = dateTime.getFullYear();
-    const month = String(dateTime.getMonth() + 1).padStart(2, "0");
-    const day = String(dateTime.getDate()).padStart(2, "0");
-    const hours = String(dateTime.getHours()).padStart(2, "0");
-    const minutes = String(dateTime.getMinutes()).padStart(2, "0");
-    const seconds = String(dateTime.getSeconds()).padStart(2, "0");
-
-    return `${month}-${day}`;
+    return dateTime.toLocaleString('en-US', options);
   };
 
   const getTasks = async () => {
@@ -74,18 +59,7 @@ const TodoList = ({ role }) => {
 
     try {
       const response = await axios.get(`${url}api/todo?page=${currPage}&&search=${searchRef.current.value}&&type=${type}`, { headers });
-      const today = new Date();
-      const weekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-      const todayMonthDay = (today.getMonth() + 1).toString().padStart(2, '0') + '-' + today.getDate().toString().padStart(2, '0');
       setTasks(response.data.todo)
-      const birthdayTodos = response.data.todo.filter((todo) => {
-        if (todo.isBirthday || todo.isAnniversary) {
-          const todoMonthDay = formatDateNew(todo?.FollowupDate)
-          return todoMonthDay === todayMonthDay;
-        }
-        return todo
-      });
-      //setTasks(birthdayTodos);
       setTaskCount(response?.data)
       setTotalPagess(response.data.totalPages);
       setCurrentPage(response.data?.currentPage)
@@ -240,7 +214,7 @@ const TodoList = ({ role }) => {
                         className="property-link"
                         onClick={() => {
                           setTodo(task)
-                          navigate(`/todo-list-todo/edit/${task?.id}`);
+                          navigate(`/todo-list-todo/edit/${task?.id}` ,  {state: { data: task } });
                         }}
                       >
                         {task?.Followup}

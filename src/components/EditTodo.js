@@ -4,13 +4,15 @@ import Select from 'react-select';
 import { faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 import InputMask from 'react-input-mask';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Places from "./Places";
-
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+import moment from 'moment';
 
 
 const useDebounce = (value, delay) => {
@@ -32,23 +34,40 @@ const EditTodoForm = ({ user }) => {
   const [profession, setProfession] = useState([])
   const [seletedProfession, setSeletedProfession] = useState([])
   const { id } = useParams()
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.includes("/todo-list-todo/edit/")) {
+      const { data } = location.state;
+      setNewSelected(data.contact)
+      setEditedTodo(data)
+      setSearchQuery(data.contact?.firstname)
+      formatDateLoacal(setDefaultFollowupDate(new Date(data.FollowupDate)))
+    } else {
+      getTodos()
+    }
+  }, [])
+
+
   const navigate = useNavigate()
   const { auth, setConatctlength, contactlength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
+
   const [newSelected, setNewSelected] = useState([])
-  const [ssearch, setssearch] = useState(1)
+  const [editedTodo, setEditedTodo] = useState([]);
+  const [ssearch, setssearch] = useState(2)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchContacts, setSearchContacts] = useState([])
   const [contactError, setContactError] = useState("")
   const [isContact, setIsContact] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState('')
   const containerRef = useRef(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 1000);
   const headers = {
     Authorization: auth.token,
   };
-  const [editedTodo, setEditedTodo] = useState([]);
-  const [defaultFollowupDate, setDefaultFollowupDate] = useState('');
+
+  const [defaultFollowupDate, setDefaultFollowupDate] = useState();
   const [phoneError, setPhoneError] = useState("")
   const [editingField, setEditingField] = useState('all');
   const [mlsNoError, setMlsNoError] = useState("");
@@ -126,7 +145,7 @@ const EditTodoForm = ({ user }) => {
 
   useEffect(() => {
     getProfession()
-    getTodos()
+
   }, [])
 
   const validateForm = () => {
@@ -186,18 +205,35 @@ const EditTodoForm = ({ user }) => {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
+  const formatDateLoacal = (dateTimeString) => {
+    if (!dateTimeString) {
+      return "";
+    }
+
+    const dateTime = new Date(dateTimeString);
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true
+    };
+    return dateTime.toLocaleString('en-US', options);
+  };
+
   const getTodos = async () => {
     try {
       const response = await axios.get(`${url}api/todo`, { headers });
-      const filtered = await response?.data?.todo?.find(x => x.id == id)
-      const followupDateISO = filtered?.FollowupDate
-        ? new Date(filtered?.FollowupDate).toISOString().slice(0, 16)
-        : '';
-      setEditedTodo(filtered);
-      setSearchQuery(filtered?.contact?.firstname)
-      setNewSelected(filtered?.contact)
-      setssearch(2)
-      setDefaultFollowupDate(followupDateISO);
+      const responseData = await response.data.todo
+      const filtered = responseData.find(item => item.id == id);
+      formatDateLoacal(setDefaultFollowupDate(new Date(filtered.FollowupDate)))
+      setNewSelected(filtered.contact)
+      setEditedTodo(filtered)
+      setSearchQuery(filtered.contact?.firstname)
+
+
     } catch (error) {
       console.error(error)
     }
@@ -358,7 +394,7 @@ const EditTodoForm = ({ user }) => {
         setSearchContacts(getContact.data)
         setssearch(2)
         setIsContact(0)
-        setSearchQuery("")
+        setButtonOn(1)
         setContactError("")
         toast.success('To-Do Updated succesfully ', { autoClose: 1000, position: toast.POSITION.TOP_RIGHT }); // Redirect to the contacts list page
       } else if (response.data.status === false) {
@@ -426,6 +462,61 @@ const EditTodoForm = ({ user }) => {
     setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
   }, []);
 
+  const formatDatew = (date) => {
+    const d = new Date(date);
+    const pad = (n) => (n < 10 ? '0' + n : n);
+    const formattedDate =
+      d.getFullYear() +
+      '-' +
+      pad(d.getMonth() + 1) +
+      '-' +
+      pad(d.getDate()) +
+      'T' +
+      pad(d.getHours()) +
+      ':' +
+      pad(d.getMinutes());
+    return formattedDate;
+  };
+
+  // Get the current date and time
+  const getCurrentDateTime = () => {
+    return formatDatew(new Date());
+  };
+
+
+  const [dateTime, setDateTime] = useState(Datetime.moment());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+
+  const handleDateTimeChange = (momentObj) => {
+    setEditedTodo({ ...editedTodo, FollowupDate: momentObj })
+    setDefaultFollowupDate(momentObj);
+    setIsCalendarOpen(false);
+  };
+
+  const isValidDate = (current) => {
+    return current.isAfter(Datetime.moment().subtract(1, 'day'));
+  };
+
+  const openCalendar = () => {
+    setIsCalendarOpen(true);
+  }
+
+  const calendarRef = useRef(null)
+  const handleClickOutside = (event) => {
+    if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+      setIsCalendarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
   return (
 
     <div className="form-user-add">
@@ -467,19 +558,25 @@ const EditTodoForm = ({ user }) => {
                 )}
               </div>
 
-              <div className="form-user-add-inner-wrap">
-                <label>Follow Up Date<span className="required-star">*</span></label>
-                <div className="edit-new-input">
-                  <input
-                    name="FollowupDate"
-                    type="datetime-local"
-                    min={minDate}
-                    defaultValue={formatDate(defaultFollowupDate)}
-                    onChange={handleChange}
-                  />
-                  <span className="error-message">{propertyTypeError}</span>
-                </div>
 
+              <div className="form-user-add-inner-wrap new-tag-date" ref={calendarRef}>
+                <label>Follow Up Date <span className="required-star">*</span></label>
+                <Datetime
+                  value={defaultFollowupDate}
+                  onChange={handleDateTimeChange}
+                  isValidDate={isValidDate}
+                  open={isCalendarOpen}
+
+                  renderInput={(props) => (
+                    <input
+                      {...props}
+                      readOnly
+                      onClick={openCalendar}
+                      style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                    />
+                  )}
+                />
+                <span className="error-message">{propertyTypeError}</span>
               </div>
 
               <div className="form-user-add-inner-wrap">
@@ -536,60 +633,81 @@ const EditTodoForm = ({ user }) => {
                   : ""}
               </div>
 
-              {newSelected.id &&
-                <>
-                  <div className="form-user-add-inner-wrap disable">
-                    <label>Phone Number</label>
-                    <input
-                      type="phone"
-                      value={(newSelected?.phone ? newSelected?.phone : " ")}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap disable">
-                    <label>Email</label>
-                    <input
-                      type="text"
-                      value={(newSelected?.email ? newSelected?.email : " ")}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap disable">
-                    <label>Business Name</label>
-                    <input
-                      type="text"
-                      value={newSelected?.business_name}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap disable">
-                    <label>Profession</label>
-                    <input
-                      type="text"
 
-                      value={newSelected?.profession_id > 0 ? newSelected?.profession.name : ""}
-                      readOnly
-                    />
-                  </div>
-                  <div className="form-user-add-inner-wrap disable">
-                    <label>Address</label>
-                    <input
-                      type="text"
+              {/* div css */}
 
-                      value={newSelected?.address1 ? newSelected?.address1 : ""}
-                      readOnly
-                    />
+
+              <div className="todo-section todo-section-selected">
+                {newSelected.id &&
+                  <>
+                    <div className="contact-card">
+
+
+                      <div className="contact-details">
+                        <div className="detail">
+                          <label>Phone Number :
+                            <span> {(newSelected?.phone ? newSelected?.phone : " ")}</span></label>
+                        </div>
+                        <div className="detail">
+                          <label>Email :
+                            <span> {(newSelected?.email ? newSelected?.email : " ")}</span></label>
+                        </div>
+                        <div className="detail">
+                          <label>Business Name :
+                            <span> {newSelected?.business_name}</span></label>
+                        </div>
+                        <div className="detail">
+                          {/* <label>Profession : */}
+                          {/* <span> {newSelected?.profession_id > 0 ? newSelected?.profession.name : ""}</span></label> */}
+                        </div>
+                        <div className="detail">
+                          <label>Address :
+                            <span> {newSelected?.address1 ? newSelected?.address1 : ""}</span></label>
+                        </div>
+                        <div className="detail">
+                          <label>Website :
+                            <span>  {newSelected?.website ?? ""}</span></label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* <div className="fields-selected-check">
+                  <div className="form-user-add-inner-wrap disable">
+                    <p>  <label>Phone Number :</label>
+                      {(newSelected?.phone ? newSelected?.phone : " ")}</p>
+
                   </div>
                   <div className="form-user-add-inner-wrap disable">
-                    <label>Website</label>
-                    <input
-                      type="text"
-                      value={newSelected?.website ?? ""}
-                      readOnly
-                    />
+                    <p>  <label>Email :</label>
+                      {(newSelected?.email ? newSelected?.email : " ")}</p>
+
                   </div>
-                </>
-              }
+                  <div className="form-user-add-inner-wrap disable">
+                    <label>Business Name :</label>
+                    <p>{newSelected?.business_name}</p>
+
+                  </div>
+                  <div className="form-user-add-inner-wrap disable">
+                    <p>  <label>Profession : </label>
+                      {newSelected?.profession_id > 0 ? newSelected?.profession.name : ""}</p>
+
+                  </div>
+                  <div className="form-user-add-inner-wrap disable">
+                    <p>  <label>Address :</label>
+                      {newSelected?.address1 ? newSelected?.address1 : ""}</p>
+                  </div>
+
+                  <div className="form-user-add-inner-wrap disable">
+                    <p> <label>Website :</label>
+                      {newSelected?.website ?? ""}</p>
+                  </div>
+                </div> */}
+                  </>
+                }
+              </div>
+
+
+
             </div>
 
             <div className="todo-notes-section">
@@ -612,6 +730,9 @@ const EditTodoForm = ({ user }) => {
             </div>
 
           </div>
+
+
+
           <div className="form-user-add-inner-btm-btn-wrap">
             <button style={{ background: "#004686" }} onClick={handleSaveClick}>Save</button>
           </div>
@@ -625,10 +746,7 @@ const EditTodoForm = ({ user }) => {
       {isContact === 1 &&
         <div className="parent-pop-up-add-contact" >
 
-          <div className="form-user-add add-contact-popup-new-child" style={{marginTop: '50px',
-        height: '500px',
-        overflow: 'scroll',
-        overflowX: 'hidden'}}>
+          <div className="form-user-add add-contact-popup-new-child" >
             {/* <div>
                <div className="property_header">
                 <h3>
@@ -647,7 +765,7 @@ const EditTodoForm = ({ user }) => {
                 <h4>
                   General Details
                 </h4>
-                <p onClick={()=>setIsContact(0)}>X</p>
+                <p onClick={() => { setIsContact(0); setContactNew({}) }}>x</p>
               </div>
 
               <div className="form-user-edit-inner-wrap form-user-add-wrapper additional-info-wrapper">

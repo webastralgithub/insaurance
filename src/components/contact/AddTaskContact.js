@@ -1,10 +1,13 @@
-import React, { useState, useContext,useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { toast } from "react-toastify";
+import Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+import moment from 'moment';
 
 const AddTaskContact = () => {
 
@@ -24,18 +27,18 @@ const AddTaskContact = () => {
       FollowupDate: formattedDate,
     }));
   }, []);
-  
+
   useEffect(() => {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-  
-      setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
-    }, []);
-  
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    setMinDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+  }, []);
+
   const url = process.env.REACT_APP_API_URL;
   const [contact, setContact] = useState({
     Followup: "",
@@ -52,6 +55,7 @@ const AddTaskContact = () => {
 
   const validateForm = () => {
     let isValid = true;
+
     if (!contact.Followup) {
       setFollowupError("Task Title is Required")
       isValid = false
@@ -69,6 +73,8 @@ const AddTaskContact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+
     if (!validateForm()) {
       return
     }
@@ -80,7 +86,7 @@ const AddTaskContact = () => {
       if (response.status === 201) {
         setTasklength(tasklength + 1)
         toast.success("Task Created Successfully")
-        navigate(-1); 
+        navigate(-1);
       } else {
         toast.error(response.data.message, {
           autoClose: 2000,
@@ -99,6 +105,37 @@ const AddTaskContact = () => {
     setContact({ ...contact, [name]: value });
   };
 
+  const [dateTime, setDateTime] = useState(Datetime.moment());
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  
+  const handleDateTimeChange = (momentObj) => {
+    setContact({ ...contact, FollowupDate: momentObj })
+    setDateTime(momentObj);
+    setIsCalendarOpen(false);
+  };
+
+  const isValidDate = (current) => {
+    return current.isAfter(Datetime.moment().subtract(1, 'day'));
+  };
+
+  const openCalendar =()=>{
+    setIsCalendarOpen(true);
+  }
+
+const calendarRef =useRef(null)
+  const handleClickOutside = (event) => {
+    if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+      setIsCalendarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   return (
     <form onSubmit={handleSubmit} className="form-user-add">
       <div className="property_header header-with-back-btn">
@@ -122,15 +159,33 @@ const AddTaskContact = () => {
               <span className="error-message">{FollowupError}</span>
             </div>
 
-            <div className="form-user-add-inner-wrap">
+            <div className="form-user-add-inner-wrap new-tag-date"  ref={calendarRef}>
               <label>Follow Up Date<span className="required-star">*</span></label>
-              <input
+
+              <Datetime
+                value={dateTime}
+                onChange={handleDateTimeChange}
+                isValidDate={isValidDate}
+                open={isCalendarOpen}
+              
+                renderInput={(props) => (
+                  <input
+                    {...props}
+                    readOnly
+                    onClick={openCalendar}
+                    style={{ cursor: 'pointer', backgroundColor: 'white' }}
+                  />
+                )}
+              />
+
+
+              {/* <input
                 type="datetime-local"
                 name="FollowupDate"
                 min={minDate}
                 value={contact.FollowupDate}
                 onChange={handleChange}
-              />
+              /> */}
               <span className="error-message">{propertyTypeError}</span>
             </div>
 

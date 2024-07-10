@@ -23,7 +23,8 @@ const MyCalendar = () => {
       AuthContext
     );
   const currentDate = new Date();
-  const currentDatee = moment(currentDate).tz('Your/Timezone').format('YYYY-MM-DD HH:mm:ss');
+  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const currentDatee = moment(currentDate).tz(localTimeZone).format('YYYY-MM-DD HH:mm:ss');
 
   const url = process.env.REACT_APP_API_URL;
   const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
@@ -31,8 +32,8 @@ const MyCalendar = () => {
     Authorization: auth.token,
   };
   const handleDateClick = (selected) => {
-    const currentTime = new Date();
-    let time = selected?.dateStr + ' ' + currentTime.toLocaleTimeString();
+
+    let time = selected?.dateStr + ' ' + currentDate.toLocaleTimeString();
 
 
     // Check if the clicked date is before the current date
@@ -46,7 +47,7 @@ const MyCalendar = () => {
 
   const eventClick = (selected) => {
     const newtask = tasks?.find((option) => option?.id === selected?.event.id)
-    setTodo(newtask)
+    setTodo(newtask);
     navigate(`/todo-list-dashboard/edit/${selected.event.id}`)
   }
 
@@ -55,23 +56,48 @@ const MyCalendar = () => {
     getTasks();
   }, []);
 
-  const formatDate = (dateString) => {
-    const dateObject = new Date(dateString);
-    return dateObject.toISOString();
-  }
+  const formatDate = (dateTimeString) => {
+    if (!dateTimeString) {
+      return "";
+    }
+  
+    const dateTime = new Date(dateTimeString);
+    const year = dateTime.getFullYear();
+    const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+    const day = String(dateTime.getDate()).padStart(2, '0');
+    const hours = String(dateTime.getHours()).padStart(2, '0');
+    const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+    const seconds = String(dateTime.getSeconds()).padStart(2, '0');
+    const milliseconds = String(dateTime.getMilliseconds()).padStart(3, '0');
+  
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
+    // const options = {
+    //   year: 'numeric',
+    //   month: 'long',
+    //   day: 'numeric',
+    //   hour: 'numeric',
+    //   minute: 'numeric',
+    //   second: 'numeric',
+    //   hour12: true
+    // };
+    // return dateTime.toLocaleString('en-US', options);
+  };
+
+
+  
 
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo`, { headers });
       setTasks(response?.data?.todo);
+
       const eventsdata = response?.data?.todo.map((item, index) => ({
         key: item.id,
         id: item.id,
-        title: item.Followup, // Use the desired property as the event title
-        start: item.FollowupDate.slice(0, -4), // Convert the date string to a Date object
-        // end: new Date(item.FollowupDate), // You can adjust the end date if needed
-        // Add more event properties as needed
+        title: item.Followup, 
+        start: formatDate(item.FollowupDate).slice(0, -4), 
       }));
+
       setEvents(eventsdata);
     } catch (error) {
       localStorage.removeItem('token');
@@ -79,14 +105,17 @@ const MyCalendar = () => {
       navigate('/');
     }
   };
-
-
+//format date 'July 29, 2024 at 7:03:29 PM'
+//show date  '2024-07-10T13:37:00.000'
   const eventMouseEnter = (info) => {
-
     const startTime = new Date(info.event.start);
-    const istStartTime = startTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true });
+    const istStartTime = startTime.toLocaleTimeString('en-US',
+      {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
     const tooltipContent = `${istStartTime} - ${info.event.title}`;
-    const currentTime = new Date();
     setTooltipContent(tooltipContent); setTooltipContent(tooltipContent);
 
   };
@@ -251,8 +280,8 @@ const MyCalendar = () => {
         eventClick={eventClick}
         eventMouseEnter={eventMouseEnter}
         eventMouseLeave={eventMouseLeave}
-        // dayCellClassNames={dayCellClassNames}// Set the validRange prop here
-        // validRange={validRange}
+      // dayCellClassNames={dayCellClassNames}// Set the validRange prop here
+      // validRange={validRange}
       />
     </div>
   );

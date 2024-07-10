@@ -10,12 +10,13 @@ import { toast } from "react-toastify";
 import { confirmAlert } from "react-confirm-alert";
 
 const Category = () => {
-  const { auth, roleId } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const headers = {
     Authorization: auth.token
   }
   const url = process.env.REACT_APP_API_URL
   const [users, setUsers] = useState([])
+  const [totalPagess, setTotalPages] = useState("");
   const [width, setWidth] = useState(window.innerWidth);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,48 +36,10 @@ const Category = () => {
 
   useEffect(() => {
     getUsers()
-  }, [])
+  }, [currentPage])
 
-  const styles = {
-    overlay: {
-      backgroundColor: "rgb(0 0 0 / 75%)",
-      zIndex: "99999",
-      overflow: 'scroll',
-    },
-    content: width > 400 ? {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      border: "none",
-      background: "#000",
-      border: "1px solid #fff",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-
-      width: "60%",
-      borderRadius: "24px",
-    } : {
-
-      position: "absolute",
-      inset: "56% auto auto 50%",
-      border: " none",
-      background: "#000",
-      border: "1px solid #fff",
-      overflow: " auto",
-      borderRadius: "10px",
-      outline: "none",
-
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      width: "68%",
-
-
-    },
-  };
   const handleDelete = async (propertyId) => {
     await axios.delete(`${url}api/categories/${propertyId}`, { headers });
-
     toast.success('Category deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
     setUsers(users.filter((p) => p.id !== propertyId));
   };
@@ -99,47 +62,32 @@ const Category = () => {
     });
   };
 
-  const mediaQuery = window.matchMedia("(max-width: 768px)");
-  const mediaQueryMobile = window.matchMedia("(max-width: 480px)");
-  const mediaQueryMobileNext = window.matchMedia("(max-width: 600px)");
-
-  const customStyles = {
-    overlay: {
-      ...styles.overlay,
-    },
-    content: {
-      ...styles.content,
-
-      width: mediaQueryMobileNext.matches ? "80%" : mediaQuery.matches ? "68%" : "60%"
-
-
-    },
-  };
-  const filteredUsersNew = users.filter((user) =>
-
-    (user.name.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
-  const ITEMS_PER_PAGE = 10;
-  const handlePageChange = (newPage) => {
+const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  const totalPages = Math.ceil(filteredUsersNew.length / ITEMS_PER_PAGE);
-
-  // Calculate the start and end indices for the current page
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const filteredUsers = filteredUsersNew.slice(startIndex, endIndex);
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories`, { headers });
-      setUsers(res.data)
-
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/categories-list?page=${currentPage}`, { headers });
+      setUsers(res.data.category)
+      setTotalPages(res?.data?.totalPages)
     } catch (error) {
       console.error("User creation failed:", error);
     }
   };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPagess; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
+
+
   const handleClick = (userId) => {
     navigate(`/categories/${userId}`)
   }
@@ -175,7 +123,7 @@ const Category = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers?.map((user) => (
+            {users?.map((user) => (
               <>
                 <tr key={user.id}>
                 {/* nClick={()=>roleId == 1 ? handleClick(user.id) : null} */}
@@ -196,21 +144,14 @@ const Category = () => {
             ))}
           </tbody>
         </table>
-        {totalPages > 1 && (
+        {users?.length > 0 && (
           <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? 'active' : ''}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {renderPageNumbers()}
           </div>
         )}
+
       </div>
-      {filteredUsers.length == 0 && <p className="no-data">No data Found</p>}
+      {users.length == 0 && <p className="no-data">No data Found</p>}
     </div>
   );
 };

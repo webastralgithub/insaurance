@@ -36,7 +36,6 @@ const AddContact = ({ user }) => {
     profession_id: "",
     phone: "",
     email: "",
-
     address1: "",
     company: "",
     website: "",

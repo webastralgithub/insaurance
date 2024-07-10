@@ -126,7 +126,8 @@ const Contact = ({ role }) => {
     window.URL.revokeObjectURL(url);
     closeModal()
   };
-    const handleSelectCategory = (category) => {
+   
+  const handleSelectCategory = (category) => {
     const valuesToFind = category?.split(',').map(Number);
     let seletctedOptions = categories?.filter((item => valuesToFind.includes(item.value)))
     setSelectedCategory(seletctedOptions)
@@ -142,8 +143,9 @@ const Contact = ({ role }) => {
 
       //already lead and only change in category
       if (isAlreadyLead === true) {
+        
         let newCatData = seletedCategory.length && seletedCategory?.map((e) => e.value)
-        const response = await axios.put(`${url}api/leads/${id}`,
+        const response = await axios.put(`${url}api/convert-contact/${id}`,
           { category: newCatData }, { headers });
         toast.success(" Lead Updated successfully", {
           autoClose: 3000,
@@ -160,7 +162,7 @@ const Contact = ({ role }) => {
           isLead: true
         }
 
-        const response = await axios.put(`${url}api/contacts/${id}`, newCatData, { headers })
+        const response = await axios.put(`${url}api/convert-contact/${id}`, newCatData, { headers })
         toast.success("Contact Converted To Lead successfully", {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
