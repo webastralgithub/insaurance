@@ -474,7 +474,7 @@ const App = () => {
               }
             />
             <Route
-              path="/todo-list/add/new-dashboard/:date" exact
+              path="/todo-list/add/new-dashboard" exact
               element={
                 <PrivateRoute>
                   <AddTodo user={id} />

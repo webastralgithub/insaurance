@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef, useLayoutEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { AuthContext } from "./context/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import InputMask from 'react-input-mask';
@@ -29,12 +29,22 @@ const useDebounce = (value, delay) => {
 
 
 const AddTodo = ({ user }) => {
-  const { date } = useParams()
-  const initialDate = date && moment(date).isSameOrAfter(moment(), 'day')
-    ? new Date(date)
-    : new Date();
+  const location = useLocation()
+  const [dateTime, setDateTime] = useState(moment());
 
-  const [dateTime, setDateTime] = useState(initialDate);
+  useLayoutEffect(() => {
+    if (location.pathname === "/todo-list/add/new-dashboard") {
+      const selectedTime = location?.state?.data
+      const fullDateString = new Date()
+
+      let datePart = new Date(selectedTime).toDateString();
+      let timePart = fullDateString.toLocaleTimeString()
+      let dateTimeString = datePart + ' ' + timePart;
+      let finalDate = new Date(dateTimeString)
+      const parsedDate = moment(finalDate, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+      setDateTime(parsedDate)
+    }
+  }, [location.pathname])
 
   const [buttonOn, setButtonOn] = useState(0)
   const [profession, setProfession] = useState([])
@@ -62,7 +72,7 @@ const AddTodo = ({ user }) => {
 
   const [contact, setContact] = useState({
     Followup: "",
-    FollowupDate: dateTime,
+    FollowupDate: "",
     Comments: "",
     IsRead: false,
     ContactID: "",
@@ -71,7 +81,8 @@ const AddTodo = ({ user }) => {
   let updatedContact
   const validateForm = () => {
     let isValid = true;
-    updatedContact = { ...contact, ContactID: newSelected.id };
+    updatedContact = { ...contact, FollowupDate: dateTime?._d, ContactID: newSelected.id };
+
     if (!updatedContact.ContactID) {
       setContactError("Select  Contact")
       isValid = false;
@@ -145,7 +156,9 @@ const AddTodo = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (validateForm()) {
+    
       try {
         const response = await axios.post(`${url}api/todo`, updatedContact, {
           headers,
@@ -433,6 +446,12 @@ const AddTodo = ({ user }) => {
 
                 <div className="form-user-add-inner-wrap">
                   <label>Follow Up Date <span className="required-star">*</span></label>
+                  {/* <input 
+                  min = {new Date().toLocaleString()} 
+                  value={dateTime} id = "date" 
+                  type = "datetime-local"
+                  /> */}
+
                   <Datetime
                     value={dateTime}
                     onChange={handleDateTimeChange}

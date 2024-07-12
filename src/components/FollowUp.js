@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useLayoutEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
+import { setDate } from "rsuite/esm/utils/dateUtils";
 
 
 const Followup = () => {
@@ -18,9 +19,29 @@ const Followup = () => {
   const { data } = location.state;
   const { auth, tasklength, setTasklength } = useContext(AuthContext)
   const url = process.env.REACT_APP_API_URL;
+  const [editedTodo, setEditedTodo] = useState(data);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [dateTime, setDateTime] = useState(moment());
+
+  useLayoutEffect(() => {
+
+    const currentDate = new Date()
+    const editedtodoDate = new Date(editedTodo.FollowupDate)
+    if (currentDate <= editedtodoDate) {
+ 
+      setDateTime(editedtodoDate)
+      setEditedTodo({ ...editedTodo, FollowupDate: editedtodoDate })
+    } else {
+      setDateTime(moment())
+      setEditedTodo({ ...editedTodo, FollowupDate: new Date() })
+    }
+  }, [])
+
+
+
   const navigate = useNavigate()
   const headers = { Authorization: auth.token };
-  const [editedTodo, setEditedTodo] = useState(data);
+
   const [editingField, setEditingField] = useState('all');
   const [mlsNoError, setMlsNoError] = useState("");
   const [propertyTypeError, setPropertyTypeError] = useState("");
@@ -55,6 +76,7 @@ const Followup = () => {
 
   const validateForm = () => {
     let isValid = true;
+
     const { Followup, FollowupDate } = editedTodo
     if (!Followup) {
       setMlsNoError("Task Title is required");
@@ -91,6 +113,7 @@ const Followup = () => {
     }
     try {
       const { id, ...restOfEditedTodo } = editedTodo;
+  
       const response = await axios.post(`${url}api/todo`,
         { ...restOfEditedTodo, Followup: editedTodo.Followup, taskId: id },
         { headers });
@@ -130,13 +153,12 @@ const Followup = () => {
     // Return date in "YYYY-MM-DDTHH:MM" format
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
-  const [dateTime, setDateTime] = useState(Datetime.moment());
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
 
 
   const handleDateTimeChange = (momentObj) => {
-    setEditedTodo({ ...editedTodo, FollowupDate: momentObj })
-    setDateTime(momentObj);
+    setEditedTodo({ ...editedTodo, FollowupDate: momentObj._d })
+    setDateTime(momentObj._d);
     setIsCalendarOpen(false);
   };
 

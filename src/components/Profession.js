@@ -39,7 +39,7 @@ const Profession = () => {
   const handleDelete = async (propertyId) => {
     try {
       await axios.delete(`${url}api/profession/${propertyId}`, { headers });
-      toast.success('Category deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
+      toast.success('Profession deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
       setUsers(users.filter((p) => p.id !== propertyId));
     } catch (error) {
       console.error("error in server")
@@ -50,7 +50,7 @@ const Profession = () => {
   const handleDeleteClick = (propertyId) => {
     confirmAlert({
       title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this category?',
+      message: 'Are you sure you want to delete this Profession?',
       buttons: [
         {
           label: 'Yes',

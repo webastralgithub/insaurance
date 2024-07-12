@@ -510,7 +510,7 @@ export default function Profile(props) {
         {active == 2 &&
           <Realtor />
         }
-        <button
+        {/* <button
           className={active == 3 ? "active" : ""}
           onClick={() => getContacts(3)}
         >
@@ -518,7 +518,7 @@ export default function Profile(props) {
         </button>
         {active == 3 &&
           <Vendor />
-        }
+        } */}
         <button
           className={`${active == 4 ? "active" : ""}`}
           onClick={() => getContacts(4)}

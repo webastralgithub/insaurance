@@ -22,6 +22,8 @@ const MyCalendar = () => {
     totalAvailableJobs, totalReffrals, totalReffralsReceived } = useContext(
       AuthContext
     );
+
+
   const currentDate = new Date();
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const currentDatee = moment(currentDate).tz(localTimeZone).format('YYYY-MM-DD HH:mm:ss');
@@ -32,17 +34,12 @@ const MyCalendar = () => {
     Authorization: auth.token,
   };
   const handleDateClick = (selected) => {
-
     let time = selected?.dateStr + ' ' + currentDate.toLocaleTimeString();
-
-
-    // Check if the clicked date is before the current date
     if (time < currentDatee) {
-      // If the clicked date is before the current date, prevent further action
       toast.error('You cannot add task for previous date', { autoClose: 2000, position: toast.POSITION.TOP_RIGHT });
       return;
     }
-    navigate("/todo-list/add/new-dashboard/" + time)
+    navigate("/todo-list/add/new-dashboard", { state: { data: selected.date } } )
   }
 
   const eventClick = (selected) => {
@@ -60,7 +57,7 @@ const MyCalendar = () => {
     if (!dateTimeString) {
       return "";
     }
-  
+
     const dateTime = new Date(dateTimeString);
     const year = dateTime.getFullYear();
     const month = String(dateTime.getMonth() + 1).padStart(2, '0');
@@ -69,7 +66,7 @@ const MyCalendar = () => {
     const minutes = String(dateTime.getMinutes()).padStart(2, '0');
     const seconds = String(dateTime.getSeconds()).padStart(2, '0');
     const milliseconds = String(dateTime.getMilliseconds()).padStart(3, '0');
-  
+
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
     // const options = {
     //   year: 'numeric',
@@ -84,8 +81,6 @@ const MyCalendar = () => {
   };
 
 
-  
-
   const getTasks = async () => {
     try {
       const response = await axios.get(`${url}api/todo`, { headers });
@@ -94,8 +89,8 @@ const MyCalendar = () => {
       const eventsdata = response?.data?.todo.map((item, index) => ({
         key: item.id,
         id: item.id,
-        title: item.Followup, 
-        start: formatDate(item.FollowupDate).slice(0, -4), 
+        title: item.Followup,
+        start: formatDate(item.FollowupDate).slice(0, -4),
       }));
 
       setEvents(eventsdata);
@@ -105,8 +100,8 @@ const MyCalendar = () => {
       navigate('/');
     }
   };
-//format date 'July 29, 2024 at 7:03:29 PM'
-//show date  '2024-07-10T13:37:00.000'
+  //format date 'July 29, 2024 at 7:03:29 PM'
+  //show date  '2024-07-10T13:37:00.000'
   const eventMouseEnter = (info) => {
     const startTime = new Date(info.event.start);
     const istStartTime = startTime.toLocaleTimeString('en-US',

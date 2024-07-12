@@ -110,8 +110,8 @@ const AddTaskContact = () => {
 
   
   const handleDateTimeChange = (momentObj) => {
-    setContact({ ...contact, FollowupDate: momentObj })
-    setDateTime(momentObj);
+    setContact({ ...contact, FollowupDate: momentObj._d })
+    setDateTime(momentObj._d);
     setIsCalendarOpen(false);
   };
 
