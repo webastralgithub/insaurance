@@ -53,6 +53,7 @@ import ShareMe from "./components/ShareMe";
 import KlientaleShareMe from "./components/KlientaleShareMe";
 import SocialMedia from "./components/SocialMedia";
 import Referral from "./components/Referral";
+import Inqueries from "./components/Inqueries";
 import Post from "./components/Post";
 import AddPost from "./components/AddPost";
 import EmailCampaign from "./components/EmailCampaign";
@@ -69,6 +70,7 @@ import UserList from "./components/UserList";
 import AddProfession from "./components/AddProfession";
 import EditProfession from "./components/EditProfession";
 import EmailCampaign2 from "./components/EmailCampaign2";
+import AddInquery from "./components/AddInquery";
 
 const App = () => {
   const { toggle, setToggle, auth, roleId, subscriptionStatus } = useContext(AuthContext)
@@ -156,6 +158,16 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
+
+            <Route
+              path="/inquires" exact
+              element={
+                <PrivateRoute>
+                  <Inqueries role={role} />
+                </PrivateRoute>
+              }
+            />
             <Route
               path="/referral-sent/:id" exact
               element={
@@ -231,6 +243,15 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <AddPost />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/add-inquery" exact
+              element={
+                <PrivateRoute>
+                  <AddInquery />
                 </PrivateRoute>
               }
             />

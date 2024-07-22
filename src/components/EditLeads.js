@@ -55,14 +55,17 @@ const EditLeads = () => {
 
 
   const sourceOptions = [
-    noSelectionOption,
     { value: "Website", label: "Website" },
-    { value: "Phone", label: "Phone" },
-    { value: "Others", label: "Others" },
     { value: "Email Campaign", label: "Email Campaign" },
     { value: "Social Media Campaign", label: "Social Media Campaign" },
     { value: "Manual", label: "Manual" },
-    { value: "Referral Exchange", label: "Referral Exchange" }
+    { value: "Referral Exchange", label: "Referral Exchange" },
+    { value: "Phone", label: "Phone" },
+    { value: "Others", label: "Others" },
+    { value: "Landing Page", label: "Landing Page" },
+    { value: "Linkedin", label: "Linkedin" },
+    { value: "Instagram", label: "Instagram" },
+    { value: "Facebook", label: "Facebook" },
   ]
 
 
@@ -224,7 +227,8 @@ const EditLeads = () => {
       profession_id: "",
       phone: "",
       email: "",
-      category: ""
+      category: "",
+      selectedSource : ''
     });
 
     if (!trimmedFirstName) {
@@ -240,6 +244,10 @@ const EditLeads = () => {
       isValid = false;
     }
 
+    if(!editedContact.source){
+      setErrors(prevErrors => ({ ...prevErrors, selectedSource: "Please Select a Source" }));
+      isValid = false;
+    }
     if (!profession_id) {
       setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a Profession" }));
       isValid = false;
@@ -426,7 +434,7 @@ const EditLeads = () => {
             className="select-new"
           />
         </div>
-
+        <span className="error-message" style={{ color: "red" }}>{errors?.selectedSource}</span>
         {/* <div className="form-user-add-inner-wrap form-user-add-inner-wrap-bought">
           <label>Have you bought a home before?</label>
           <Select

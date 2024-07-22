@@ -205,7 +205,7 @@ const MyCalendar = () => {
 
           <div className="stats-sec" onClick={handleRedirect} style={{ "cursor": "pointer" }}>
             <div className="stats-order">
-              <span>Total Available Jobs</span>
+              <span>Total available inquiries</span>
               <span className="order-numbers">{totalAvailableJobs}</span>
             </div>
             <div className="stats-percentage">
@@ -219,7 +219,7 @@ const MyCalendar = () => {
 
           <div className="stats-sec" style={{ "cursor": "pointer" }} onClick={() => navigate(`/referral-sent/${2}`)}>
             <div className="stats-order">
-              <span>Total Referrals</span>
+              <span>Total Referrals Sent</span>
               <span className="order-numbers">{totalReffrals}</span>
             </div>
             <div className="stats-percentage">

@@ -129,9 +129,9 @@ const Sidebar = (props) => {
 
                 </div>
               </Link>
-              <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname ==="/contacts/add" 
-              || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ||
-               location.pathname.includes('/contact/edit/') ? "active" : ""}>
+              <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname === "/contacts/add"
+                || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ||
+                location.pathname.includes('/contact/edit/') ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -139,6 +139,7 @@ const Sidebar = (props) => {
 
                 </div>
               </Link>
+
               <Link to="/referral" className={location.pathname.includes('/referral-sent') || location.pathname === "/referral" ? "active" : ""}>
                 <div className="order-detail">
 
@@ -147,15 +148,25 @@ const Sidebar = (props) => {
 
                 </div>
               </Link>
-              {roleId == 1 &&
-              <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
+
+              <Link to="/inquires" className={location.pathname.includes('/add-inquery') || location.pathname === "/inquires" ? "active" : ""}>
                 <div className="order-detail">
 
-                  <img className="order-detail-child" alt="" src="/analytic.svg" />
-                  <div className="daily-events">Analytics</div>
+                  <img className="order-detail-child" alt="" src="/referral.svg" />
+                  <div className="daily-events">Inquery</div>
 
                 </div>
-              </Link>}
+              </Link>
+
+              {roleId == 1 &&
+                <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
+                  <div className="order-detail">
+
+                    <img className="order-detail-child" alt="" src="/analytic.svg" />
+                    <div className="daily-events">Analytics</div>
+
+                  </div>
+                </Link>}
 
               {/* <div onClick={() => { setSub("admin"); isOpenSub(); }} className={IsOpenSub && sub == "admin" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                   <img className="vector-icon" alt="" src="/vector.svg" />
@@ -361,9 +372,9 @@ to multiply the revenue. </h6>
                   </div>
                 </Link>
 
-                <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname ==="/contacts/add" 
-              || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ||
-               location.pathname.includes('/contact/edit/') ? "active" : ""}>
+                <Link to="/contacts" className={location.pathname === "/contacts" || location.pathname === "/contacts/add"
+                  || location.pathname.includes("/contacts/share/") || location.pathname.includes("/contacts/send/") ||
+                  location.pathname.includes('/contact/edit/') ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -371,7 +382,7 @@ to multiply the revenue. </h6>
 
                   </div>
                 </Link>
-                <Link to="/referral" className={ location.pathname.includes('/referral-sent') || location.pathname === "/referral" ? "active" : ""}>
+                <Link to="/referral" className={location.pathname.includes('/referral-sent') || location.pathname === "/referral" ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/referral.svg" />
@@ -380,6 +391,14 @@ to multiply the revenue. </h6>
                   </div>
                 </Link>
 
+                <Link to="/inquires" className={location.pathname.includes('/add-inquery') || location.pathname === "/inquires" ? "active" : ""}>
+                <div className="order-detail">
+
+                  <img className="order-detail-child" alt="" src="/referral.svg" />
+                  <div className="daily-events">Inquery</div>
+
+                </div>
+              </Link>
                 {/* 
               {props.role == 1 && <Link to="/vendors" className={location.pathname === "/vendors" ? "active" : ""}>
                 <div className="order-detail">
@@ -440,15 +459,15 @@ to multiply the revenue. </h6>
   </div>
 
   </Link> */}
-      {roleId == 1 &&
-                <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
-                  <div className="order-list">
+                {roleId == 1 &&
+                  <Link to="/analytics" className={location.pathname === "/analytics" ? "active" : ""}>
+                    <div className="order-list">
 
-                    <img className="customer-child" alt="" src="/group-30037.svg" />
-                    <div className="daily-events">Analytics</div>
+                      <img className="customer-child" alt="" src="/group-30037.svg" />
+                      <div className="daily-events">Analytics</div>
 
-                  </div>
-                </Link>}
+                    </div>
+                  </Link>}
                 {/* {props.role == 1 && <div onClick={() => { setSub("camp"); isOpenSub(); }} className={IsOpenSub && sub == "camp" ? "customer-detail administrator-drop active" : "customer-detail administrator-drop"} >
                 <img className="vector-icon" alt="" src="/vector.svg" />
                 <div className="properties daily-events" >Campaigns</div>

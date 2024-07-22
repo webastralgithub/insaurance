@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import FacebookLoginButton from './FacebookLoginButton';
-import LinkedIn from './LinkedIn';
-import Instagram from './Instagram';
 import ImageUploader from './ImageUploader';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';

@@ -351,12 +351,15 @@ const Lead = () => {
                       <thead>
 
                         <tr>
+                        <th>Date</th>
                           <th>Name</th>
                           <th>Bussiness Name</th>
+                        
                           <th>Profession</th>
+                          <th>Source</th>
                           <th>Phone</th>
                           <th>Email</th>
-                          <th>Date</th>
+                        
                         </tr>
                       </thead>
 
@@ -371,12 +374,14 @@ const Lead = () => {
                             activeLeadCategory?.map((contact) => (<tbody>
 
                               <tr key={contact.id}>
+                              <td>{contact?.created_at.slice(0, 10)}</td>
                                 <td className="property-link" onClick={() => navigate(`/leads/edit/${contact.id}`, { state: { data: contact } })} >{contact.firstname}{" "} {contact.lastname}</td>
                                 <td>{contact?.business_name}</td>
                                 <td>{contact?.profession_name}</td>
+                                <td>{contact?.source}</td>
                                 <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
                                 <td>{contact?.email}</td>
-                                <td>{contact?.created_at.slice(0, 10)}</td>
+                             
                                 <td>
                                   <button className="permissions"
                                     onClick={() => {

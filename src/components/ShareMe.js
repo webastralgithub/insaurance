@@ -33,7 +33,7 @@ const ShareMe = ({ role }) => {
         headers,
       });
       if (response.status === 200) {
-        toast.success(`${contact.firstname} Shared successfully`, {
+        toast.success(`${data?.firstname}  Shared successfully to ${contact.firstname}`, {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         });

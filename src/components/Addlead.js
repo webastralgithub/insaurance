@@ -30,7 +30,7 @@ const AddLead = ({ user }) => {
   const { auth, leadlength, setLeadlength, contactlength, setConatctlength } = useContext(AuthContext);
   const headers = { Authorization: auth.token };
   const [phoneError, setPhoneError] = useState("");
-  const [selectedSource, setSelectedSource] = useState(null);
+  const [selectedSource, setSelectedSource] = useState();
   const [categories, setCategories] = useState([])
   const [seletedCategory, setSelectedCategory] = useState([]);
   const [profession, setProfession] = useState([])
@@ -62,9 +62,10 @@ const AddLead = ({ user }) => {
     profession_id: "",
     email: "",
     phone: "",
-    category: ""
+    category: "",
+    selectedSource: ''
   });
-  
+
   const sourceOptions = [
     { value: "Website", label: "Website" },
     { value: "Email Campaign", label: "Email Campaign" },
@@ -73,7 +74,15 @@ const AddLead = ({ user }) => {
     { value: "Referral Exchange", label: "Referral Exchange" },
     { value: "Phone", label: "Phone" },
     { value: "Others", label: "Others" },
+    { value: "Landing Page", label: "Landing Page" },
+    { value: "Linkedin", label: "Linkedin" },
+    { value: "Instagram", label: "Instagram" },
+    { value: "Facebook", label: "Facebook" },
   ]
+
+
+
+
 
   const handlePhoneNumberChange = (event) => {
     const rawPhoneNumber = event.target.value.replace(/\D/g, "");
@@ -181,7 +190,7 @@ const AddLead = ({ user }) => {
       setErrors(prevErrors => ({ ...prevErrors, business_name: "Business Name is required" }));
       isValid = false;
     }
-    
+
     if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       setErrors(prevErrors => ({ ...prevErrors, email: "Invalid email" }));
       isValid = false;
@@ -189,6 +198,11 @@ const AddLead = ({ user }) => {
 
     if (!profession_id) {
       setErrors(prevErrors => ({ ...prevErrors, profession_id: "Please Select a Profession" }));
+      isValid = false;
+    }
+
+    if (!contact.source) {
+      setErrors(prevErrors => ({ ...prevErrors, selectedSource: "Please Select a Source" }));
       isValid = false;
     }
 
@@ -366,7 +380,7 @@ const AddLead = ({ user }) => {
           <span className="error-message">{errors.firstname}</span>
         </div>
 
- 
+
 
         {loading === true ? <Stack sx={{ color: 'grey.500' }} spacing={2} direction="row">
           <CircularProgress color="inherit" />
@@ -546,9 +560,9 @@ const AddLead = ({ user }) => {
             styles={colourStyles}
             className="select-new"
           />
-
+       
         </div>
-
+        <span className="error-message" style={{ color: "red" }}>{errors.selectedSource}</span>
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category ">
           <label>Category<span className="required-star">*</span></label>
           <img src="/icons-form/Group30055.svg" />
@@ -572,6 +586,7 @@ const AddLead = ({ user }) => {
         </div>
       </div>
       <span className="error-message" style={{ color: "red" }}>{errors.category}</span>
+
       <div className="form-user-add-inner-btm-btn-wrap">
 
         <button type="submit" >Save</button>

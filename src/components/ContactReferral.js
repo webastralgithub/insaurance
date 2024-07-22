@@ -29,20 +29,22 @@ const ContactReferral = ({ role }) => {
   const [totalPagess, setTotalPages] = useState("");
 
   const sendRefferal = async (contact) => {
-
+    setDataLoader(true)
     try {
       const response = await axios.post(`${url}api/contacts/share`,
         { sendTo: contact, selectedContacts: [id], type: 2 }, {
         headers,
       });
+      setDataLoader(false)
       if (response.status === 200) {
-        toast.success("Contact Sent successfully", {
+        toast.success(`${contact.firstname} Sent successfully to ${data?.firstname}  `, {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         })
        
       }
     } catch (error) {
+      setDataLoader(false)
       toast.error("error in sending refferal")
       console.error("error", error)
     }
