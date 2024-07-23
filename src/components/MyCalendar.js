@@ -4,6 +4,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '@fullcalendar/common/main.css';
+
 import './mycalander.css'
 import { AuthContext } from './context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +14,7 @@ import { Tooltip } from 'react-tooltip'
 import moment from 'moment-timezone';
 
 const MyCalendar = () => {
-  const [view, setView] = useState('month');
+
   const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
@@ -22,7 +23,6 @@ const MyCalendar = () => {
     totalAvailableJobs, totalReffrals, totalReffralsReceived } = useContext(
       AuthContext
     );
-
 
   const currentDate = new Date();
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -121,9 +121,7 @@ const MyCalendar = () => {
     setTooltipContent('');
 
   };
-  const handleChangeView = (newView) => {
-    setView(newView);
-  };
+
 
   const buttonText = {
     today: 'Today',
@@ -154,15 +152,6 @@ const MyCalendar = () => {
     }
   }
 
-  const validRange = {
-    start: currentDate
-  };
-  const dayCellClassNames = (arg) => {
-    if (arg.date < new Date(currentDate)) {
-      return 'past-date';
-    }
-    return '';
-  };
 
   return (
 
@@ -203,7 +192,7 @@ const MyCalendar = () => {
             </div>
           </div>
 
-          <div className="stats-sec" onClick={handleRedirect} style={{ "cursor": "pointer" }}>
+          <div className="stats-sec" onClick={()=>navigate('/inquires')} style={{ "cursor": "pointer" }}>
             <div className="stats-order">
               <span>Total available inquiries</span>
               <span className="order-numbers">{totalAvailableJobs}</span>

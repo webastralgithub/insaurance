@@ -422,7 +422,7 @@ const EditLeads = () => {
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-source">
           <label>Source</label>
           <Select
-            placeholder="Select Active Agent..."
+            placeholder="Select Lead Source..."
             value={selectedSource}
             onChange={(selectedOption) => {
               setEditedContact({ ...editedContact, source: selectedOption.value })

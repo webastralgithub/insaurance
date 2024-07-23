@@ -548,7 +548,7 @@ const AddLead = ({ user }) => {
           <label>Source</label>
           <img src="/icons-form/Group30055.svg" />
           <Select
-            placeholder="Select Active Agent..."
+            placeholder="Select Lead Source..."
             value={selectedSource}
             onChange={(selectedOption) => {
 
