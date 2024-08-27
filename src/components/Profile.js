@@ -65,7 +65,7 @@ export default function Profile(props) {
   const [msg, setMsg] = useState('')
   const [previewImage, setPreviewImage] = useState('');
   const navigate = useNavigate()
-  const { auth } = useContext(AuthContext)
+  const { auth, roleId } = useContext(AuthContext)
   const headers = {
     Authorization: auth.token,
   };
@@ -529,16 +529,24 @@ export default function Profile(props) {
         {active == 4 &&
           <Category />
         }
-        <button
-          ref={professionRef}
-          className={active == 5 ? "active" : ""}
-          onClick={() => getContacts(5)}
-        >
-          Profession <span>{active == 5 ? "-" : "+"}</span>
-        </button>
-        {active == 5 &&
-          <Profession />
+
+
+        {roleId == 1 &&
+          <>
+            <button
+              ref={professionRef}
+              className={active == 5 ? "active" : ""}
+              onClick={() => getContacts(5)}
+            >
+              Profession <span>{active == 5 ? "-" : "+"}</span>
+            </button>
+            <>
+              {active == 5 &&
+                <Profession />
+              }</>
+          </>
         }
+
       </div>
     </div>
   );

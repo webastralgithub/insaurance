@@ -149,11 +149,11 @@ const Sidebar = (props) => {
                 </div>
               </Link>
 
-              <Link to="/inquires" className={location.pathname.includes('/add-inquery') || location.pathname === "/inquires" ? "active" : ""}>
+              <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquires" ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/referral.svg" />
-                  <div className="daily-events">Inquery</div>
+                  <div className="daily-events">Inquiry</div>
 
                 </div>
               </Link>
@@ -391,7 +391,7 @@ to multiply the revenue. </h6>
                   </div>
                 </Link>
 
-                <Link to="/inquires" className={location.pathname.includes('/add-inquery') || location.pathname === "/inquires" ? "active" : ""}>
+                <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquires" ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/referral.svg" />

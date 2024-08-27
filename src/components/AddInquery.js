@@ -65,7 +65,7 @@ const AddInquery = () => {
                 backGround: "#fff",
                 color: "#000",
                 position: "relative",
-                cursor :"pointer",
+                cursor: "pointer",
                 fontSize: "14px"
             };
         },
@@ -100,14 +100,38 @@ const AddInquery = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         setContact({ ...contact, [name]: value });
     };
 
-    const handleSubmit = async () => {
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log("fbjdbfyhur", seletedProfession)
+        if (!seletedProfession.value) {
+            toast.error("please Select a Profession")
+            return
+        }
+
+        if (!contact.Followup) {
+            toast.error("please enter your Inquiry")
+            return
+        }
+
+
+        let data = {
+            profession_id: seletedProfession.value,
+            description: contact.Followup,
+        }
         try {
-            toast.success("Inquery Added Succesfully")
-            navigate("/inquires")
+            //inquiry
+            const response = await axios.post(`${url}api/inquiry`, data, {
+                headers,
+            });
+            if (response.status) {
+                toast.success("Inquery Added Succesfully")
+                navigate("/inquiries")
+            }
+
         } catch (error) {
             toast.error("Server is Busy")
             console.error(error)
@@ -121,65 +145,13 @@ const AddInquery = () => {
             <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form"   >
                 <div className="property_header header-with-back-btn">
                     <h3> <button type="button" className="back-only-btn" onClick={() => navigate(-1)}> <img src="/back.svg" />
-                    </button>Add Inquery</h3>
-
+                    </button>Add Inquiry</h3>
                 </div>
                 <div className="form-user-add-wrapper">
                     <div className="todo-section">
                         <div className="todo-main-section" >
                             <div className="form-user-add-inner-wrap">
-
-                                <label>Inquery  <span className="required-star">*</span></label>
-                                <input
-
-                                    type="text"
-                                    name="Followup"
-                                    value={contact.Followup}
-                                    onChange={handleChange}
-                                    placeholder='Enter your Enquery Here'
-                                />
-                                <span className="error-message">{""}</span>
-                            </div>
-
-
-                            {/* <div className="form-user-add-inner-wrap">
-                                <label>Inquery description</label>
-                                <input
-
-                                    type="text"
-                                    name="description"
-                                    value={contact.description}
-                                    onChange={handleChange}
-                                />
-                            </div> */}
-
-                            {/* <div className="form-user-add-inner-wrap" style={{
-                                background: '#fff',
-                                zIndex: 999999
-                            }}>
-                                <label>Inquery <span className="required-star">*</span></label>
-                                <img src="/icons-form/Group30055.svg" />
-                                <Select
-                                    placeholder="Select Inquery .."
-                                    value={query}
-                                    onChange={(selectedOption) => {
-                                        setErrors({ query: "" })
-                                        setContact({ ...contact, query: selectedOption.label })
-                                        setQuery(selectedOption)
-                                    }}
-                                    options={inquries}
-                                    components={{
-                                        DropdownIndicator: () => null,
-                                        IndicatorSeparator: () => null
-                                    }}
-                                    styles={colourStyles}
-                                    className="select-new"
-                                />
-                            </div> */}
-
-
-                            <div className="form-user-add-inner-wrap">
-                                <label>Profession<span className="required-star">*</span>       </label>
+                                <label>I am Lookin For <span className="required-star">*</span>       </label>
                                 <img src="/icons-form/Group30055.svg" />
                                 <Select
                                     placeholder="Select Profession.."
@@ -195,10 +167,19 @@ const AddInquery = () => {
                                     className="select-new"
                                 />
                             </div>
+                            <div className="form-user-add-inner-wrap">
+                                <label>Description <span className="required-star">*</span></label>
+                                <input
 
+                                    type="text"
+                                    name="Followup"
+                                    value={contact.Followup}
+                                    onChange={handleChange}
+                                    placeholder='Enter your Inquiry Here'
+                                />
+                                <span className="error-message">{""}</span>
+                            </div>
                         </div>
-
-
                     </div>
 
                 </div>

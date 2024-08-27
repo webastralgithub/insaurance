@@ -161,7 +161,7 @@ const App = () => {
 
 
             <Route
-              path="/inquires" exact
+              path="/inquiries" exact
               element={
                 <PrivateRoute>
                   <Inqueries role={role} />
@@ -247,8 +247,8 @@ const App = () => {
               }
             />
 
-            <Route
-              path="/add-inquery" exact
+            <Route  
+              path="/add-inquiry" exact
               element={
                 <PrivateRoute>
                   <AddInquery />

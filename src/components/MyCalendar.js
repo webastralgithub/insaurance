@@ -180,57 +180,57 @@ const MyCalendar = () => {
         <div className="stats-parent-section">
           <div className="stats-sec">
             <div className="stats-order">
-              <span>Total Referral Earned Money</span>
+              <span>Money Earned</span>
               <span className="order-numbers">{totalReffralEarnedMoney}</span>
             </div>
-            <div className="stats-percentage">
+            {/* <div className="stats-percentage">
               <div className="stats-inner-perc"></div>
-            </div>
-            <div className="total-stats-perc">
+            </div> */}
+            {/* <div className="total-stats-perc">
               <span className="total-stats-num">Total % of order</span>
               <span className="stats-full-perc">100%</span>
-            </div>
+            </div> */}
           </div>
 
           <div className="stats-sec" onClick={()=>navigate('/inquires')} style={{ "cursor": "pointer" }}>
             <div className="stats-order">
-              <span>Total available inquiries</span>
+              <span>Inquiries Available</span>
               <span className="order-numbers">{totalAvailableJobs}</span>
             </div>
-            <div className="stats-percentage">
+            {/* <div className="stats-percentage">
               <div className="stats-inner-perc"></div>
             </div>
             <div className="total-stats-perc">
               <span className="total-stats-num">Total % of order</span>
               <span className="stats-full-perc">100%</span>
-            </div>
+            </div> */}
           </div>
 
           <div className="stats-sec" style={{ "cursor": "pointer" }} onClick={() => navigate(`/referral-sent/${2}`)}>
             <div className="stats-order">
-              <span>Total Referrals Sent</span>
+              <span>Referrals Sent</span>
               <span className="order-numbers">{totalReffrals}</span>
             </div>
-            <div className="stats-percentage">
+            {/* <div className="stats-percentage">
               <div className="stats-inner-perc"></div>
             </div>
             <div className="total-stats-perc">
               <span className="total-stats-num">Total % of order</span>
               <span className="stats-full-perc">100%</span>
-            </div>
+            </div> */}
           </div>
           <div className="stats-sec" onClick={() => navigate("/referral")} style={{ "cursor": "pointer" }}>
             <div className="stats-order">
-              <span>Total Referrals Received</span>
+              <span> Referrals Received</span>
               <span className="order-numbers">{totalReffralsReceived}</span>
             </div>
-            <div className="stats-percentage">
+            {/* <div className="stats-percentage">
               <div className="stats-inner-perc"></div>
             </div>
             <div className="total-stats-perc">
               <span className="total-stats-num">Total % of order</span>
               <span className="stats-full-perc">100%</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
