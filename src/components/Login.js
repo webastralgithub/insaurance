@@ -28,6 +28,8 @@ const Login = () => {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}api/auth/login`, formData);
       const responseData = await response.data.details
       // Extract the token from the response data
+
+     
       const token = response.data.token;
       setAuth({ token: `Bearer ${token}` });
       localStorage.setItem('token', `Bearer ${token}`);
@@ -36,6 +38,7 @@ const Login = () => {
       localStorage.setItem("name", response.data.details.name)
       localStorage.setItem("roleId", response.data.details.roleId)
       localStorage.setItem("plan", response.data.details.plan);
+     
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error.response.data.error);

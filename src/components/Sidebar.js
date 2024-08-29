@@ -28,7 +28,7 @@ const Sidebar = (props) => {
   }
 
   const { auth, setAuth, tasklength, setTasklength, contactlength,
-    setConatctlength, leadlength, setLeadlength, activeID, roleId } = useContext(AuthContext);
+    setConatctlength, leadlength, setLeadlength, activeID, roleId, notifications, setNotifications } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
     Authorization: auth.token,
@@ -149,11 +149,11 @@ const Sidebar = (props) => {
                 </div>
               </Link>
 
-              <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquires" ? "active" : ""}>
+              <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquiries" ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/referral.svg" />
-                  <div className="daily-events">Inquiry</div>
+                  <div className="daily-events">Inquiries({notifications})</div>
 
                 </div>
               </Link>
@@ -256,7 +256,7 @@ const Sidebar = (props) => {
                   </Link>}
               </div>
 
-              <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
+              <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" || location.pathname.includes("klientale-contacts/contacts/send") || location.pathname.includes("klientale-contacts/share") ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -391,14 +391,14 @@ to multiply the revenue. </h6>
                   </div>
                 </Link>
 
-                <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquires" ? "active" : ""}>
-                <div className="order-detail">
+                <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquiries" ? "active" : ""}>
+                  <div className="order-detail">
 
-                  <img className="order-detail-child" alt="" src="/referral.svg" />
-                  <div className="daily-events">Inquery</div>
+                    <img className="order-detail-child" alt="" src="/referral.svg" />
+                    <div className="daily-events">Inquiries({notifications})</div>
 
-                </div>
-              </Link>
+                  </div>
+                </Link>
                 {/* 
               {props.role == 1 && <Link to="/vendors" className={location.pathname === "/vendors" ? "active" : ""}>
                 <div className="order-detail">
@@ -528,7 +528,7 @@ to multiply the revenue. </h6>
                 </div>
 
 
-                <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" ? "active" : ""}>
+                <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" || location.pathname.includes("klientale-contacts/contacts/send") || location.pathname.includes("klientale-contacts/share")  ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />

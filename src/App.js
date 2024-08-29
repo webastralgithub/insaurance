@@ -71,6 +71,7 @@ import AddProfession from "./components/AddProfession";
 import EditProfession from "./components/EditProfession";
 import EmailCampaign2 from "./components/EmailCampaign2";
 import AddInquery from "./components/AddInquery";
+import EditInquiry from "./components/EditInquiry";
 
 const App = () => {
   const { toggle, setToggle, auth, roleId, subscriptionStatus } = useContext(AuthContext)
@@ -189,7 +190,7 @@ const App = () => {
 
 
             <Route
-              path="/klientale-contacts/contacts/send/:id" exact
+              path="/klientale-contacts/contacts/send/:id/:name" exact
               element={
                 <PrivateRoute>
                   <KlientaleContactReferral role={role} />
@@ -247,7 +248,7 @@ const App = () => {
               }
             />
 
-            <Route  
+            <Route
               path="/add-inquiry" exact
               element={
                 <PrivateRoute>
@@ -255,6 +256,16 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
+            <Route
+              path="/edit-inquiry/:id" exact
+              element={
+                <PrivateRoute>
+                  <EditInquiry />
+                </PrivateRoute>
+              }
+            />
+
             <Route
               path="/posts" exact
               element={

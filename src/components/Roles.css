@@ -9,14 +9,16 @@ thead {
   background-color: #f2f2f2;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
   font-size: 14px;
 }
 
-.table-container table thead tr th, .table-container table tbody tr td {
+.table-container table thead tr th,
+.table-container table tbody tr td {
   border: 1px solid #000;
 }
 
@@ -29,9 +31,10 @@ th {
   color: white;
 }
 
-.new-tag-date th{
+.new-tag-date th {
   color: black;
 }
+
 /* CSS for the buttons */
 .add_user_btn button {
   background-color: #004686;
@@ -80,12 +83,12 @@ td button {
   margin: 0;
 }
 
-.menu .bm-cross-button{
+.menu .bm-cross-button {
   right: 18px !important;
   top: 13px !important;
 }
 
-.menu .add_user_btn button{
+.menu .add_user_btn button {
   padding: 8px 20px;
   font-size: 16px;
 }
@@ -95,16 +98,19 @@ td button {
   justify-content: space-between;
   align-items: center;
 }
+
 .search_bar label {
   font-size: 14px;
   padding-right: 10px;
 }
+
 .bm-menu nav a {
   font-size: 20px;
   color: #fff;
   font-weight: 600;
   letter-spacing: 1px;
 }
+
 .bm-menu nav button {
   background-color: #004889;
   margin: 0;
@@ -117,7 +123,7 @@ td button {
   border-radius: 4px;
 }
 
-.add_property_btn .table-container{
+.add_property_btn .table-container {
   background: #004686;
   border-radius: 10px;
   overflow: hidden;
@@ -126,13 +132,15 @@ td button {
 }
 
 .add_property_btn .table-container table {
-  margin-top: 0;;
+  margin-top: 0;
+  ;
 }
 
-.add_property_btn .table-container table tr{
+.add_property_btn .table-container table tr {
   background: #004686;
 }
-.add_property_btn .table-container table tr th{
+
+.add_property_btn .table-container table tr th {
 
   font-size: 13px;
   font-weight: 600;
@@ -140,38 +148,42 @@ td button {
   text-align: left !important;
 }
 
-.add_property_btn .table-container table tr td, .add_property_btn .table-container table tr th{
+.add_property_btn .table-container table tr td,
+.add_property_btn .table-container table tr th {
   border: none;
   padding: 0;
 }
 
-.listing{
+.listing {
   width: auto;
 }
 
-.add_property_btn .table-container table tr td{
+.add_property_btn .table-container table tr td {
   font-size: 13px;
   font-weight: 500;
   padding: 15px 6px !important;
   color: #000;
 }
 
-.add_property_btn .table-container table tbody tr{
+.add_property_btn .table-container table tbody tr {
   background: #fff;
   border-bottom: 1px solid #00000014;
 }
 
-.add_property_btn .table-container table tbody tr:last-child{
+.add_property_btn .table-container table tbody tr:last-child {
   border: none;
 }
 
-.add_property_btn .table-container table tr td:first-child, .add_property_btn .table-container table tr th:first-child{
+.add_property_btn .table-container table tr td:first-child,
+.add_property_btn .table-container table tr th:first-child {
   padding-left: 15px !important;
-} 
+}
 
-.add_property_btn .table-container table tr td:last-child, .add_property_btn .table-container table tr th:last-child{
+.add_property_btn .table-container table tr td:last-child,
+.add_property_btn .table-container table tr th:last-child {
   padding-right: 15px !important;
 }
+
 /* 
 .listing {
   text-align: center;
@@ -185,24 +197,25 @@ th.price {
   text-align: center;
 }
 
-.add_property_btn .table-container table tbody tr .permission-tick-block-wraper{
+.add_property_btn .table-container table tbody tr .permission-tick-block-wraper {
   display: flex;
   gap: 20px;
 }
 
-.add_property_btn .table-container table tbody tr .permission-tick-block-wraper .permission-tick-block{
+.add_property_btn .table-container table tbody tr .permission-tick-block-wraper .permission-tick-block {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.add_property_btn .table-container table tbody tr  .table-action-btn{
+.add_property_btn .table-container table tbody tr .table-action-btn {
   display: flex;
   justify-content: left;
   gap: 10px;
 }
 
-.table-action-btn .edit-btn, .table-action-btn .delet-btn{
+.table-action-btn .edit-btn,
+.table-action-btn .delet-btn {
   margin: 0;
   background: #000;
   color: #fff;
@@ -212,35 +225,35 @@ th.price {
   border-radius: 3px;
 }
 
-.table-action-btn .edit-btn{
+.table-action-btn .edit-btn {
   background: #0a4f93;
 }
 
-.table-action-btn .delet-btn{
+.table-action-btn .delet-btn {
   background: #af080c;
 }
 
-.modal-roles-add{
+.modal-roles-add {}
 
-}
-.modal-roles-add form{
+.modal-roles-add form {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   background: #004686;
 }
-.modal-roles-add form input{
+
+.modal-roles-add form input {
   width: 100%;
   background: #fff;
   border: none;
   padding: 9px 10px;
 }
 
-.pop-up-content-category{
-  background: #fff;   
+.pop-up-content-category {
+  background: #fff;
 }
 
-.pop-up-content-category form .modal-convert-btns{
+.pop-up-content-category form .modal-convert-btns {
   position: absolute;
   bottom: 0;
   padding: 15px 0px;
@@ -257,20 +270,20 @@ th.price {
   width: 100%;
 }
 
-.modal-roles-add form{
+.modal-roles-add form {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.modal-roles-add form input{
+.modal-roles-add form input {
   width: 100%;
   background: #fff;
   border: none;
   padding: 9px 10px;
 }
 
-.modal-roles-add form button{
+.modal-roles-add form button {
   width: 49%;
   background: #004686;
   border: none;
@@ -279,78 +292,142 @@ th.price {
   border-radius: 5px;
 }
 
-.modal-roles-add form button:last-child{
+.modal-roles-add form button:last-child {
   background: #004686;
   font-size: 14px;
   font-weight: 700;
 }
 
-  .close-modal-share{
-    position: absolute;
-    cursor: pointer;
-    right: 19px;
-    width: 20px;
-    /* filter: invert(1); */
-    transform: rotate(45deg);
-    top: 17px;
-  }
-
-
-
-
-/* ===================modal css=================== */
-.modal-roles-add{
-
+.close-modal-share {
+  position: absolute;
+  cursor: pointer;
+  right: 19px;
+  width: 20px;
+  /* filter: invert(1); */
+  transform: rotate(45deg);
+  top: 17px;
 }
 
-.modal-roles-add form{
+.inquiries-details-pop-up .category-box {
+  padding: 20px 15px;
+}
+
+div#Contact-s img {
+  background: transparent !important;
+  right: -10px;
+  top: -6px;
+  transform: rotate(90deg) !important;
+}
+
+.inquiries-details-pop-up .category-box>div {
+  margin-bottom: 10px;
+}
+
+.category-btn {
+  padding: 15px;
+  text-align: center;
+  border-top: 1px solid #0000001f;
+  background: #00000014;
+}
+
+.category-textarea {
+  margin-top: 10px;
+}
+
+.category-textarea textarea {
+  resize: none;
+}
+
+.category-btn button {
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+
+.inquiries-details-pop-up .category-box label {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.close-modal-share-span {
+  transform: rotate(0deg) !important;
+  font-weight: 600;
+}
+
+.inquiries-details-pop-up form div:nth-child(4) {
+  text-align: center;
+}
+
+.inquiries-details-pop-up .heading-category {
+  margin: 0px !important;
+  padding: 15px;
+  background-color: #004686;
+}
+
+.inquiries-details-pop-up form div:nth-child(3) button {
+  width: 30%;
+  background: #004686;
+  border: none;
+  color: #fff;
+  padding: 11px 0;
+}
+
+/* ===================modal css=================== */
+.modal-roles-add {}
+
+.modal-roles-add form {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  
+
 }
 
-.modal-roles-add form input{
+.modal-roles-add form input {
   width: unset;
   background: #fff;
   border: none;
   padding: 15px 10px;
 }
 
-.modal-roles-add form button{
+.modal-roles-add form button {
   width: 49%;
   background: #004686;
   border: none;
   color: #fff;
   padding: 11px 0;
 }
+
 /* .modal-roles-add div {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 } */
-.modal-roles-add div button{
+.modal-roles-add div button {
   width: 49%;
   background: #004686;
   border: none;
   color: #fff;
   padding: 11px 0;
 }
-.modal-roles-add div input{
+
+.modal-roles-add div input {
   width: 100%;
   background: #fff;
   border: none;
   padding: 9px 10px;
 }
-.modal-roles-add form button:last-child{
+
+.modal-roles-add form button:last-child {
   background: #004686;
 }
+
 .download-file {
   position: relative;
   padding: 0px 25px 18px 25px !important;
   background: #fff;
   overflow: hidden;
 }
+
 .download-file button.close-btn {
   position: absolute;
   top: 2px;
@@ -384,28 +461,30 @@ th.price {
   border-radius: 4px;
 }
 
-.camp-gap .share-ref-top-wrp button{
+.camp-gap .share-ref-top-wrp button {
   background: #004686;
   color: #fff;
   margin-top: 20px;
 }
 
-.camp-gap .share-ref-top-wrp p{
+.camp-gap .share-ref-top-wrp p {
   width: 100% !important;
   color: #fff;
   text-align: center;
 }
+
 /* ===================modal css=================== */
 
 
 
-  
+
 
 .custom-dropdown {
   display: flex;
   flex-direction: column;
   max-height: 210px;
 }
+
 .custom-option {
   display: flex;
   justify-content: space-between;
@@ -425,25 +504,29 @@ th.price {
   box-sizing: border-box;
   border-bottom: 1px solid #0000000d;
 }
+
 .circle {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid #0000001c; /* Ensures the element is a perfect circle */
- /* Change this to set the circle's color */
+  border: 2px solid #0000001c;
+  /* Ensures the element is a perfect circle */
+  /* Change this to set the circle's color */
 }
-.custom-option.selected .circle{
- 
+
+.custom-option.selected .circle {
+
   background-color: rgb(0 70 134);
   border-color: #52a5f1;
 }
-.custom-option label{
+
+.custom-option label {
   font-size: 14px;
   font-weight: 500;
 }
 
 .custom-option :hover {
-  background-color:#B2D4FF;
+  background-color: #B2D4FF;
 }
 
 .custom-option input {
@@ -461,16 +544,19 @@ th.price {
   border: 1px solid #fff;
 } */
 
-@media (max-width:1500px){
+@media (max-width:1500px) {
 
-  table tr td, table tr th{
+  table tr td,
+  table tr th {
     font-size: 15px !important;
   }
 
-  .add_property_btn .table-container table tr th, .add_property_btn .table-container table tr td{
+  .add_property_btn .table-container table tr th,
+  .add_property_btn .table-container table tr td {
 
     font-size: 11px;
   }
+
   .main-dashbord-wrapper .main-sidenav-wrapper .side-menu .menu a {
     font-size: 15px;
   }
@@ -538,25 +624,27 @@ td.manage-configr-table-btn buttton {
   margin-bottom: 0 !important;
 }
 
-@media (max-width:600px){
+@media (max-width:600px) {
   .manage-configr-table table {
     width: 900px;
-}
-.pop-up-content-category form .modal-convert-btns{
-  width: 100%;
-}
+  }
 
-.send-msg-grp-popup form .modal-convert-btns {
-	width: 88%;
-	background: #ebebeb;
-}
-.bulk-upload-popup {
-  width: auto;
-}
+  .pop-up-content-category form .modal-convert-btns {
+    width: 100%;
+  }
 
-.ReactModalPortal .pop-up-add-configure .modal-convert-btns {
-  width: 88%;
-  background: #ebebeb;
-}
+  .send-msg-grp-popup form .modal-convert-btns {
+    width: 88%;
+    background: #ebebeb;
+  }
+
+  .bulk-upload-popup {
+    width: auto;
+  }
+
+  .ReactModalPortal .pop-up-add-configure .modal-convert-btns {
+    width: 88%;
+    background: #ebebeb;
+  }
 
 }

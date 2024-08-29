@@ -16,6 +16,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem('email') ? { email: localStorage.getItem('email') } : null
   );
 
+  const [professionId, setprofessionId] = useState(localStorage.getItem('professionId') ? localStorage.getItem('professionId') : null)
+  const [userID, setUserId] = useState(localStorage.getItem('id') ? localStorage.getItem('id') : null)
+
   const [roleId, setroleId] = useState(
     localStorage.getItem('roleId') ? localStorage.getItem('roleId') : null
   )
@@ -29,7 +32,9 @@ export const AuthProvider = ({ children }) => {
   const [leadlength, setLeadlength] = useState(0)
   const [contactlength, setConatctlength] = useState(0)
   const [currentUsercategory_id, setcurrentUsercurrentUsercategory_id] = useState(localStorage.getItem('category_id'))
-
+ 
+ //notificationsLength
+  const [notifications, setNotifications] = useState(localStorage.getItem("notificationsLength"))
   return (
     <AuthContext.Provider value={{
       toggle, setToggle,
@@ -37,7 +42,8 @@ export const AuthProvider = ({ children }) => {
       auth, setAuth, property, setProperty, todo, setTodo, tasklength, setTasklength,
       plan, setPlan, leadlength, setLeadlength, contactlength, setConatctlength,
       roleId, totalReffralEarnedMoney, totalAvailableJobs, totalReffrals, totalReffralsReceived,
-      currentUsercategory_id,settotalAvailableJobs,settotalReffralEarnedMoney,settotalReffrals,settotalReffralsReceived
+      currentUsercategory_id, settotalAvailableJobs, settotalReffralEarnedMoney, settotalReffrals, settotalReffralsReceived,
+      userID, setUserId, professionId, setprofessionId , notifications, setNotifications
     }}>
       {children}
     </AuthContext.Provider>

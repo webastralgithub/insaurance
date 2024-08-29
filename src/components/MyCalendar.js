@@ -192,7 +192,7 @@ const MyCalendar = () => {
             </div> */}
           </div>
 
-          <div className="stats-sec" onClick={()=>navigate('/inquires')} style={{ "cursor": "pointer" }}>
+          <div className="stats-sec" onClick={()=>navigate('/inquiries')} style={{ "cursor": "pointer" }}>
             <div className="stats-order">
               <span>Inquiries Available</span>
               <span className="order-numbers">{totalAvailableJobs}</span>

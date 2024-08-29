@@ -83,31 +83,28 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 };
 
 
-
-
 const Inqueries = () => {
     const navigate = useNavigate();
-    const { auth } = useContext(AuthContext);
+    const { auth, roleId, userID, professionId } = useContext(AuthContext);
     const headers = { Authorization: auth.token };
     const url = process.env.REACT_APP_API_URL;
     let searchRef = useRef("")
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [userList, setUserList] = useState([])
     const [totalPages, setTotalPages] = useState("");
     const [dataLoader, setDataLoader] = useState(false)
     const [buttonActive, setButtonActive] = useState(1)
-    const [error, setError] = useState("");
     const [selectedContacts, setSelectedContacts] = useState([]);
     const [contactModel, setContactModel] = useState(false)
     const [forwardModel, setForwardModel] = useState(false)
     const selectRef = useRef(null);
-    const [contacts, setContact] = useState([])
-    const [klientaleContact, setKlientaleContacts] = useState([])
+
     const [contactOptions, setContactoptions] = useState();
     const [active, setActive] = useState(1)
     const [queries, setQueries] = useState([])
     const [userInfo, setUserInfo] = useState()
+    const [queryState, setQueryState] = useState(1)
+    const [messageText, setMessageText] = useState("")
 
 
     const clearSearch = () => {
@@ -118,11 +115,13 @@ const Inqueries = () => {
     const handleKeyDownEnter = (event) => {
         if (event.key === 'Enter') {
             setButtonActive(2)
+            getQueries()
         }
     };
 
     const handleKeyDown = () => {
         setButtonActive(2)
+        getQueries()
     };
 
     const handlePageChange = (newPage) => {
@@ -142,57 +141,117 @@ const Inqueries = () => {
 
 
     const getContactList = async () => {
-
-    }
-
-
-    const getKlientaleContacts = async () => {
-
-    }
-
-    const getQueries = async () => {
         try {
-            //inquiry
-            const response = await axios.get(`${url}api/inquiry`, { headers, });
+            const response = await axios.get(`${url}api/contact_by_profession/${professionId}`, { headers, });
 
-            setQueries(response.data.posts)
+            if (response.status === 200) {
+                if (active == 1) {
+                    const options = response?.data.insurance_contact.map((realtor) => ({
+                        value: realtor.id,
+                        label: realtor.firstname,
+                    }));
+                    setContactoptions(options)
 
-            // if (response.status) {
-            //     toast.success("Inquery Added Succesfully")
-            //     navigate("/inquiries")
-            // }
+                }
 
-        } catch (error) {
-            toast.error("Server is Busy")
-            console.error(error)
-        }
-    }
-
-    const deleteQueries = async (id) => {
-        try {
-            const response = await axios.delete(`${url}api/inquiry/${id}`, { headers, });
-            if (response.status) {
-                toast.success("Inquery Deleted Succesfully")
-                getQueries()
+                if (active == 2) {
+                    const options = response?.data?.klientale_contact.map((realtor) => ({
+                        value: realtor.id,
+                        label: realtor.name,
+                    }));
+                    setContactoptions(options)
+                }
             }
 
         } catch (error) {
+            console.error(error)
+        }
+
+
+    }
+
+
+
+    const getQueries = async () => {
+        setDataLoader(true)
+        let currPage
+        let seachData
+        if (searchRef.current.value) {
+            currPage = 1
+        } else {
+            currPage = currentPage
+        }
+
+        try {
+
+            const response = await axios.get(`${url}api/inquiry?page=${currPage}&search=${searchRef.current.value}&flag=${queryState}`, { headers, });
+            if (response.status === 200) {
+                setQueries(response.data.posts)
+                setTotalPages(response?.data?.totalPages);
+
+            }
+            setDataLoader(false)
+        } catch (error) {
+            setDataLoader(false)
             toast.error("Server is Busy")
             console.error(error)
         }
     }
 
 
-    useEffect(() => {
-        getQueries()
-    }, [])
 
-    const openContactInfo = (user) => {
-        setUserInfo(user)
-        setContactModel(true)
+    const handleDeleteClick = (id) => {
+        confirmAlert({
+            title: 'Confirm Delete',
+            message: 'Are you sure you want to delete this Inquiry?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => deleteQueries(id),
+                },
+                {
+                    label: 'No',
+                    onClick: () => { },
+                },
+            ],
+        });
+    };
+
+    const deleteQueries = async (id) => {
+        setDataLoader(true)
+        try {
+            const response = await axios.delete(`${url}api/inquiry/${id}`, { headers, });
+            if (response.status) {
+                toast.success("Inquiry Deleted Successfully")
+                getQueries()
+            }
+            setDataLoader(false)
+        } catch (error) {
+            setDataLoader(false)
+            toast.error("Server is Busy")
+            console.error(error)
+        }
     }
 
-    const openForwardContacts = () => {
+    useEffect(() => {
+        getContactList()
+    }, [active])
+
+    useEffect(() => {
+        getQueries()
+    }, [currentPage, queryState])
+
+
+    const [queryIdForMessage, setQueryIdForMessage] = useState()
+    const openContactInfo = (user, queryId) => {
+        setMessageText("")
+        setUserInfo(user)
+        setContactModel(true)
+        setQueryIdForMessage(queryId)
+    }
+
+    const openForwardContacts = async () => {
+        await getContactList()
         setForwardModel(true)
     }
     const [searchText, setSearchText] = useState("");
@@ -207,6 +266,7 @@ const Inqueries = () => {
             padding: "0px",
             transform: "translate(-50%, -50%)",
             background: "rgb(255 255 255)",
+            width: "400px",
         },
         overlay: {
             backgroundColor: "rgb(0 0 0 / 34%)",
@@ -284,10 +344,6 @@ const Inqueries = () => {
         },
     };
 
-
-
-
-
     const formatDate = (dateString) => {
         if (!dateString) {
             return "";
@@ -299,6 +355,37 @@ const Inqueries = () => {
         return `${day}-${month}-${year}`
     };
 
+
+
+    const handleSendMessage = async (e) => {
+        e.preventDefault()
+
+        if (!messageText) {
+            toast.error("Please Enter Message to Send")
+            return
+        }
+        setDataLoader(true)
+        let dataSend = {
+            inquiry_id: queryIdForMessage,
+            message: messageText,
+        }
+        try {
+            const response = await axios.post(`${url}api/create_notification`, dataSend, { headers, })
+
+            if (response.status === 200) {
+                toast.success("Message Send Successfully")
+            }
+            setMessageText("")
+            setQueryIdForMessage()
+            setContactModel(false)
+            setDataLoader(false)
+        } catch (error) {
+            setDataLoader(false)
+            console.error(error);
+            toast.error("Server is Busy")
+        }
+
+    }
 
 
     return (
@@ -328,7 +415,26 @@ const Inqueries = () => {
 
                 {/* Rest of your component remains the same... */}
             </div>
+            <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
+                <div className="add_user_btn">
+
+                    <button
+                        className={queryState == 1 ? "active" : ""}
+                        onClick={() => { setQueryState(1); setSelectedContacts([]); setContactoptions([]); setButtonActive(1); searchRef.current.value = ""; setCurrentPage(1) }}
+                    >
+                        My Inquiries
+                    </button>
+
+                    <button
+                        className={queryState == 0 ? "active" : ""}
+                        onClick={() => { setQueryState(0); setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setCurrentPage(1) }}
+                    >
+                        Inquiries
+                    </button>
+                </div>
+            </div>
             <div className="table-container">
+
                 {dataLoader ?
                     (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
                         <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
@@ -346,81 +452,114 @@ const Inqueries = () => {
                                 </tr>
                             </thead>
                             <tbody>
+                                {queryState === 1 &&
+                                    queries?.length > 0 && queries?.map((contact) => (
+                                        <tr key={contact.id}>
+                                            <td>{formatDate(contact?.created_at)}</td>
+                                            {/* edit query */}
+                                            {/* className={`${contact?.user?.id == userID && "property-link"}`}
+                                        onClick={() => {navigate(`/edit-inquiry/${contact.id}`, { state: { data: contact } })}} */}
+                                            <td>{contact?.user?.username}</td>
+                                            <td >{contact?.description}</td>
+                                            <td>{contact.profession?.name}</td>
+                                            <td onClick={() => handleDeleteClick(contact.id)}>
+                                                <img className="delete-btn-ico" src="/delete.svg" />
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                                {queryState === 0 &&
+                                    queries?.length > 0 && queries?.map((contact) => (
+                                        <tr key={contact.id}>
+                                            <td>{formatDate(contact?.created_at)}</td>
+                                            <td>{contact?.user?.username}</td>
+                                            <td >{contact?.description}</td>
+                                            <td>{contact.profession?.name}</td>
+                                            {contact?.user?.id != userID ?
+                                                <td>
+                                                    <button className="permissions" onClick={() => openContactInfo(contact?.user, contact.id)}>Contact</button>
+                                                    <button className="permissions" style={{ marginLeft: '5px' }} onClick={openForwardContacts}>Forward</button>
+                                                </td>
+                                                : <td></td>
+                                            }
+                                        </tr>
+                                    ))
+                                }
 
-
-                                {queries?.length > 0 && queries?.map((contact) => (
-
-                                    <tr key={contact.id}>
-                                        <td>{formatDate(contact?.created_at)}</td>
-                                        <td>{contact?.user?.username}</td>
-                                        <td >{contact?.description}</td>
-                                        <td>{contact.profession?.name}</td>
-                                        <td>
-                                            <button className="permissions" onClick={() => openContactInfo(contact?.user)}>Contact</button>
-                                        </td>
-                                        <td>
-                                            <button className="permissions" onClick={openForwardContacts}>Forword</button>
-                                        </td>
-                                        <td onClick={()=>deleteQueries(contact.id)}>
-                                            <img className="delete-btn-ico" src="/delete.svg" />
-                                        </td>
-
-                                    </tr>
-
-                                ))}
                             </tbody>
                         </table>
                     )}
+                {totalPages > 1 && (
+                    <div className="pagination">
+                        {renderPageNumbers()}
+                    </div>
+                )}
+            </div>
+            {queries.length == 0 && !dataLoader && queryState === 1 && <p className="no-data">No data Found</p>}
+            {queries.length == 0 && !dataLoader && queryState === 0 && <p className="no-data">No data Found</p>}
 
 
+
+
+            <div className="test-class-popup" style={{ backgroundColor: 'red' }}>
+                <Modal
+                    isOpen={contactModel}
+                    style={customStyles}
+                    onRequestClose={() => setContactModel(false)}
+                >
+                    <div className="inquiries-details-pop-up">
+                        <div className="close-modal-share" id="Contact-s" style={{ backgroundColor: 'black' }}>
+                            <img
+                                className="close-modal-share"
+                                onClick={() => setContactModel(false)}
+                                src="/plus.svg"
+                                style={{ color: 'black', backgroundColor: 'black' }}
+                            />
+                        </div>
+                        <form
+                            onSubmit={(e) => handleSendMessage(e)}
+                        >
+                            <h3 className="heading-category" >Send Message </h3>
+                            <div className="category-box">
+                                <div>
+                                    <label>Email :</label>
+                                    <a href={`mailto:${userInfo?.email}`}>
+                                        <label> {userInfo?.email} </label>
+                                    </a>
+
+                                </div>
+
+                                <div>
+                                    <label>Phone No. : </label>
+                                    <a href={`tel:${userInfo?.phone}`}>
+                                        <label>P{userInfo?.phone}</label></a>
+                                </div>
+                                <div>
+                                    <div>
+                                        <label>Enter Message :</label>
+                                    </div>
+                                    <div className="category-textarea" >
+                                        <textarea
+                                            name="exampleTextarea"
+                                            value={messageText}
+                                            onChange={(e) => setMessageText(e.target.value)}
+                                            rows="5"
+                                            cols="40"
+                                            placeholder="Enter your message here..."
+                                        ></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className="category-btn">
+                                <button type="submit">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </Modal>
             </div>
 
-
-            <Modal
-                isOpen={contactModel}
-                style={customStyles}
-                onRequestClose={() => setContactModel(false)}
-            >
-                <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category send-msg-grp-popup">
-                    <img
-                        className="close-modal-share"
-                        onClick={() => setContactModel(false)}
-                        src="/plus.svg"
-                    />
-                    <div classNmae="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
-                        <div>
-                            <label>Contact Details</label>
-                        </div>
-
-                        <div>
-                            <div>
-                                <a href={`mailto:${userInfo?.email}`}>
-                                    <label>Email : {userInfo?.email} </label>
-                                </a>
-
-                            </div>
-
-                            <div>
-                                <a href={`tel:${userInfo?.phone}`}>
-                                    <label>Phone No. : {userInfo?.phone}</label></a>
-
-                            </div>
-
-                            <div>
-                                <div>
-                                    <label>Enter Text</label>
-                                </div>
-                                <div>
-                                    <textarea></textarea>
-                                </div>
-                                <div>
-                                    <button>Send</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </Modal>
 
 
 
@@ -436,34 +575,28 @@ const Inqueries = () => {
 
                             <button
                                 className={active == 1 ? "active" : ""}
-                                onClick={() => { setActive(1); setButtonActive(1); searchRef.current.value = "" }}
+                                onClick={() => { setSelectedContacts([]); setContactoptions([]); setActive(1); setButtonActive(1); searchRef.current.value = "" }}
                             >
                                 Contacts
                             </button>
 
                             <button
                                 className={active == 2 ? "active" : ""}
-                                onClick={() => { searchRef.current.value = ""; setButtonActive(1); setActive(2) }}
+                                onClick={() => { setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setActive(2) }}
                             >
                                 Klientale Contacts
                             </button>
                         </div>
                     </div>
+
                     <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category pop-up-add-configure">
-                        <img
-                            className="close-modal-share"
+                        <span className="close-modal-share  close-modal-share-span"
                             onClick={() => setForwardModel(false)}
-                            src="/plus.svg"
-                        />
+                            style={{ color: 'black', backgroundColor: "white", rotate: '0' }}
+                        >X</span>
 
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-
-                            }}
-                        >
+                        <form onSubmit={(e) => e.preventDefault()}>
                             <h3 className="heading-category">Select Contact(s) </h3>
-
                             <Select
                                 placeholder={
                                     <PlaceholderWithIcon>Search Contacts...</PlaceholderWithIcon>
@@ -496,7 +629,7 @@ const Inqueries = () => {
                     </div>
                 </Modal>
             </div>
-            {queries && queries.length === 0 && <p className="no-data">No data Found</p>}
+
         </div>
     )
 }

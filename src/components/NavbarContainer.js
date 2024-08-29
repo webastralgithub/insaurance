@@ -100,6 +100,8 @@ const NavbarContainer = (props) => {
   const [selectedContacts, setSelectedContacts] = useState(false);
   const selectRef = useRef(null);
   const [error, setError] = useState("");
+  const [notificatioLength, setNotificationLength] = useState(0)
+
 
   const headers = {
     Authorization: auth.token,
@@ -203,12 +205,17 @@ const NavbarContainer = (props) => {
         });
         let userData = user.data.user;
         let userDataLead = user.data
+
+        setNotificationLength(userDataLead.notifications)
+        localStorage.setItem('notificationsLength', userDataLead.notifications.length)
         localStorage.setItem('subscription_status', userData.subscription_status)
         localStorage.getItem('category_id', userData.category_id)
         localStorage.setItem("totalReffralEarnedMoney", userDataLead.totalReffralEarnedMoney)
         localStorage.setItem("totalAvailableJobs", userDataLead.totalAvailableJobs)
         localStorage.setItem("totalReffrals", userDataLead.totalReffrals)
         localStorage.setItem("totalReffralsReceived", userDataLead.totalReffralsReceived)
+        localStorage.setItem("professionId", userData.profession_id)
+
         settotalAvailableJobs(userDataLead.totalAvailableJobs)
         settotalReffralEarnedMoney(userDataLead.totalReffralEarnedMoney)
         settotalReffrals(userDataLead.totalReffrals)
@@ -353,8 +360,6 @@ const NavbarContainer = (props) => {
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           style={customStyles}
-
-
         >
           <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category pop-up-add-configure">
             <img
@@ -362,7 +367,7 @@ const NavbarContainer = (props) => {
               onClick={closeModal}
               src="/plus.svg"
             />
-            
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -420,19 +425,20 @@ const NavbarContainer = (props) => {
 
       </div>
 
-      {/* <div className="icon-dashboard setting-nav">
+      <div className="icon-dashboard setting-nav">
         <div className="icon-dashboard-child" />
-        {/* <div className="icon-dashboard-item" /> */}
-      {/* <Link to="/todo-list">
+        {/* <div className="icon-dashboard-item" />  */}
+        <Link to="/inquiries">
           {" "}
           <img className="icon-dashboard1" alt="" src="/icon-dashboard.svg" />
-        </Link> */}
-      {/* <Link to="/profile">  <img className="icon-dashboard2" alt="" src="/icon-dashboard1.svg" /></Link> */}
-      {/* <div className="background-group">
+        </Link>
+
+        {/* <Link to="/profile">  <img className="icon-dashboard2" alt="" src="/icon-dashboard1.svg" /></Link>  */}
+        <div className="background-group">
           <div className="background6" />
-          <div className="div3">{tasklength}</div>
+          <div className="div3">{notificatioLength.length}</div>
         </div>
-      </div> */}
+      </div>
 
       <div className="icon-dashboard share-ref-top-wrp">
         <button onClick={() => setIsOpen(true)}>

@@ -20,18 +20,16 @@ import Spinner from "./Spinner";
 
 
 const KlientaleShareMe = ({ role }) => {
-  const { id,name } = useParams()
+  const { id, name } = useParams()
   const param = useParams()
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
   const [contactName, setContactName] = useState(param.name);
-
   const [active, setActive] = useState(0);
   const [parentid, setParentId] = useState()
   const navigate = useNavigate();
   const [parentView, setParentView] = useState(false)
   const [parentName, setParentName] = useState([])
-
   const [contactOptions, setContactoptions] = useState(false)
   const [searchText, setSearchText] = useState('');
   const [selectedContacts, setSelectedContacts] = useState(false)
@@ -41,13 +39,16 @@ const KlientaleShareMe = ({ role }) => {
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [modalMode, setModalMode] = useState("");
   const [users, setUsers] = useState([]);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
   const [isLoading, setIsLoading] = useState(false);
-
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPages, setTotalPages] = useState("");
+  const [buttonActive, setButtonActive] = useState(1)
+  const [dataLoader, setDataLoader] = useState(false)
 
 
   const { auth, email } = useContext(AuthContext);
@@ -121,7 +122,7 @@ const KlientaleShareMe = ({ role }) => {
     }, {
       headers,
     });
-    getContacts();
+
     if (response.status === 200) {
       toast.success("Contact Converted successfully", {
         autoClose: 3000,
@@ -248,6 +249,8 @@ const KlientaleShareMe = ({ role }) => {
     },
 
   };
+
+
   const getCategories = async () => {
     try {
       const res = await axios.get(`${url}api/categories`, { headers });
@@ -262,29 +265,13 @@ const KlientaleShareMe = ({ role }) => {
     }
   };
 
-  const handleDelete = async (propertyId) => {
-    await axios.delete(`${url}api/contacts/${propertyId}`, { headers });
 
-    toast.success('Contact deleted successfully', { autoClose: 3000, position: toast.POSITION.TOP_RIGHT });
-    setContacts(contacts.filter((p) => p.id !== propertyId));
-
-  };
 
   useEffect(() => {
-    getContacts();
     getCategories()
-    getUsers();
   }, []);
 
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`${url}api/admin/get-users`, { headers });
-      setUsers(res.data);
 
-    } catch (error) {
-
-    }
-  };
   const formatDate = (dateString) => {
     if (!dateString) {
       return ""; // Handle cases where the date string is empty or undefined
@@ -300,58 +287,7 @@ const KlientaleShareMe = ({ role }) => {
 
     return `${year}-${month}-${day}`;
   };
-  const filteredContacts = contacts.filter((contact) => {
-    const searchText = searchQuery.toLowerCase();
-    return (
-      contact?.firstname?.toLowerCase().includes(searchText) ||
-      contact.lastname?.toLowerCase().includes(searchText) ||
-      formatDate(contact.birthDate).toLowerCase().includes(searchText) ||
-      contact.email?.toLowerCase().includes(searchText) ||
-      (contact.address1 + ' ' + contact.address2).toLowerCase().includes(searchText) ||
-      contact.city?.toLowerCase().includes(searchText) ||
-      contact.provinceName?.toLowerCase().includes(searchText) ||
-      (contact.realtor?.name.toLowerCase().includes(searchText)) ||
-      contact.source?.toLowerCase().includes(searchText) ||
-      contact.phone?.toLowerCase().includes(searchText)
-    );
-  });
 
-  const getContacts = async () => {
-    try {
-      const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
-      const contactsWithoutParentId = response.data.user.filter((contact) => contact.parentId === null);
-      // const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
-      // Set the filtered contacts in the state
-
-      setContacts(response.data.user);
-      const contact = response.data.find((p) => p.id == id);
-      setContactName(contact);
-
-      // const realtorOptions =contactsWithoutParentIdandlead.map((realtor) => ({
-      //   value:realtor.id ,
-      //   label: realtor.firstname,
-      // }));
-      // setContactoptions(realtorOptions)
-
-    } catch (error) {
-      console.error(error)
-      // localStorage.removeItem('token');
-      // setAuth(null);
-      // navigate('/');
-    }
-
-  };
-  const contactsPerPage = 10; // Adjust the number of contacts per page as needed
-
-  const contactsToDisplay = filteredContacts.slice(
-    (currentPage - 1) * contactsPerPage,
-    currentPage * contactsPerPage
-  );
-  // Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
   const changeView = async (id, name) => {
 
     localStorage.setItem("parent", name)
@@ -366,7 +302,7 @@ const KlientaleShareMe = ({ role }) => {
       const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
 
       // Set the filtered contacts in the state
-      setContacts(response.data);
+      // setContacts(response.data);
 
 
     } catch (error) {
@@ -386,6 +322,65 @@ const KlientaleShareMe = ({ role }) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
   // Rest of your component remains the same..
+  const getKlientaleContacts = async () => {
+    setDataLoader(true)
+    let categoriesData = seletedCategory?.map((item) => item.value)
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+
+    try {
+
+      const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&categories=${''}`, { headers });
+      setusers(response?.data?.users)
+      setTotalPages(response?.data?.totalPages)
+      setDataLoader(false)
+    } catch (error) {
+      setDataLoader(false)
+      console.error("Server is busy");
+    }
+  };
+
+  useEffect(() => {
+    getKlientaleContacts();
+  }, [currentPage]);
+
+  const clearSearch = () => {
+    searchRef.current.value = ""
+    setButtonActive(1)
+    getKlientaleContacts();
+  };
+
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+      setButtonActive(2)
+      getKlientaleContacts()
+    }
+  };
+
+  const handleKeyDown = () => {
+    setButtonActive(2)
+    getKlientaleContacts();
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers?.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
+
 
   return (
     <div>
@@ -402,19 +397,23 @@ const KlientaleShareMe = ({ role }) => {
               navigate("/klientale-contacts"); // Change the view state to "contacts"
 
             }}
-          > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Share Me"} ({param.name})</h3>
+          > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Share Me"} ({name})</h3>
           <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
               <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
             </svg>
             Share my info to your following contacts</span>
-          <div className="search-group">
+          <div className="search-grp-with-btn">
+            <div className="search-group">
+              <input type="text"
+                onKeyDown={handleKeyDownEnter}
+                ref={searchRef}
+                placeholder="Search here" />
 
-            <input type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search here" />
-            <img src="/search.svg" />
+            </div>
+            <div className="add_user_btn ">
+              <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+            </div>
           </div>
         </div>
 
@@ -442,38 +441,26 @@ const KlientaleShareMe = ({ role }) => {
               <tr>
                 <th></th>
                 <th>Name</th>
+                <th>Business Name</th>
+                <th>Profession</th>
                 <th>Phone</th>
                 <th>Email Id</th>
-
-                {/* <th>Services Require</th> */}
-
-                <th>Category</th>
-
-                {/* <th></th>
-             <th></th> */}
-
-
-
-
               </tr>
             </thead>
-            {contacts.length > 0 && !active &&
-              contactsToDisplay.map((contact) => (contact.id != id && <tbody>
+            {userss?.length > 0 &&
+              userss?.map((user) => (user.id != id && <tbody>
 
-                <tr key={contact.id}>
+                <tr key={user.id}>
                   {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                   <td>  <button className="permissions share-ref-button-tb"
                     onClick={() => {
-                      handleDeleteClick(contact.id)
+                      handleDeleteClick(user.id)
                     }}>Share</button>       </td>
-                  <td>{contact.name}</td>
-                  <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                  <td>{contact.email}</td>
-
-                  {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
-
-                  <td>{contact.category?.name}</td>
-
+                  <td>{user.name}</td>
+                  <td>{user.business_name}</td>
+                  <td>{user.category_name}</td>
+                  <td>{user.phone}</td>
+                  <td>{user.email}</td>
 
                   {/* <td> 
                    
@@ -494,20 +481,12 @@ const KlientaleShareMe = ({ role }) => {
           </table>
           {totalPages > 1 && !active && (
             <div className="pagination">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => handlePageChange(index + 1)}
-                  className={currentPage === index + 1 ? 'active' : ''}
-                >
-                  {index + 1}
-                </button>
-              ))}
+              {renderPageNumbers()}
             </div>
           )}
 
         </div>
-        {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>}
+        {userss.length == 0 && <p className="no-data">No data Found</p>}
       </div>
     </div>
 

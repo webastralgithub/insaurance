@@ -2,26 +2,26 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Select from "react-select";
-import { queries } from '@testing-library/react';
 
-const AddInquery = () => {
 
+const EditInquiry = () => {
+    const { id } = useParams();
+    const location = useLocation();
+    const { data } = location.state;
     const [profession, setProfession] = useState([])
     const [seletedProfession, setSeletedProfession] = useState([])
+
+
+
     const [errors, setErrors] = useState({
-        seletedProfession: ''
+        seletedProfession: '',
+        descriptionError: ''
     });
 
     const navigate = useNavigate();
-    const [contact, setContact] = useState({
-        Followup: "",
-        FollowupDate: "",
-        Comments: "",
-        IsRead: false,
-        ContactID: "",
-    });
+    const [contact, setContact] = useState(data?.description);
 
     const url = process.env.REACT_APP_API_URL;
     const { auth } = useContext(AuthContext);
@@ -29,7 +29,6 @@ const AddInquery = () => {
         Authorization: auth.token,
     };
 
- 
     const colourStyles = {
         valueContainer: (provided, state) => ({
             ...provided,
@@ -70,89 +69,90 @@ const AddInquery = () => {
     };
 
     useEffect(() => {
+        const getProfession = async () => {
+            try {
+                const res = await axios.get(`${url}api/profession`, { headers });
+                const options = res.data.map((realtor) => ({
+                    value: realtor.id,
+                    label: realtor.name,
+                }));
+                setProfession(options)
+                const matchedprofession = options?.find(insurance => insurance.value === data.profession_id);
+                setSeletedProfession(matchedprofession)
+
+
+            } catch (error) {
+                console.error("User creation failed:", error);
+            }
+        };
         getProfession()
     }, []);
 
 
-    const getProfession = async () => {
-        try {
-            const res = await axios.get(`${url}api/profession`, { headers });
-            const options = res.data.map((realtor) => ({
-                value: realtor.id,
-                label: realtor.name,
-            }));
-            setProfession(options)
-
-        } catch (error) {
-            console.error("User creation failed:", error);
-        }
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setContact({ ...contact, [name]: value });
-    };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
         if (!seletedProfession.value) {
-            toast.error("Please Select a Profession")
+            toast.error("please Select a Profession")
             return
         }
 
-        if (!contact.Followup) {
-            toast.error("Please Enter Your Inquiry")
+        if (!contact) {
+            toast.error("please enter your Inquiry")
             return
         }
 
-
-        let data = {
+        let updatedData = {
             profession_id: seletedProfession.value,
-            description: contact.Followup,
+            description: contact,
         }
+
         try {
-            //inquiry
-            const response = await axios.post(`${url}api/inquiry`, data, {
+
+            const response = await axios.put(`${url}api/inquiry/${data.id}`, updatedData, {
                 headers,
             });
-            if (response.status) {
-                toast.success("Inquiry Added Succesfully")
+            if (response.status === 200) {
+                toast.success("Inquiry updated successfully", {
+                    autoClose: 2000,
+                    position: toast.POSITION.TOP_RIGHT,
+                });
                 navigate("/inquiries")
+            } else {
+                console.error("Failed to update contact");
             }
-
         } catch (error) {
-            toast.error("Server is Busy")
             console.error(error)
+            toast.error("Server is Busy")
         }
+
+
     }
-
-
-
     return (
         <div className="div-add-contact-parent"  >
             <form onSubmit={handleSubmit} className="form-user-add add-task-setion-form"   >
                 <div className="property_header header-with-back-btn">
                     <h3> <button type="button" className="back-only-btn" onClick={() => navigate(-1)}> <img src="/back.svg" />
-                    </button>Add Inquiry</h3>
+                    </button>Edit Inquiry</h3>
                 </div>
                 <div className="form-user-add-wrapper">
                     <div className="todo-section">
                         <div className="todo-main-section" >
                             <div className="form-user-add-inner-wrap">
-                                <label>I am Looking For <span className="required-star">*</span>       </label>
+                                <label>I am Lookin For <span className="required-star">*</span>       </label>
                                 <img src="/icons-form/Group30055.svg" />
                                 <Select
                                     placeholder="Select Profession.."
                                     value={seletedProfession}
                                     onChange={(selectedOption) => {
                                         setErrors({ profession_id: "" })
-                                        setContact({ ...contact, profession_id: selectedOption.value })
                                         setSeletedProfession(selectedOption)
                                     }}
                                     options={profession}
-                                    components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                                    components={{
+                                        DropdownIndicator: () => null,
+                                        IndicatorSeparator: () => null
+                                    }}
                                     styles={colourStyles}
                                     className="select-new"
                                 />
@@ -163,8 +163,8 @@ const AddInquery = () => {
 
                                     type="text"
                                     name="Followup"
-                                    value={contact.Followup}
-                                    onChange={handleChange}
+                                    value={contact}
+                                    onChange={(e) => setContact(e.target.value)}
                                     placeholder='Enter your Inquiry Here'
                                 />
                                 <span className="error-message">{""}</span>
@@ -181,4 +181,4 @@ const AddInquery = () => {
     )
 }
 
-export default AddInquery
+export default EditInquiry

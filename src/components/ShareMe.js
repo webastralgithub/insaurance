@@ -105,6 +105,8 @@ const ShareMe = ({ role }) => {
       if (active == 0) {
         setDataLoader(true)
         const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
+      
+
         setusers(response?.data?.contacts)
         setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
@@ -207,34 +209,35 @@ const ShareMe = ({ role }) => {
                   <tr>
                     <th></th>
                     <th>Name</th>
-                    <th>Business Name</th>
+                    <th>Business Name test</th>
                     <th>Profession</th>
                     <th>Phone</th>
                     <th>Email Id</th>
                   </tr>
                 </thead>
 
-                {active === 0 && <>
-                  {userss?.length > 0 &&
-                    userss?.map((contact) => (contact.id != id && <tbody>
-                      <tr key={contact.id}>
-                        <td>  <button className="permissions share-ref-button-tb"
-                          onClick={() => {
-                            sendRefferal(contact)
-                          }} >Share</button>       </td>
-                        <td>{contact.firstname}</td>
-                        <td>{contact.business_name}</td>
-                        <td>{contact.profession_id > 0 ? contact.profession.name : ""}</td>
-                        <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                        <td>{contact.email}</td>
-                      </tr>
-                    </tbody>))}
+                {active == 0 && <>
+                  <tbody>
+                    {userss?.length &&
+                      userss?.map((contact) => (contact.id != id && <>
+                        <tr key={contact.id}>
+                          <td>  <button className="permissions share-ref-button-tb"
+                            onClick={() => {
+                              sendRefferal(contact)
+                            }} >Share</button>       </td>
+                          <td>{contact?.firstname}</td>
+                          <td>{contact?.business_name}</td>
+                          <td>{contact?.profession_id > 0 ? contact.profession.name : ""}</td>
+                          <td>{contact?.phone && formatPhoneNumber(contact.phone)}</td>
+                          <td>{contact?.email}</td>
+                        </tr>
+                      </>))}</tbody>
                 </>
                 }
 
                 {/* {  klintale contacts} */}
                 {active === 1 && <>
-                  {userss?.length > 0 &&
+                  {userss?.length &&
                     userss?.map((contact) => (contact.id != id && <tbody>
 
                       <tr key={contact.id}>
@@ -254,7 +257,7 @@ const ShareMe = ({ role }) => {
                 }
               </table>)}
 
-          {userss?.length > 0 && (
+          {totalPagess > 1 && (
             <div className="pagination">
               {renderPageNumbers()}
             </div>

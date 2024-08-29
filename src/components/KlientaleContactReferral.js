@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import Select,{ components } from 'react-select';
+import Select, { components } from 'react-select';
 import "./admin.css"
 
 import Modal from "react-modal";
@@ -18,22 +18,22 @@ import { useNavigate, useParams, useRouter } from "react-router-dom";
 
 
 
-const KlientaleContactReferral = ({role}) => {
-    const{id}=useParams()
+const KlientaleContactReferral = ({ role }) => {
+  const { id, name } = useParams()
   const selectRef = useRef(null);
   const [contacts, setContacts] = useState([]);
   const [active, setActive] = useState(0);
-  const[parentid,setParentId]=useState()
-  const navigate=useNavigate();
-  const[parentView,setParentView]=useState(false)
-  const[parentName,setParentName]=useState([])
+  const [parentid, setParentId] = useState()
+  const navigate = useNavigate();
+  const [parentView, setParentView] = useState(false)
+  const [parentName, setParentName] = useState([])
   const [contactName, setContactName] = useState();
-const[contactOptions,setContactoptions]=useState(false)
-const [searchText, setSearchText] = useState('');
-  const[selectedContacts,setSelectedContacts]=useState(false)
+  const [contactOptions, setContactoptions] = useState(false)
+  const [searchText, setSearchText] = useState('');
+  const [selectedContacts, setSelectedContacts] = useState(false)
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [categories,setCategories]=useState([])
-  const[error,setError]=useState("")
+  const [categories, setCategories] = useState([])
+  const [error, setError] = useState("")
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [modalMode, setModalMode] = useState("");
   const [users, setUsers] = useState([]);
@@ -45,7 +45,7 @@ const [searchText, setSearchText] = useState('');
 
 
 
-  const { auth, property, setProperty, setAuth,email } = useContext(AuthContext);
+  const { auth, property, setProperty, setAuth, email } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
   };
@@ -74,28 +74,30 @@ const [searchText, setSearchText] = useState('');
 
 
 
-  const sendRefferal=async(contact)=>{
-    const response =axios.post(`${klintaleUrl}share`,
-     {sendTo:id,selectedContacts:[contact],type:2,email:email.email});
-    if (response.status === 200) {
-      toast.success("Contact Sent successfully", {
-        autoClose: 3000,
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      setSelectedContacts()
-      closeModal()
-  
-    }
+  const sendRefferal = async (contact) => {
+    const response = axios.post(`${klintaleUrl}share`,
+      { sendTo: id, selectedContacts: [contact], type: 2, email: email.email });
+
+    toast.success("Contact Sent successfully", {
+      autoClose: 3000,
+      position: toast.POSITION.TOP_RIGHT,
+    });
+    setSelectedContacts()
+    closeModal()
+
+
   }
   const convert = async (e) => {
     e.preventDefault()
-   if(!seletedCategory?.value){
-    setError("Please select a Category")
-    return
-   }
+    if (!seletedCategory?.value) {
+      setError("Please select a Category")
+      return
+    }
 
-    const response = await axios.put(`${url}api/contacts/${id}`, {isLead:true,category:seletedCategory
-.value}, {
+    const response = await axios.put(`${url}api/contacts/${id}`, {
+      isLead: true, category: seletedCategory
+        .value
+    }, {
       headers,
     });
     getContacts();
@@ -110,7 +112,7 @@ const [searchText, setSearchText] = useState('');
     }
   }
 
-    const handleDeleteClick = (propertyId) => {
+  const handleDeleteClick = (propertyId) => {
     confirmAlert({
       title: 'Confirm Send',
       message: 'Are you sure you want to send this contact?',
@@ -121,13 +123,13 @@ const [searchText, setSearchText] = useState('');
         },
         {
           label: 'No',
-          onClick: () => {},
+          onClick: () => { },
         },
       ],
     });
   };
 
- 
+
   const customStyles = {
     content: {
       top: "50%",
@@ -135,12 +137,12 @@ const [searchText, setSearchText] = useState('');
       right: "auto",
       bottom: "auto",
       marginRight: "-50%",
-      overflow:"unset",
+      overflow: "unset",
       padding: '0px',
       transform: "translate(-50%, -50%)",
       background: "rgb(255 255 255)",
     },
-    overlay:{
+    overlay: {
       backgroundColor: "rgb(0 0 0 / 34%)",
     }
   };
@@ -148,7 +150,7 @@ const [searchText, setSearchText] = useState('');
 
   const openModal = (mode, role) => {
     setModalMode(mode);
- 
+
     setIsOpen(true);
   };
 
@@ -160,89 +162,92 @@ const [searchText, setSearchText] = useState('');
     setIsOpen(false);
   };
   const colourStylesCAt = {
-    menu:(styles)=>({
+    menu: (styles) => ({
       ...styles,
-      maxHeight:"242px",
-      minHeight:"242px",
-      overflowY:"auto",
-      boxShadow:"none",
-      
-    }),
-    singleValue:styles=>({...styles,color:"#fff"    }),
-    placeholder:styles=>({...styles,color:"#fff"    }),
-    menuList:(styles)=>({
-      ...styles,
-overflow:"unset"
-    }),
-    control: styles => ({ ...styles, boxShadow:"unset",borderColor:"unset",minHeight:"0",
-    border:"none",borderRadius:"0" ,background:"linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-  padding:"10px 5px"
-  }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-     
-      return {
-        ...styles,
-      
-     
-      };
-    },
-  
-  }; 
-  const colourStyles = {
-    valueContainer:styles=>({...styles,overflowX:"auto",flex:"unset",flexWrap:"no-wrap",width:selectedContacts.length>0?"354px":"100%",padding:"2px 0",
-    '&::-webkit-scrollbar-track': {
-      '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.3)',
-      'border-radius': '10px',
-      'background-color': 'rgb(0 70 134)',
-    },
-    '&::-webkit-scrollbar': {
-      'height': '8px',
-      'background-color': 'rgb(0 70 134)',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      'border-radius': '10px',
-      '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,.3)',
-      'background-color': '#373a47',
-    },
-  
-  }),
-    menu:(styles)=>({
-      ...styles,
-      maxHeight:"242px",
-      minHeight:"242px",
-      overflowY:"auto",
-      boxShadow:"none",
- 
-  
-    }),
-    menuList:styles=>({...styles,overflowY:"none",display:"none"}),
-    multiValue:styles=>({...styles,minWidth:"unset"}),
-    input: styles =>({...styles,color:"#fff"}),
-    placeholder: styles =>({...styles,color:"#fff"}),
-    control: styles => ({ ...styles, boxShadow:"unset",borderColor:"unset",minHeight:"0",
-    border:"none",borderRadius:"0" ,background:"linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-  padding:"10px 5px"
-  }),
+      maxHeight: "242px",
+      minHeight: "242px",
+      overflowY: "auto",
+      boxShadow: "none",
 
-   
+    }),
+    singleValue: styles => ({ ...styles, color: "#fff" }),
+    placeholder: styles => ({ ...styles, color: "#fff" }),
+    menuList: (styles) => ({
+      ...styles,
+      overflow: "unset"
+    }),
+    control: styles => ({
+      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
+      border: "none", borderRadius: "0", background: "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
+      padding: "10px 5px"
+    }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-     
+
       return {
         ...styles,
-      
-     
+
+
       };
     },
-  
-  }; 
+
+  };
+  const colourStyles = {
+    valueContainer: styles => ({
+      ...styles, overflowX: "auto", flex: "unset", flexWrap: "no-wrap", width: selectedContacts.length > 0 ? "354px" : "100%", padding: "2px 0",
+      '&::-webkit-scrollbar-track': {
+        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.3)',
+        'border-radius': '10px',
+        'background-color': 'rgb(0 70 134)',
+      },
+      '&::-webkit-scrollbar': {
+        'height': '8px',
+        'background-color': 'rgb(0 70 134)',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        'border-radius': '10px',
+        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,.3)',
+        'background-color': '#373a47',
+      },
+
+    }),
+    menu: (styles) => ({
+      ...styles,
+      maxHeight: "242px",
+      minHeight: "242px",
+      overflowY: "auto",
+      boxShadow: "none",
+
+
+    }),
+    menuList: styles => ({ ...styles, overflowY: "none", display: "none" }),
+    multiValue: styles => ({ ...styles, minWidth: "unset" }),
+    input: styles => ({ ...styles, color: "#fff" }),
+    placeholder: styles => ({ ...styles, color: "#fff" }),
+    control: styles => ({
+      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
+      border: "none", borderRadius: "0", background: "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
+      padding: "10px 5px"
+    }),
+
+
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+
+      return {
+        ...styles,
+
+
+      };
+    },
+
+  };
   const getCategories = async () => {
     try {
-     const res= await axios.get(`${url}api/categories`, { headers });
-     const options=res.data.map((realtor) => ({
-      value: realtor.id,
-      label: realtor.name,
-    }));
-     setCategories(options)
+      const res = await axios.get(`${url}api/categories`, { headers });
+      const options = res.data.map((realtor) => ({
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setCategories(options)
 
     } catch (error) {
       console.error("User creation failed:", error);
@@ -282,7 +287,7 @@ overflow:"unset"
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-  
+
     return `${year}-${month}-${day}`;
   };
   const filteredContacts = contacts.filter((contact) => {
@@ -306,13 +311,13 @@ overflow:"unset"
       const response = await axios.get(`${klintaleUrl}listing/${email.email}`);
       const contactsWithoutParentId = response.data.user.filter((contact) => contact.parentId === null);
       const nonvendorcontacts = contactsWithoutParentId.filter((contact) => contact.isVendor === false);
-      const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false );
+      const contactsWithoutParentIdandlead = nonvendorcontacts.filter((contact) => contact.isLead === false);
       // Set the filtered contacts in the state
       setContacts(response.data.user);
       const contact = response.data.find((p) => p.id == id);
       setContactName(contact);
-      const realtorOptions =contactsWithoutParentIdandlead.map((realtor) => ({
-        value:realtor.id ,
+      const realtorOptions = contactsWithoutParentIdandlead.map((realtor) => ({
+        value: realtor.id,
         label: realtor.firstname,
       }));
       setContactoptions(realtorOptions)
@@ -331,82 +336,153 @@ overflow:"unset"
     (currentPage - 1) * contactsPerPage,
     currentPage * contactsPerPage
   );
-// Adjust the number of contacts per page as needed
-  const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
-  const changeView=async(id,name)=>{
+  // Adjust the number of contacts per page as needed
+  const totalPagess = Math.ceil(filteredContacts.length / contactsPerPage);
+  // const handlePageChange = (newPage) => {
+  //   setCurrentPage(newPage);
+  // };
+  const changeView = async (id, name) => {
 
-localStorage.setItem("parent",name)
+    localStorage.setItem("parent", name)
 
-  setParentName(name)
-  // setParentId(id)
-  //   setParentView(true)
-   navigate(`${id}`)
-  
+    setParentName(name)
+    // setParentId(id)
+    //   setParentView(true)
+    navigate(`${id}`)
+
     try {
-        const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
-        const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
-  
-        // Set the filtered contacts in the state
-        setContacts(response.data);
-      
-  
-      } catch (error) {
-        // localStorage.removeItem('token');
-        // setAuth(null);
-        // navigate('/');
-      }
+      const response = await axios.get(`${url}api/contacts/${id}/children`, { headers });
+      const contactsWithoutParentId = response.data.filter((contact) => contact.parentId === null);
+
+      // Set the filtered contacts in the state
+      setContacts(response.data);
+
+
+    } catch (error) {
+      // localStorage.removeItem('token');
+      // setAuth(null);
+      // navigate('/');
+    }
   }
 
   const PlaceholderWithIcon = (props) => (
-    <div style={{ display: 'flex', alignItems: 'center',justifyContent:"space-between" }}>
-     {/* Adjust icon and styling */}
-      <span>{props.children}</span>  <img style={{width:"17px",filter:"brightness(4.5)"}} src="/search.svg" /> 
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
+      {/* Adjust icon and styling */}
+      <span>{props.children}</span>  <img style={{ width: "17px", filter: "brightness(4.5)" }} src="/search.svg" />
     </div>
   );
   const formatPhoneNumber = (phoneNumber) => {
-    return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6,10)}`;
+    return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
   // Rest of your component remains the same...
 
+  let searchRef = useRef()
+  const [userss, setusers] = useState([])
+  const [totalPages, setTotalPages] = useState("");
+  const [buttonActive, setButtonActive] = useState(1)
+  const [dataLoader, setDataLoader] = useState(false)
+
+  const getKlientaleContacts = async () => {
+    setDataLoader(true)
+    let categoriesData = seletedCategory?.map((item) => item.value)
+    let currPage
+    if (searchRef.current.value) {
+      currPage = ''
+    } else {
+      currPage = currentPage
+    }
+
+    try {
+
+      const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&categories=${''}`, { headers });
+      setusers(response?.data?.users)
+      setTotalPages(response?.data?.totalPages)
+      setDataLoader(false)
+    } catch (error) {
+      setDataLoader(false)
+      console.error("Server is busy");
+    }
+  };
+
+  useEffect(() => {
+    getKlientaleContacts();
+  }, [currentPage]);
+
+  const clearSearch = () => {
+    searchRef.current.value = ""
+    setButtonActive(1)
+    getKlientaleContacts();
+  };
+
+  const handleKeyDownEnter = (event) => {
+    if (event.key === 'Enter') {
+      setButtonActive(2)
+      getKlientaleContacts()
+    }
+  };
+
+  const handleKeyDown = () => {
+    setButtonActive(2)
+    getKlientaleContacts();
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+    return pageNumbers?.map((number) => (
+      <button className={currentPage === number ? "active" : ""}
+        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+    ));
+  };
+
+
+
   return (
     <div className="add_property_btn">
-        <div className="inner-pages-top inner-pages-top-share-ref" style={{"padding-bottom":"30px"}}>
-      <h3> <button className="back-only-btn" 
-      onClick={()=>{
-        navigate("/klientale-contacts"); // Change the view state to "contacts"
-      }}
-      > <img src="/back.svg" /></button> {parentView ?`${parentName} Family `:"Send Me Referrals "} ({contactName?.name})</h3>
-     <span className="share-text" style={{"font-size": "17px","font-weight": "700","display": "flex" ,"margin-top":"6px","position":"absolute", "top":"200px"}}>
+      <div className="inner-pages-top inner-pages-top-share-ref" style={{ "padding-bottom": "30px" }}>
+        <h3> <button className="back-only-btn"
+          onClick={() => {
+            navigate("/klientale-contacts"); // Change the view state to "contacts"
+          }}
+        > <img src="/back.svg" /></button> {parentView ? `${parentName} Family ` : "Send Me Referrals "} ({name})</h3>
+        <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
-            <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/>
+            <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
           </svg>
           Send me referrals from your following contacts</span>
-      <div className="search-group">
+        <div className="search-grp-with-btn">
+          <div className="search-group">
+            <input type="text"
+              onKeyDown={handleKeyDownEnter}
+              ref={searchRef}
+              placeholder="Search here" />
 
-       <input type="text"
-       value={searchQuery}
-       onChange={(e) => setSearchQuery(e.target.value)}
-       placeholder="Search here"/>
-       <img src="/search.svg" />
-      </div>
+          </div>
+          <div className="add_user_btn ">
+            <button className='custom-search-btn-btn-search' onClick={handleKeyDown}>Search</button>
+          </div>
+        </div>
       </div>
 
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
 
-          <div className="add_user_btn">
+        <div className="add_user_btn">
 
-          <button className={!active ? 'active' : ''} onClick={() =>setActive(0)}>
-          Klientale Contacts</button>
+          <button className={!active ? 'active' : ''} onClick={() => setActive(0)}>
+            Klientale Contacts</button>
 
           {/* <button className={active ? 'active' : ''} onClick={() =>setActive(1)}>
           Klientale Contacts</button> */}
-          
-          
 
-          </div>
+
+
+        </div>
       </div>
 
 
@@ -416,43 +492,31 @@ localStorage.setItem("parent",name)
         <table>
           <thead>
             <tr>
-            <th></th>
+              <th></th>
               <th>Name</th>
+              <th>Business Name</th>
+              <th>Profession</th>
               <th>Phone</th>
-             <th>Email Id</th>
- 
-              {/* <th>Services Require</th> */}
-    
-            <th>Category</th>
-            
-              {/* <th></th>
-              <th></th> */}
-              
-     
-       
-
+              <th>Email Id</th>
             </tr>
           </thead>
-          {contacts.length>0 &&!active&&
-              contactsToDisplay.map((contact) => (contact.id!=id&& <tbody>
-          
-                <tr key={contact.id}>
-                  {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                  <td>  <button className="permissions share-ref-button-tb"
-          onClick={()=>{
-            handleDeleteClick(contact.id)
-          }}       >Send</button>       </td>
-                  <td>{contact.name}</td>
+          {userss.length > 0 && !active &&
+            userss.map((user) => (user.id != id && <tbody>
 
-                  <td>{contact.phone&&formatPhoneNumber(contact.phone)}</td>
-                  <td>{contact.email}</td>
-               
-                  {/* <td>{contact.servceRequire?.replace(/[\[\]"]/g, '')}</td>   */}
+              <tr key={user.id}>
+                {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
+                <td>  <button className="permissions share-ref-button-tb"
+                  onClick={() => {
+                    handleDeleteClick(user.id)
+                  }}       >Send</button>       </td>
+                <td>{user.name}</td>
+                <td>{user.business_name}</td>
+                <td>{user.category_name}</td>
+                <td>{user.phone}</td>
+                <td>{user.email}</td>
 
-            <td>{contact.category?.name}</td>
-             
 
-                  {/* <td> 
+                {/* <td> 
                     
                   <button className="permissions"
                     onClick={() => {changeView(Number(contact.id),contact.firstname)
@@ -461,30 +525,18 @@ localStorage.setItem("parent",name)
                      
           
           </td> */}
-          
 
-
-               
-   
               </tr>
-          </tbody> ))}
+            </tbody>))}
         </table>
         {totalPages > 1 && !active && (
           <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={currentPage === index + 1 ? 'active' : ''}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {renderPageNumbers()}
           </div>
         )}
 
       </div>
-      { contactsToDisplay.length==0 || active=="1" && <p className="no-data">No data Found</p>}
+      {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>}
     </div>
   );
 };

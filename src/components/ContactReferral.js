@@ -128,9 +128,11 @@ const ContactReferral = ({ role }) => {
     }
     try {
       if (active === 0) {
+        setusers([])
         setDataLoader(true)
         const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
-        setusers( await response?.data?.contacts)
+     
+        setusers(response?.data?.contacts)
         setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
       }
@@ -221,7 +223,7 @@ const ContactReferral = ({ role }) => {
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
 
         <div className="add_user_btn">
-          <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0) }}>
+          <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0);setusers([]) }}>
             Personal Contacts</button>
 
           <button className={active ? 'active' : ''} onClick={() => { setusers([]); setCurrentPage(1); setActive(1) }}>
@@ -294,7 +296,7 @@ const ContactReferral = ({ role }) => {
               </>
               }
             </table>)}
-            {userss?.length > 0 && (
+            {totalPagess > 1 && (
         <div className="pagination">
           {renderPageNumbers()}
         </div>
@@ -304,7 +306,6 @@ const ContactReferral = ({ role }) => {
    
       {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
-      {/* {contactsToDisplay.length == 0 || active == "1" && <p className="no-data">No data Found</p>} */}
     </div>
   );
 };

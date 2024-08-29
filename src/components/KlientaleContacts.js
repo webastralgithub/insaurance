@@ -317,6 +317,9 @@ const KlientaleContacts = ({ role }) => {
   };
 
 
+
+
+
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top inner-pages-top-share-ref">
@@ -406,7 +409,7 @@ const KlientaleContacts = ({ role }) => {
                 <th>Profession</th>
                 <th>Phone</th>
                 <th>Email</th>
-             
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -417,7 +420,26 @@ const KlientaleContacts = ({ role }) => {
                   <td>{user.category_name}</td>
                   <td>{user.phone}</td>
                   <td>{user.email}</td>
-                 
+
+
+                  <td>
+                    <button className="permissions share-ref-button-tb"
+                      onClick={() => { navigate(`/klientale-contacts/share/${user.id}/${user.name}`) }}
+                    >Share Me</button>
+                  </td>
+            
+                  <td>
+                    <button className="permissions share-ref-button-tb"
+                      onClick={() => { navigate(`/klientale-contacts/contacts/send/${user.id}/${user.name}`) }}
+                    >Send me Referrals</button>
+                  </td>
+                  <td>
+                    <button className='permissions'>Convert to Lead</button>
+                  </td>
+
+                  <td>
+                    <button className="permissions">Create Task</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
