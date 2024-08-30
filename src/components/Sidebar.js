@@ -28,7 +28,7 @@ const Sidebar = (props) => {
   }
 
   const { auth, setAuth, tasklength, setTasklength, contactlength,
-    setConatctlength, leadlength, setLeadlength, activeID, roleId, notifications, setNotifications } = useContext(AuthContext);
+    setConatctlength, leadlength, setLeadlength, activeID, roleId, notifications, setNotifications , totalAvailableJobs } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
   const headers = {
     Authorization: auth.token,
@@ -153,7 +153,7 @@ const Sidebar = (props) => {
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/referral.svg" />
-                  <div className="daily-events">Inquiries({notifications})</div>
+                  <div className="daily-events">Inquiries({totalAvailableJobs})</div>
 
                 </div>
               </Link>
@@ -395,7 +395,7 @@ to multiply the revenue. </h6>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/referral.svg" />
-                    <div className="daily-events">Inquiries({notifications})</div>
+                    <div className="daily-events">Inquiries({totalAvailableJobs})</div>
 
                   </div>
                 </Link>

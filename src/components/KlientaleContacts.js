@@ -417,7 +417,7 @@ const KlientaleContacts = ({ role }) => {
                 <tr key={user.id}>
                   <td>{user.name}</td>
                   <td>{user.business_name}</td>
-                  <td>{user.category_name}</td>
+                  <td>{user.profession}</td>
                   <td>{user.phone}</td>
                   <td>{user.email}</td>
 

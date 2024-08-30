@@ -72,6 +72,7 @@ import EditProfession from "./components/EditProfession";
 import EmailCampaign2 from "./components/EmailCampaign2";
 import AddInquery from "./components/AddInquery";
 import EditInquiry from "./components/EditInquiry";
+import ChatMessages from "./components/ChatMessages";
 
 const App = () => {
   const { toggle, setToggle, auth, roleId, subscriptionStatus } = useContext(AuthContext)
@@ -262,6 +263,16 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <EditInquiry />
+                </PrivateRoute>
+              }
+            />
+
+
+            <Route
+              path="/inquiry/chat/:id" exact
+              element={
+                <PrivateRoute>
+                  <ChatMessages />
                 </PrivateRoute>
               }
             />

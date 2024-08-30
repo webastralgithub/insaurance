@@ -11,6 +11,7 @@ import Realtor from "./Realtor";
 import Vendor from "./Vendor";
 import Category from "./Category";
 import Profession from "./Profession";
+import Select from "react-select";
 
 const INITIAL_STATE = {
   username: "",
@@ -57,6 +58,7 @@ export default function Profile(props) {
   const [contacts, setContacts] = useState([]);
   const [active, setActive] = useState(activeTab || 1);
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [professionModal, setProfessionModal] = useState(false);
   const [modalMode, setModalMode] = useState("");
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -80,41 +82,49 @@ export default function Profile(props) {
     }
   }, [])
 
+  useLayoutEffect(() => {
+    getCurrentUser();
+  }, []);
+
   useEffect(() => {
     if (active === 5) {
       professionRef.current.scrollIntoView({ block: 'start' });
     }
   }, [])
 
-  useLayoutEffect(() => {
-    (async () => {
-      try {
-        const user = await
-          axios.get(`${url}api/admin/get-current-user`, { headers })
-        let userData = user.data.user
-        setPreviewImage(userData.profileImg ? userData.profileImg : "/placeholder@2x.png")
-        setUser({
-          id: userData.id,
-          username: userData.username,
-          name: userData.name,
-          email: userData.email,
-          phone: userData.phone,
-          profileImg: userData.profileImg ? user.profileImg : "/placeholder@2x.png",
-          fb: userData?.fb,
-          tiktok: userData?.tiktok,
-          twitter: userData?.twitter,
-          insta: userData?.insta,
-          referal_amount: userData?.referal_amount,
-          //  referral_description:userData?.referral_description,
-          isPay: userData?.is_pay,
 
-        }
-        );
-      } catch (error) {
-        console.error(error);
+  const [professionLabel, setProfessionLabel] = useState('')
+  const getCurrentUser = async () => {
+    try {
+      const user = await
+        axios.get(`${url}api/admin/get-current-user`, { headers })
+      let userData = user.data.user
+      setPreviewImage(userData.profileImg ? userData.profileImg : "/placeholder@2x.png")
+      setUser({
+        id: userData.id,
+        username: userData.username,
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        profileImg: userData.profileImg ? user.profileImg : "/placeholder@2x.png",
+        fb: userData?.fb,
+        tiktok: userData?.tiktok,
+        twitter: userData?.twitter,
+        insta: userData?.insta,
+        referal_amount: userData?.referal_amount,
+        //  referral_description:userData?.referral_description,
+        isPay: userData?.is_pay,
+        profession_id: userData?.profession_id
+
       }
-    })();
-  }, []);
+
+
+      );
+      setProfessionLabel(userData?.profession_name)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const handleClose = () => {
     setShow(false);
@@ -200,10 +210,6 @@ export default function Profile(props) {
 
   const validateForm = () => {
     let isValid = true;
-
-
-
-
 
     if (!user.name) {
       setNameError("Name is required");
@@ -296,6 +302,90 @@ export default function Profile(props) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    getProfession()
+  }, [user]);
+
+  const [profession, setProfession] = useState([])
+  const [seletedProfession, setSeletedProfession] = useState([])
+
+  const getProfession = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
+      const options = res.data.map((realtor) => ({
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setProfession(options)
+      const matchedprofession = options.find(insurance => insurance.value === user.profession_id);
+      setSeletedProfession(matchedprofession)
+
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
+
+
+  const openProfessionmodal = () => {
+    setProfessionModal(true)
+  }
+
+
+  const closeModalProfession = () => {
+    // setSeletedProfession([])
+    setProfessionModal(false);
+  };
+
+  const colourStylesCAt = {
+    menu: (styles) => ({
+      ...styles,
+      maxHeight: "242px",
+      minHeight: "242px",
+      overflowY: "auto",
+      boxShadow: "none",
+
+    }),
+    singleValue: styles => ({ ...styles, color: "#fff" }),
+    placeholder: styles => ({ ...styles, color: "#fff" }),
+    menuList: (styles) => ({
+      ...styles,
+      overflow: "unset"
+    }),
+    control: styles => ({
+      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
+      border: "none", borderRadius: "0", background: "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
+      padding: "10px 5px"
+    }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+
+      return {
+        ...styles,
+
+
+      };
+    },
+
+  };
+
+  const handleChangeProfession = async (e) => {
+    e.preventDefault();
+    if (!seletedProfession.value) {
+      toast.error("Please a Select Profession ")
+      return
+    }
+    try {
+      const response = await axios.put(`${url}api/admin/admin/change-realtor/${user.id}`, user, { headers });
+      getCurrentUser()
+      closeModalProfession()
+      toast.success("Profession Changed Successfully")
+    } catch (error) {
+      toast.error("Server is Busy")
+      console.error(error)
+    }
+
+  }
+
   return (
     <div className="add_property_btn">
       <div className="inner-pages-top">
@@ -308,9 +398,44 @@ export default function Profile(props) {
           {modalMode === "add" && (
             <AddRoleForm onAdd={addRole} onCancel={closeModal} />
           )}
-
-
         </Modal>
+
+        <Modal
+          isOpen={professionModal}
+          onRequestClose={closeModalProfession}
+          style={customStyles}
+        >
+
+          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
+
+            <img className="close-modal-share" onClick={closeModalProfession} src="plus.svg" />
+            <form onSubmit={(e) => handleChangeProfession(e)}>
+              <h3 className="heading-category">Select Profession</h3>
+
+              <Select
+                placeholder="Select Category.."
+                isMulti={false}
+                value={seletedProfession}
+                onChange={(selectedOption) => {
+                  setUser({ ...user, profession_id: selectedOption.value });
+                  setSeletedProfession(selectedOption)
+                }}
+                options={profession}
+                components={{
+                  DropdownIndicator: () => null,
+                  IndicatorSeparator: () => null
+                }}
+                styles={colourStylesCAt}
+                className="select-new"
+                menuIsOpen={true}
+              />
+              <div className="modal-convert-btns">
+                <button type="submit">Change Profession</button>
+              </div>
+            </form>
+          </div>
+        </Modal>
+
         <h3>My Profile</h3>
 
       </div>
@@ -392,22 +517,30 @@ export default function Profile(props) {
                     <span style={{ color: "red" }} className="error-message">{phoneError}</span>
                   </label>
 
-                  <label><button onClick={(e) => {
-                    e.preventDefault()
-                    openModal("add")
-                  }}> Change Password</button></label>
+                  <label>
+                    <button onClick={(e) => {
+                      e.preventDefault()
+                      openModal("add")
+                    }}> Change Password
+                    </button>
+                  </label>
+
+
+
+
+
 
                   <Modal className='login-modal' show={show}
-
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
                   >
                     <div style={{ display: "flex", justifyContent: "flex-end" }}>
                       <button style={{ border: "none", background: "transparent" }} onClick={handleClose} ><img className='img-fluid' src="/images/cross.png" /></button>
-
                     </div>
-
                   </Modal>
+
+
+
                 </div>
 
                 <div className="add-social-icon">
@@ -431,6 +564,23 @@ export default function Profile(props) {
                     />
                   </label>
 
+                  <label>Profession
+                    <input
+                      name="prfession"
+                      type="text"
+                      defaultValue={professionLabel}
+                      disabled={true}
+                    // onChange={handleInput}
+                    />
+                  </label>
+
+                  <label>
+                    <button onClick={(e) => {
+                      getProfession()
+                      e.preventDefault()
+                      openProfessionmodal()
+                    }}> Change Profession</button>
+                  </label>
 
                   <label>Twitter
                     <input
@@ -475,6 +625,9 @@ export default function Profile(props) {
                       </div>
                     </div>
 
+
+
+
                     <div className="profile-btm-cnt-last-line-right">
                       <label>Referral Amount
                         <input
@@ -490,7 +643,10 @@ export default function Profile(props) {
                       <div style={{ textAlign: 'center' }} className="custom_profile_btn">
                         <button className="btn-save" type="submit">Save</button>
                       </div>
+
+
                     </div>
+
                   </div>
                 </div>
               </div>

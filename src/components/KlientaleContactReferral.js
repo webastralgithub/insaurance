@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Select, { components } from 'react-select';
 import "./admin.css"
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
@@ -12,11 +13,6 @@ import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useNavigate, useParams, useRouter } from "react-router-dom";
-
-
-
-
-
 
 const KlientaleContactReferral = ({ role }) => {
   const { id, name } = useParams()
@@ -37,14 +33,10 @@ const KlientaleContactReferral = ({ role }) => {
   const [seletedCategory, setSelectedCategory] = useState(null);
   const [modalMode, setModalMode] = useState("");
   const [users, setUsers] = useState([]);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [viewState, setViewState] = useState("contacts")
   const [currentPage, setCurrentPage] = useState(1);
   const [width, setWidth] = useState(window.innerWidth);
-
-
-
   const { auth, property, setProperty, setAuth, email } = useContext(AuthContext);
   const headers = {
     Authorization: auth.token,
@@ -77,16 +69,15 @@ const KlientaleContactReferral = ({ role }) => {
   const sendRefferal = async (contact) => {
     const response = axios.post(`${klintaleUrl}share`,
       { sendTo: id, selectedContacts: [contact], type: 2, email: email.email });
-
     toast.success("Contact Sent successfully", {
       autoClose: 3000,
       position: toast.POSITION.TOP_RIGHT,
     });
     setSelectedContacts()
     closeModal()
-
-
   }
+
+
   const convert = async (e) => {
     e.preventDefault()
     if (!seletedCategory?.value) {
@@ -489,34 +480,39 @@ const KlientaleContactReferral = ({ role }) => {
       {/* Rest of your component remains the same... */}
 
       <div className="table-container share-ref-table-in">
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Business Name</th>
-              <th>Profession</th>
-              <th>Phone</th>
-              <th>Email Id</th>
-            </tr>
-          </thead>
-          {userss.length > 0 && !active &&
-            userss.map((user) => (user.id != id && <tbody>
+        {dataLoader ?
+          (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+            <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+          </div>)
 
-              <tr key={user.id}>
-                {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                <td>  <button className="permissions share-ref-button-tb"
-                  onClick={() => {
-                    handleDeleteClick(user.id)
-                  }}       >Send</button>       </td>
-                <td>{user.name}</td>
-                <td>{user.business_name}</td>
-                <td>{user.category_name}</td>
-                <td>{user.phone}</td>
-                <td>{user.email}</td>
+          : (
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Business Name</th>
+                  <th>Profession</th>
+                  <th>Phone</th>
+                  <th>Email Id</th>
+                </tr>
+              </thead>
+              {userss.length > 0 && !active &&
+                userss.map((user) => (user.id != id && <tbody>
+
+                  <tr key={user.id}>
+                    <td>  <button className="permissions share-ref-button-tb"
+                      onClick={() => {
+                        handleDeleteClick(user.id)
+                      }}       >Send</button>       </td>
+                    <td>{user.name}</td>
+                    <td>{user.business_name}</td>
+                    <td>{user.category_name}</td>
+                    <td>{user.phone}</td>
+                    <td>{user.email}</td>
 
 
-                {/* <td> 
+                    {/* <td> 
                     
                   <button className="permissions"
                     onClick={() => {changeView(Number(contact.id),contact.firstname)
@@ -526,9 +522,9 @@ const KlientaleContactReferral = ({ role }) => {
           
           </td> */}
 
-              </tr>
-            </tbody>))}
-        </table>
+                  </tr>
+                </tbody>))}
+            </table>)}
         {totalPages > 1 && !active && (
           <div className="pagination">
             {renderPageNumbers()}

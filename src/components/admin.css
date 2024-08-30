@@ -27,7 +27,11 @@ table tr td, table tr th{
 .add_property_btn{
    top: 100px;
 }
-
+td.forward-and-contact-button {
+    display: flex;
+    flex-direction: column;
+    row-gap: 7px;
+}
 /* .form-user-add .form-user-add-wrapper{
     display: flex;
     flex-wrap: wrap;

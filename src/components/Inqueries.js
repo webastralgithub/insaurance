@@ -368,6 +368,7 @@ const Inqueries = () => {
         let dataSend = {
             inquiry_id: queryIdForMessage,
             message: messageText,
+            email: userInfo?.email
         }
         try {
             const response = await axios.post(`${url}api/create_notification`, dataSend, { headers, })
@@ -397,8 +398,15 @@ const Inqueries = () => {
                 <div className="add_user_btn">
                     <button onClick={() => navigate("/add-inquiry")}>
                         <img src="/plus.svg" />
-                        Add Inquiry</button>
+                        Add Inquiry
+                        </button>
                 </div>
+
+                {/* <div className="add_user_btn">
+                    <button onClick={() => navigate("/inquiry/chat/1")}>Chat box</button>
+                </div> */}
+
+
                 <div className="search-grp-with-btn">
                     <div className="search-group">
                         <input type="text"
@@ -476,9 +484,9 @@ const Inqueries = () => {
                                             <td >{contact?.description}</td>
                                             <td>{contact.profession?.name}</td>
                                             {contact?.user?.id != userID ?
-                                                <td>
+                                                <td className="forward-and-contact-button">
                                                     <button className="permissions" onClick={() => openContactInfo(contact?.user, contact.id)}>Contact</button>
-                                                    <button className="permissions" style={{ marginLeft: '5px' }} onClick={openForwardContacts}>Forward</button>
+                                                    <button className="permissions" onClick={openForwardContacts}>Forward</button>
                                                 </td>
                                                 : <td></td>
                                             }
@@ -532,7 +540,7 @@ const Inqueries = () => {
                                 <div>
                                     <label>Phone No. : </label>
                                     <a href={`tel:${userInfo?.phone}`}>
-                                        <label>P{userInfo?.phone}</label></a>
+                                        <label>{userInfo?.phone}</label></a>
                                 </div>
                                 <div>
                                     <div>

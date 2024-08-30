@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUsercategory_id, setcurrentUsercurrentUsercategory_id] = useState(localStorage.getItem('category_id'))
  
  //notificationsLength
-  const [notifications, setNotifications] = useState(localStorage.getItem("notificationsLength"))
+  const [notifications, setNotifications] = useState()
   return (
     <AuthContext.Provider value={{
       toggle, setToggle,

@@ -118,7 +118,7 @@ const AddInquery = () => {
                 headers,
             });
             if (response.status) {
-                toast.success("Inquiry Added Succesfully")
+                toast.success("Inquiry Added Successfully")
                 navigate("/inquiries")
             }
 

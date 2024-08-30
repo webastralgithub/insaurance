@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Select, { components } from 'react-select';
 import "./admin.css"
-
 import Modal from "react-modal";
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
@@ -13,7 +12,8 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useNavigate, useParams, useRouter } from "react-router-dom";
 import Spinner from "./Spinner";
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 
 
@@ -268,7 +268,7 @@ const KlientaleShareMe = ({ role }) => {
 
 
   useEffect(() => {
-    getCategories()
+    // getCategories()
   }, []);
 
 
@@ -276,10 +276,6 @@ const KlientaleShareMe = ({ role }) => {
     if (!dateString) {
       return ""; // Handle cases where the date string is empty or undefined
     }
-
-
-
-
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -321,6 +317,7 @@ const KlientaleShareMe = ({ role }) => {
   const formatPhoneNumber = (phoneNumber) => {
     return `+1 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
   };
+
   // Rest of your component remains the same..
   const getKlientaleContacts = async () => {
     setDataLoader(true)
@@ -436,33 +433,38 @@ const KlientaleShareMe = ({ role }) => {
         {/* Rest of your component remains the same... */}
 
         <div className="table-container share-ref-table-in">
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Business Name</th>
-                <th>Profession</th>
-                <th>Phone</th>
-                <th>Email Id</th>
-              </tr>
-            </thead>
-            {userss?.length > 0 &&
-              userss?.map((user) => (user.id != id && <tbody>
+          {dataLoader ?
+            (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+              <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+            </div>)
 
-                <tr key={user.id}>
-                  {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                  <td>  <button className="permissions share-ref-button-tb"
-                    onClick={() => {
-                      handleDeleteClick(user.id)
-                    }}>Share</button>       </td>
-                  <td>{user.name}</td>
-                  <td>{user.business_name}</td>
-                  <td>{user.category_name}</td>
-                  <td>{user.phone}</td>
-                  <td>{user.email}</td>
+            : (
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Business Name</th>
+                    <th>Profession</th>
+                    <th>Phone</th>
+                    <th>Email Id</th>
+                  </tr>
+                </thead>
+                {userss?.length > 0 &&
+                  userss?.map((user) => (user.id != id && <tbody>
 
-                  {/* <td> 
+                    <tr key={user.id}>
+                      <td>  <button className="permissions share-ref-button-tb"
+                        onClick={() => {
+                          handleDeleteClick(user.id)
+                        }}>Share</button>       </td>
+                      <td>{user.name}</td>
+                      <td>{user.business_name}</td>
+                      <td>{user.category_name}</td>
+                      <td>{user.phone}</td>
+                      <td>{user.email}</td>
+
+                      {/* <td> 
                    
                  <button className="permissions"
                    onClick={() => {changeView(Number(contact.id),contact.firstname)
@@ -476,9 +478,9 @@ const KlientaleShareMe = ({ role }) => {
 
 
 
-                </tr>
-              </tbody>))}
-          </table>
+                    </tr>
+                  </tbody>))}
+              </table>)}
           {totalPages > 1 && !active && (
             <div className="pagination">
               {renderPageNumbers()}

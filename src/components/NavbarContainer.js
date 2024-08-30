@@ -89,7 +89,7 @@ const NavbarContainer = (props) => {
   const { pathname } = useLocation();
   const { auth, setAuth, tasklength, setTasklength, plan,
     roleId, subscriptionStatus, settotalAvailableJobs, settotalReffralEarnedMoney,
-    settotalReffrals, settotalReffralsReceived, setLeadlength } = useContext(AuthContext);
+    settotalReffrals, settotalReffralsReceived, setLeadlength , notifications, setNotifications } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -207,6 +207,7 @@ const NavbarContainer = (props) => {
         let userDataLead = user.data
 
         setNotificationLength(userDataLead.notifications)
+        setNotifications(userDataLead.notifications.length)
         localStorage.setItem('notificationsLength', userDataLead.notifications.length)
         localStorage.setItem('subscription_status', userData.subscription_status)
         localStorage.getItem('category_id', userData.category_id)
@@ -436,9 +437,9 @@ const NavbarContainer = (props) => {
         {/* <Link to="/profile">  <img className="icon-dashboard2" alt="" src="/icon-dashboard1.svg" /></Link>  */}
         <div className="background-group">
           <div className="background6" />
-          <div className="div3">{notificatioLength.length}</div>
+          <div className="div3">{notifications}</div>
         </div>
-      </div>
+      </div>  
 
       <div className="icon-dashboard share-ref-top-wrp">
         <button onClick={() => setIsOpen(true)}>
