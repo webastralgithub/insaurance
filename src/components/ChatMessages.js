@@ -15,7 +15,7 @@ import Modal from "react-modal";
 
 const ChatMessages = () => {
     const { id } = useParams()
-
+    const navigate = useNavigate()
     const { auth, roleId, userID, professionId } = useContext(AuthContext);
     const headers = { Authorization: auth.token };
     const url = process.env.REACT_APP_API_URL;
@@ -23,15 +23,16 @@ const ChatMessages = () => {
     const [queryIdForMessage, setQueryIdForMessage] = useState()
     const [dataLoader, setDataLoader] = useState(false)
     const [messageText, setMessageText] = useState("")
-    const [messages, setMessages] = useState([])
+    const [messages, setMessages] = useState([]);
     const [totalPages, setTotalPages] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    // https://insuranceadmin.nvinfobase.com/api/get-message/69?page=1
+
+
     const getChat = async () => {
         setDataLoader(true)
         try {
-            const response = await axios.get(`${url}api/get-message/34232?page=${currentPage}`, { headers, })
+            const response = await axios.get(`${url}api/get_full_chat?page=${currentPage}/${id}`, { headers, })
             let data = response.data;
             // console.log("response", data.messages)
             setMessages(data.messages)
@@ -39,14 +40,16 @@ const ChatMessages = () => {
             setDataLoader(false)
         } catch (error) {
             setDataLoader(false)
+            toast.error("Server is Busy");
+            console.log(error)
         }
     }
 
 
-    useEffect(() => {
-        if (id)
-            getChat()
-    }, [id])
+    // useEffect(() => {
+    //     if (id)
+    //         getChat()
+    // }, [id])
 
 
     const handleSendMessage = async (e) => {
@@ -63,6 +66,8 @@ const ChatMessages = () => {
             // email:  user email to whom send email
         }
         try {
+            //const response = await axios.post(`${url}api/create_notification`, dataSend, { headers, })
+
             const response = await axios.post(`${url}api/create_notification`, dataSend, { headers, })
 
             if (response.status === 200) {
@@ -70,6 +75,7 @@ const ChatMessages = () => {
             }
             setMessageText("")
             setQueryIdForMessage()
+            getChat()
             setDataLoader(false)
         } catch (error) {
             setDataLoader(false)
@@ -79,50 +85,63 @@ const ChatMessages = () => {
 
     }
 
+
+
+
+    // console.log(messages)
     return (
         <div className="add_property_btn">
-            <div className="inner-pages-top">
-                <h3>Messages</h3>
+            <div className="property_header header-with-back-btn">
+                <h3>
+                    <button type="button"
+                        className="back-only-btn" onClick={() => navigate(-1)}>
+                        <img src="/back.svg" />
+                    </button>
+                    Messages
+                </h3>
 
-                {/* <div className="search-group">
-                    <input type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-
-                        placeholder="Search here" />
-                    <img src="/search.svg" />
-                </div> */}
 
             </div>
-            <div className="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>From</th>
-                            <th>Messages</th>
-                            <th>To</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {messages && messages?.map((user, index) => (
-                                <tr key={index}>
-                                    <td className="property-link" >{user?.sender_name}</td>
-                                    <td >{user?.message?.replace(/(<([^>]+)>)/gi, '').slice(0, 100).replace(/(?<=\s)\S*$/i, '')}</td>
-                                    <td>{user.reciever_name}</td>
-                                </tr>
-            
-                        ))}
-                    </tbody>
-                </table>
-                {/* {messages?.length > 0 && (
-            <div className="pagination">
-              {renderPageNumbers()}
+
+
+
+
+            <div className="main-chat-div">
+                <div className="user-detail-title-info">
+                    <label>Ajay kumar</label>
+                    <label>I need designer help</label>
+                </div>
+
+                {dataLoader ?
+                    (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+                        <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+                    </div>)
+
+                    : (
+                        <div className="messages-div">
+                            {messages.length > 0 && messages.map((msg, index) => (
+                                <div key={index} className={`message-div  ${msg.reciever_id == 80 ? "receiver-div" : "sender-div"}`}>
+                                    <p >{msg.message}</p>
+                                    <small>{msg.created_at}</small> {/* Display date here */}
+                                </div>))}
+
+                        </div>)}
+
+                <div className="message-box">
+                    <textarea
+                        value={messageText}
+                        onChange={(e) => setMessageText(e.target.value)}
+                        placeholder="Type your message here..."
+                    />
+                    <button onClick={handleSendMessage}>Send</button>
+                </div>
             </div>
-          )} */}
-            </div>
+
             {messages.length == 0 && <p className="no-data">No data Found</p>}
         </div>
     )
 }
+
+
 
 export default ChatMessages

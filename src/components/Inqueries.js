@@ -11,8 +11,21 @@ import { useNavigate } from "react-router-dom";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Modal from "react-modal";
-import Select, { components } from "react-select";
+import Tooltip from '@atlaskit/tooltip';
+import Select, { components } from 'react-select';
 
+const msgStyles = {
+    background: 'white',
+    color: 'black',
+};
+
+//   const NoOptionsMessage = (props) => {
+//     return (
+//       <Tooltip content="Custom NoOptionsMessage Component">
+//         <components.NoOptionsMessage {...props} />
+//       </Tooltip>
+//     );
+//   };
 
 const CustomDropdown = ({ children, searchText, ...props }) => {
     const selectedOptions = props.getValue();
@@ -103,9 +116,10 @@ const Inqueries = () => {
     const [active, setActive] = useState(1)
     const [queries, setQueries] = useState([])
     const [userInfo, setUserInfo] = useState()
-    const [queryState, setQueryState] = useState(1)
-    const [messageText, setMessageText] = useState("")
+    const [queryState, setQueryState] = useState(roleId == 1 ? 0 : 1);
 
+    const [messageText, setMessageText] = useState("")
+    const [prodessionPara, sendProfessionPara] = useState(null)
 
     const clearSearch = () => {
         searchRef.current.value = ""
@@ -140,37 +154,72 @@ const Inqueries = () => {
     };
 
 
-    const getContactList = async () => {
+
+    useEffect(() => {
+        getContactList()
+    }, [active, prodessionPara, queryState])
+
+
+    const getContactList = async (contact) => {
+        if (prodessionPara === null || prodessionPara === undefined) {
+            return
+        }
         try {
-            const response = await axios.get(`${url}api/contact_by_profession/${professionId}`, { headers, });
+            // setDataLoader(true)
+            if (queryState < 3) {
+                const response = await axios.get(`${url}api/contact_by_profession/${prodessionPara}`, { headers, });
+                if (response.status === 200) {
+                    if (active == 1) {
+                        const options = response?.data.insurance_contact.map((realtor) => ({
+                            value: realtor.id,
+                            label: realtor.firstname,
+                        }));
+                        setContactoptions(options)
 
-            if (response.status === 200) {
-                if (active == 1) {
-                    const options = response?.data.insurance_contact.map((realtor) => ({
-                        value: realtor.id,
-                        label: realtor.firstname,
-                    }));
-                    setContactoptions(options)
+                    }
 
-                }
-
-                if (active == 2) {
-                    const options = response?.data?.klientale_contact.map((realtor) => ({
-                        value: realtor.id,
-                        label: realtor.name,
-                    }));
-                    setContactoptions(options)
+                    if (active == 2) {
+                        const options = response?.data?.klientale_contact.map((realtor) => ({
+                            value: realtor.id,
+                            label: realtor.name,
+                        }));
+                        setContactoptions(options)
+                    }
                 }
             }
 
+
+
+            setDataLoader(false)
         } catch (error) {
             console.error(error)
+            setDataLoader(false)
         }
-
-
     }
 
 
+    useEffect(() => {
+        if (queryState === 2) {
+            // getChatList()
+        }
+    }, [queryState])
+
+
+    const [chatList, setChatList] = useState('')
+    const getChatList = async () => {
+        setForwardModel(true)
+        try {
+            const response = await axios.get(`${url}api/chat_list?page=${currentPage}&search=${searchRef.current.value}`, { headers, });
+            if (response.status === 200)
+                setQueries(response.data)
+            setChatList(response.data)
+            setForwardModel(false)
+        } catch (error) {
+            setForwardModel(false)
+            toast.error("Server is Busy");
+            console.error(error)
+        }
+    }
 
     const getQueries = async () => {
         setDataLoader(true)
@@ -198,6 +247,47 @@ const Inqueries = () => {
         }
     }
 
+
+
+    const handleCloseModel = () => {
+        setForwardModel(false)
+        setActive(1)
+
+    }
+    const getContactMyinqueries = async () => {
+        // setForwardModel(true)
+        if (prodessionPara === null) {
+            return
+        }
+        try {
+            const response = await axios.get(`${url}api/contact_by_profession/${prodessionPara}`, { headers, });
+
+
+            if (queryState === 1) {
+                if (response.status === 200) {
+                    if (active == 1) {
+                        const options = response?.data.insurance_contact.map((realtor) => ({
+                            value: realtor.id,
+                            label: realtor.firstname,
+                        }));
+                        setContactoptions(options)
+
+                    }
+
+                    if (active == 2) {
+                        const options = response?.data?.klientale_contact.map((realtor) => ({
+                            value: realtor.id,
+                            label: realtor.name,
+                        }));
+                        setContactoptions(options)
+                    }
+                }
+            }
+
+        } catch (error) {
+
+        }
+    }
 
 
     const handleDeleteClick = (id) => {
@@ -233,9 +323,7 @@ const Inqueries = () => {
         }
     }
 
-    useEffect(() => {
-        getContactList()
-    }, [active])
+
 
     useEffect(() => {
         getQueries()
@@ -250,10 +338,8 @@ const Inqueries = () => {
         setQueryIdForMessage(queryId)
     }
 
-    const openForwardContacts = async () => {
-        await getContactList()
-        setForwardModel(true)
-    }
+
+
     const [searchText, setSearchText] = useState("");
     const customStyles = {
         content: {
@@ -365,6 +451,7 @@ const Inqueries = () => {
             return
         }
         setDataLoader(true)
+        setContactModel(false)
         let dataSend = {
             inquiry_id: queryIdForMessage,
             message: messageText,
@@ -376,9 +463,9 @@ const Inqueries = () => {
             if (response.status === 200) {
                 toast.success("Message Send Successfully")
             }
+
             setMessageText("")
             setQueryIdForMessage()
-            setContactModel(false)
             setDataLoader(false)
         } catch (error) {
             setDataLoader(false)
@@ -395,13 +482,14 @@ const Inqueries = () => {
 
 
                 <h3>Inquiries</h3>
-                <div className="add_user_btn">
-                    <button onClick={() => navigate("/add-inquiry")}>
-                        <img src="/plus.svg" />
-                        Add Inquiry
+                {roleId != 1 &&
+                    <div className="add_user_btn">
+                        <button onClick={() => navigate("/add-inquiry")}>
+                            <img src="/plus.svg" />
+                            Add Inquiry
                         </button>
-                </div>
-
+                    </div>
+                }
                 {/* <div className="add_user_btn">
                     <button onClick={() => navigate("/inquiry/chat/1")}>Chat box</button>
                 </div> */}
@@ -425,20 +513,27 @@ const Inqueries = () => {
             </div>
             <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
                 <div className="add_user_btn">
-
-                    <button
+                    {roleId != 1 && <button
                         className={queryState == 1 ? "active" : ""}
                         onClick={() => { setQueryState(1); setSelectedContacts([]); setContactoptions([]); setButtonActive(1); searchRef.current.value = ""; setCurrentPage(1) }}
                     >
                         My Inquiries
                     </button>
-
+                    }
                     <button
                         className={queryState == 0 ? "active" : ""}
                         onClick={() => { setQueryState(0); setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setCurrentPage(1) }}
                     >
                         Inquiries
                     </button>
+                    {roleId == 1 &&
+                        <button
+                            className={queryState == 2 ? "active" : ""}
+                            onClick={() => { setQueryState(2); setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setCurrentPage(1) }}
+                        >
+                            Messages
+                        </button>
+                    }
                 </div>
             </div>
             <div className="table-container">
@@ -448,63 +543,96 @@ const Inqueries = () => {
                         <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
                     </div>)
 
-                    : (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Profession</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {queryState === 1 &&
-                                    queries?.length > 0 && queries?.map((contact) => (
-                                        <tr key={contact.id}>
-                                            <td>{formatDate(contact?.created_at)}</td>
-                                            {/* edit query */}
-                                            {/* className={`${contact?.user?.id == userID && "property-link"}`}
-                                        onClick={() => {navigate(`/edit-inquiry/${contact.id}`, { state: { data: contact } })}} */}
-                                            <td>{contact?.user?.username}</td>
-                                            <td >{contact?.description}</td>
-                                            <td>{contact.profession?.name}</td>
-                                            <td onClick={() => handleDeleteClick(contact.id)}>
-                                                <img className="delete-btn-ico" src="/delete.svg" />
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                                {queryState === 0 &&
-                                    queries?.length > 0 && queries?.map((contact) => (
-                                        <tr key={contact.id}>
-                                            <td>{formatDate(contact?.created_at)}</td>
-                                            <td>{contact?.user?.username}</td>
-                                            <td >{contact?.description}</td>
-                                            <td>{contact.profession?.name}</td>
-                                            {contact?.user?.id != userID ?
-                                                <td className="forward-and-contact-button">
-                                                    <button className="permissions" onClick={() => openContactInfo(contact?.user, contact.id)}>Contact</button>
-                                                    <button className="permissions" onClick={openForwardContacts}>Forward</button>
-                                                </td>
-                                                : <td></td>
-                                            }
-                                        </tr>
-                                    ))
-                                }
+                    : (<>
+                        {(queryState === 0 || queryState === 1) &&
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Profession</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {queryState === 1 &&
+                                        queries?.length > 0 && queries?.map((contact) => (
+                                            <tr key={contact.id}>
+                                                <td>{formatDate(contact?.created_at)}</td>
+                                                {/* edit query */}
+                                                {/* className={`${contact?.user?.id == userID && "property-link"}`}
+                                                  onClick={() => {navigate(`/edit-inquiry/${contact.id}`, { state: { data: contact } })}} */}
+                                                <td>{contact?.user?.username}</td>
+                                                <td >{contact?.description}</td>
+                                                <td>{contact.profession?.name}</td>
+                                                <td> <button className="permissions" onClick={() => { sendProfessionPara(contact.profession_id); setForwardModel(true) }}>Forward</button></td>
+                                                <td onClick={() => handleDeleteClick(contact.id)}>
 
-                            </tbody>
-                        </table>
-                    )}
-                {totalPages > 1 && (
+                                                    <img className="delete-btn-ico" src="/delete.svg" />
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                    {queryState === 0 &&
+                                        queries?.length > 0 && queries?.map((contact) => (
+                                            <tr key={contact.id}>
+                                                <td>{formatDate(contact?.created_at)}</td>
+                                                <td>{contact?.user?.username}</td>
+                                                <td >{contact?.description}</td>
+                                                <td>{contact.profession?.name}</td>
+                                                {contact?.user?.id != userID ?
+                                                    <td className="forward-and-contact-button">
+                                                        <button className="permissions" onClick={() => openContactInfo(contact?.user, contact.id)}>Contact</button>
+                                                        <button className="permissions" onClick={() => { sendProfessionPara(contact.profession_id); setForwardModel(true) }}>Forward</button>
+                                                    </td>
+                                                    : <td></td>
+                                                }
+                                            </tr>
+                                        ))
+                                    }
+
+                                </tbody>
+                            </table>}
+
+
+
+                    </>)}
+
+                {queryState === 2 && (<div className="main-div-message-list-parent" style={{ backgroundColor: 'white' }}>
+                    <div className="main-div-messages-list" onClick={() => navigate("/inquiry/chat/:id")}>
+                        <div className="single-chat-info">
+                            <div className="message-info">
+                                <label className="username">UserName</label>
+                                <label className="latest-message">Latest read message</label>
+                            </div>
+                            {/* <span className="unread-message">unread message</span> */}
+
+                        </div>
+                    </div>
+
+                    <div className="main-div-messages-list" onClick={() => navigate("/inquiry/chat/:id")}>
+                        <div className="single-chat-info">
+                            <div className="message-info">
+                                <label className="username">UserName</label>
+                                <label className="latest-unread-message">Latest unread message</label>
+                            </div>
+                            <span className="unread-message">unread message</span>
+
+                        </div>
+                    </div>
+                </div>)}
+
+                {queryState < 2 && totalPages > 1 && (
                     <div className="pagination">
                         {renderPageNumbers()}
                     </div>
                 )}
             </div>
-            {queries.length == 0 && !dataLoader && queryState === 1 && <p className="no-data">No data Found</p>}
-            {queries.length == 0 && !dataLoader && queryState === 0 && <p className="no-data">No data Found</p>}
+
+            {queries.length == 0 && !dataLoader && queryState == 2 && <p className="no-data">No data Found</p>}
+            {queries.length == 0 && !dataLoader && queryState == 1 && <p className="no-data">No data Found</p>}
+            {queries.length == 0 && !dataLoader && queryState == 0 && <p className="no-data">No data Found</p>}
 
 
 
@@ -568,14 +696,10 @@ const Inqueries = () => {
                 </Modal>
             </div>
 
-
-
-
-
             <div className="test-class-popup" style={{ backgroundColor: 'red' }}>
                 <Modal
                     isOpen={forwardModel}
-                    onRequestClose={() => setForwardModel(false)}
+                    onRequestClose={handleCloseModel}
                     style={customStyles}
                 >
                     <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
@@ -599,12 +723,12 @@ const Inqueries = () => {
 
                     <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category pop-up-add-configure">
                         <span className="close-modal-share  close-modal-share-span"
-                            onClick={() => setForwardModel(false)}
+                            onClick={handleCloseModel}
                             style={{ color: 'black', backgroundColor: "white", rotate: '0' }}
                         >X</span>
 
                         <form onSubmit={(e) => e.preventDefault()}>
-                            <h3 className="heading-category">Select Contact(s) </h3>
+                            <h3 className="heading-category">Select Contact (s) </h3>
                             <Select
                                 placeholder={
                                     <PlaceholderWithIcon>Search Contacts...</PlaceholderWithIcon>
@@ -622,10 +746,13 @@ const Inqueries = () => {
                                 components={{
                                     DropdownIndicator: () => null,
                                     IndicatorSeparator: () => null,
+
                                     Menu: (props) => (
                                         <CustomDropdown searchText={searchText} {...props} />
                                     ),
+                                    // NoOptionsMessage: NoOptionsMessage,
                                 }}
+                                // styles={{ noOptionsMessage: (base) => ({ ...base, ...msgStyles }) }}
                                 styles={colourStyles}
                                 className="select-new"
                                 isMulti // This is what enables multiple selections

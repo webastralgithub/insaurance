@@ -9,6 +9,7 @@
   margin-top: 70px;
   margin-bottom: 70px;
 }
+
 .login-form h2 {
   text-align: center;
 }
@@ -18,7 +19,8 @@
   margin-bottom: 5px;
 }
 
-.login-form input[type="text"], .login-form input[type="password"] {
+.login-form input[type="text"],
+.login-form input[type="password"] {
   width: 100%;
   padding: 12px 20px;
   margin-bottom: 20px;
@@ -47,33 +49,86 @@
   transition: all 0.3s;
 }
 
+.login-form button[name="cancel"] {
+  width: 100%;
+  background-color: #004889;
+  color: white;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid #004889;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.login-form button[name="cancel"]:hover {
+  background-color: #fff;
+  color: #004889;
+  transition: all 0.3s;
+}
+
+
+
+.login-form button[name="action"] {
+  margin-left: 66%;
+  /* width: 66%; */
+  border: none;
+  background-color: white;
+  color: #004889;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+}
+
+.login-form button[name="action"]:hover {
+  background-color: #fff;
+  color: #004889;
+  transition: all 0.3s;
+}
+
+
+
+
 @media (max-width:768px) {
   .login-form {
     margin-top: 20px;
   }
+
   nav {
     position: relative;
     padding-top: 20px;
   }
+
   .nav_footer .logo-desktop {
     padding-left: 0;
   }
+
   .logo-desktop {
     padding-left: 30px;
   }
+
   .footer-logo {
     height: 96px;
   }
+
   .table-container {
     overflow: auto;
   }
+
   .table-container table {
     width: 600px;
+  }
+
+  .login-form button[name="action"] {
+    margin-left: 54%;
+
   }
 }
 
 @media (max-width:480px) {
-  .login-form{
+  .login-form {
     margin-left: 20px;
     margin-right: 20px;
   }
@@ -83,4 +138,3 @@
     row-gap: 20px;
   }
 }
-

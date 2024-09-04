@@ -357,9 +357,16 @@ const AddLead = ({ user }) => {
 
   return (
     <form onSubmit={handleSubmit} className="form-user-add form-add-lead leads-add-lead-form">
-      <div className="property_header header-with-back-btn">
 
-        <h3> <button type="button" ref={errorScroll} className="back-only-btn" onClick={goBack}> <img src="/back.svg" /></button>Add Lead</h3>
+
+      <div className="property_header header-with-back-btn">
+        <h3>
+          <button type="button" ref={errorScroll}
+            className="back-only-btn" onClick={goBack}>
+            <img src="/back.svg" />
+          </button>
+          Add Lead
+        </h3>
 
         <div className="top-bar-action-btns">
           {/* <button type="submit" style={{background:"#004686"}} >Save</button> */}
@@ -560,7 +567,7 @@ const AddLead = ({ user }) => {
             styles={colourStyles}
             className="select-new"
           />
-       
+
         </div>
         <span className="error-message" style={{ color: "red" }}>{errors.selectedSource}</span>
         <div className="form-user-add-inner-wrap form-user-add-inner-wrap-add-lead-category ">

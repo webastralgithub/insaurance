@@ -189,7 +189,7 @@ const ContactReferral = ({ role }) => {
 
   return (
     <div className="add_property_btn">
-      <div className="inner-pages-top inner-pages-top-share-ref" style={{ "padding-bottom": "30px" }}>
+      <div className="inner-pages-top inner-pages-top-share-ref" style={{ "paddingBottom": "30px" }}>
 
 
         <h3> <button className="back-only-btn"
@@ -197,7 +197,7 @@ const ContactReferral = ({ role }) => {
             navigate("/contacts"); // Change the view state to "contacts"
           }}
         > <img src="/back.svg" /></button> {"Send Me Referrals"}({data?.firstname})</h3>
-        <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
+        <span className="share-text" style={{ "fontSize": "17px", "fontWeight": "700", "display": "flex", "marginTop": "6px", "position": "absolute", "top": "200px" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-share" viewBox="0 0 16 16">
             <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
           </svg>
@@ -255,7 +255,7 @@ const ContactReferral = ({ role }) => {
 
               {active === 0 && <>
                 {userss.length > 0 &&
-                  userss?.map((contact) => (contact.id != id && <tbody>
+                  userss?.map((contact) => (contact.id != id && <tbody key={contact.id}>
 
                     <tr key={contact.id}>
                       {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}

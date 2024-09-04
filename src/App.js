@@ -73,6 +73,7 @@ import EmailCampaign2 from "./components/EmailCampaign2";
 import AddInquery from "./components/AddInquery";
 import EditInquiry from "./components/EditInquiry";
 import ChatMessages from "./components/ChatMessages";
+import ResetPassword from "./components/ResetPassword";
 
 const App = () => {
   const { toggle, setToggle, auth, roleId, subscriptionStatus } = useContext(AuthContext)
@@ -118,6 +119,16 @@ const App = () => {
           <ToastContainer />
         </div>
 
+
+        {/* <Route
+          path="/reset-password/:id" exact
+          element={
+            <ResetPassword />
+          }
+        /> */}
+
+
+
         {auth && <>
           {!toggle && <div className="main-sidenav-wrapper">
             <Sidebar role={role} />
@@ -133,7 +144,13 @@ const App = () => {
           {auth && <NavbarContainer nameofuser={nameofuser} />}
 
           <Routes>
-            {!auth ? <Route path="/" element={<Login />} /> : <Route
+            {!auth ? (<>   <Route path="/" element={<Login />} />
+              <Route
+                path="/reset-password/:id" exact
+                element={
+                  <ResetPassword />
+                }
+              /> </>) : <Route
               path="/" exact
               element={
                 <PrivateRoute>
@@ -249,25 +266,26 @@ const App = () => {
               }
             />
 
-            <Route
-              path="/add-inquiry" exact
-              element={
-                <PrivateRoute>
-                  <AddInquery />
-                </PrivateRoute>
-              }
-            />
+            {roleId != 1 && <>
+              <Route
+                path="/add-inquiry" exact
+                element={
+                  <PrivateRoute>
+                    <AddInquery />
+                  </PrivateRoute>
+                }
+              />
 
-            <Route
-              path="/edit-inquiry/:id" exact
-              element={
-                <PrivateRoute>
-                  <EditInquiry />
-                </PrivateRoute>
-              }
-            />
-
-
+              <Route
+                path="/edit-inquiry/:id" exact
+                element={
+                  <PrivateRoute>
+                    <EditInquiry />
+                  </PrivateRoute>
+                }
+              />
+            </>
+            }
             <Route
               path="/inquiry/chat/:id" exact
               element={
@@ -276,6 +294,8 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
+
 
             <Route
               path="/posts" exact

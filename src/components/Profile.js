@@ -52,13 +52,12 @@ const AddRoleForm = ({ onAdd, onCancel }) => {
   );
 };
 export default function Profile(props) {
+
   const location = useLocation();
   const activeTab = location?.state?.data;
   const [user, setUser] = useState(INITIAL_STATE);
-  const [contacts, setContacts] = useState([]);
   const [active, setActive] = useState(activeTab || 1);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [professionModal, setProfessionModal] = useState(false);
   const [modalMode, setModalMode] = useState("");
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -92,8 +91,6 @@ export default function Profile(props) {
     }
   }, [])
 
-
-  const [professionLabel, setProfessionLabel] = useState('')
   const getCurrentUser = async () => {
     try {
       const user = await
@@ -120,7 +117,7 @@ export default function Profile(props) {
 
 
       );
-      setProfessionLabel(userData?.profession_name)
+
     } catch (error) {
       console.error(error);
     }
@@ -326,65 +323,40 @@ export default function Profile(props) {
     }
   };
 
-
-  const openProfessionmodal = () => {
-    setProfessionModal(true)
-  }
-
-
-  const closeModalProfession = () => {
-    // setSeletedProfession([])
-    setProfessionModal(false);
-  };
-
-  const colourStylesCAt = {
-    menu: (styles) => ({
-      ...styles,
-      maxHeight: "242px",
-      minHeight: "242px",
-      overflowY: "auto",
-      boxShadow: "none",
-
+  const colourStyles = {
+    valueContainer: (provided, state) => ({
+      ...provided,
+      padding: '12px 11px',
+      fontSize: "14px",
+      background: '#fff',
+      fontWeight: '550',
+      color: '#000000e8',
+      border: '1px solid rgba(8, 33, 48, 0.22)',
+      marginTop: '8px',
+      borderRadius: '5px',
     }),
-    singleValue: styles => ({ ...styles, color: "#fff" }),
-    placeholder: styles => ({ ...styles, color: "#fff" }),
-    menuList: (styles) => ({
-      ...styles,
-      overflow: "unset"
-    }),
-    control: styles => ({
-      ...styles, boxShadow: "unset", borderColor: "unset", minHeight: "0",
-      border: "none", borderRadius: "0", background: "linear-gradient(240deg, rgba(0,72,137,1) 0%, rgba(0,7,44,1) 100%)",
-      padding: "10px 5px"
-    }),
+    control: (styles) => ({ ...styles, border: "unset", boxShadow: "unset", zIndex: "99999", borderColor: "unset", minHeight: "0" }),
+    input: (styles) => ({ ...styles, margin: "0px", marginLeft: "123px" }),
+    listbox: (styles) => ({ ...styles, zIndex: "99999", backGround: "hidden" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-
       return {
         ...styles,
-
-
+        backGround: "#fff",
+        color: "#000",
+        position: "relative",
+        zIndex: "99",
+        fontSize: "14px"
       };
     },
+    placeholder: (provided, state) => ({
+      ...provided,
+      color: '#000000e8',
+      marginLeft: "10px",
+      fontSize: "14px",
+      fontWeight: '500'
 
+    })
   };
-
-  const handleChangeProfession = async (e) => {
-    e.preventDefault();
-    if (!seletedProfession.value) {
-      toast.error("Please a Select Profession ")
-      return
-    }
-    try {
-      const response = await axios.put(`${url}api/admin/admin/change-realtor/${user.id}`, user, { headers });
-      getCurrentUser()
-      closeModalProfession()
-      toast.success("Profession Changed Successfully")
-    } catch (error) {
-      toast.error("Server is Busy")
-      console.error(error)
-    }
-
-  }
 
   return (
     <div className="add_property_btn">
@@ -399,43 +371,6 @@ export default function Profile(props) {
             <AddRoleForm onAdd={addRole} onCancel={closeModal} />
           )}
         </Modal>
-
-        <Modal
-          isOpen={professionModal}
-          onRequestClose={closeModalProfession}
-          style={customStyles}
-        >
-
-          <div className="modal-roles-add convert-lead-pop-up-content pop-up-content-category">
-
-            <img className="close-modal-share" onClick={closeModalProfession} src="plus.svg" />
-            <form onSubmit={(e) => handleChangeProfession(e)}>
-              <h3 className="heading-category">Select Profession</h3>
-
-              <Select
-                placeholder="Select Category.."
-                isMulti={false}
-                value={seletedProfession}
-                onChange={(selectedOption) => {
-                  setUser({ ...user, profession_id: selectedOption.value });
-                  setSeletedProfession(selectedOption)
-                }}
-                options={profession}
-                components={{
-                  DropdownIndicator: () => null,
-                  IndicatorSeparator: () => null
-                }}
-                styles={colourStylesCAt}
-                className="select-new"
-                menuIsOpen={true}
-              />
-              <div className="modal-convert-btns">
-                <button type="submit">Change Profession</button>
-              </div>
-            </form>
-          </div>
-        </Modal>
-
         <h3>My Profile</h3>
 
       </div>
@@ -564,23 +499,34 @@ export default function Profile(props) {
                     />
                   </label>
 
-                  <label>Profession
+                  {/* <label>Profession
                     <input
                       name="prfession"
                       type="text"
                       defaultValue={professionLabel}
-                      disabled={true}
-                    // onChange={handleInput}
+                      // disabled={true}
+                      onChange={handleInput}
                     />
-                  </label>
+                  </label> */}
 
-                  <label>
-                    <button onClick={(e) => {
-                      getProfession()
-                      e.preventDefault()
-                      openProfessionmodal()
-                    }}> Change Profession</button>
-                  </label>
+
+
+                  <div className="form-user-add-inner-wrap">
+                    <label>Profession</label>
+
+                    <Select
+                      placeholder="Select Profession.."
+                      value={seletedProfession}
+                      onChange={(selectedOption) => {
+                        setUser({ ...user, profession_id: selectedOption.value });
+                        setSeletedProfession(selectedOption)
+                      }}
+                      options={profession}
+                      components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                      styles={colourStyles}
+                      className="select-new"
+                    />
+                  </div>
 
                   <label>Twitter
                     <input
@@ -607,7 +553,7 @@ export default function Profile(props) {
                     {user.isPay == 0 && <span className="for-bussiness" style={{ "color": "red" }}>For business profiles only</span>}
                     <div className="add-contact-user-custom-right">
                       <div className="form-user-add-inner-wrap">
-                        <label style={{ "padding-bottom": "10px" }}>Referral Description</label>
+                        <label style={{ "paddingBottom": "10px" }}>Referral Description</label>
                         <CKEditor
                           editor={ClassicEditor}
                           data={user?.referral_description || ""} // Provide a default value if user?.referral_description is null or undefined
@@ -640,6 +586,7 @@ export default function Profile(props) {
                         />
                         <span style={{ color: "red" }} className="error-message">{phoneError}</span>
                       </label>
+
                       <div style={{ textAlign: 'center' }} className="custom_profile_btn">
                         <button className="btn-save" type="submit">Save</button>
                       </div>

@@ -212,7 +212,7 @@ const Lead = () => {
     for (let i = 1; i <= totalPagess; i++) {
       pageNumbers.push(i);
     }
-    return pageNumbers.map((number) => (
+    return pageNumbers.map((number , index) => (
       <button className={currentPage === number ? "active" : ""}
         key={number} onClick={() => handlePageChange(number)}>{number}</button>
     ));
@@ -312,7 +312,7 @@ const Lead = () => {
             }
           }}
         > <img src="/back.svg" /></button>} {parentView ? `${parentName} Family ` : "Leads"}</h3>
-        <span className="share-text" style={{ "font-size": "17px", "font-weight": "700", "display": "flex", "margin-top": "6px", "position": "absolute", "top": "200px" }}>
+        <span className="share-text" style={{ "fontSize": "17px", "fontWeight": "700", "display": "flex", "marginTop": "6px", "position": "absolute", "top": "200px" }}>
 
           Your Leads and Contacts are fully encrypted and cannot be seen or accessed by anybody else.</span>
         <div className="add_user_btn">
@@ -340,7 +340,7 @@ const Lead = () => {
       <div className="add_property_btn">
         <>
             {leadCountData && leadCountData.map((category, index) => (
-              <div key={category.categoryId}>
+              <div key={index}>
                 <div className={`add_user_btn family_meber ${searchRef.current.value && category.leads_count > 0 ? "search-yellow-highlight" : ""}`} onClick={() => handleCategoryChange(category.id)} >
                   <h4>{category?.name} (<>{category?.leads_count})</></h4>
                   <button style={{ padding: "12px 18px" }}  >{activeCategory == category.id ? "-" : "+"}</button>
@@ -371,7 +371,7 @@ const Lead = () => {
                           <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
                         </div> : <>
                           {activeLeadCategory?.length > 0 &&
-                            activeLeadCategory?.map((contact) => (<tbody>
+                            activeLeadCategory?.map((contact , index) => (<tbody key={index}>
 
                               <tr key={contact.id}>
                               <td>{contact?.created_at.slice(0, 10)}</td>

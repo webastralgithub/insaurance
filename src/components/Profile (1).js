@@ -446,7 +446,7 @@ export default function Profile(props) {
                   <div className="profile-btm-cnt-last-line">
                     <div className="add-contact-user-custom-right">
                       <div className="form-user-add-inner-wrap">
-                        <label style={{ "padding-bottom": "10px" }}>Referral Description</label>
+                        <label style={{ "paddingBottom": "10px" }}>Referral Description</label>
                         <CKEditor
                           editor={ClassicEditor}
                           data={user?.referral_description || ""} // Provide a default value if user?.referral_description is null or undefined

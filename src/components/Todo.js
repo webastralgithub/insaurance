@@ -88,9 +88,9 @@ const TodoList = ({ role }) => {
     for (let i = 1; i <= totalPagess; i++) {
       pageNumbers.push(i);
     }
-    return pageNumbers.map((number) => (
+    return pageNumbers.map((number, index) => (
       <button className={currentPage == number ? "active" : ""}
-        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+        key={index} onClick={() => handlePageChange(number)}>{number}</button>
     ));
   };
 
@@ -207,8 +207,8 @@ const TodoList = ({ role }) => {
               <tbody>
 
                 {tasks && tasks?.map((task, index) => (
-                  <>
-                    {!task.IsRead && <tr key={task?.id}>
+                  
+                    !task.IsRead && <tr key={index}>
 
                       <td
                         className="property-link"
@@ -237,8 +237,8 @@ const TodoList = ({ role }) => {
                         ></img>
 
                       </td>
-                    </tr>}
-                  </>
+                    </tr>
+            
                 ))}
               </tbody>
             </table>)}

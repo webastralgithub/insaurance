@@ -8,6 +8,7 @@ const Footer = () => {
      const navigate=useNavigate()
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.clear();
         setAuth(null);
         navigate('/')
       }

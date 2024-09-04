@@ -49,6 +49,7 @@ const Sidebar = (props) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.clear();
     setAuth(null);
     navigate('/');
   };
@@ -96,16 +97,17 @@ const Sidebar = (props) => {
   };
 
   return (
-    <>
+    <>  
 
       {width > 991 ? (
         <>
           <div className="side-menu">
             <Link className="top-man-logo" to="/">
               <img className="icon" alt="" src="/insurance.png" />
-            </Link>
+            </Link> 
+
             <div className="side-menu-child" />
-            <div className="menu">
+            <div className="menu align-icon-sidebar">
               <Link to="/" className={location.pathname === "/" || location.pathname.includes("/todo-list/add/new-dashboard/") || location.pathname.includes("/todo-list-dashboard/edit/") ? "active" : ""}>
                 <div className="dashboard">
                   <img className="icon" alt="" src="/icon.svg" />
@@ -153,7 +155,7 @@ const Sidebar = (props) => {
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/referral.svg" />
-                  <div className="daily-events">Inquiries({totalAvailableJobs})</div>
+                  <div className="daily-events">Inquiries ({totalAvailableJobs})</div>
 
                 </div>
               </Link>
@@ -395,7 +397,7 @@ to multiply the revenue. </h6>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/referral.svg" />
-                    <div className="daily-events">Inquiries({totalAvailableJobs})</div>
+                    <div className="daily-events">Inquiries ({totalAvailableJobs})</div>
 
                   </div>
                 </Link>

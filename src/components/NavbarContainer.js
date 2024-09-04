@@ -119,6 +119,7 @@ const NavbarContainer = (props) => {
     localStorage.removeItem("name")
     localStorage.removeItem("roleId")
     localStorage.removeItem("plan");
+    localStorage.clear();
     setAuth(null);
     navigate("/");
   };

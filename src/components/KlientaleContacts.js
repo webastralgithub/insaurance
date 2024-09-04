@@ -209,14 +209,30 @@ const KlientaleContacts = ({ role }) => {
         value: realtor.id,
         label: realtor.name,
       }));
-      setCategories(options);
+      // setCategories(options);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
 
+  const getProfession = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}api/profession`, { headers });
+      const options = res.data.map((realtor) => ({
+        value: realtor.id,
+        label: realtor.name,
+      }));
+      setCategories(options);
+      // setProfession(options)
+
+    } catch (error) {
+      console.error("User creation failed:", error);
+    }
+  };
+
 
   useEffect(() => {
+    getProfession()
     fetchCategotires();
   }, []);
 
@@ -259,7 +275,8 @@ const KlientaleContacts = ({ role }) => {
 
   const getKlientaleContacts = async () => {
     setDataLoader(true)
-    let categoriesData = seletedCategory.map((item) => item.value)
+
+    let categoriesData = seletedCategory.map((item) => item.label)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
@@ -427,7 +444,7 @@ const KlientaleContacts = ({ role }) => {
                       onClick={() => { navigate(`/klientale-contacts/share/${user.id}/${user.name}`) }}
                     >Share Me</button>
                   </td>
-            
+
                   <td>
                     <button className="permissions share-ref-button-tb"
                       onClick={() => { navigate(`/klientale-contacts/contacts/send/${user.id}/${user.name}`) }}
