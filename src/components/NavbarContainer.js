@@ -89,7 +89,7 @@ const NavbarContainer = (props) => {
   const { pathname } = useLocation();
   const { auth, setAuth, tasklength, setTasklength, plan,
     roleId, subscriptionStatus, settotalAvailableJobs, settotalReffralEarnedMoney,
-    settotalReffrals, settotalReffralsReceived, setLeadlength , notifications, setNotifications } = useContext(AuthContext);
+    settotalReffrals, settotalReffralsReceived, setLeadlength, notifications, setNotifications } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -209,6 +209,7 @@ const NavbarContainer = (props) => {
 
         setNotificationLength(userDataLead.notifications)
         setNotifications(userDataLead.notifications.length)
+
         localStorage.setItem('notificationsLength', userDataLead.notifications.length)
         localStorage.setItem('subscription_status', userData.subscription_status)
         localStorage.getItem('category_id', userData.category_id)
@@ -440,7 +441,7 @@ const NavbarContainer = (props) => {
           <div className="background6" />
           <div className="div3">{notifications}</div>
         </div>
-      </div>  
+      </div>
 
       <div className="icon-dashboard share-ref-top-wrp">
         <button onClick={() => setIsOpen(true)}>
@@ -484,9 +485,10 @@ const NavbarContainer = (props) => {
             {showMenu && (
               <div onClick={() => setShowMenu(false)} className="profile-menu">
                 <Link to="/profile">My Profile</Link>
-                <Link onClick={handleLogout}>Logout</Link>
+
                 {roleId != 1 && <Link to="/manage-subscription">Manage Subscription</Link>}
                 {roleId == 1 && <Link to='/manage-configure'>Manage Configure</Link>}
+                <Link onClick={handleLogout}>Logout</Link>
               </div>
             )}
           </div>

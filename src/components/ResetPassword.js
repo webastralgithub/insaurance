@@ -56,8 +56,6 @@ const ResetPassword = () => {
             return
         }
 
-
-        // *#Ajay@12345
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}api/reset-password`, {
                 token: token,
@@ -87,7 +85,7 @@ const ResetPassword = () => {
                 <div>
                     <label>New Password</label>
                     <input
-                        type="text"
+                        type="password"
                         placeholder='Please Enter New Password'
                         name="newPassword"
                         value={password.newPassword}

@@ -48,6 +48,7 @@ const Sidebar = (props) => {
   }, []);
 
   const handleLogout = () => {
+    localStorage.clear();
     localStorage.removeItem('token');
     localStorage.clear();
     setAuth(null);
@@ -138,7 +139,7 @@ const Sidebar = (props) => {
 
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
                   <div className="daily-events">Contacts ({contactlength})</div>
-
+             
                 </div>
               </Link>
 
@@ -258,7 +259,7 @@ const Sidebar = (props) => {
                   </Link>}
               </div>
 
-              <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" || location.pathname.includes("klientale-contacts/contacts/send") || location.pathname.includes("klientale-contacts/share") ? "active" : ""}>
+              <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" || location.pathname.includes("klientale-contacts/contacts/send") || location.pathname.includes("klientale-contacts/share")      || location.pathname === "/become-klintale"? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/group-30036.svg" />
@@ -530,7 +531,7 @@ to multiply the revenue. </h6>
                 </div>
 
 
-                <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" || location.pathname.includes("klientale-contacts/contacts/send") || location.pathname.includes("klientale-contacts/share")  ? "active" : ""}>
+                <Link to="/klientale-contacts" className={location.pathname === "/klientale-contacts" || location.pathname.includes("klientale-contacts/contacts/send") || location.pathname.includes("klientale-contacts/share")      || location.pathname === "/become-klintale" ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/group-30036.svg" />
