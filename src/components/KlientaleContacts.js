@@ -233,7 +233,7 @@ const KlientaleContacts = ({ role }) => {
 
   useEffect(() => {
     getProfession()
-    fetchCategotires();
+    // fetchCategotires();
   }, []);
 
   const handleSelectChange = async (event) => {
@@ -276,7 +276,7 @@ const KlientaleContacts = ({ role }) => {
   const getKlientaleContacts = async () => {
     setDataLoader(true)
 
-    let categoriesData = seletedCategory.map((item) => item.label)
+    let categoriesData = seletedCategory.map((item) => item.value)
     let currPage
     if (searchRef.current.value) {
       currPage = ''
@@ -284,6 +284,9 @@ const KlientaleContacts = ({ role }) => {
       currPage = currentPage
     }
 
+    if(categoriesData.length >0){
+         currPage = ''
+    }
     try {
 
       const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&categories=${categoriesData}`, { headers });
@@ -332,7 +335,6 @@ const KlientaleContacts = ({ role }) => {
         key={number} onClick={() => handlePageChange(number)}>{number}</button>
     ));
   };
-
 
 
 

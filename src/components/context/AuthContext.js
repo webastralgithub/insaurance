@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
  
  //notificationsLength
   const [notifications, setNotifications] = useState()
+  const [notificatioData, setNotificationData] = useState([])
   return (
     <AuthContext.Provider value={{
       toggle, setToggle,
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       plan, setPlan, leadlength, setLeadlength, contactlength, setConatctlength,
       roleId, totalReffralEarnedMoney, totalAvailableJobs, totalReffrals, totalReffralsReceived,
       currentUsercategory_id, settotalAvailableJobs, settotalReffralEarnedMoney, settotalReffrals, settotalReffralsReceived,
-      userID, setUserId, professionId, setprofessionId , notifications, setNotifications
+      userID, setUserId, professionId, setprofessionId , notifications, setNotifications , notificatioData, setNotificationData
     }}>
       {children}
     </AuthContext.Provider>

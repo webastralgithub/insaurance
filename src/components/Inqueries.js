@@ -3,7 +3,8 @@ import "./admin.css"
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPencil, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -98,7 +99,7 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const Inqueries = () => {
     const navigate = useNavigate();
-    const { auth, roleId, userID, professionId } = useContext(AuthContext);
+    const { auth, roleId, userID} = useContext(AuthContext);
     const headers = { Authorization: auth.token };
     const url = process.env.REACT_APP_API_URL;
     let searchRef = useRef("")
@@ -125,6 +126,8 @@ const Inqueries = () => {
         searchRef.current.value = ""
         setButtonActive(1)
     };
+
+
 
     const handleKeyDownEnter = (event) => {
         if (event.key === 'Enter') {
@@ -232,12 +235,23 @@ const Inqueries = () => {
         }
 
         try {
+            if (queryState < 2) {
+                setQueries([])
+                const response = await axios.get(`${url}api/inquiry?page=${currPage}&search=${searchRef.current.value}&flag=${queryState}`, { headers, });
+                if (response.status === 200) {
+                    setQueries(response.data.posts)
+                    setTotalPages(response?.data?.totalPages);
 
-            const response = await axios.get(`${url}api/inquiry?page=${currPage}&search=${searchRef.current.value}&flag=${queryState}`, { headers, });
-            if (response.status === 200) {
-                setQueries(response.data.posts)
-                setTotalPages(response?.data?.totalPages);
+                }
+            }
+            if (queryState == 2) {
+                setQueries([])
+                const response = await axios.get(`${url}api/get-latest-message?page=${currPage}`, { headers, });
+                if (response.status === 200) {
+                    setQueries(response.data.notifications)
+                    setTotalPages(response?.data?.totalPages);
 
+                }
             }
             setDataLoader(false)
         } catch (error) {
@@ -254,6 +268,7 @@ const Inqueries = () => {
         setActive(1)
 
     }
+
     const getContactMyinqueries = async () => {
         // setForwardModel(true)
         if (prodessionPara === null) {
@@ -442,7 +457,7 @@ const Inqueries = () => {
     };
 
 
-
+  
     const handleSendMessage = async (e) => {
         e.preventDefault()
 
@@ -450,16 +465,19 @@ const Inqueries = () => {
             toast.error("Please Enter Message to Send")
             return
         }
+
+
         setDataLoader(true)
         setContactModel(false)
         let dataSend = {
             inquiry_id: queryIdForMessage,
             message: messageText,
-            email: userInfo?.email
+            reciever_id: userInfo?.id ,
+            sender_id : userID
         }
-        try {
-            const response = await axios.post(`${url}api/create_notification`, dataSend, { headers, })
 
+        try {
+            const response = await axios.post(`${url}api/send-inquiry-message`, dataSend, { headers, })
             if (response.status === 200) {
                 toast.success("Message Send Successfully")
             }
@@ -474,6 +492,7 @@ const Inqueries = () => {
         }
 
     }
+
 
 
     return (
@@ -526,14 +545,15 @@ const Inqueries = () => {
                     >
                         Inquiries
                     </button>
-                    {roleId == 1 &&
-                        <button
-                            className={queryState == 2 ? "active" : ""}
-                            onClick={() => { setQueryState(2); setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setCurrentPage(1) }}
-                        >
-                            Messages
-                        </button>
-                    }
+
+
+                    <button
+                        className={queryState == 2 ? "active" : ""}
+                        onClick={() => { setQueryState(2); setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setCurrentPage(1) }}
+                    >
+                        Messages
+                    </button>
+
                 </div>
             </div>
             <div className="table-container">
@@ -595,33 +615,60 @@ const Inqueries = () => {
                                 </tbody>
                             </table>}
 
-
-
                     </>)}
 
-                {queryState === 2 && (<div className="main-div-message-list-parent" style={{ backgroundColor: 'white' }}>
-                    <div className="main-div-messages-list" onClick={() => navigate("/inquiry/chat/:id")}>
-                        <div className="single-chat-info">
-                            <div className="message-info">
-                                <label className="username">UserName</label>
-                                <label className="latest-message">Latest read message</label>
-                            </div>
-                            {/* <span className="unread-message">unread message</span> */}
+                {queryState === 2 &&
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>Inquiry Description</th>
+                                <th>Message</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {queries?.length > 0 && queries?.map((contact) => (
+                                <tr key={contact.id}>
+                                    <td>{contact.sender_name}</td>
+                                    <td>{contact?.description}</td>
+                                    <td >{contact?.message}</td>
+                                    <td>{formatDate(contact?.created_at)}</td>
+                                    <td> <button className="permissions" >
+                                        Mark As Read</button></td>
+                                    <td onClick={() => navigate(`/inquiry/chat/${contact.id}`)}>
+                                        <FontAwesomeIcon className="permissions" icon={faPaperPlane} />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    //  (<div className="main-div-message-list-parent" style={{ backgroundColor: 'white' }}>
+                    //     <div className="main-div-messages-list" onClick={() => navigate("/inquiry/chat/:id")}>
+                    //         <div className="single-chat-info">
+                    //             <div className="message-info">
+                    //                 <label className="username">UserName</label>
+                    //                 <label className="latest-message">Latest read message</label>
+                    //             </div>
+                    //             {/* <span className="unread-message">unread message</span> */}
 
-                        </div>
-                    </div>
+                    //         </div>
+                    //     </div>
 
-                    <div className="main-div-messages-list" onClick={() => navigate("/inquiry/chat/:id")}>
-                        <div className="single-chat-info">
-                            <div className="message-info">
-                                <label className="username">UserName</label>
-                                <label className="latest-unread-message">Latest unread message</label>
-                            </div>
-                            <span className="unread-message">unread message</span>
+                    //     <div className="main-div-messages-list" onClick={() => navigate("/inquiry/chat/:id")}>
+                    //         <div className="single-chat-info">
+                    //             <div className="message-info">
+                    //                 <label className="username">UserName</label>
+                    //                 <label className="latest-unread-message">Latest unread message</label>
+                    //             </div>
+                    //             <span className="unread-message">unread message</span>
 
-                        </div>
-                    </div>
-                </div>)}
+                    //         </div>
+                    //     </div>
+                    // </div>)
+                }
 
                 {queryState < 2 && totalPages > 1 && (
                     <div className="pagination">

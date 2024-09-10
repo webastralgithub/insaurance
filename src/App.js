@@ -119,16 +119,6 @@ const App = () => {
           <ToastContainer />
         </div>
 
-
-        {/* <Route
-          path="/reset-password/:id" exact
-          element={
-            <ResetPassword />
-          }
-        /> */}
-
-
-
         {auth && <>
           {!toggle && <div className="main-sidenav-wrapper">
             <Sidebar role={role} />
@@ -151,8 +141,8 @@ const App = () => {
                   <ResetPassword />
                 }
               /> </>) : <Route
-              path="/" exact
-              element={
+              path="/"
+               exact element={
                 <PrivateRoute>
                   <MyCalendar />
                 </PrivateRoute>

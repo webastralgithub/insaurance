@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./admin.css"
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
@@ -32,9 +32,9 @@ const ChatMessages = () => {
     const getChat = async () => {
         setDataLoader(true)
         try {
-            const response = await axios.get(`${url}api/get_full_chat?page=${currentPage}/${id}`, { headers, })
+            const response = await axios.get(`${url}api/get-message/${id}`, { headers, })
             let data = response.data;
-            // console.log("response", data.messages)
+            
             setMessages(data.messages)
             setTotalPages(data.total_pages)
             setDataLoader(false)
@@ -46,10 +46,12 @@ const ChatMessages = () => {
     }
 
 
-    // useEffect(() => {
-    //     if (id)
-    //         getChat()
-    // }, [id])
+    //  console.log("response",messages)
+
+    useEffect(() => {
+        if (id)
+            getChat()
+    }, [id])
 
 
     const handleSendMessage = async (e) => {
@@ -99,25 +101,20 @@ const ChatMessages = () => {
                     </button>
                     Messages
                 </h3>
-
-
             </div>
 
+            {dataLoader ?
+                (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
+                    <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
+                </div>)
 
+                : (<>{messages.length > 0 && <>
+                    <div className="main-chat-div">
+                        <div className="user-detail-title-info">
+                            <label>Ajay kumar</label>
+                            <label>I need designer help</label>
+                        </div>
 
-
-            <div className="main-chat-div">
-                <div className="user-detail-title-info">
-                    <label>Ajay kumar</label>
-                    <label>I need designer help</label>
-                </div>
-
-                {dataLoader ?
-                    (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
-                        <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
-                    </div>)
-
-                    : (
                         <div className="messages-div">
                             {messages.length > 0 && messages.map((msg, index) => (
                                 <div key={index} className={`message-div  ${msg.reciever_id == 80 ? "receiver-div" : "sender-div"}`}>
@@ -125,17 +122,19 @@ const ChatMessages = () => {
                                     <small>{msg.created_at}</small> {/* Display date here */}
                                 </div>))}
 
-                        </div>)}
+                        </div>
 
-                <div className="message-box">
-                    <textarea
-                        value={messageText}
-                        onChange={(e) => setMessageText(e.target.value)}
-                        placeholder="Type your message here..."
-                    />
-                    <button onClick={handleSendMessage}>Send</button>
-                </div>
-            </div>
+                        <div className="message-box">
+                            <textarea
+                                value={messageText}
+                                onChange={(e) => setMessageText(e.target.value)}
+                                placeholder="Type your message here..."
+                            />
+                            <button onClick={handleSendMessage}>Send</button>
+                        </div>
+                    </div>
+                </>}
+                </>)}
 
             {messages.length == 0 && <p className="no-data">No data Found</p>}
         </div>

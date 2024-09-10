@@ -89,7 +89,7 @@ const NavbarContainer = (props) => {
   const { pathname } = useLocation();
   const { auth, setAuth, tasklength, setTasklength, plan,
     roleId, subscriptionStatus, settotalAvailableJobs, settotalReffralEarnedMoney,
-    settotalReffrals, settotalReffralsReceived, setLeadlength, notifications, setNotifications } = useContext(AuthContext);
+    settotalReffrals, settotalReffralsReceived, setLeadlength, notifications, setNotifications , notificatioData,setNotificationData } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -207,7 +207,7 @@ const NavbarContainer = (props) => {
         let userData = user.data.user;
         let userDataLead = user.data
 
-        setNotificationLength(userDataLead.notifications)
+        setNotificationData(userDataLead.notifications)
         setNotifications(userDataLead.notifications.length)
 
         localStorage.setItem('notificationsLength', userDataLead.notifications.length)
