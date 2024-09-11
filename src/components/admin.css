@@ -1307,7 +1307,7 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
 
 .message-box {
     display: flex;
-    padding: 5px;
+    padding: 2px;
     background-color: #e2dbdb;
     border-top: 1px solid #ddd;
 }
@@ -1323,7 +1323,7 @@ form.add-contact-form .add-cnt-form-desc .add-contact-user-custom-right .add-con
 .message-box button {
     margin-left: 10px;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #004686;
     color: #fff;
     border: none;
     border-radius: 4px;

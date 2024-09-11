@@ -2,13 +2,10 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import "./admin.css"
 import axios from "axios";
 import { AuthContext } from "./context/AuthContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Modal from "react-modal";
@@ -99,7 +96,8 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const Inqueries = () => {
     const navigate = useNavigate();
-    const { auth, roleId, userID} = useContext(AuthContext);
+    const { id } = useParams()
+    const { auth, roleId, userID } = useContext(AuthContext);
     const headers = { Authorization: auth.token };
     const url = process.env.REACT_APP_API_URL;
     let searchRef = useRef("")
@@ -117,16 +115,16 @@ const Inqueries = () => {
     const [active, setActive] = useState(1)
     const [queries, setQueries] = useState([])
     const [userInfo, setUserInfo] = useState()
-    const [queryState, setQueryState] = useState(roleId == 1 ? 0 : 1);
+    const [queryState, setQueryState] = useState(roleId == 1 || id ? 0 : 1);
 
     const [messageText, setMessageText] = useState("")
     const [prodessionPara, sendProfessionPara] = useState(null)
+
 
     const clearSearch = () => {
         searchRef.current.value = ""
         setButtonActive(1)
     };
-
 
 
     const handleKeyDownEnter = (event) => {
@@ -187,6 +185,7 @@ const Inqueries = () => {
                             label: realtor.name,
                         }));
                         setContactoptions(options)
+
                     }
                 }
             }
@@ -201,11 +200,11 @@ const Inqueries = () => {
     }
 
 
-    useEffect(() => {
-        if (queryState === 2) {
-            // getChatList()
-        }
-    }, [queryState])
+    // useEffect(() => {
+    //     if (queryState === 2) {
+    //         // getChatList()
+    //     }
+    // }, [queryState])
 
 
     const [chatList, setChatList] = useState('')
@@ -267,41 +266,6 @@ const Inqueries = () => {
         setForwardModel(false)
         setActive(1)
 
-    }
-
-    const getContactMyinqueries = async () => {
-        // setForwardModel(true)
-        if (prodessionPara === null) {
-            return
-        }
-        try {
-            const response = await axios.get(`${url}api/contact_by_profession/${prodessionPara}`, { headers, });
-
-
-            if (queryState === 1) {
-                if (response.status === 200) {
-                    if (active == 1) {
-                        const options = response?.data.insurance_contact.map((realtor) => ({
-                            value: realtor.id,
-                            label: realtor.firstname,
-                        }));
-                        setContactoptions(options)
-
-                    }
-
-                    if (active == 2) {
-                        const options = response?.data?.klientale_contact.map((realtor) => ({
-                            value: realtor.id,
-                            label: realtor.name,
-                        }));
-                        setContactoptions(options)
-                    }
-                }
-            }
-
-        } catch (error) {
-
-        }
     }
 
 
@@ -457,7 +421,7 @@ const Inqueries = () => {
     };
 
 
-  
+
     const handleSendMessage = async (e) => {
         e.preventDefault()
 
@@ -469,11 +433,13 @@ const Inqueries = () => {
 
         setDataLoader(true)
         setContactModel(false)
+
         let dataSend = {
             inquiry_id: queryIdForMessage,
             message: messageText,
-            reciever_id: userInfo?.id ,
-            sender_id : userID
+            reciever_id: userInfo?.id,
+            sender_id: userID,
+            date: new Date()
         }
 
         try {
@@ -615,6 +581,7 @@ const Inqueries = () => {
                                 </tbody>
                             </table>}
 
+
                     </>)}
 
                 {queryState === 2 &&
@@ -626,7 +593,7 @@ const Inqueries = () => {
                                 <th>Message</th>
                                 <th>Date</th>
                                 <th>Actions</th>
-                                <th></th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -635,11 +602,11 @@ const Inqueries = () => {
                                     <td>{contact.sender_name}</td>
                                     <td>{contact?.description}</td>
                                     <td >{contact?.message}</td>
-                                    <td>{formatDate(contact?.created_at)}</td>
-                                    <td> <button className="permissions" >
-                                        Mark As Read</button></td>
-                                    <td onClick={() => navigate(`/inquiry/chat/${contact.id}`)}>
-                                        <FontAwesomeIcon className="permissions" icon={faPaperPlane} />
+                                    <td>{formatDate(contact?.date)}</td>
+
+                                    <td onClick={() => navigate(`/inquiry/chat/${contact.id}`, { state: { data: contact } })}>
+                                        <button className="permissions" >
+                                            View Messages</button>
                                     </td>
                                 </tr>
                             ))}
@@ -670,7 +637,7 @@ const Inqueries = () => {
                     // </div>)
                 }
 
-                {queryState < 2 && totalPages > 1 && (
+                {totalPages && (
                     <div className="pagination">
                         {renderPageNumbers()}
                     </div>

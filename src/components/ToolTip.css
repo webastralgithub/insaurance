@@ -1,32 +1,33 @@
 .tooltip {
-    position: relative;
- 
-  }
-  
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 180px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 2px 0;
-    bottom: 27px;
-  
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-  }
-  
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-  }
+  position: relative;
 
-  .subscription-btnn {
-    display: flex;
-    gap: 10px;
-    align-items: center;
 }
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 180px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 2px 0;
+  bottom: 27px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.subscription-btnn {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .subscription-btnn button {
   background-color: #b6c7db;
   color: #fff;
@@ -45,8 +46,91 @@
   gap: 8px;
 }
 
-@media (max-width:600px){
+
+
+
+.main-div-message-inquiey-notificationbar {
+  z-index: 9999999 !important;
+  position: relative;
+  display: inline-block;
+  border: 2px solid #cac9c9 ;
+  height: auto;
+  width: 200px;
+  border-radius: 4px;
+
+
+}
+
+.main-div-message-inquiey-notificationbar>div:first-child {
+  display: flex;
+  background-color: #004686;
+  z-index: 9999999 !important;
+  color: #fff;
+  font-size: 7px;
+  padding: 3px;
+}
+
+.main-div-message-inquiey-notificationbar>div:first-child label {
+  cursor: pointer;
+  font-size: 15px;
+  margin-left: 80px;
+  padding: 9px;
+}
+
+.outer-div-message-inquiey-notificationbar {
+  position: relative;
+  padding: 4px;
+  max-height: 150px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: #fff;
+  color: black;
+  z-index: 9999999 !important;
+  position: relative;
+}
+
+
+
+.message-inquiey-notificationbar {
+  display: flex;
+  flex-direction: column;
+  z-index: 9999999 !important;
+  position: relative;
+  cursor: pointer;
+}
+
+
+.message-inquiey-notificationbar-inner {
+  cursor: pointer;
+  z-index: 9999999 !important;
+  display: flex;
+  flex-direction: column;
+  background-color: #d8d7d7;
+  border-bottom: 2px solid rgb(109, 108, 108);
+}
+
+
+.message-inquiey-notificationbar-inner label {
+  color: black;
+  text-align: left;
+  padding-left: 2px;
+  cursor: pointer;
+  font-size: initial;
+}
+
+.message-inquiey-notificationbar-inner small {
+  font-size: inherit;
+  color: black;
+  text-align: left;
+  padding-left: 2px;
+  cursor: pointer;
+}
+
+
+
+
+@media (max-width:600px) {
   .subscription-btnn {
     display: none;
-}
+  }
 }

@@ -89,7 +89,7 @@ const NavbarContainer = (props) => {
   const { pathname } = useLocation();
   const { auth, setAuth, tasklength, setTasklength, plan,
     roleId, subscriptionStatus, settotalAvailableJobs, settotalReffralEarnedMoney,
-    settotalReffrals, settotalReffralsReceived, setLeadlength, notifications, setNotifications , notificatioData,setNotificationData } = useContext(AuthContext);
+    settotalReffrals, settotalReffralsReceived, setLeadlength, notifications, setNotifications, notificatioData, setNotificationData } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -100,7 +100,7 @@ const NavbarContainer = (props) => {
   const [selectedContacts, setSelectedContacts] = useState(false);
   const selectRef = useRef(null);
   const [error, setError] = useState("");
-  const [notificatioLength, setNotificationLength] = useState(0)
+ 
 
 
   const headers = {
@@ -111,6 +111,7 @@ const NavbarContainer = (props) => {
     getTasks(); // Replace 'getUsers' with 'getTasks'
     // Rest of your code...
   }, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -207,9 +208,12 @@ const NavbarContainer = (props) => {
         let userData = user.data.user;
         let userDataLead = user.data
 
-        setNotificationData(userDataLead.notifications)
-        setNotifications(userDataLead.notifications.length)
+        let notifications = user.data.notifications
+        let messagesNotification = user.data.messageNotification
 
+        setNotificationData([...notifications, ...messagesNotification])
+
+        setNotifications(userDataLead.notifications.length)
         localStorage.setItem('notificationsLength', userDataLead.notifications.length)
         localStorage.setItem('subscription_status', userData.subscription_status)
         localStorage.getItem('category_id', userData.category_id)
@@ -320,7 +324,7 @@ const NavbarContainer = (props) => {
       console.error(error);
       // localStorage.removeItem('token');
       // setAuth(null);
-      // navigate('/');
+
     }
   };
 
@@ -354,6 +358,19 @@ const NavbarContainer = (props) => {
 
     } catch (error) { }
   };
+
+
+  const [showNotifications, setShowNotifications] = useState(false)
+
+  const navigateInquiery = () => {
+    navigate('/inquiries/0')
+    setShowNotifications(false)
+  }
+
+  const navigateMessage = (id, element) => {
+    navigate(`/inquiry/chat/${id}`, { state: { data: element } })
+    setShowNotifications(false)
+  }
 
   return (
     <div className="top-navbar">
@@ -431,16 +448,52 @@ const NavbarContainer = (props) => {
       <div className="icon-dashboard setting-nav">
         <div className="icon-dashboard-child" />
         {/* <div className="icon-dashboard-item" />  */}
-        <Link to="/inquiries">
-          {" "}
-          <img className="icon-dashboard1" alt="" src="/icon-dashboard.svg" />
-        </Link>
+        {/* <Link to="/inquiries"> */}
+        {" "}
+        <img className="icon-dashboard1" onClick={() => setShowNotifications(true)} alt="" src="/icon-dashboard.svg" />
 
-        {/* <Link to="/profile">  <img className="icon-dashboard2" alt="" src="/icon-dashboard1.svg" /></Link>  */}
+
+
+
         <div className="background-group">
           <div className="background6" />
-          <div className="div3">{notifications}</div>
+          <div className="div3">{notificatioData.length}</div>
         </div>
+
+        {/* notifications modeal */}
+
+        {showNotifications &&
+          <div className="main-div-message-inquiey-notificationbar">
+
+            <div >
+              <h1>Notifications</h1>
+              <label onClick={() => setShowNotifications(false)} >X</label>
+            </div>
+
+
+            <div onClick={() => setShowMenu(false)} className="message-inquiey-notificationbar">
+              {notificatioData && notificatioData.map((element, index) => {
+                return (
+                  <div key={index}>
+                    {element?.type ? (
+                      <div className="message-inquiey-notificationbar-inner" onClick={navigateInquiery} key={index}>
+                        <small>Inquiry</small>
+                        <label>{element.description}</label>
+                      </div>
+                    ) : (
+                      <div className="message-inquiey-notificationbar-inner"
+                        onClick={() => navigateMessage(element.inquiry_id, element)}
+                        key={index}>
+                        <small>Message</small>
+                        <label>{element.message}</label>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>}
       </div>
 
       <div className="icon-dashboard share-ref-top-wrp">
@@ -463,6 +516,7 @@ const NavbarContainer = (props) => {
           </span>
         </button>
       </div>
+
 
       <div
         className="profile-parent"
@@ -491,9 +545,14 @@ const NavbarContainer = (props) => {
                 <Link onClick={handleLogout}>Logout</Link>
               </div>
             )}
+
+
+
           </div>
         </Link>
       </div>
+
+
     </div>
   );
 };

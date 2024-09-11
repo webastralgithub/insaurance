@@ -7,6 +7,7 @@ import { AuthContext } from './context/AuthContext';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { includes } from "draft-js/lib/DefaultDraftBlockRenderMap";
 
 const Sidebar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -152,7 +153,7 @@ const Sidebar = (props) => {
                 </div>
               </Link>
 
-              <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquiries" ? "active" : ""}>
+              <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquiries" || location.pathname.includes('/inquiries/') ? "active" : ""}>
                 <div className="order-detail">
 
                   <img className="order-detail-child" alt="" src="/referral.svg" />
@@ -394,7 +395,7 @@ to multiply the revenue. </h6>
                   </div>
                 </Link>
 
-                <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquiries" ? "active" : ""}>
+                <Link to="/inquiries" className={location.pathname.includes('/add-inquiry') || location.pathname === "/inquiries" || location.pathname.includes('/inquiries/') ? "active" : ""}>
                   <div className="order-detail">
 
                     <img className="order-detail-child" alt="" src="/referral.svg" />

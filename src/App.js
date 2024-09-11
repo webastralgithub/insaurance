@@ -142,7 +142,7 @@ const App = () => {
                 }
               /> </>) : <Route
               path="/"
-               exact element={
+              exact element={
                 <PrivateRoute>
                   <MyCalendar />
                 </PrivateRoute>
@@ -177,6 +177,16 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
+            <Route
+              path="/inquiries/:id" exact
+              element={
+                <PrivateRoute>
+                  <Inqueries role={role} />
+                </PrivateRoute>
+              }
+            />
+
             <Route
               path="/referral-sent/:id" exact
               element={
