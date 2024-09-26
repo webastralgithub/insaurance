@@ -149,10 +149,12 @@ export default function Profile(props) {
       background: "#000",
       border: "1px solid #fff",
       padding: "0",
-      width: "400px"
+      width: "400px",
+      zIndex: '9999'
     },
     overlay: {
       backgroundColor: "rgb(0 0 0 / 75%)",
+      zIndex: '9999'
     }
   };
   const handleInput = async (e) => {

@@ -178,6 +178,7 @@ const App = () => {
               }
             />
 
+
             <Route
               path="/inquiries/:id" exact
               element={
@@ -225,7 +226,7 @@ const App = () => {
             />
 
             <Route
-              path="contacts/share/:id" exact
+              path="/contacts/share/:id" exact
               element={
                 <PrivateRoute>
                   <ShareMe role={role} />
@@ -287,7 +288,7 @@ const App = () => {
             </>
             }
             <Route
-              path="/inquiry/chat/:id" exact
+              path="/inquiry/chat/:id/:chatId" exact
               element={
                 <PrivateRoute>
                   <ChatMessages />

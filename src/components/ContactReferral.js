@@ -19,9 +19,7 @@ const ContactReferral = ({ role }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const { auth } = useContext(AuthContext);
-  const headers = {
-    Authorization: auth.token,
-  };
+  const headers = { Authorization: auth.token };
   const url = process.env.REACT_APP_API_URL;
   const klintaleUrl = process.env.REACT_APP_KLINTALE_URL;
   let searchRef = useRef()
@@ -41,12 +39,12 @@ const ContactReferral = ({ role }) => {
           autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
         })
-       
+
       }
     } catch (error) {
       setDataLoader(false)
-      toast.error("error in sending refferal")
-      console.error("error", error)
+      toast.error("Server is Busy")
+      console.error(error)
     }
   }
 
@@ -68,12 +66,12 @@ const ContactReferral = ({ role }) => {
   };
 
   const handleShareKlintaleClick = async (contact) => {
-    const { email, phone, name, category_name } = contact;
+    const { email, phone, name, profession } = contact;
     const combinedObject = {
       name,
       email,
       phone,
-      category_name,
+      category_name: profession,
       sendTo: id, selectedContacts: [contact.id],
     };
     try {
@@ -87,11 +85,11 @@ const ContactReferral = ({ role }) => {
         });
       }
     } catch (error) {
-      toast.error("Error on sharing klintale contact", {
+      toast.error("Server is Busy", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.error("error on sharing klintale contact", error)
+      console.error(error)
     }
 
   }
@@ -131,7 +129,7 @@ const ContactReferral = ({ role }) => {
         setusers([])
         setDataLoader(true)
         const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
-     
+
         setusers(response?.data?.contacts)
         setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
@@ -223,7 +221,7 @@ const ContactReferral = ({ role }) => {
       <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
 
         <div className="add_user_btn">
-          <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0);setusers([]) }}>
+          <button className={!active ? 'active' : ''} onClick={() => { setusers([]); setCurrentPage(1); setActive(0); setusers([]) }}>
             Personal Contacts</button>
 
           <button className={active ? 'active' : ''} onClick={() => { setusers([]); setCurrentPage(1); setActive(1) }}>
@@ -252,33 +250,31 @@ const ContactReferral = ({ role }) => {
                   <th>Email Id</th>
                 </tr>
               </thead>
+              <tbody >
 
-              {active === 0 && <>
-                {userss.length > 0 &&
-                  userss?.map((contact) => (contact.id != id && <tbody key={contact.id}>
+                {/* user contacts */}
 
-                    <tr key={contact.id}>
-                      {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
-                      <td>  <button className="permissions share-ref-button-tb"
-                        onClick={() => {
-                          handleDeleteClick(contact)
-                        }}>Send</button>       </td>
-                      <td>{contact.firstname}</td>
-                      <td>{contact.business_name}</td>
-                      <td>{contact.profession_id > 0? contact.profession.name : ""}</td>
-                      <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
-                      <td>{contact.email}</td>
-                    </tr>
-                  </tbody>))}
-              </>
-              }
+                {active === 0 && userss.length > 0 && userss?.map((contact) => (contact.id != id &&
+                  <tr key={contact.id}>
+                    {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
+                    <td>  <button className="permissions share-ref-button-tb"
+                      onClick={() => {
+                        handleDeleteClick(contact)
+                      }}>Send</button>       </td>
+                    <td>{contact.firstname}</td>
+                    <td>{contact.business_name}</td>
+                    <td>{contact.profession_id > 0 && contact?.profession?.name}</td>
+                    <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
+                    <td>{contact.email}</td>
+                  </tr>
+                ))}
 
-              {/* {  klintale contacts} */}
-              {active === 1 && <>
-                {userss.length > 0 &&
-                  userss.map((contact) => (contact.id != id && <tbody>
+                {/* {  klintale contacts} */}
 
-                    <tr key={contact.id}>
+                {active === 1 && userss.length > 0 &&
+                  userss.map((contact, index) => (contact.id != id &&
+
+                    <tr key={index}>
                       {/* <td className="property-link" onClick={() => navigate("/contact/edit/"+contact.id)}>{contact.firstname}</td> */}
                       <td>  <button className="permissions share-ref-button-tb"
                         onClick={() => {
@@ -286,24 +282,23 @@ const ContactReferral = ({ role }) => {
                         }} >Send</button>       </td>
                       <td>{contact.name}</td>
                       <td>{contact.business_name}</td>
-                      <td>{contact?.category_name}</td>
+                      <td>{contact?.profession}</td>
                       <td>{contact.phone && formatPhoneNumber(contact.phone)}</td>
                       <td>{contact.email}</td>
-                     
+
                     </tr>
-                  </tbody>))
+                  ))
                 }
-              </>
-              }
+
+              </tbody>
             </table>)}
-            {totalPagess > 1 && (
-        <div className="pagination">
-          {renderPageNumbers()}
-        </div>
-      )}
+        {totalPagess > 1 && (
+          <div className="pagination">
+            {renderPageNumbers()}
+          </div>
+        )}
       </div>
 
-   
       {active === 1 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
       {active === 0 && userss.length == 0 && !dataLoader && <p className="no-data">No Data Found</p>}
     </div>

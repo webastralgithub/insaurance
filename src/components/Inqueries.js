@@ -5,7 +5,7 @@ import { AuthContext } from "./context/AuthContext";
 import { toast } from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Modal from "react-modal";
@@ -96,8 +96,12 @@ const CustomDropdown = ({ children, searchText, ...props }) => {
 
 const Inqueries = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+
+    const pathname = location.pathname;
     const { id } = useParams()
-    const { auth, roleId, userID } = useContext(AuthContext);
+    const { auth, roleId, userID, unredMessages } = useContext(AuthContext);
     const headers = { Authorization: auth.token };
     const url = process.env.REACT_APP_API_URL;
     let searchRef = useRef("")
@@ -110,22 +114,29 @@ const Inqueries = () => {
     const [contactModel, setContactModel] = useState(false)
     const [forwardModel, setForwardModel] = useState(false)
     const selectRef = useRef(null);
-
     const [contactOptions, setContactoptions] = useState();
     const [active, setActive] = useState(1)
     const [queries, setQueries] = useState([])
     const [userInfo, setUserInfo] = useState()
-    const [queryState, setQueryState] = useState(roleId == 1 || id ? 0 : 1);
-
     const [messageText, setMessageText] = useState("")
     const [prodessionPara, sendProfessionPara] = useState(null)
+    // const [queryState, setQueryState] = useState(roleId == 1 || id ? 0 : 1);
 
+    const [queryState, setQueryState] = useState(() => {
+        if (roleId == 1 || location?.state?.queryState !== null && location?.state?.queryState === 0) {
+            return 0;
+        } else if (location?.state?.queryState !== null && location?.state?.queryState === 2) {
+            return 2;
+        }
+        else {
+            return 1;
+        }
+    });
 
     const clearSearch = () => {
         searchRef.current.value = ""
         setButtonActive(1)
     };
-
 
     const handleKeyDownEnter = (event) => {
         if (event.key === 'Enter') {
@@ -154,19 +165,16 @@ const Inqueries = () => {
         ));
     };
 
-
-
     useEffect(() => {
         getContactList()
     }, [active, prodessionPara, queryState])
 
-
-    const getContactList = async (contact) => {
+    const getContactList = async () => {
         if (prodessionPara === null || prodessionPara === undefined) {
             return
         }
         try {
-            // setDataLoader(true)
+
             if (queryState < 3) {
                 const response = await axios.get(`${url}api/contact_by_profession/${prodessionPara}`, { headers, });
                 if (response.status === 200) {
@@ -185,41 +193,13 @@ const Inqueries = () => {
                             label: realtor.name,
                         }));
                         setContactoptions(options)
-
                     }
                 }
             }
-
-
-
             setDataLoader(false)
         } catch (error) {
             console.error(error)
             setDataLoader(false)
-        }
-    }
-
-
-    // useEffect(() => {
-    //     if (queryState === 2) {
-    //         // getChatList()
-    //     }
-    // }, [queryState])
-
-
-    const [chatList, setChatList] = useState('')
-    const getChatList = async () => {
-        setForwardModel(true)
-        try {
-            const response = await axios.get(`${url}api/chat_list?page=${currentPage}&search=${searchRef.current.value}`, { headers, });
-            if (response.status === 200)
-                setQueries(response.data)
-            setChatList(response.data)
-            setForwardModel(false)
-        } catch (error) {
-            setForwardModel(false)
-            toast.error("Server is Busy");
-            console.error(error)
         }
     }
 
@@ -237,19 +217,20 @@ const Inqueries = () => {
             if (queryState < 2) {
                 setQueries([])
                 const response = await axios.get(`${url}api/inquiry?page=${currPage}&search=${searchRef.current.value}&flag=${queryState}`, { headers, });
+                if (queryState == 0) {
+                    const response = await axios.get(`${url}api/update_notification`, { headers });
+                }
                 if (response.status === 200) {
                     setQueries(response.data.posts)
                     setTotalPages(response?.data?.totalPages);
-
                 }
             }
             if (queryState == 2) {
                 setQueries([])
                 const response = await axios.get(`${url}api/get-latest-message?page=${currPage}`, { headers, });
                 if (response.status === 200) {
-                    setQueries(response.data.notifications)
-                    setTotalPages(response?.data?.totalPages);
-
+                    setQueries(response.data.messages)
+                    setTotalPages(response?.data?.total_pages);
                 }
             }
             setDataLoader(false)
@@ -260,14 +241,10 @@ const Inqueries = () => {
         }
     }
 
-
-
     const handleCloseModel = () => {
         setForwardModel(false)
         setActive(1)
-
     }
-
 
     const handleDeleteClick = (id) => {
         confirmAlert({
@@ -302,12 +279,9 @@ const Inqueries = () => {
         }
     }
 
-
-
     useEffect(() => {
         getQueries()
     }, [currentPage, queryState])
-
 
     const [queryIdForMessage, setQueryIdForMessage] = useState()
     const openContactInfo = (user, queryId) => {
@@ -316,8 +290,6 @@ const Inqueries = () => {
         setContactModel(true)
         setQueryIdForMessage(queryId)
     }
-
-
 
     const [searchText, setSearchText] = useState("");
     const customStyles = {
@@ -420,8 +392,6 @@ const Inqueries = () => {
         return `${day}-${month}-${year}`
     };
 
-
-
     const handleSendMessage = async (e) => {
         e.preventDefault()
 
@@ -429,8 +399,6 @@ const Inqueries = () => {
             toast.error("Please Enter Message to Send")
             return
         }
-
-
         setDataLoader(true)
         setContactModel(false)
 
@@ -450,16 +418,39 @@ const Inqueries = () => {
 
             setMessageText("")
             setQueryIdForMessage()
+            getQueries()
             setDataLoader(false)
         } catch (error) {
             setDataLoader(false)
             console.error(error);
             toast.error("Server is Busy")
         }
-
     }
 
+    const handleMessageList = async (id, contact) => {
 
+        try {
+            const response = await axios.get(`${url}api/message_read/${contact.chat_id}`, { headers });
+            navigate(`/inquiry/chat/${contact.inquiry_id}/${contact.chat_id}`, { state: { data: contact } })
+        } catch (error) {
+            toast.error("Server is Busy")
+            console.error(error)
+        }
+    }
+
+    const handleInqueries = async () => {
+        try {
+            const response = await axios.get(`${url}api/update_notification`, { headers });
+            setQueryState(0);
+            setSelectedContacts([]);
+            setContactoptions([]);
+            searchRef.current.value = "";
+            setButtonActive(1);
+            setCurrentPage(1)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <div className="add_property_btn">
@@ -507,7 +498,7 @@ const Inqueries = () => {
                     }
                     <button
                         className={queryState == 0 ? "active" : ""}
-                        onClick={() => { setQueryState(0); setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setCurrentPage(1) }}
+                        onClick={handleInqueries}
                     >
                         Inquiries
                     </button>
@@ -517,7 +508,7 @@ const Inqueries = () => {
                         className={queryState == 2 ? "active" : ""}
                         onClick={() => { setQueryState(2); setSelectedContacts([]); setContactoptions([]); searchRef.current.value = ""; setButtonActive(1); setCurrentPage(1) }}
                     >
-                        Messages
+                        Messages ({unredMessages})
                     </button>
 
                 </div>
@@ -543,8 +534,8 @@ const Inqueries = () => {
                                 </thead>
                                 <tbody>
                                     {queryState === 1 &&
-                                        queries?.length > 0 && queries?.map((contact) => (
-                                            <tr key={contact.id}>
+                                        queries?.length > 0 && queries?.map((contact, index) => (
+                                            <tr key={index}>
                                                 <td>{formatDate(contact?.created_at)}</td>
                                                 {/* edit query */}
                                                 {/* className={`${contact?.user?.id == userID && "property-link"}`}
@@ -569,7 +560,8 @@ const Inqueries = () => {
                                                 <td>{contact.profession?.name}</td>
                                                 {contact?.user?.id != userID ?
                                                     <td className="forward-and-contact-button">
-                                                        <button className="permissions" onClick={() => openContactInfo(contact?.user, contact.id)}>Contact</button>
+                                                        {contact?.inquiry_chat === null &&
+                                                            <button className="permissions" onClick={() => openContactInfo(contact?.user, contact.id)}>Contact</button>}
                                                         <button className="permissions" onClick={() => { sendProfessionPara(contact.profession_id); setForwardModel(true) }}>Forward</button>
                                                     </td>
                                                     : <td></td>
@@ -588,26 +580,29 @@ const Inqueries = () => {
                     <table>
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>From</th>
                                 <th>Inquiry Description</th>
                                 <th>Message</th>
                                 <th>Date</th>
-                                <th>Actions</th>
+
 
                             </tr>
                         </thead>
                         <tbody>
-                            {queries?.length > 0 && queries?.map((contact) => (
-                                <tr key={contact.id}>
-                                    <td>{contact.sender_name}</td>
+                            {queries?.length > 0 && queries?.map((contact, index) => (
+                                <tr key={index}>
+                                    <td onClick={() => handleMessageList(contact.id, contact)}>
+                                        <button className="permissions" >
+                                            View Messages</button>
+                                    </td>
+
+                                    <td>{contact.sender_id == userID ? 'Me' : contact.sender_name}</td>
                                     <td>{contact?.description}</td>
                                     <td >{contact?.message}</td>
                                     <td>{formatDate(contact?.date)}</td>
 
-                                    <td onClick={() => navigate(`/inquiry/chat/${contact.id}`, { state: { data: contact } })}>
-                                        <button className="permissions" >
-                                            View Messages</button>
-                                    </td>
+
                                 </tr>
                             ))}
                         </tbody>
@@ -637,7 +632,7 @@ const Inqueries = () => {
                     // </div>)
                 }
 
-                {totalPages && (
+                {queries.length > 0 && totalPages && (
                     <div className="pagination">
                         {renderPageNumbers()}
                     </div>

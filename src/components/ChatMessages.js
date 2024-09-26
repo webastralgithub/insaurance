@@ -11,27 +11,24 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 
 const ChatMessages = () => {
-    const { id } = useParams()
+    const { id, chatId } = useParams()
     const location = useLocation();
     const { data } = location.state;
     const navigate = useNavigate()
-    const { auth, roleId, userID, professionId } = useContext(AuthContext);
+    const { auth, userID } = useContext(AuthContext);
     const headers = { Authorization: auth.token };
     const url = process.env.REACT_APP_API_URL;
-
-    const [queryIdForMessage, setQueryIdForMessage] = useState()
     const [dataLoader, setDataLoader] = useState(false)
     const [messageText, setMessageText] = useState("")
     const [messages, setMessages] = useState([]);
     const [totalPages, setTotalPages] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-
-
     const getChat = async () => {
         setDataLoader(true)
         try {
-            const response = await axios.get(`${url}api/get-message/${id}?page=${currentPage}`, { headers, })
+
+            const response = await axios.get(`${url}api/get-message/${id}?chat_id=${chatId}&page=${currentPage}`, { headers, })
             let data = response.data;
 
             setMessages(data.messages.reverse());
@@ -39,21 +36,19 @@ const ChatMessages = () => {
             setDataLoader(false)
         } catch (error) {
             setDataLoader(false)
-            toast.error("Server is Busy");
+            toast.error("Serve sdfvdg is Busy");
             console.error(error)
         }
     }
 
-
-
     useEffect(() => {
-        if (id)
+        if (id && chatId)
             getChat()
-    }, [id])
+    }, [])
 
-
-    // console.log("fdbhjsbf", data)
-    // console.log("userId", userID)
+    const goBack = () => {
+        navigate('/inquiries', { state: { queryState: 2 } });
+    }
 
     const handleSendMessage = async (e) => {
         e.preventDefault()
@@ -68,18 +63,14 @@ const ChatMessages = () => {
         } else {
             receiverId = data?.sender_id
         }
-
-        // setDataLoader(true)
-
         let dataSend = {
             inquiry_id: data.inquiry_id,
+            chat_id: chatId,
             message: messageText,
             reciever_id: receiverId,
             sender_id: userID,
             date: new Date()
         }
-
-        // console.log("data send to message api", dataSend)
 
         try {
             const response = await axios.post(`${url}api/send-inquiry-message`, dataSend, { headers, })
@@ -88,9 +79,8 @@ const ChatMessages = () => {
             }
 
             setMessageText("")
-            setQueryIdForMessage()
             setDataLoader(false)
-            navigate("/inquiries")
+            goBack()
         } catch (error) {
             setDataLoader(false)
             console.error(error);
@@ -104,9 +94,9 @@ const ChatMessages = () => {
         setCurrentPage(newPage);
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         getChat()
-    },[currentPage])
+    }, [currentPage])
 
 
     const renderPageNumbers = () => {
@@ -121,27 +111,26 @@ const ChatMessages = () => {
     };
 
 
+    ;
+
+
 
     return (
         <div className="add_property_btn">
             <div className="property_header header-with-back-btn">
                 <h3>
                     <button type="button"
-                        className="back-only-btn" onClick={() => navigate(-1)}>
+                        className="back-only-btn" onClick={goBack}>
                         <img src="/back.svg" />
                     </button>
                     Messages
                 </h3>
             </div>
 
-
-
-
             {dataLoader ?
                 (<div className="sekelton-class" style={{ backgroundColor: 'white' }} >
                     <Skeleton height={50} count={10} style={{ margin: '5px 0' }} />
                 </div>)
-
                 : (<>
 
                     <div className="message-box">
@@ -154,7 +143,6 @@ const ChatMessages = () => {
                     </div>
                     <div className="table-container">
                         <table>
-
                             <thead>
                                 <tr>
                                     <th>From</th>
@@ -163,13 +151,11 @@ const ChatMessages = () => {
                                 </tr>
                             </thead>
 
-
-
                             <tbody>
-
                                 {messages?.length > 0 && messages?.map((msg) => (
                                     <tr key={msg.id}>
-                                        <td>{msg.sender_name}</td>
+
+                                        <td>{msg.sender_id == userID ? 'Me' : msg.sender_name}</td>
                                         <td>{msg.message}</td>
                                         <td >{msg.date}</td>
                                     </tr>

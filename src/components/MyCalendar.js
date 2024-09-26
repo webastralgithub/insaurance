@@ -19,7 +19,7 @@ const MyCalendar = () => {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
   const [tooltipContent, setTooltipContent] = useState('');
-  const { auth, setAuth, setTodo, totalReffralEarnedMoney, currentUsercategory_id,
+  const { auth, setAuth, setTodo, totalReffralEarnedMoney,
     totalAvailableJobs, totalReffrals, totalReffralsReceived } = useContext(
       AuthContext
     );

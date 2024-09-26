@@ -4,10 +4,12 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   // AuthProvider.js
-  const [totalReffralEarnedMoney, settotalReffralEarnedMoney] = useState(localStorage.getItem("totalReffralEarnedMoney"))
-  const [totalAvailableJobs, settotalAvailableJobs] = useState(localStorage.getItem("totalAvailableJobs"))
-  const [totalReffrals, settotalReffrals] = useState(localStorage.getItem("totalReffrals"))
-  const [totalReffralsReceived, settotalReffralsReceived] = useState(localStorage.getItem("totalReffralsReceived"))
+  const [totalReffralEarnedMoney, settotalReffralEarnedMoney] = useState()
+  const [totalAvailableJobs, settotalAvailableJobs] = useState()
+  const [totalReffrals, settotalReffrals] = useState()
+  const [totalReffralsReceived, settotalReffralsReceived] = useState()
+
+
   const [toggle, setToggle] = useState(false)
   const [auth, setAuth] = useState(
     localStorage.getItem('token') ? { token: localStorage.getItem('token') } : null
@@ -16,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem('email') ? { email: localStorage.getItem('email') } : null
   );
 
-  const [professionId, setprofessionId] = useState(localStorage.getItem('professionId') ? localStorage.getItem('professionId') : null)
+
   const [userID, setUserId] = useState(localStorage.getItem('id') ? localStorage.getItem('id') : null)
 
   const [roleId, setroleId] = useState(
@@ -25,17 +27,17 @@ export const AuthProvider = ({ children }) => {
   const [plan, setPlan] = useState(
     localStorage.getItem('plan') ? localStorage.getItem('plan') : null
   )
-  const [subscriptionStatus, setSubscriptionStatus] = useState(localStorage.getItem("subscription_status"))
+  const [subscriptionStatus, setSubscriptionStatus] = useState()
   const [property, setProperty] = useState([]);
   const [todo, setTodo] = useState({});
   const [tasklength, setTasklength] = useState(0)
   const [leadlength, setLeadlength] = useState(0)
   const [contactlength, setConatctlength] = useState(0)
-  const [currentUsercategory_id, setcurrentUsercurrentUsercategory_id] = useState(localStorage.getItem('category_id'))
- 
- //notificationsLength
+
+  //notificationsLength
   const [notifications, setNotifications] = useState()
   const [notificatioData, setNotificationData] = useState([])
+  const [unredMessages, setUnreadMessages] = useState(0)
   return (
     <AuthContext.Provider value={{
       toggle, setToggle,
@@ -43,8 +45,9 @@ export const AuthProvider = ({ children }) => {
       auth, setAuth, property, setProperty, todo, setTodo, tasklength, setTasklength,
       plan, setPlan, leadlength, setLeadlength, contactlength, setConatctlength,
       roleId, totalReffralEarnedMoney, totalAvailableJobs, totalReffrals, totalReffralsReceived,
-      currentUsercategory_id, settotalAvailableJobs, settotalReffralEarnedMoney, settotalReffrals, settotalReffralsReceived,
-      userID, setUserId, professionId, setprofessionId , notifications, setNotifications , notificatioData, setNotificationData
+      settotalAvailableJobs, settotalReffralEarnedMoney, settotalReffrals, settotalReffralsReceived,
+      userID, setUserId, notifications, setNotifications, notificatioData, setNotificationData,
+      unredMessages, setUnreadMessages
     }}>
       {children}
     </AuthContext.Provider>

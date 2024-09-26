@@ -89,7 +89,8 @@ const NavbarContainer = (props) => {
   const { pathname } = useLocation();
   const { auth, setAuth, tasklength, setTasklength, plan,
     roleId, subscriptionStatus, settotalAvailableJobs, settotalReffralEarnedMoney,
-    settotalReffrals, settotalReffralsReceived, setLeadlength, notifications, setNotifications, notificatioData, setNotificationData } = useContext(AuthContext);
+    settotalReffrals, settotalReffralsReceived, setLeadlength, notifications, setNotifications,
+    setSubscriptionStatus, notificatioData, setNotificationData, unredMessages, setUnreadMessages } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
@@ -100,7 +101,7 @@ const NavbarContainer = (props) => {
   const [selectedContacts, setSelectedContacts] = useState(false);
   const selectRef = useRef(null);
   const [error, setError] = useState("");
- 
+
 
 
   const headers = {
@@ -211,25 +212,25 @@ const NavbarContainer = (props) => {
         let notifications = user.data.notifications
         let messagesNotification = user.data.messageNotification
 
+        setUnreadMessages(messagesNotification.length)
         setNotificationData([...notifications, ...messagesNotification])
-
         setNotifications(userDataLead.notifications.length)
-        localStorage.setItem('notificationsLength', userDataLead.notifications.length)
-        localStorage.setItem('subscription_status', userData.subscription_status)
-        localStorage.getItem('category_id', userData.category_id)
-        localStorage.setItem("totalReffralEarnedMoney", userDataLead.totalReffralEarnedMoney)
-        localStorage.setItem("totalAvailableJobs", userDataLead.totalAvailableJobs)
-        localStorage.setItem("totalReffrals", userDataLead.totalReffrals)
-        localStorage.setItem("totalReffralsReceived", userDataLead.totalReffralsReceived)
-        localStorage.setItem("professionId", userData.profession_id)
-
+        setSubscriptionStatus(userData.subscription_status)
         settotalAvailableJobs(userDataLead.totalAvailableJobs)
         settotalReffralEarnedMoney(userDataLead.totalReffralEarnedMoney)
         settotalReffrals(userDataLead.totalReffrals)
         settotalReffralsReceived(userDataLead.totalReffralsReceived)
-        setPreviewImage(
-          userData.profileImg ? userData.profileImg : "/placeholder@2x.png"
-        );
+        setPreviewImage(userData.profileImg ? userData.profileImg : "/placeholder@2x.png");
+
+        // localStorage.getItem('category_id', userData.category_id)
+        // localStorage.setItem('subscription_status', userData.subscription_status)
+        // localStorage.setItem("totalReffralEarnedMoney", userDataLead.totalReffralEarnedMoney)
+        // localStorage.setItem("totalAvailableJobs", userDataLead.totalAvailableJobs)
+        // localStorage.setItem("totalReffrals", userDataLead.totalReffrals)
+        // localStorage.setItem("totalReffralsReceived", userDataLead.totalReffralsReceived)
+        // localStorage.setItem("professionId", userData.profession_id)
+
+
       } catch (error) {
         handleLogout();
       }
@@ -362,16 +363,37 @@ const NavbarContainer = (props) => {
 
   const [showNotifications, setShowNotifications] = useState(false)
 
-  const navigateInquiery = () => {
-    navigate('/inquiries/0')
-    setShowNotifications(false)
+  const navigateInquiery = async () => {
+    try {
+      const response = await axios.get(`${url}api/update_notification`, { headers });
+      goBack()
+      setShowNotifications(false)
+    } catch (error) {
+      toast.error("Server is Busy")
+      console.error(error)
+    }
   }
 
-  const navigateMessage = (id, element) => {
-    navigate(`/inquiry/chat/${id}`, { state: { data: element } })
-    setShowNotifications(false)
+  const navigateMessage = async (id, chatID, element) => {
+
+    try {
+      const response = await axios.get(`${url}api/message_read/${chatID}`, { headers });
+      navigate(`/inquiry/chat/${id}/${chatID}`, { state: { data: element } })
+      setShowNotifications(false)
+    } catch (error) {
+      toast.error("Server is Busy")
+      console.error(error)
+    }
+
   }
 
+  const handleNotificationBar = () => {
+    setShowNotifications(prev => !prev)
+  }
+
+  const goBack = () => {
+    navigate('/inquiries', { state: { queryState: 0 } });
+  };
   return (
     <div className="top-navbar">
 
@@ -450,7 +472,7 @@ const NavbarContainer = (props) => {
         {/* <div className="icon-dashboard-item" />  */}
         {/* <Link to="/inquiries"> */}
         {" "}
-        <img className="icon-dashboard1" onClick={() => setShowNotifications(true)} alt="" src="/icon-dashboard.svg" />
+        <img className="icon-dashboard1" style={{ cursor: 'pointer' }} onClick={handleNotificationBar} alt="" src="/icon-dashboard.svg" />
 
 
 
@@ -462,12 +484,12 @@ const NavbarContainer = (props) => {
 
         {/* notifications modeal */}
 
-        {showNotifications &&
+        {notificatioData.length > 0 && showNotifications &&
           <div className="main-div-message-inquiey-notificationbar">
 
             <div >
               <h1>Notifications</h1>
-              <label onClick={() => setShowNotifications(false)} >X</label>
+              {/* <label onClick={() => setShowNotifications(false)} >X</label> */}
             </div>
 
 
@@ -482,7 +504,7 @@ const NavbarContainer = (props) => {
                       </div>
                     ) : (
                       <div className="message-inquiey-notificationbar-inner"
-                        onClick={() => navigateMessage(element.inquiry_id, element)}
+                        onClick={() => navigateMessage(element.inquiry_id, element.chat_id, element)}
                         key={index}>
                         <small>Message</small>
                         <label>{element.message}</label>

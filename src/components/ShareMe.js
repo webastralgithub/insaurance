@@ -45,18 +45,18 @@ const ShareMe = ({ role }) => {
     } catch (error) {
       setDataLoader(false)
       setDataLoader(false)
-      toast.error('Please try after some time email server is busy')
+      toast.error('Server is Busy')
     }
   }
 
   const handleShareKlintaleClick = async (contact) => {
     setDataLoader(true)
-    const { email, phone, name, category_name } = contact;
+    const { email, phone, name, profession } = contact;
     const combinedObject = {
       name,
       email,
       phone,
-      category_name,
+      category_name: profession,
       sendTo: contact.id, selectedContacts: [id],
     };
     try {
@@ -72,11 +72,11 @@ const ShareMe = ({ role }) => {
       setDataLoader(false)
     } catch (error) {
       setDataLoader(false)
-      toast.error("error on sharing klintale contact", {
+      toast.error("Server is Busy", {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.error("error on sharing klintale contact", error)
+      console.error(error)
     }
 
   }
@@ -105,13 +105,14 @@ const ShareMe = ({ role }) => {
       if (active == 0) {
         setDataLoader(true)
         const response = await axios.get(`${url}api/contacts-list?page=${currPage}&search=${searchRef.current.value}`, { headers });
-      
+
 
         setusers(response?.data?.contacts)
         setTotalPages(response?.data?.totalPages)
         setDataLoader(false)
       }
       if (active == 1) {
+
         setDataLoader(true)
         const response = await axios.get(`${klintaleUrl}listings/${localStorage.getItem('email')}?page=${currPage}&search=${searchRef.current.value}&categories=${[]}`, { headers });
         setusers(response?.data?.users)
@@ -151,9 +152,9 @@ const ShareMe = ({ role }) => {
     for (let i = 1; i <= totalPagess; i++) {
       pageNumbers.push(i);
     }
-    return pageNumbers.map((number) => (
+    return pageNumbers.map((number, index) => (
       <button className={currentPage === number ? "active" : ""}
-        key={number} onClick={() => handlePageChange(number)}>{number}</button>
+        key={index} onClick={() => handlePageChange(number)}>{number}</button>
     ));
   };
 
@@ -189,9 +190,9 @@ const ShareMe = ({ role }) => {
 
         <div className="inner-pages-top inner-pages-top-share-ref inner-pages-top-share-ref-tab">
           <div className="add_user_btn">
-            <button className={!active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(0) }}>
+            <button className={!active ? 'active' : ''} onClick={() => { setusers([]); setCurrentPage(1); setActive(0) }}>
               Personal Contacts</button>
-            <button className={active ? 'active' : ''} onClick={() => { setCurrentPage(1); setActive(1) }}>
+            <button className={active ? 'active' : ''} onClick={() => { setusers([]); setCurrentPage(1); setActive(1) }}>
               Klientale Contacts</button>
           </div>
         </div>
@@ -209,52 +210,49 @@ const ShareMe = ({ role }) => {
                   <tr>
                     <th></th>
                     <th>Name</th>
-                    <th>Business Name test</th>
+                    <th>Business Name</th>
                     <th>Profession</th>
                     <th>Phone</th>
                     <th>Email Id</th>
                   </tr>
                 </thead>
+                <tbody>
 
-                {active == 0 && <>
-                  <tbody>
-                    {userss?.length &&
-                      userss?.map((contact) => (contact.id != id && <>
-                        <tr key={contact.id}>
-                          <td>  <button className="permissions share-ref-button-tb"
-                            onClick={() => {
-                              sendRefferal(contact)
-                            }} >Share</button>       </td>
-                          <td>{contact?.firstname}</td>
-                          <td>{contact?.business_name}</td>
-                          <td>{contact?.profession_id > 0 ? contact.profession.name : ""}</td>
-                          <td>{contact?.phone && formatPhoneNumber(contact.phone)}</td>
-                          <td>{contact?.email}</td>
-                        </tr>
-                      </>))}</tbody>
-                </>
-                }
+                  {/* user contacts */}
 
-                {/* {  klintale contacts} */}
-                {active === 1 && <>
-                  {userss?.length &&
-                    userss?.map((contact) => (contact.id != id && <tbody>
+                  {active == 0 && userss?.length > 0 && userss?.map((contact, index) => (contact.id != id &&
+                    <tr key={contact.id}>
+                      <td>  <button className="permissions share-ref-button-tb"
+                        onClick={() => {
+                          sendRefferal(contact)
+                        }} >Share</button>       </td>
+                      <td>{contact?.firstname}</td>
+                      <td>{contact?.business_name}</td>
+                      <td>{contact?.profession_id > 0 && contact.profession.name}</td>
+                      <td>{contact?.phone && formatPhoneNumber(contact.phone)}</td>
+                      <td>{contact?.email}</td>
+                    </tr>
+                  ))
+                  }
 
-                      <tr key={contact.id}>
+                  {/* {  klintale contacts} */}
+
+                  {active === 1 && userss?.length > 0 &&
+                    userss?.map((contact, index) => (contact.id != id &&
+                      <tr key={index}>
                         <td>  <button className="permissions share-ref-button-tb"
                           onClick={() => {
                             handleShareKlintaleClick(contact)
                           }} >Share</button>       </td>
                         <td>{contact?.name}</td>
                         <td>{contact?.business_name}</td>
-                        <td>{contact?.category_name}</td>
+                        <td>{contact?.profession}</td>
                         <td>{contact?.phone && formatPhoneNumber(contact?.phone)}</td>
                         <td>{contact?.email}</td>
                       </tr>
-                    </tbody>))
+                    ))
                   }
-                </>
-                }
+                </tbody>
               </table>)}
 
           {totalPagess > 1 && (
